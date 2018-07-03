@@ -1,6 +1,6 @@
 
 import React, {Component} from 'react';
-import RNFS from 'react-native-fs';
+//import RNFS from 'react-native-fs';
 import {
     Dimensions,
     ListView,

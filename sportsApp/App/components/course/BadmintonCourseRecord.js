@@ -538,9 +538,13 @@ class BadmintonCourseRecord extends Component {
     showUserNameDialog() {
         this.SignUpDialog.show();
     }
+
     render() {
         var coursesOfCoachListView=null;
         var {coursesOfCoach,coursesOfCoachOnFresh}=this.props;
+        //es5语法中可写作:
+        //var coursesOfCoach = this.props.coursesOfCoach
+        //var coursesOfCoachOnFresh = this.props.coursesOfCoachOnFresh
         //var competitionList=this.state.competitionList;
         if(coursesOfCoachOnFresh==true)
         {
@@ -553,6 +557,7 @@ class BadmintonCourseRecord extends Component {
                 coursesOfCoachListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
+                        //列表中数据
                         dataSource={ds.cloneWithRows(coursesOfCoach)}
                         renderRow={this.renderRow.bind(this)}
                     />
