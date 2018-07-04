@@ -31,6 +31,7 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
 import{
     fetchPayment,
     onPaymentUpdate,
+    fetchPaymentByTime,
 } from '../../action/MyProfitActions';
 import Calendar from 'react-native-calendar-select';
 import {
@@ -79,7 +80,7 @@ class DetailProfit extends Component {
             activitys:0,
             courses:0,
             startDate: new Date(2017, 6, 12),
-            endDate: new Date(2017, 8, 2)
+            endDate: new Date(2017, 8, 2),
         };
         this.confirmDate = this.confirmDate.bind(this);
         this.openCalendar = this.openCalendar.bind(this);
@@ -89,7 +90,21 @@ class DetailProfit extends Component {
             startDate,
             endDate
         });
+
+        this.props.dispatch(fetchPaymentByTime(this.props.clubId,startDate,endDate)).then((json)=>{
+            if(json.re==1)
+            {
+                // this.props.dispatch(onPaymentUpdate(json.data))
+                this.setState({total:json.data});
+            }else{
+                if(json.re==-100){
+                    this.props.dispatch(getAccessToken(false));
+                }
+            }
+        })
+
     }
+
     openCalendar() {
         this.calendar && this.calendar.open();
     }
@@ -126,22 +141,6 @@ class DetailProfit extends Component {
 
         return (
        <View style={styles.container}>
-                <View>
-                    <Button title="Open Calendar" onPress={this.openCalendar}></Button>
-                        <Calendar
-                            i18n="en"
-                            ref={(calendar) => {this.calendar = calendar;}}
-                            customI18n={customI18n}
-                            color={color}
-                            format="YYYYMMDD"
-                            minDate="20170510"
-                            maxDate="20180312"
-                            startDate={this.state.startDate}
-                            endDate={this.state.endDate}
-                            onConfirm={this.confirmDate}
-                        />
-                </View>
-
 
                 <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',
                     backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
@@ -152,8 +151,33 @@ class DetailProfit extends Component {
                     <View style={{marginLeft:90,justifyContent:'center',alignItems: 'center',}}>
                         <Text style={{color:'#fff',fontSize:18}}>我的收益</Text>
                     </View>
-
                 </View>
+
+                <View style={{ padding: 4, paddingHorizontal: 12 ,flexDirection:'row',}}>
+
+                <View style={{padding:4,flex:1,alignItems:'center',flexDirection:'row'}}>
+                   <Text style={{ color: '#222', fontSize: 18 }}>
+                       总收入：{this.state.totals}
+                   </Text>
+                </View>
+
+               <View style={{padding:10,marginLeft:8,flexDirection:'row',alignItems:'center' }}>
+                   <Button title="选择时间" onPress={this.openCalendar}></Button>
+                   <Calendar
+                       i18n="en"
+                       ref={(calendar) => {this.calendar = calendar;}}
+                       customI18n={customI18n}
+                       color={color}
+                       format="YYYYMMDD"
+                       minDate="20170510"
+                       maxDate="20180312"
+                       startDate={this.state.startDate}
+                       endDate={this.state.endDate}
+                       onConfirm={this.confirmDate}
+                   />
+                </View>
+                </View>
+
                 <ScrollView>
                 <List containerStyle={{marginBottom: 20}}>
                     {
@@ -208,6 +232,7 @@ module.exports = connect(state=>({
         personInfo:state.user.personInfo,
         clubId:state.user.personInfoAuxiliary.clubId,
         coaches:state.coach.coaches,
+        payments:state.myprofit.payments,
         total:state.myprofit.total,
         qunhuodong:state.myprofit.qunhuodong,
         total1:state.myprofit.total1,
