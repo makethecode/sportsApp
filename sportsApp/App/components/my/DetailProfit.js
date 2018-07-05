@@ -95,7 +95,12 @@ class DetailProfit extends Component {
             if(json.re==1)
             {
                 // this.props.dispatch(onPaymentUpdate(json.data))
-                this.setState({total:json.data});
+                var dataList = json.data;
+                var sum = 0;
+                for(i=0;i<dataList.length;i++){
+                    sum+=dataList[i].payment;
+                }
+                this.setState({totals:sum});
             }else{
                 if(json.re==-100){
                     this.props.dispatch(getAccessToken(false));
@@ -157,7 +162,7 @@ class DetailProfit extends Component {
 
                 <View style={{padding:4,flex:1,alignItems:'center',flexDirection:'row'}}>
                    <Text style={{ color: '#222', fontSize: 18 }}>
-                       总收入：{this.state.totals}
+                       总收入：{this.state.totals}元
                    </Text>
                 </View>
 
@@ -207,7 +212,13 @@ class DetailProfit extends Component {
         this.props.dispatch(fetchPayment(this.props.clubId)).then((json)=>{
             if(json.re==1)
             {
-                this.setState({total:json.data});
+                //this.setState({total:json.data});
+                var dataList = json.data;
+                var sum = 0;
+                for(i=0;i<dataList.length;i++){
+                    sum+=dataList[i].payment;
+                }
+                this.setState({totals:sum});
             }else{
                 if(json.re==-100){
                     this.props.dispatch(getAccessToken(false));

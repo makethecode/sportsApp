@@ -21,6 +21,8 @@ import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-
 import ModalDropdown from 'react-native-modal-dropdown';
 
 
+
+
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
@@ -56,6 +58,7 @@ import CoachListModal from '../my/modal/CoachListModal';
 import ChangeClassDetail from './ChangeClassDetail';
 import proxy from "../../utils/Proxy";
 import Config from "../../../config";
+
 class AddGroup extends Component {
 
     //导航至定制（for 教练）
@@ -63,6 +66,8 @@ class AddGroup extends Component {
         const { navigator } = this.props;
         if (navigator) {
             navigator.push({
+
+            
                 name: 'CreateBadmintonCourse',
                 component: CreateBadmintonCourse,
                 params: {
