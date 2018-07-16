@@ -73,9 +73,9 @@ class AddActivity extends Component{
     setCoach(type,coach)
     {
         if(type=='coach'){
-            this.setState({event:Object.assign(this.state.event,{coachId:coach.trainerId,coachName:coach.perName})});
+            this.setState({event:Object.assign(this.state.event,{coachId:coach.trainerId,coachName:coach.perName,coachPhone:coach.mobilePhone})});
         }else{
-            this.setState({event:Object.assign(this.state.event,{sparringId:coach.trainerId,sparringName:coach.perName})});
+            this.setState({event:Object.assign(this.state.event,{sparringId:coach.trainerId,sparringName:coach.perName,sparringPhone:coach.mobilePhone})});
         }
     }
     setField(field){
@@ -307,7 +307,7 @@ class AddActivity extends Component{
             selectTime:false,
             eventTime:null,
             event:{eventName:null,isChooseYardTime:null,eventBrief:'',eventType:null,eventPlace:null,unitId:null,feeDes:null,yardTotal:null,eventMaxMemNum:null,
-                memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,
+                memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,coachPhone:null,sparringPhone:null,
                 groupName:null,groupId:null,cost:null,costType:null,field:null,filedNum:null,time:{startTime:null,endTime:null,eventWeek:null,isSchedule:null,},},
 
             memberLevelButtons:['取消','业余小白','初级爱好者','业余高手','专业运动员'],
@@ -565,7 +565,7 @@ class AddActivity extends Component{
                                     ref={(o) => {
                                         this.actionSheet3 = o;
                                     }}
-                                    title="请选择对象水平"
+                                    title="请选择所邀请群组"
                                     options={this.state.groupNameButtons}
                                     cancelButtonIndex={CANCEL_INDEX}
                                     destructiveButtonIndex={DESTRUCTIVE_INDEX}

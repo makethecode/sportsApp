@@ -75,10 +75,10 @@ class ActivityDetail extends Component{
         return  (
             <View>
                 <View style={{height:50,width:50,borderRadius:10,borderWidth:1,borderColor:'#eee',margin:5}}>
-                    <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10,}} source={rowData.portrait}/>
+                    <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10,}} source={require('../../../img/portrait.jpg')}/>
                 </View>
                 <View style={{justifyContent:'center',alignItems: 'center',}}>
-                    <Text numberOfLines={1} style={{color:'#343434',}}>{rowData}</Text>
+                    <Text numberOfLines={1} style={{color:'#343434',}}>用户名:{rowData.memberName}</Text>
                 </View>
             </View>
         );
@@ -115,11 +115,18 @@ class ActivityDetail extends Component{
 
         var start = activity.startTime;
 
-
         var memberList = activity.memberList;
+        var memberListView = null;
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
         if(memberList!==null&&memberList!==undefined){
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            var dataSource=ds.cloneWithRows(memberList);
+            memberListView=(
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds.cloneWithRows(memberList)}
+                    renderRow={this.renderRow.bind(this)}
+                />
+            );
         }
 
         return (
@@ -138,21 +145,21 @@ class ActivityDetail extends Component{
                     </TouchableOpacity>
                 </View>
 
-                <View style={{flex:7,backgroundColor:'#fff',marginTop:5,marginBottom:5,borderBottomWidth:1,borderColor:'#ddd'}}>
+                <ScrollView style={{flex:7,backgroundColor:'#fff',marginTop:5,marginBottom:5,borderBottomWidth:1,borderColor:'#ddd'}}>
                     <View style={{flex:1,padding:10,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
                         <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
                             <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
                         </View>
                         <View style={{flex:1,justifyContent:'center',alignItems: 'center',marginLeft:5}}>
                             <View>
-                                <Text>{activity.eventManager.username}</Text>
+                                <Text>{activity.eventManagerName}</Text>
                             </View>
                         </View>
                         <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
                             {
-                                (activity.group!==null&&activity.group!==undefined)?
+                                (activity.groupId!==null&&activity.groupId!==undefined)?
                                     <View>
-                                        <Text>{activity.group.groupName}</Text>
+                                        <Text>{activity.groupName}</Text>
                                     </View>:null
                             }
 
@@ -164,27 +171,27 @@ class ActivityDetail extends Component{
                                 <Icon name={'star'} size={16} color="#66CDAA"/>
                             </View>
                             <View style={{flex:7,color:'#343434'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventName}</Text>
+                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>活动名称：{activity.eventName}</Text>
                             </View>
                         </View>
                         <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
                             <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                 <Icon name={'circle'} size={10} color="#aaa"/>
                             </View>
-                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventPlace.name}</Text>
+                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>活动场地：{activity.eventPlaceName}</Text>
                         </View>
                         <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
                             <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                 <Icon name={'circle'} size={10} color="#aaa"/>
                             </View>
-                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventPlace.address}</Text>
+                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>报名人数：{activity.eventNowMemNum}</Text>
                         </View>
                         <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
                             <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                 <Icon name={'circle'} size={10} color="#aaa"/>
                             </View>
                             <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                                {activity.startTime}--{activity.endTime}
+                                活动时间：{activity.startTimeStr}--{activity.endTimeStr}
                                 </Text>
                         </View>
                         <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
@@ -199,23 +206,17 @@ class ActivityDetail extends Component{
                             <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                 <Icon name={'circle'} size={10} color="#aaa"/>
                             </View>
-                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}v>{activity.eventBrief}</Text>
+                            <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}v>活动简介：{activity.eventBrief}</Text>
                         </View>
                     </View>
                     <View style={{flex:3,padding:5,borderTopWidth:1,borderColor:'#ddd'}}>
                         <View style={{flex:1,justifyContent:'center'}}>
                             <Text style={{color:'#aaa',fontSize:13}}>已报名用户</Text>
                         </View>
-                        <View style={{flex:4,backgroundColor:'#fff',padding:10}}>
-                            <GridView
-                                items={dataSource}
-                                itemsPerRow={5}
-                                renderItem={this.renderRow.bind(this)}
-                                style={styles.listView}
-                            />
-                        </View>
+                        {memberListView}
                     </View>
-                </View>
+                </ScrollView>
+
 
 
                 <View style={{flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',

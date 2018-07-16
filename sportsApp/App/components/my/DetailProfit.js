@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
 });
 
 module.exports = connect(state=>({
-
+//UI组件中的payments与state中的payments间的映射
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
         clubId:state.user.personInfoAuxiliary.clubId,

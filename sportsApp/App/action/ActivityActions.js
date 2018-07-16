@@ -25,19 +25,30 @@ export let releaseActivity=(event)=>{
             var state=getState();
 
             var personId = state.user.personInfo.personId;
+            var personName = state.user.personInfo.perNum;
+            var personMobilePhone = state.user.personInfo.mobilePhone;
 
             var params={
                 eventManagerId:personId,
+                eventManagerName:personName,
+                eventManagerPhone:personMobilePhone,
                 eventName:event.eventName,
-                eventType:event.eventType=='组内'?'1':'0',
+                eventType:event.eventType=='组内'?1:0,
                 eventBrief:event.eventBrief,
                 eventPlaceId:event.unitId,
+                eventPlaceName:event.eventPlace,
                 placeYardStr:event.field,
                 eventMaxMemNum:event.eventType=='公开'?parseInt(event.eventMaxMemNum):100,
                 coachId:parseInt(event.coachId),
+                coachName:event.coachName,
+                coachPhone:event.coachPhone,
                 sparringId:parseInt(event.sparringId),
+                sparringName:event.sparringName,
+                sparringPhone:event.sparringPhone,
                 groupId:parseInt(event.groupId),
+                groupName:event.groupName,
                 yardNum:event.filedNum==null?1:parseInt(event.filedNum),
+                eventMember:event.personName,
 
                 eventDate:event.time.eventWeek,
                 startTime:event.time.startTime,
@@ -46,10 +57,10 @@ export let releaseActivity=(event)=>{
 
                 memberLevel:event.memberLevel==null?"1":event.memberLevel.toString(),
                 cost:parseInt(event.cost),
-                costType:event.costTypeCode.toString(),
+                costType:event.costTypeCode,
                 isNeedCoach:parseInt(event.hasCoach),
                 isNeedSparring:parseInt(event.hasSparring),
-                feeDes:event.feeDes,
+                feeDes:parseInt(event.feeDes),
                 eventNowMemNum:0,
                 status:0,
                 isChooseYardTime:event.isChooseYardTime,
@@ -57,7 +68,7 @@ export let releaseActivity=(event)=>{
             }
 
             Proxy.postes({
-                url: Config.server + '/func/allow/createEvents',
+                url: Config.server + '/func/node/createActivity',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -171,16 +182,18 @@ export let fetchActivityList=()=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-            var allActivityList = null;
+            var activityList = null;
             var username = state.user.user.username;
+//          var userId = state.user.user.userId;
 
             var visibleEvents=[];
             var myEvents=[];//我发起的活动
-            var myTakenEvents=[];//我报名的活动
+            //var myTakenEvents=[];//我报名的活动
             var flag2=0;
             Proxy.postes({
-               // url: Config.server + '/func/allow/getAllEventsForPhone',
-                url: Config.server + '/func/allow/getCheckedEvents',
+               //url: Config.server + '/func/allow/getAllEventsForPhone',
+               //url: Config.server + '/func/allow/getCheckedEvents',
+               url: Config.server + '/func/node/fetchActivityList',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -189,42 +202,78 @@ export let fetchActivityList=()=>{
                 }
             }).then((json)=>{
                 if (json.re == 1) {
-                    allActivityList = json.data;
+                    activityList = json.data;
 
-                    if (allActivityList!== undefined && allActivityList !== null &&allActivityList.length > 0) {
-                        dispatch(setActivityList(allActivityList));
-                        allActivityList.map((activity,i)=>{
+                    if (activityList!== undefined && activityList !== null &&activityList.length > 0) {
+
+                        activityList.map((activity,i)=>{
                             var members=new Array();
                             var flag=0;
+                            var flag2=0;
                             members=activity.eventMember.split(",");
 
+                            //活动发起者名=当前登录用户名：该活动是我发起的活动
                             if(activity.eventManagerLoginName==username){
                                 myEvents.push(activity);
                             }
-                            if(activity.eventName=="周六上午日常活动"&&flag2==0){
-                                myTakenEvents.push(activity);
-                                if(myTakenEvents.length==1){
-                                    flag2=1;
-                                }
-                            }
+                            // if(activity.eventName=="周六上午日常活动"&&flag2==0){
+                            //     myTakenEvents.push(activity);
+                            //     if(myTakenEvents.length==1){
+                            //         flag2=1;
+                            //     }
+                            // }
+
                             for(j=0;j<members.length;j++){
+                                //当前登录用户名=活动参与者！=活动发起者：我报名了该活动
+                                //if(username == members[j] && username != activity.eventManagerLoginName){
+                                if(username == members[j]){
+                                    //myTakenEvents.push(activity);
+                                    activity.isSignUp=1;
+                                    flag=1;
+                                    //对于我报名的活动，判断是否支付
 
-                                // if(activity.eventManager==members[j]){
-                                //     myTakenEvents.push(activity);
-                                // }
+                                    Proxy.postes({
+                                        // url: Config.server + '/func/allow/getAllEventsForPhone',
+                                        url: Config.server + '/func/node/verifyIsHasPay',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: {
+                                            userName:username,
+                                            eventId:activity.eventId
+                                        }
+                                    }).then((json)=>{
+                                        if(json.re==1){
+                                            if(json.data==1){
+                                                //已支付
+                                                activity.isHasPay=1;
+                                            }else activity.isHasPay=0;
+                                        }
 
-                                if(activity.eventManager!=members[j]&&activity.eventId!=244){
-                                    flag++;
-                                    if(flag==members.length){
+                                            dispatch(setActivityList(activityList));
+                                            dispatch(setMyEvents(myEvents));
+                                            resolve({re:1});
 
-                                        visibleEvents.push(activity);
-                                    }
+                                    }).catch((e)=>{
+                                        alert(e);
+                                        reject(e);
+                                    })
+
                                 }
-                            }
-                        });
 
+                                // if(activity.eventManager!=members[j]&&activity.eventId!=244){
+                                //     flag++;
+                                //     if(flag==members.length){
+                                //         visibleEvents.push(activity);
+                                //     }
+                                // }
+                            }
+                            if(flag==0)activity.isSignUp=0;
+                        });
                     }
 
+                    //dispatch(setMyTakenEvents(myTakenEvents));
+                    resolve({re:1,data:activityList})
                 }else{
 
                     if(json.re==-100){
@@ -234,75 +283,75 @@ export let fetchActivityList=()=>{
                     }
                 }
 
-                Proxy.postes({
-                    // url: Config.server + '/func/allow/getAllEventsForPhone',
-                    url: Config.server + '/func/allow/getMyEvents',
-                    headers: {
-
-                        'Content-Type': 'application/json',
-
-                    },
-                    body: {
-
-                    }
-                }).then((json)=>{
-                    if(json.re==1){
-                        myEventsList = json.data;
-                        if (myEventsList!== undefined && myEventsList !== null &&myEventsList.length > 0){
-                            myEventsList.map((activity,i)=>{
-                                var members=new Array();
-                                var flag=0;
-                                var flag1=0;
-                                visibleEvents.map((visibleEvent,k)=>{
-
-                                    if(activity.eventName!=visibleEvent.eventName){
-
-                                        flag1++;
-                                    }
-                                    if(flag1==visibleEvents.length){
-
-                                        members=activity.eventMember.split(",");
-
-                                        if(activity.eventManager==username){
-                                            myEvents.push(activity);
-                                        }
-                                        if(activity.eventId!=244){
-                                            visibleEvents.push(activity);
-                                        }
-
-                                        // for(j=0;j<members.length;j++){
-                                        //
-                                        //     // if(activity.eventManager==members[j]){
-                                        //     //     myTakenEvents.push(activity);
-                                        //     // }
-                                        //     if(activity.eventManager!=members[j]){
-                                        //         flag++;
-                                        //         if(flag==members.length){
-                                        //
-                                        //             visibleEvents.push(activity);
-                                        //         }
-                                        //     }
-                                        //
-                                        // }
-
-                                    }
-
-                                })
-
-
-                            });
-
-                        }
-                    }
-                    dispatch(setVisibleEvents(visibleEvents));
-                    dispatch(setMyEvents(myEvents));
-                    dispatch(setMyTakenEvents(myTakenEvents));
-                    dispatch(disableActivityOnFresh());
-                    resolve({re:1});
-                }).catch((e)=>{
-                    alert(e);
-                    reject(e);
-                })
+                // Proxy.postes({
+                //     // url: Config.server + '/func/allow/getAllEventsForPhone',
+                //     url: Config.server + '/func/allow/getMyEvents',
+                //     headers: {
+                //
+                //         'Content-Type': 'application/json',
+                //
+                //     },
+                //     body: {
+                //
+                //     }
+                // }).then((json)=>{
+                //     if(json.re==1){
+                //         myEventsList = json.data;
+                //         if (myEventsList!== undefined && myEventsList !== null &&myEventsList.length > 0){
+                //             myEventsList.map((activity,i)=>{
+                //                 var members=new Array();
+                //                 var flag=0;
+                //                 var flag1=0;
+                //                 visibleEvents.map((visibleEvent,k)=>{
+                //
+                //                     if(activity.eventName!=visibleEvent.eventName){
+                //
+                //                         flag1++;
+                //                     }
+                //                     if(flag1==visibleEvents.length){
+                //
+                //                         members=activity.eventMember.split(",");
+                //
+                //                         if(activity.eventManager==username){
+                //                             myEvents.push(activity);
+                //                         }
+                //                         if(activity.eventId!=244){
+                //                             visibleEvents.push(activity);
+                //                         }
+                //
+                //                         // for(j=0;j<members.length;j++){
+                //                         //
+                //                         //     // if(activity.eventManager==members[j]){
+                //                         //     //     myTakenEvents.push(activity);
+                //                         //     // }
+                //                         //     if(activity.eventManager!=members[j]){
+                //                         //         flag++;
+                //                         //         if(flag==members.length){
+                //                         //
+                //                         //             visibleEvents.push(activity);
+                //                         //         }
+                //                         //     }
+                //                         //
+                //                         // }
+                //
+                //                     }
+                //
+                //                 })
+                //
+                //
+                //             });
+                //
+                //         }
+                //     }
+                //     dispatch(setVisibleEvents(visibleEvents));
+                //     dispatch(setMyEvents(myEvents));
+                //     dispatch(setMyTakenEvents(myTakenEvents));
+                //     dispatch(disableActivityOnFresh());
+                //     resolve({re:1});
+                // }).catch((e)=>{
+                //     alert(e);
+                //     reject(e);
+                // })
             }).catch((e)=>{
                 alert(e);
                 reject(e);
@@ -317,6 +366,7 @@ export let signUpActivity=(eventId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
+            var username = state.user.personInfo.perNum;
             Proxy.postes({
                 url: Config.server + '/func/node/signUpActivity',
                 headers: {
@@ -325,8 +375,8 @@ export let signUpActivity=(eventId)=>{
 
                 },
                 body: {
-                    eventId:parseInt(eventId)
-
+                    eventId:parseInt(eventId),
+                    userName:username
                 }
             }).then((json)=>{
                 if (json.re == 1) {
@@ -432,7 +482,8 @@ export let exitActivity=(eventId)=>{
                     'Content-Type': 'application/json',
                 },
                 body: {
-                    eventId:parseInt(eventId)
+                    eventId:parseInt(eventId),
+                    userName:state.user.personInfo.perNum
                 }
             }).then((json)=>{
                 if (json.re == 1) {

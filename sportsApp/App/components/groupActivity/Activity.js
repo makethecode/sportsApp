@@ -295,7 +295,7 @@ class Activity extends Component {
                     </View>
 
 
-                    {rowData.coach!==undefined&&rowData.coach!==null?
+                    {rowData.isNeedCoach!==undefined&&rowData.isNeedCoach==1?
                         <View style={{flex:2,justifyContent:'center',alignItems: 'flex-end',marginRight:15}}>
                             <Text>指定教练</Text>
                         </View> :null
@@ -317,7 +317,7 @@ class Activity extends Component {
 
                     <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
                         {
-                            rowData.money!=0 && rowData.money!=null && rowData.money!=undefined && rowData.isSignUp==1?
+                            rowData.isHasPay==1 && rowData.isHasPay!=null && rowData.isHasPay!=undefined && rowData.isSignUp==1?
                                 <View>
                                             <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
                     ,borderRadius:6}}
@@ -327,7 +327,7 @@ class Activity extends Component {
                                 </View>:
                                 <View>
                                     {
-                                        ( rowData.Money==0 || rowData.Money==null || rowData.Money==undefined )&& rowData.isSignUp==1?
+                                        ( rowData.isHasPay==0 || rowData.isHasPay==null || rowData.isHasPay==undefined )&& rowData.isSignUp==1?
                                             <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
                     ,borderRadius:6}}
                                                               onPress={()=>{this.isActivityPay(rowData)}}>
@@ -406,7 +406,7 @@ class Activity extends Component {
                     <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
                         {
                             rowData.eventNowMemNum!=null?
-                                <Text style={{color:'#aaa',fontSize:13}}>已报名:{eventNowMemNum}</Text>:
+                                <Text style={{color:'#aaa',fontSize:13}}>已报名:{rowData.eventNowMemNum}</Text>:
                                 <Text style={{color:'#aaa',fontSize:13}}>已报名:暂无</Text>
                         }
 
@@ -414,7 +414,7 @@ class Activity extends Component {
 
 
                     <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#aaa',fontSize:13}}>已支付:{rowData.payCount}</Text>
+                        <Text style={{color:'#aaa',fontSize:13}}>已支付:{rowData.costTotal}</Text>
                     </View>
                     <View style={{flex:3,justifyContent:'center',alignItems: 'center'}}>
 
@@ -450,7 +450,7 @@ class Activity extends Component {
 
                             <View>
                                 {
-                                    rowData.money==0||rowData.money==null?
+                                    rowData.costTotal==0||rowData.costTotal==null?
                                         <View>
                                                     <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
                     ,borderRadius:6}}
@@ -559,9 +559,9 @@ class Activity extends Component {
             //myTakenEvents:{isSignUp:null,eventId:null,eventId:null,eventBrief:null,money:null,eventName:null},
             myTakenEvents:{},
             share:{},
-            event:{eventName:null,startTimeStr:null,eventPlaceName:null,isChooseYardTime:null,eventBrief:'',eventType:null,eventPlace:null,unitId:null,feeDes:null,yardTotal:null,eventMaxMemNum:null,
-                memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,
-                groupName:null,groupId:null,cost:null,costType:null,field:null,filedNum:null,time:{startTime:null,endTime:null,eventWeek:null,isSchedule:null,},},
+            event:{eventName:null,startTimeStr:null,endTimeStr:null,eventPlaceName:null,isChooseYardTime:null,eventBrief:'',eventType:null,eventPlace:null,unitId:null,feeDes:null,yardTotal:null,eventMaxMemNum:null,
+                memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,costTotal:null,isSignUp:null,eventMember:null,isNeedCoach:null,isNeedSparring:null,isHasPay:null,
+                ManagerLoginName:null,groupName:null,groupId:null,cost:null,costType:null,field:null,filedNum:null,time:{startTime:null,endTime:null,eventWeek:null,isSchedule:null,},},
 
         }
     }
@@ -584,19 +584,21 @@ class Activity extends Component {
             if(this.state.doingFetch==false)
                 this.fetchData();
         }else {
-            myTakenEvents.map((myTakenEvents,i)=>{
-                // this.state.myTakenEvents.isSignUp=myTakenEvents.isSignUp;
-                // this.state.myTakenEvents.eventName=myTakenEvents.eventName;
-                // this.state.myTakenEvents.eventBrief=myTakenEvents.eventBrief;
-                this.state.myTakenEvents=myTakenEvents;
-            })
+            // myTakenEvents.map((myTakenEvents,i)=>{
+            //     // this.state.myTakenEvents.isSignUp=myTakenEvents.isSignUp;
+            //     // this.state.myTakenEvents.eventName=myTakenEvents.eventName;
+            //     // this.state.myTakenEvents.eventBrief=myTakenEvents.eventBrief;
+            //     this.state.myTakenEvents=myTakenEvents;
+            // })
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            if (visibleEvents !== undefined && visibleEvents !== null && visibleEvents.length > 0) {
-
+            var allActivityList = this.props.activityList;
+            //if (visibleEvents !== undefined && visibleEvents !== null && visibleEvents.length > 0) {
+            if (allActivityList !== undefined && allActivityList !== null && allActivityList.length > 0) {
                 activityListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(visibleEvents)}
+                        //dataSource={ds.cloneWithRows(visibleEvents)}
+                        dataSource={ds.cloneWithRows(allActivityList)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
@@ -623,103 +625,103 @@ class Activity extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                    <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
-                            <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
-                            </View>
-                            <View style={{marginTop:10,width:200}}>
-                                <View style={{flex:3,flexDirection:'row',marginBottom:0}}>
-                                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                        <Icon name={'star'} size={16} color="#66CDAA"/>
-                                    </View>
-                                    <View style={{flex:7}}>
-                                        <Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventName}</Text>
-                                    </View>
-                                </View>
-                                <View style={{flex:3,flexDirection:'row',marginBottom:0}}>
-                                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                        <Icon name={'circle'} size={12} color="#aaa"/>
-                                    </View>
-                                    <View style={{flex:7}}>
-                                        <Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventPlaceName}</Text>
-                                    </View>
-                                </View>
-                                <View style={{width:140,justifyContent:'center',alignItems: 'center'}}>
-                                    <View>
-                                        <Text style={{color:'#343434'}}>{this.state.myTakenEvents.eventBrief}</Text>
-                                    </View>
-                                </View>
-                            </View>
+                    {/*<View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>*/}
+                            {/*<View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>*/}
+                                {/*<Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>*/}
+                            {/*</View>*/}
+                            {/*<View style={{marginTop:10,width:200}}>*/}
+                                {/*<View style={{flex:3,flexDirection:'row',marginBottom:0}}>*/}
+                                    {/*<View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>*/}
+                                        {/*<Icon name={'star'} size={16} color="#66CDAA"/>*/}
+                                    {/*</View>*/}
+                                    {/*<View style={{flex:7}}>*/}
+                                        {/*<Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventName}</Text>*/}
+                                    {/*</View>*/}
+                                {/*</View>*/}
+                                {/*<View style={{flex:3,flexDirection:'row',marginBottom:0}}>*/}
+                                    {/*<View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>*/}
+                                        {/*<Icon name={'circle'} size={12} color="#aaa"/>*/}
+                                    {/*</View>*/}
+                                    {/*<View style={{flex:7}}>*/}
+                                        {/*<Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventPlaceName}</Text>*/}
+                                    {/*</View>*/}
+                                {/*</View>*/}
+                                {/*<View style={{width:140,justifyContent:'center',alignItems: 'center'}}>*/}
+                                    {/*<View>*/}
+                                        {/*<Text style={{color:'#343434'}}>{this.state.myTakenEvents.eventBrief}</Text>*/}
+                                    {/*</View>*/}
+                                {/*</View>*/}
+                            {/*</View>*/}
 
 
 
 
-                        <View style={{flex:2,flexDirection:'column',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                            {
-                                this.state.myTakenEvents.money!=0 && this.state.myTakenEvents.money!=null && this.state.myTakenEvents.money!=undefined && this.state.myTakenEvents.isSignUp==1?
-                                    <View>
-                                        <TouchableOpacity style={{height:25,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                          onPress={()=>{this.usernameDialog.show()}}>
-                                            <Text style={{color:'#f00',fontSize:12}}>已支付</Text>
-                                        </TouchableOpacity>
-                                    </View>:
-                                    <View>
-                                        {
-                                            ( this.state.myTakenEvents.Money==0 || this.state.myTakenEvents.Money==null || this.state.myTakenEvents.Money==undefined )&& this.state.myTakenEvents.isSignUp==1?
-                                                <TouchableOpacity style={{height:25,marginBottom:10,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                                  onPress={()=>{this.isActivityPay(this.state.myTakenEvents)}}>
-                                                    <Text style={{color:'#f00',fontSize:12}}>未支付</Text>
-                                                </TouchableOpacity>:
-                                                null
-                                        }
+                        {/*<View style={{flex:2,flexDirection:'column',justifyContent:'center',alignItems: 'center',marginLeft:20}}>*/}
+                            {/*{*/}
+                                {/*this.state.myTakenEvents.money!=0 && this.state.myTakenEvents.money!=null && this.state.myTakenEvents.money!=undefined && this.state.myTakenEvents.isSignUp==1?*/}
+                                    {/*<View>*/}
+                                        {/*<TouchableOpacity style={{height:25,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'*/}
+                    {/*,borderRadius:6}}*/}
+                                                          {/*onPress={()=>{this.usernameDialog.show()}}>*/}
+                                            {/*<Text style={{color:'#f00',fontSize:12}}>已支付</Text>*/}
+                                        {/*</TouchableOpacity>*/}
+                                    {/*</View>:*/}
+                                    {/*<View>*/}
+                                        {/*{*/}
+                                            {/*( this.state.myTakenEvents.Money==0 || this.state.myTakenEvents.Money==null || this.state.myTakenEvents.Money==undefined )&& this.state.myTakenEvents.isSignUp==1?*/}
+                                                {/*<TouchableOpacity style={{height:25,marginBottom:10,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'*/}
+                    {/*,borderRadius:6}}*/}
+                                                                  {/*onPress={()=>{this.isActivityPay(this.state.myTakenEvents)}}>*/}
+                                                    {/*<Text style={{color:'#f00',fontSize:12}}>未支付</Text>*/}
+                                                {/*</TouchableOpacity>:*/}
+                                                {/*null*/}
+                                        {/*}*/}
 
-                                    </View>
-                            }
+                                    {/*</View>*/}
+                            {/*}*/}
 
 
 
-                            {
-                                this.state.myTakenEvents.isSignUp==0 ?
-                                    <View>
-                                        {
+                            {/*{*/}
+                                {/*this.state.myTakenEvents.isSignUp==0 ?*/}
+                                    {/*<View>*/}
+                                        {/*{*/}
 
-                                                <TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                                  onPress={()=>{this.signUpActivity(this.state.myTakenEvents,1)}}>
-                                                    <Text style={{color:'#f00',fontSize:12}}>我要报名</Text>
-                                                </TouchableOpacity>
-                                        }
+                                                {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
+                    {/*,borderRadius:6}}*/}
+                                                                  {/*onPress={()=>{this.signUpActivity(this.state.myTakenEvents,1)}}>*/}
+                                                    {/*<Text style={{color:'#f00',fontSize:12}}>我要报名</Text>*/}
+                                                {/*</TouchableOpacity>*/}
+                                        {/*}*/}
 
-                                    </View>:
+                                    {/*</View>:*/}
 
-                                    <View>
-                                        {
-                                            this.state.myTakenEvents.money==0||this.state.myTakenEvents.money==null?
-                                                <View>
-                                                    <TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                                      onPress={()=>{this.exitActivity(this.state.myTakenEvents)}}
-                                                    >
-                                                        <Text style={{color:'#f00',fontSize:12}}>取消报名</Text>
-                                                    </TouchableOpacity>
-                                                </View>:
-                                                <View>
-                                                    <TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                    >
-                                                        <Text style={{color:'#f00',fontSize:12}}>报名成功</Text>
-                                                    </TouchableOpacity>
-                                                </View>
+                                    {/*<View>*/}
+                                        {/*{*/}
+                                            {/*this.state.myTakenEvents.money==0||this.state.myTakenEvents.money==null?*/}
+                                                {/*<View>*/}
+                                                    {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
+                    {/*,borderRadius:6}}*/}
+                                                                      {/*onPress={()=>{this.exitActivity(this.state.myTakenEvents)}}*/}
+                                                    {/*>*/}
+                                                        {/*<Text style={{color:'#f00',fontSize:12}}>取消报名</Text>*/}
+                                                    {/*</TouchableOpacity>*/}
+                                                {/*</View>:*/}
+                                                {/*<View>*/}
+                                                    {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
+                    {/*,borderRadius:6}}*/}
+                                                    {/*>*/}
+                                                        {/*<Text style={{color:'#f00',fontSize:12}}>报名成功</Text>*/}
+                                                    {/*</TouchableOpacity>*/}
+                                                {/*</View>*/}
 
-                                        }
+                                        {/*}*/}
 
-                                    </View>
-                            }
-                        </View>
+                                    {/*</View>*/}
+                            {/*}*/}
+                        {/*</View>*/}
 
-                    </View>
+                    {/*</View>*/}
 
                     {/*内容区*/}
                     <View style={{flex:5,backgroundColor:'#eee'}}>
