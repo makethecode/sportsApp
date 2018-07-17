@@ -450,7 +450,7 @@ class Activity extends Component {
 
                             <View>
                                 {
-                                    rowData.costTotal==0||rowData.costTotal==null?
+                                    rowData.isHasPay==0||rowData.isHasPay==null?
                                         <View>
                                                     <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
                     ,borderRadius:6}}

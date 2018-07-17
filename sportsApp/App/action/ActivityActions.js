@@ -47,8 +47,9 @@ export let releaseActivity=(event)=>{
                 sparringPhone:event.sparringPhone,
                 groupId:parseInt(event.groupId),
                 groupName:event.groupName,
-                yardNum:event.filedNum==null?1:parseInt(event.filedNum),
-                eventMember:event.personName,
+                //yardNum:event.filedNum==null?1:parseInt(event.filedNum),
+                yardNum:event.field.split(',').length,
+                eventMember:"",
 
                 eventDate:event.time.eventWeek,
                 startTime:event.time.startTime,
@@ -63,7 +64,9 @@ export let releaseActivity=(event)=>{
                 feeDes:parseInt(event.feeDes),
                 eventNowMemNum:0,
                 status:0,
-                isChooseYardTime:event.isChooseYardTime,
+                //isChooseYardTime:event.isChooseYardTime,
+                //考虑没有选定场地时间的情况
+                isChooseYardTime:0,
 
             }
 

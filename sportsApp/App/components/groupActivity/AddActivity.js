@@ -66,7 +66,6 @@ class AddActivity extends Component{
     setEventPlace(eventPlace)
     {
         this.setState({event:Object.assign(this.state.event,{eventPlace:eventPlace.name,unitId:eventPlace.unitId,feeDes:eventPlace.feeDes,yardTotal:eventPlace.yardTotal})});
-        this.setState({feeDes:eventPlace.feeDes});
 
     }
 
