@@ -6,6 +6,7 @@ import {
     DISTRIBUTE_COACH,
     ON_COACH_UPDATE,
     SET_COACH,
+    ENABLE_COACH_ONFRESH,
 
 } from '../constants/CoachConstants'
 
@@ -14,6 +15,12 @@ export let setCoaches=(coaches)=>{
     return {
         type:SET_COACH,
         coaches:coaches
+    }
+}
+
+export let enableCoachOnFresh=()=>{
+    return {
+        type:ENABLE_COACH_ONFRESH,
     }
 }
 

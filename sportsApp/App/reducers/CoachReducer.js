@@ -1,7 +1,8 @@
 
 import {
     ON_COACH_UPDATE,
-    SET_COACH
+    SET_COACH,
+    ENABLE_COACH_ONFRESH
 } from '../constants/CoachConstants';
 
 const initialState = {
@@ -21,6 +22,11 @@ let coach = (state = initialState, action) => {
         case  SET_COACH:
             return Object.assign({}, state, {
                 coaches:action.coaches
+            })
+
+        case ENABLE_COACH_ONFRESH:
+            return Object.assign({}, state, {
+                activityOnFresh:true
             })
 
         default:

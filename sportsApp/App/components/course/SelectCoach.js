@@ -322,11 +322,12 @@ class SelectCoach extends Component {
     }
     componentWillMount()
     {
-        InteractionManager.runAfterInteractions(() => {
+       // InteractionManager.runAfterInteractions(() => {
             this.props.dispatch(fetchCoaches()).then((json)=>{
                 if(json.re==1)
                 {
                     this.props.dispatch(onCoachUpdate(json.data))
+                    this.setState({coaches:this.props.coaches})
                 }
                 else{
                     if(ison.re=-100) {
@@ -334,7 +335,7 @@ class SelectCoach extends Component {
                     }
                 }
             })
-        });
+       // });
     }
 
 
