@@ -196,7 +196,7 @@ class CreateBadmintonCourse extends Component{
         super(props);
         this.state={
             dialogShow: false,
-            modalVisible:true,
+            modalVisible:false,
             course:{courseName:null,maxNumber:null,classCount:null,cost:null,costType:null,classType:null,detail:null,coursePlace:null,unitId:null,scheduleDes:''},
             docouingFetch: false,
             isRefreshing: false,

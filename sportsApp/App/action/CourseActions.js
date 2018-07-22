@@ -874,6 +874,46 @@ export let ShowSchemePersons=(course,memberId,groupType)=>{
     }
 }
 
+export let addStudents=(courseId,student)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/addStudents',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    courseId:courseId,
+                    creatorId:state.user.personInfo.personId,
+                    personId:parseInt(student.personId),
+                    buyCount:parseInt(student.buyCount),
+                    joinTime:student.joinTime,
+                    payTradeNum:student.payTradeNum,
+                    isHasPhotoCode:parseInt(student.isHasPhotoCode),
+                    stateCode:parseInt(student.stateCode),
+                    remark:student.remark,
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    var students=json.data;
+                    dispatch(onStudentsUpdate(students));
+                    resolve({re:1,data:students})
+                    //resolve(json);
+                }
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
 export let fetchStudents=(courseId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
@@ -1275,6 +1315,41 @@ export let createCourseGroup=(courseId,joinCount)=>{
 }
 
 export let fetchStudentsPay=(courseId,memberId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/getBadmintonCoursePayFormListOfMember',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    courseId:courseId,
+                    memberId:memberId
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    var studentsPay=json.data;
+                    dispatch(onStudentsPayUpdate(studentsPay));
+                    resolve({re:1,data:studentsPay})
+                    //resolve(json);
+                }
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+
+
+        })
+    }
+}
+
+export let AddStudent=(courseId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();

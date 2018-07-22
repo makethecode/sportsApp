@@ -42,6 +42,7 @@ import {PricingCard} from 'react-native-elements'
 import {fetchCoursesByCreatorId, onCoursesOfCoachUpdate} from "../../action/CourseActions";
 import CompetitionSignUp from "../competition/CompetitionSignUp";
 import DetailProfit from './DetailProfit';
+import MyVenueProfit from './MyVenueProfit';
 
 class Myprofit extends Component {
 
@@ -67,6 +68,20 @@ class Myprofit extends Component {
             })
         }
     }
+
+    navigate2MyVenueProfit(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'MyVenueProfit',
+                component: MyVenueProfit,
+                params: {
+
+                }
+            })
+        }
+    }
+
     _data=[{payername:'张三',paynum:'10',paytime:'2017-1-9 10:00',paymethod:'微信',paytype:'群活动'},
         {payername:'李思',paynum:'25',paytime:'2017-3-23 23:33',paymethod:'手机',paytype:'购物'},
         {payername:'王武',paynum:'90',paytime:'2017-4-13 12:34',paymethod:'手机',paytype:'群活动'},
@@ -97,10 +112,10 @@ class Myprofit extends Component {
                     <View style={{marginLeft:90,justifyContent:'center',alignItems: 'center',}}>
                         <Text style={{color:'#fff',fontSize:18}}>我的收益</Text>
                     </View>
-                    {/*<TouchableOpacity style={{justifyContent:'center',alignItems: 'center',marginLeft:70}}*/}
-                                      {/*onPress={()=>{this.setState({huizongstate:true})}}>*/}
-                        {/*<Text style={{color:'#fff',fontSize:18}}>汇总</Text>*/}
-                    {/*</TouchableOpacity>*/}
+                    <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',marginLeft:120}}
+                                      onPress={()=>{this.navigate2MyVenueProfit();}}>
+                        <Icon name={'heart'} size={30} color="#fff"/>
+                    </TouchableOpacity>
                     {/*<TouchableOpacity style={{justifyContent:'center',alignItems: 'center',marginLeft:20}}*/}
                                       {/*onPress={()=>{this.setState({huizongstate:false})}}>*/}
                         {/*<Text style={{color:'#fff',fontSize:18}}>详细</Text>*/}

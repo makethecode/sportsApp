@@ -106,3 +106,31 @@ export let fetchMaintainedVenue=()=>{
         })
     }
 }
+
+//根据所属俱乐部获取场馆
+export let fetchVenueByClub=(clubId)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/getVenueByClub',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    clubId:clubId
+                }
+            }).then((json)=>{
+                if(json.re==1){}
+
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

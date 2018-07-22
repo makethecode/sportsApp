@@ -27,6 +27,7 @@ import CustomerCourseList from './CustomerCourseList';
 import ModifyDistribution from './ModifyDistribution';
 import StudentsCourseRecord from './StudentsCourseRecord';
 import StudentPayInformation from './StudentPayInformation';
+import AddStudent from './AddStudent';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view';
 
@@ -37,7 +38,7 @@ import {
     onStudentsUpdate,
     enableStudentsOnFresh,
     disableStudentsOnFresh,
-    fetchStudents
+    fetchStudents,
 } from '../../action/CourseActions';
 
 import {getAccessToken,} from '../../action/UserActions';
@@ -112,6 +113,19 @@ class StudentInformation extends Component {
                 params: {
                     classInfo,
                     setMyCourseList:this.setMyCourseList.bind(this)
+                }
+            })
+        }
+    }
+
+    navigate2AddStudent(courseId){
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'AddStudent',
+                component: AddStudent,
+                params: {
+                    courseId:courseId
                 }
             })
         }
@@ -467,6 +481,23 @@ class StudentInformation extends Component {
 
 
                 </Toolbar>
+
+                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',
+                    position:'absolute',bottom:8}}>
+                    <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
+                        padding:10,margin:5}}>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
+                        padding:10,margin:5}}>
+                    </TouchableOpacity>
+                </View>
+                <View style={{height:50,width:50,borderRadius:25,position:'absolute',bottom:8,left:width*0.5-25}}>
+                    <TouchableOpacity style={{flex:1,backgroundColor:'#fff',justifyContent:'center',alignItems: 'center',padding:5,
+                        borderWidth:1,borderColor:'#eee',borderRadius:50}}
+                                      onPress={()=>{this.navigate2AddStudent(this.props.courseId);}}>
+                        <Icon name={'plus-circle'} size={35} color='#66CDAA'/>
+                    </TouchableOpacity>
+                </View>
 
             </View>
         )

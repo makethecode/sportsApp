@@ -32,13 +32,20 @@ import {
 import PreferenceStore from '../utils/PreferenceStore';
 import {
     registerUser,
-    uploadPersonIdCard
+    uploadPersonIdCard,
+    updatePerBirthday,
+    onPerBirthdayUpdate,
 } from '../action/UserActions';
-
+import {
+    fetchVenueByClub
+} from '../action/MapActions';
 import Camera from 'react-native-camera';
 var ImagePicker = require('react-native-image-picker');
+import TextInputWrapper from '../../App/encrypt/TextInputWrapper';
 
 import ActionSheet from 'react-native-actionsheet'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
+import DatePicker from 'react-native-datepicker';
 
 
 /**
@@ -147,21 +154,99 @@ class Register extends Component {
         this.props.dispatch(updatePageState({state: PAGE_LOGIN}))
     }
 
+    //选性别类型
+    _handlePress1(index) {
+
+        if(index!==0){
+            var sexType = this.state.sexTypeButtons[index];
+            var sexTypeCode = index;
+            this.setState({info:Object.assign(this.state.info,{sexType:sexType,sexTypeCode:sexTypeCode})});
+        }
+
+    }
+    //选俱乐部类型
+    _handlePress2(index) {
+
+        if(index!==0){
+            var clubType = this.state.clubTypeButtons[index];
+            var clubTypeCode = index;
+            this.setState({info:Object.assign(this.state.info,{clubType:clubType,clubId:clubTypeCode})});
+        }
+
+    }
+    //选教练资质类型
+    _handlePress3(index) {
+
+        if(index!==0){
+            var sportLevel = this.state.sportLevelButtons[index];
+            var sportLevelCode = index;
+            this.setState({info:Object.assign(this.state.info,{sportLevel:sportLevel,sportLevelCode:sportLevelCode})});
+        }
+
+    }
+    //选教练星级类型
+    _handlePress4(index) {
+
+        if(index!==0){
+            var coachLevel = this.state.coachLevelButtons[index];
+            var coachLevelCode = index;
+            this.setState({info:Object.assign(this.state.info,{coachLevel:coachLevel,coachLevelCode:coachLevelCode})});
+        }
+
+    }
+    //选场馆类型
+    _handlePress5(index) {
+
+        if(index!==0){
+            var venue = this.state.venueButtons[index];
+            var venueCode = index;
+            this.setState({info:Object.assign(this.state.info,{venue:venue,venueCode:venueCode})});
+        }
+
+    }
+
+    show(actionSheet) {
+        this[actionSheet].show();
+    }
+
     constructor(props) {
         super(props);
         this.state = {
             info: {
+                userType: 1,
+                //基本信息
                 mobilePhone: '',
                 username: '',
                 password: '1',
-                userType: 0,
+                name:'',
+                sexType:null,
+                birthday:null,
+                idCard:null,
+                address:null,
+                QQ:null,
+                email:null,
+                wechat:null,
+                //教练信息
+                clubType:null,
+                clubId:null,
                 sportLevel: null,
+                coachLevel:null,
+                venue:null,
+                heightweight:null,
+                workcity:null,
+                graduate:null,
             },
+            sexTypeButtons:['取消','男','女'],
+            clubTypeButtons:['取消','吴教练俱乐部','林青教练俱乐部'],
+            sportLevelButtons:['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'],
+            coachLevelButtons:['取消', '一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'],
+            venueButtons:[],
+            selectBirthday:false,
             portrait: null,
             fadeCancel: new Animated.Value(0),
             fadeNickNameCancel: new Animated.Value(0),
             fadePasswordCancel: new Animated.Value(0),
-            fadeSportsLevel: new Animated.Value(0)
+            fadeSportsLevel: new Animated.Value(0),
 
         }
     }
@@ -176,6 +261,12 @@ class Register extends Component {
         var options = ['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员']
         const CANCEL_INDEX = 0
         const DESTRUCTIVE_INDEX = 1
+
+        const sexTypeButtons=['取消','男','女'];
+        const clubTypeButtons=['取消','吴教练俱乐部','林青教练俱乐部'];
+        const sportLevelButtons=['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'];
+        const coachLevelButtons=['取消','一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'];
+        var venueButtons=[];
 
         return (
             <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -204,312 +295,547 @@ class Register extends Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{flex: 4, backgroundColor: '#eee', paddingTop: 15, paddingBottom: 10}}>
+                <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
 
-                    {/*手机号码输入*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <Text>基本信息</Text>
+                        <Text style={{color:'#aaa',fontSize:11}}>(带*必填)</Text>
+                    </View>
 
-                    <View style={{
-                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 5,
-                        backgroundColor: '#fff', borderBottomWidth: 1, borderColor: '#ddd'
-                    }}>
-                        <View style={{flex: 1, paddingLeft: 5}}>
-                            <Text style={{color: '#aaa'}}>+86：</Text>
+                    {/*用户名*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*用户名：</Text>
                         </View>
-                        <View style={{
-                            flex: 6,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: '#fff'
-                        }}>
-                            <TextInput
-                                style={{
-                                    height: 35 * height / 736,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: width * 0.8,
-                                    paddingLeft: 10,
-                                    paddingRight: 10,
-                                    paddingTop: 4,
-                                    paddingBottom: 4,
-                                    fontSize: 13
-                                }}
-                                onChangeText={(phoneNum) => {
-                                    if (phoneNum && phoneNum != '')//不为空
-                                    {
-                                        Animated.timing(
-                                            this.state.fadeCancel,
-                                            {toValue: 1},
-                                        ).start();
-
-                                    } else {
-                                        Animated.timing(
-                                            this.state.fadeCancel,
-                                            {toValue: 0},
-                                        ).start();
-
-
-                                    }
-
-                                        this.setState({info: Object.assign(this.state.info, {mobilePhone: phoneNum})});
-
-
-                                }}
-                                onBlur={() => {
-                                    if (this.state.fadeCancel == 0) {
-                                    }
-                                    else {
-                                        Animated.timing(
-                                            this.state.fadeCancel,
-                                            {toValue: 0},
-                                        ).start();
-                                    }
-                                }}
-                                value={this.state.info.mobilePhone}
-                                placeholder=' 请输入手机号码   （可不填）'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                                keyboardType="numeric"
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入用户名"
+                                val={this.state.info.username}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{username:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{username:null})});}
+                                }
                             />
-
-                            <Animated.View style={{
-                                opacity: this.state.fadeCancel,
-                                backgroundColor: 'transparent',
-                                padding: 4,
-                                marginRight: 8
-                            }}>
-                                <TouchableOpacity onPress={() => {
-
-                                    this.setState({info: Object.assign(this.state.info, {mobilePhone: ''})});
-                                    Animated.timing(
-                                        this.state.fadeCancel,
-                                        {toValue: 0},
-                                    ).start();
-                                }}>
-                                    <Ionicons name='md-close-circle' size={18} color="red"/>
-                                </TouchableOpacity>
-                            </Animated.View>
-
                         </View>
                     </View>
-                    {/*照相*/}
-                    <View style={{
-                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-                        backgroundColor: '#fff', marginTop: 15, paddingBottom: 10
-                    }}>
-                        <View style={{flex: 3, padding: 5,}}>
-                            <View style={{borderBottomWidth: 1, borderColor: '#eee', flexDirection: 'row'}}>
-                                <TextInput
-                                    style={{
-                                        height: 35 * height / 736,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        flex: 1,
-                                        paddingLeft: 10,
-                                        paddingRight: 10,
-                                        paddingTop: 2,
-                                        paddingBottom: 2,
-                                        fontSize: 13
+
+                    {/*密码*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*密码：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入密码"
+                                val={this.state.info.password}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{password:value})})
                                     }}
-                                    onChangeText={(username) => {
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{password:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
 
-                                        if (username && username != '')//不为空
-                                        {
-                                            Animated.timing(
-                                                this.state.fadeNickNameCancel,
-                                                {toValue: 1},
-                                            ).start();
-                                        } else {
-                                            Animated.timing(
-                                                this.state.fadeNickNameCancel,
-                                                {toValue: 0},
-                                            ).start();
-
-                                        }
-
-                                        this.setState({info: Object.assign(this.state.info, {username: username})});
+                    {/*姓名*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*姓名：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入姓名"
+                                val={this.state.info.name}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{name:value})})
                                     }}
-                                    onBlur={() => {
-                                        if (this.state.fadeNickNameCancel == 0) {
-                                        }
-                                        else {
-                                            Animated.timing(
-                                                this.state.fadeNickNameCancel,
-                                                {toValue: 0},
-                                            ).start();
-                                        }
-                                    }}
-                                    value={this.state.info.username}
-                                    placeholder=' 请输入用户名'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
-                                />
-                                <Animated.View style={{
-                                    opacity: this.state.fadeNickNameCancel, backgroundColor: 'transparent',
-                                    padding: 4, marginRight: 8, width: 30
-                                }}>
-                                    <TouchableOpacity onPress={() => {
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{name:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
 
-                                        this.setState({info: Object.assign(this.state.info, {nickName: ''})});
-                                        Animated.timing(
-                                            this.state.fadeNickNameCancel,
-                                            {toValue: 0},
-                                        ).start();
-                                    }}>
-                                        <Ionicons name='md-close-circle' size={18} color="red"/>
-                                    </TouchableOpacity>
-                                </Animated.View>
+                    {/*性别*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*性别：</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet1'); }}>
+                            {
+                                this.state.info.sexType==null?
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:13}}>请选择性别</Text>
+                                    </View> :
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:13}}>{this.state.info.sexType}</Text>
+                                    </View>
+
+                            }
+                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
+                                <Icon name={'angle-right'} size={30} color="#fff"/>
                             </View>
-                            <View style={{flexDirection: 'row', borderBottomWidth: 1, borderColor: '#eee',}}>
-                                <TextInput
-                                    style={{
-                                        height: 35 * height / 736,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        flex: 1,
-                                        paddingLeft: 10,
-                                        paddingRight: 10,
-                                        paddingTop: 4,
-                                        paddingBottom: 4,
-                                        fontSize: 13
-                                    }}
-                                    onChangeText={(password) => {
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet1 =p;
+                                }}
+                                title="请选择性别"
+                                options={sexTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress1(data); }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
 
-                                        if (password && password != '')//不为空
-                                        {
-                                            Animated.timing(
-                                                this.state.fadePasswordCancel,
-                                                {toValue: 1},
-                                            ).start();
-                                        } else {
-                                            Animated.timing(
-                                                this.state.fadePasswordCancel,
-                                                {toValue: 0},
-                                            ).start();
-                                        }
-
-                                            this.setState({info: Object.assign(this.state.info, {password: password})});
-
+                    {/*出生日期*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*出生日期：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            {
+                                this.state.info.birthday&&this.state.info.birthday!=''?
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                    <Text style={{color:'#444',fontSize:13}}>
+                                        {this.state.info.birthday}
+                                    </Text></View>:
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                    <Text style={{color:'#888',fontSize:13}}>
+                                        请选择出生日期
+                                    </Text></View>
+                            }
+                            <View style={{height:35,marginRight:15,flexDirection:'row',alignItems:'center'}}>
+                                <DatePicker
+                                    style={{width:60,marginLeft:0,borderWidth:0}}
+                                    customStyles={{
+                                        placeholderText:{color:'transparent',fontSize:12},
+                                        dateInput:{height:30,borderWidth:0},
+                                        dateTouchBody:{marginRight:0,height:25,borderWidth:0},
                                     }}
-                                    onBlur={() => {
-                                        if (this.state.fadePasswordCancel == 0) {
-                                        }
-                                        else {
-                                            Animated.timing(
-                                                this.state.fadePasswordCancel,
-                                                {toValue: 0},
-                                            ).start();
-                                        }
+                                    mode="date"
+                                    placeholder="选择"
+                                    format="YYYY-MM-DD"
+                                    minDate={"1957-00-00"}
+                                    confirmBtnText="确认"
+                                    cancelBtnText="取消"
+                                    showIcon={true}
+                                    iconComponent={<Icon name={'calendar'} size={30} color="#888"/>}
+                                    onDateChange={(date) => {
+                                        this.setState({info:Object.assign(this.state.info,{birthday:date})})
                                     }}
-                                    secureTextEntry={true}
-                                    value={this.state.password}
-                                    placeholder=' 请输入密码  （可不填，默认初始值为1）'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
                                 />
-
-                                <Animated.View style={{
-                                    opacity: this.state.fadePasswordCancel, backgroundColor: 'transparent',
-                                    padding: 4, marginRight: 8, width: 30
-                                }}>
-                                    <TouchableOpacity onPress={() => {
-
-                                        this.setState({info: Object.assign(this.state.info, {nickName: ''})});
-                                        Animated.timing(
-                                            this.state.fadePasswordCancel,
-                                            {toValue: 0},
-                                        ).start();
-                                    }}>
-                                        <Ionicons name='md-close-circle' size={18} color="red"/>
-                                    </TouchableOpacity>
-                                </Animated.View>
-                            </View>
-
-                            {/*<View style={{flexDirection: 'row', borderBottomWidth: 1, borderColor: '#eee'}}>*/}
-                                {/*<View style={{*/}
-                                    {/*height: 35 * height / 736,*/}
-                                    {/*flexDirection: 'row',*/}
-                                    {/*flex: 1,*/}
-                                    {/*paddingLeft: 15,*/}
-                                    {/*paddingRight: 10,*/}
-                                    {/*paddingTop: 4,*/}
-                                    {/*paddingBottom: 4*/}
-                                {/*}}>*/}
-
-                                    {/*<View style={{flexDirection: 'row', alignItems: 'center', flex: 3}}>*/}
-                                        {/*<Text style={{color: '#999', fontSize: 13}}>*/}
-                                            {/*作为教练注册*/}
-                                        {/*</Text>*/}
-                                    {/*</View>*/}
-
-                                    {/*<View style={{flexDirection: 'row', flex: 2, justifyContent: 'center'}}>*/}
-
-                                        {/*<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', flex: 1}}*/}
-                                                          {/*onPress={() => {*/}
-                                                              {/*if (this.state.info.userType != 1) {*/}
-                                                                  {/*Animated.timing(*/}
-                                                                      {/*this.state.fadeSportsLevel,*/}
-                                                                      {/*{toValue: 1},*/}
-                                                                  {/*).start();*/}
-                                                                  {/*this.setState({info: Object.assign(this.state.info, {userType: 1})})*/}
-                                                              {/*}*/}
-                                                          {/*}}*/}
-                                        {/*>*/}
-                                            {/*{*/}
-                                                {/*this.state.info.userType == 1 ?*/}
-                                                    {/*<Text style={{fontSize: 13, color: 'green'}}>是</Text> :*/}
-                                                    {/*<Text style={{fontSize: 13, color: 'gray'}}>是</Text>*/}
-                                            {/*}*/}
-                                            {/*{*/}
-                                                {/*this.state.info.userType == 1 ?*/}
-                                                    {/*<Ionicons name='md-radio-button-on' size={16} color="green"*/}
-                                                              {/*style={{marginLeft: 4, paddingTop: 2}}/> :*/}
-                                                    {/*<Ionicons name='md-radio-button-off' size={16} color="gray"*/}
-                                                              {/*style={{marginLeft: 4, paddingTop: 2}}/>*/}
-                                            {/*}*/}
-
-
-                                        {/*</TouchableOpacity>*/}
-
-                                        {/*<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', flex: 1}}*/}
-                                                          {/*onPress={() => {*/}
-                                                              {/*if (this.state.info.userType == 1) {*/}
-                                                                  {/*Animated.timing(*/}
-                                                                      {/*this.state.fadeSportsLevel,*/}
-                                                                      {/*{toValue: 0},*/}
-                                                                  {/*).start();*/}
-                                                                  {/*this.setState({info: Object.assign(this.state.info, {userType: 0})})*/}
-                                                              {/*}*/}
-                                                          {/*}}*/}
-                                        {/*>*/}
-                                            {/*{*/}
-                                                {/*this.state.info.userType != 1 ?*/}
-                                                    {/*<Text style={{fontSize: 13, color: 'green'}}>否</Text> :*/}
-                                                    {/*<Text style={{fontSize: 13, color: 'gray'}}>否</Text>*/}
-
-                                            {/*}*/}
-                                            {/*{*/}
-                                                {/*this.state.info.userType != 1 ?*/}
-                                                    {/*<Ionicons name='md-radio-button-on' size={16} color="green"*/}
-                                                              {/*style={{marginLeft: 4, paddingTop: 2}}/> :*/}
-                                                    {/*<Ionicons name='md-radio-button-off' size={16} color="gray"*/}
-                                                              {/*style={{marginLeft: 4, paddingTop: 2}}/>*/}
-                                            {/*}*/}
-
-
-                                        {/*</TouchableOpacity>*/}
-
-                                    {/*</View>*/}
-
-                                {/*</View>*/}
-
-                            {/*</View>*/}
-                            <View style={{height: 20, flexDirection: 'row', flex: 1}}>
                             </View>
                         </View>
+                    </View>
+
+                    {/*手机号*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*手机号：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入手机号"
+                                val={this.state.info.mobilePhone}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{mobilePhone:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{mobilePhone:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*身份证号*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*身份证号：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入身份证号"
+                                val={this.state.info.idCard}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{idCard:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{idCard:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*地址*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>地址：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入地址"
+                                val={this.state.info.address}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{address:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{address:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*qq号*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>QQ：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入QQ号"
+                                val={this.state.info.QQ}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{QQ:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{QQ:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*email*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>email：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入email"
+                                val={this.state.info.email}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{email:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{email:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*微信号*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>微信号：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入微信号"
+                                val={this.state.info.wechat}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{wechat:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{wechat:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{height:30,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <Text>教练信息</Text>
+                        <Text style={{color:'#aaa',fontSize:11}}>(带*必填)</Text>
+                    </View>
+
+                    {/*俱乐部*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*俱乐部：</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet2'); }}>
+                            {
+                                this.state.info.clubType==null?
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:13}}>请选择俱乐部</Text>
+                                    </View> :
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:13}}>{this.state.info.clubType}</Text>
+                                    </View>
+
+                            }
+                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
+                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            </View>
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet2 =p;
+                                }}
+                                title="请选择俱乐部"
+                                options={clubTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{
+                                    this.props.dispatch(fetchVenueByClub(data)).then((json)=>{
+                                        if(json.re==1)
+                                        {
+                                            this.setState({venue:null});
+                                            var venue = ['取消'];
+                                            var venues = json.data[0].fieldName.split(',');
+                                            for(var i=0;i<venues.length;i++)
+                                                venue.push(venues[i]);
+                                            this.setState({venueButtons:venue});
+                                            venueButtons=venue;
+                                        }
+                                        else {
+                                            if(json.re=-100){
+                                                this.props.dispatch(getAccessToken(false))
+                                            }
+
+                                        }
+                                    })
+
+                                        this._handlePress2(data);
+                                    }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/*所属场馆*/}
+                    {
+                        this.state.info.clubType!=null?
+                            <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                                <View style={{flex:1}}>
+                                    <Text>*场馆：</Text>
+                                </View>
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                                    borderRadius:10}}
+                                                  onPress={()=>{ this.show('actionSheet5'); }}>
+                                    {
+                                        this.state.info.venue==null?
+                                            <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                                <Text style={{color:'#888',fontSize:13}}>请选择场馆</Text>
+                                            </View> :
+                                            <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                                <Text style={{color:'#444',fontSize:13}}>{this.state.info.venue}</Text>
+                                            </View>
+
+                                    }
+                                    <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
+                                        <Icon name={'angle-right'} size={30} color="#fff"/>
+                                    </View>
+                                    <ActionSheet
+                                        ref={(p) => {
+                                            this.actionSheet5 =p;
+                                        }}
+                                        title="请选择场馆"
+                                        options={this.state.venueButtons}
+                                        cancelButtonIndex={CANCEL_INDEX}
+                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                        onPress={
+                                            (data)=>{ this._handlePress5(data); }
+                                        }
+                                    />
+                                </TouchableOpacity>
+                            </View>:null
+                    }
+
+                    {/*教练资质*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*教练资质：</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet3'); }}>
+                            {
+                                this.state.info.sportLevel==null?
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:13}}>请选择教练资质</Text>
+                                    </View> :
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:13}}>{this.state.info.sportLevel}</Text>
+                                    </View>
+
+                            }
+                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
+                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            </View>
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet3 =p;
+                                }}
+                                title="请选择教练资质"
+                                options={sportLevelButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress3(data); }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/*教练星级*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>*教练星级：</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet4'); }}>
+                            {
+                                this.state.info.coachLevel==null?
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:13}}>请选择教练星级</Text>
+                                    </View> :
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:13}}>{this.state.info.coachLevel}</Text>
+                                    </View>
+
+                            }
+                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
+                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            </View>
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet4 =p;
+                                }}
+                                title="请选择教练星级"
+                                options={coachLevelButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress4(data); }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/*身高体重*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>身高体重：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入身高/体重"
+                                val={this.state.info.heightweight}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{heightweight:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{heightweight:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*服务城市*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>服务城市：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入服务城市"
+                                val={this.state.info.workcity}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{workcity:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{workcity:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*毕业院校*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                        <View style={{flex:1}}>
+                            <Text>毕业院校：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入毕业院校"
+                                val={this.state.info.graduate}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({info:Object.assign(this.state.info,{graduate:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({info:Object.assign(this.state.info,{graduate:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{flex:1,backgroundColor:'#fff',padding:10}}>
+                        <Text style={{color:'#aaa',fontSize:11}}>
+                            温馨提示：您发布的内容应合法、真实、健康、共创文明的网络环境
+                        </Text>
                     </View>
                     <TouchableOpacity style={{
-                        height: 30,
+                        height: 40,
                         width: width * 0.4,
                         marginLeft: width * 0.3,
                         marginTop: 20,
@@ -521,30 +847,10 @@ class Register extends Component {
                                       onPress={() => {
                                           this.register();
                                       }}>
-                        <Text style={{color: '#fff', fontSize: 13}}>完成</Text>
+                        <Text style={{color: '#fff', fontSize: 15}}>完成</Text>
                     </TouchableOpacity>
-                </View>
-                <ActionSheet
-                    ref={o => this.ActionSheet = o}
-                    title={'选择运动水平'}
-                    options={options}
-                    cancelButtonIndex={CANCEL_INDEX}
-                    destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                    onPress={(i) => {
-                        if (i != 0 && i != 1) {
-                            this.setState({
-                                sportLevelStr: options[i],
-                                info: Object.assign(this.state.info, {sportLevel: i - 1})
-                            })
-                        } else if (i == 1) {
-                            this.setState({
-                                sportLevelStr: null,
-                                info: Object.assign(this.state.info, {sportLevel: null,})
-                            })
-                        } else {
-                        }
-                    }}
-                />
+                    <View style={{marginTop:20}}/>
+                </ScrollView>
             </View>
         );
     }
@@ -603,7 +909,30 @@ var styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
 
-    const props = {}
+    const props = {
+        userType: 1,
+        //基本信息
+        mobilePhone:state.mobilePhone,
+        username:state.username,
+        password:state.password,
+        name:state.name,
+        sexType:state.sexType,
+        birthday:state.birthday,
+        idCard:state.idCard,
+        address:state.address,
+        QQ:state.QQ,
+        email:state.email,
+        wechat:state.wechat,
+        //教练信息
+        clubType:state.clubType,
+        clubId:state.clubId,
+        sportLevel: state.sportLevel,
+        coachLevel:state.coachLevel,
+        venue:state.venue,
+        heightweight:state.heightweight,
+        workcity:state.workcity,
+        graduate:state.graduate,
+    }
     return props
 }
 

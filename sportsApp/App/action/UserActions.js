@@ -887,7 +887,8 @@ export let registerUser=(payload)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-            var {userType,username,password,genderCode,mobilePhone,nickName}=payload;
+            var {userType,username,password,mobilePhone,name,sexType,birthday,idCard,address,QQ,email,wechat,clubType,clubId,
+            sportLevel,coachLevel,venue,heightweight,workcity,graduate}=payload;
             Proxy.postes({
                 url: Config.server + '/func/register/userRegister',
                 headers: {
@@ -897,8 +898,23 @@ export let registerUser=(payload)=>{
                     userName: username,
                     password:password,
                     phoneNum:mobilePhone,
-                    Trainer:1,
-                    LoginType:0
+                    name:name,
+                    sexType:sexType,
+                    birthday:birthday,
+                    idCard:idCard,
+                    address:address,
+                    QQ:QQ,
+                    email:email,
+                    wechat:wechat,
+                    //教练信息
+                    clubType:clubType,
+                    clubId:clubId,
+                    sportLevel:sportLevel,
+                    coachLevel:coachLevel,
+                    venue:venue,
+                    heightweight:heightweight,
+                    workcity:workcity,
+                    graduate:graduate,
                 }
             }).then((json)=>{
                 resolve(json)
