@@ -116,8 +116,8 @@ class AddStudent extends Component{
     constructor(props) {
         super(props);
         this.state={
-            student:{personId:null,buyCount:null,joinTime:null,payTradeNum:null,isHasPhoto:null,
-                        isHasPhotoCode:null,state:null,stateCode:null,remark:null},
+            student:{perName:null,perIdCard:null,mobilePhone:null,createTime:null,
+                buyCount:null,joinTime:null,payTradeNum:null,isHasPhoto:null,isHasPhotoCode:null,state:null,stateCode:null,remark:null},
             isRefreshing: false,
             isHasPhotoButtons:['取消','是','否'],
             stateButtons:['取消','报名','结业'],
@@ -174,14 +174,60 @@ class AddStudent extends Component{
                     {/*学生id*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:10,marginBottom:5}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>学生Id：</Text>
+                            <Text style={{color:'#343434'}}>学生姓名：</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
                             <TextInputWrapper
                                 placeholderTextColor='#888'
                                 textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入学生id"
+                                placeholder="请输入学生姓名"
+                                val={this.state.student.perName}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({student:Object.assign(this.state.student,{perName:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({student:Object.assign(this.state.student,{perName:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*身份证号*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:10,marginBottom:5}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>身份证号：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入身份证号"
+                                val={this.state.student.personId}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({student:Object.assign(this.state.student,{personId:value})})
+                                    }}
+                                onCancel={
+                                    ()=>{this.setState({student:Object.assign(this.state.student,{personId:null})});}
+                                }
+                            />
+                        </View>
+                    </View>
+
+                    {/*联系方式*/}
+                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:10,marginBottom:5}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>联系方式：</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                            borderRadius:10}}>
+                            <TextInputWrapper
+                                placeholderTextColor='#888'
+                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
+                                placeholder="请输入联系方式"
                                 val={this.state.student.personId}
                                 onChangeText={
                                     (value)=>{

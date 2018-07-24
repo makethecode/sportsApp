@@ -887,7 +887,9 @@ export let addStudents=(courseId,student)=>{
                 body: {
                     courseId:courseId,
                     creatorId:state.user.personInfo.personId,
-                    personId:parseInt(student.personId),
+                    perName:student.perName,
+                    perIdCard:student.perIdCard,
+                    mobilePhone:student.mobilePhone,
                     buyCount:parseInt(student.buyCount),
                     joinTime:student.joinTime,
                     payTradeNum:student.payTradeNum,
