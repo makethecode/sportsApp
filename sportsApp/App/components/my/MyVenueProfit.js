@@ -19,7 +19,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 var {height, width} = Dimensions.get('window');
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
 import {
-    fetchMaintainedVenue
+    fetchMaintainedVenue,
+    fetchVenueCourseProfitByUnitId,
+    fetchVenueEventProfitByUnitId,
 } from '../../action/MapActions';
 import {
     makeTabsHidden,
@@ -28,21 +30,20 @@ import {
 
 import {
     getAccessToken
-}from '../../action/UserActions'
-
-import VenueDetail from '../../components/venue/VenueDetail';
+}from '../../action/UserActions';
+import MyVenueProfitDetail from '../../components/my/MyVenueProfitDetail';
 
 class MyVenueProfit extends Component {
 
-    navigate2VenueDetail(rowData){
+    navigate2MyVenueProfitDetail(rowData){
         this.props.dispatch(makeTabsShown());
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'venueDetail',
-                component: VenueDetail,
+                name: 'MyVenueProfitDetail',
+                component: MyVenueProfitDetail,
                 params: {
-                    venueDetail:rowData
+                    MyVenueProfitDetail:rowData
                 }
             })
         }
@@ -82,27 +83,14 @@ class MyVenueProfit extends Component {
         var row = (
             <TouchableOpacity style={lineStyle} onPress={() => {
                 //转入收入详情界面
-                this.navigate2VenueDetail(rowData);
+                this.navigate2MyVenueProfitDetail(rowData);
             }}>
 
                 <View style={{flex:6,flexDirection:'column',borderBottomColor:'#eee',borderBottomWidth:1}}>
                     <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                        <View style={{flex:4,flexDirection:'row'}}>
                             <Text style={{ fontSize: 14, justifyContent: 'flex-start', fontWeight: 'bold', alignItems: 'flex-start', color: '#222' }}>
                                 {rowData.name}
                             </Text>
-                        </View>
-                        <View style={{flex:1}}>
-
-                        </View>
-                    </View>
-
-                    <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                        <View style={{flex:3}}>
-                            <Text style={{fontSize:12,color:'#222'}}>
-                                总收入：
-                            </Text>
-                        </View>
                     </View>
                 </View>
 
@@ -124,6 +112,8 @@ class MyVenueProfit extends Component {
             fadeAnim: new Animated.Value(1),
             venues:[],
             venue:null,
+            coursePay:null,
+            eventPay:null,
         };
     }
 

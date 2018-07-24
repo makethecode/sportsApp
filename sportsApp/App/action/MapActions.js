@@ -80,7 +80,7 @@ export  let localSearch=(center,keyword)=>{
 }
 
 //获取维护的场馆数据
-export let fetchMaintainedVenue=()=>{
+export let fetchMaintainedVenue=(unitId)=>{
     return (dispatch,getState)=> {
         return new Promise((resolve, reject) => {
 
@@ -91,7 +91,7 @@ export let fetchMaintainedVenue=()=>{
                     'Content-Type': 'application/json',
                 },
                 body: {
-
+                    unitId:unitId
                 }
             }).then((json)=>{
                 if(json.re==1){}
@@ -106,6 +106,65 @@ export let fetchMaintainedVenue=()=>{
         })
     }
 }
+
+//获取场馆总收益(课程)
+export let fetchVenueCourseProfitByUnitId=(unitId)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchVenueCourseProfitByUnitId',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    unitId:unitId
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                }
+                //resolve用来返回参数
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取场馆总收益(活动)
+export let fetchVenueEventProfitByUnitId=(unitId)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchVenueEventProfitByUnitId',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    unitId:unitId
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                }
+                //resolve用来返回参数
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
 
 //根据所属俱乐部获取场馆
 export let fetchVenueByClub=(clubId)=>{

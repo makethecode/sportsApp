@@ -200,7 +200,7 @@ class Register extends Component {
         if(index!==0){
             var venue = this.state.venueButtons[index];
             var venueCode = index;
-            this.setState({info:Object.assign(this.state.info,{venue:venue,venueCode:venueCode})});
+            this.setState({info:Object.assign(this.state.info,{venue:venue,venueId:venueCode})});
         }
 
     }
@@ -232,6 +232,7 @@ class Register extends Component {
                 sportLevel: null,
                 coachLevel:null,
                 venue:null,
+                venueId:null,
                 heightweight:null,
                 workcity:null,
                 graduate:null,
