@@ -246,14 +246,14 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 #pragma mark - Show, then automatically dismiss methods
 
 + (void)showInfoWithStatus:(NSString*)status {
-    [self showImage:[self sharedView].infoImage status:status];
-    
+  [self showImage:[self sharedView].infoImage status:status];
+
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-    if (@available(iOS 10.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeWarning];
-        });
-    }
+//  if (@available(iOS 10.0, *)) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeWarning];
+//        });
+//  }
 #endif
 }
 
@@ -268,11 +268,11 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     [self showImage:[self sharedView].successImage status:status];
 
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-    if (@available(iOS 10, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
-        });
-    }
+//    if (@available(iOS 10, *)) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
+//        });
+//    }
 #endif
 }
 
@@ -283,11 +283,11 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     [self setDefaultMaskType:existingMaskType];
     
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-    if (@available(iOS 10.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
-        });
-    }
+//    if (@available(iOS 10.0, *)) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
+//        });
+//    }
 #endif
 }
 
@@ -295,11 +295,11 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     [self showImage:[self sharedView].errorImage status:status];
     
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-    if (@available(iOS 10.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeError];
-        });
-    }
+//    if (@available(iOS 10.0, *)) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeError];
+//        });
+//    }
 #endif
 }
 
@@ -310,11 +310,11 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     [self setDefaultMaskType:existingMaskType];
     
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-    if (@available(iOS 10.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeError];
-        });
-    }
+//  if (@available(iOS 10.0, *)) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[self sharedView].hapticGenerator notificationOccurred:UINotificationFeedbackTypeError];
+//        });
+//    }
 #endif
 }
 
@@ -814,9 +814,9 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
             
             // Tell the Haptics Generator to prepare for feedback, which may come soon
 #if TARGET_OS_IOS && __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000
-            if (@available(iOS 10.0, *)) {
-                [strongSelf.hapticGenerator prepare];
-            }
+//            if (@available(iOS 10.0, *)) {
+//                [strongSelf.hapticGenerator prepare];
+//            }
 #endif
         }
     }];

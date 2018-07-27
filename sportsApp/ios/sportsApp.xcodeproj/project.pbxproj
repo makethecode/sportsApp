@@ -27,7 +27,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		1C45A8C1DC924A12BFD9112A /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBFCB9E1D30A47B0B78E1572 /* libRNFS.a */; };
 		2A2834F41EE679E40049BED9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2834F31EE679E40049BED9 /* CoreLocation.framework */; };
 		2A2834F61EE679F00049BED9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2834F51EE679F00049BED9 /* QuartzCore.framework */; };
 		2A2834F81EE679FE0049BED9 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2834F71EE679FE0049BED9 /* OpenGLES.framework */; };
@@ -95,7 +94,6 @@
 		4A3E81E420205E370021E882 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3E81E320205E370021E882 /* AudioToolbox.framework */; };
 		4A3E81E620205E410021E882 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3E81E520205E410021E882 /* CoreAudio.framework */; };
 		4A3E81E820205E4A0021E882 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3E81E720205E4A0021E882 /* MediaPlayer.framework */; };
-		502CA97520ABC158000EDC49 /* VideoCaptureDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 502CA97120ABC158000EDC49 /* VideoCaptureDevice.m */; };
 		502CA9BA20B29F5A000EDC49 /* PLMediaStreamingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502CA9B920B29F59000EDC49 /* PLMediaStreamingKit.framework */; };
 		502CA9BC20B29F64000EDC49 /* HappyDNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502CA9BB20B29F64000EDC49 /* HappyDNS.framework */; };
 		502CA9BD20B29FB7000EDC49 /* HappyDNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 502CA9BB20B29F64000EDC49 /* HappyDNS.framework */; };
@@ -176,12 +174,6 @@
 		508FA3F220B907A900C47AA9 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 508FA3EA20B907A900C47AA9 /* SVProgressHUD.bundle */; };
 		508FA3F320B907A900C47AA9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 508FA3EC20B907A900C47AA9 /* README.md */; };
 		50A272DD20C2786300669DA2 /* FaceViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A272DC20C2786300669DA2 /* FaceViewManager.m */; };
-		50A2732820C53A7F00669DA2 /* DetectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2732720C53A7F00669DA2 /* DetectionViewController.m */; };
-		50A2732D20C53AB100669DA2 /* RemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2732A20C53AB100669DA2 /* RemindView.m */; };
-		50A2732E20C53AB100669DA2 /* CircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2732B20C53AB100669DA2 /* CircleView.m */; };
-		50A2733120C53B3400669DA2 /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2733020C53B3400669DA2 /* ImageUtils.m */; };
-		50A2733520C60FC800669DA2 /* FaceBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2733420C60FC800669DA2 /* FaceBaseViewController.m */; };
-		50A2734320C7B24000669DA2 /* NextNativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A2734220C7B24000669DA2 /* NextNativeViewController.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		77E22C1060CF40098E9C5BF5 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD2EC0645B8C4522B05B4DEB /* Entypo.ttf */; };
 		823ECD6AEF5E4448804DB938 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AD73034F6174C109EA37AED /* UserNotifications.framework */; };
@@ -190,7 +182,13 @@
 		8CEF150E28E74A719CD1ED01 /* libRCTBEEPickerManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 212020669BA5462787C8592E /* libRCTBEEPickerManager.a */; };
 		9BD81A6DB1F141ECA0E234EB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 857059FE8EB045E09D957BBF /* Foundation.framework */; };
 		ABD6190D5C274BAD919A2082 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 198350BEFBE04389BA868EF7 /* libRCTCamera.a */; };
+		AD0813BD210AA470002CA096 /* VideoCaptureDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0813BC210AA470002CA096 /* VideoCaptureDevice.m */; };
 		AD35C9441ED959D500FCD913 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = AD35C9431ED959D500FCD913 /* Fonts */; };
+		AD36AECD2109AECB00444CF4 /* CircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD36AEC72109AECB00444CF4 /* CircleView.m */; };
+		AD36AECE2109AECB00444CF4 /* DetectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD36AEC92109AECB00444CF4 /* DetectionViewController.m */; };
+		AD36AECF2109AECB00444CF4 /* FaceBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD36AECB2109AECB00444CF4 /* FaceBaseViewController.m */; };
+		AD36AEFA2109AEE000444CF4 /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AD36AEF72109AEE000444CF4 /* ImageUtils.m */; };
+		AD36AEFB2109AEE000444CF4 /* RemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = AD36AEF92109AEE000444CF4 /* RemindView.m */; };
 		B633305B885442F085C60483 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0441A7778AF843EFB369DB6D /* Zocial.ttf */; };
 		BAD27E4E42094C498BA7E716 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D9E1B78DFBB4D20B0C96214 /* libresolv.tbd */; };
 		BBE3B162A04446E1912DB626 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01069E0054A6427892A33026 /* Foundation.ttf */; };
@@ -527,7 +525,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTActionSheet.xcodeproj; path = "../node_modules/react-native/Libraries/ActionSheetIOS/RCTActionSheet.xcodeproj"; sourceTree = "<group>"; };
 		00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTGeolocation.xcodeproj; path = "../node_modules/react-native/Libraries/Geolocation/RCTGeolocation.xcodeproj"; sourceTree = "<group>"; };
 		00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = "../node_modules/react-native/Libraries/Image/RCTImage.xcodeproj"; sourceTree = "<group>"; };
@@ -657,8 +654,6 @@
 		4A3E81E520205E410021E882 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		4A3E81E720205E4A0021E882 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		4C9C5E3F53E04DD59AB6E507 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
-		502CA97020ABC158000EDC49 /* VideoCaptureDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCaptureDevice.h; sourceTree = "<group>"; };
-		502CA97120ABC158000EDC49 /* VideoCaptureDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCaptureDevice.m; sourceTree = "<group>"; };
 		502CA9B920B29F59000EDC49 /* PLMediaStreamingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PLMediaStreamingKit.framework; sourceTree = "<group>"; };
 		502CA9BB20B29F64000EDC49 /* HappyDNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HappyDNS.framework; sourceTree = "<group>"; };
 		502CA9C220B2A175000EDC49 /* uncrustify.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = uncrustify.cfg; sourceTree = "<group>"; };
@@ -783,19 +778,6 @@
 		508FA3EC20B907A900C47AA9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		50A272DB20C2786300669DA2 /* FaceViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FaceViewManager.h; sourceTree = "<group>"; };
 		50A272DC20C2786300669DA2 /* FaceViewManager.m */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = FaceViewManager.m; sourceTree = "<group>"; };
-		50A2732620C53A7F00669DA2 /* DetectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetectionViewController.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/DetectionViewController.h"; sourceTree = "<group>"; };
-		50A2732720C53A7F00669DA2 /* DetectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetectionViewController.m; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/DetectionViewController.m"; sourceTree = "<group>"; };
-		50A2732920C53AB100669DA2 /* CircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CircleView.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/CircleView.h"; sourceTree = "<group>"; };
-		50A2732A20C53AB100669DA2 /* RemindView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemindView.m; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/RemindView.m"; sourceTree = "<group>"; };
-		50A2732B20C53AB100669DA2 /* CircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CircleView.m; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/CircleView.m"; sourceTree = "<group>"; };
-		50A2732C20C53AB100669DA2 /* RemindView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemindView.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/RemindView.h"; sourceTree = "<group>"; };
-		50A2732F20C53B3300669DA2 /* ImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageUtils.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/Utils/ImageUtils.h"; sourceTree = "<group>"; };
-		50A2733020C53B3400669DA2 /* ImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageUtils.m; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/Utils/ImageUtils.m"; sourceTree = "<group>"; };
-		50A2733220C60EA500669DA2 /* FaceParameterConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FaceParameterConfig.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/FaceParameterConfig.h"; sourceTree = "<group>"; };
-		50A2733320C60FC700669DA2 /* FaceBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FaceBaseViewController.h; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/FaceBaseViewController.h"; sourceTree = "<group>"; };
-		50A2733420C60FC800669DA2 /* FaceBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FaceBaseViewController.m; path = "../../../../Downloads/IDLFaceSDKDemoOC 2/IDLFaceSDKDemoOC/ViewController/FaceBaseViewController.m"; sourceTree = "<group>"; };
-		50A2734120C7B24000669DA2 /* NextNativeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NextNativeViewController.h; path = "../../../work/React-Native-Test/RNJump/ios/NextNativeViewController.h"; sourceTree = "<group>"; };
-		50A2734220C7B24000669DA2 /* NextNativeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NextNativeViewController.m; path = "../../../work/React-Native-Test/RNJump/ios/NextNativeViewController.m"; sourceTree = "<group>"; };
 		5AB8EFBD3FF048828239C972 /* RCTBEEPickerManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBEEPickerManager.xcodeproj; path = "../node_modules/react-native-picker/ios/RCTBEEPickerManager.xcodeproj"; sourceTree = "<group>"; };
 		5BA977BB161C4CA0B2EF69DC /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		5D9E1B78DFBB4D20B0C96214 /* libresolv.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
@@ -812,12 +794,24 @@
 		998FDD822B8A4FFF9990610C /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		A300CA4110EF4FA497FDE016 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		A7CEC6A7E1904109919A3FBA /* UIKit.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		AD0813BB210AA470002CA096 /* VideoCaptureDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoCaptureDevice.h; path = FaceUI/Core/VideoCaptureDevice.h; sourceTree = SOURCE_ROOT; };
+		AD0813BC210AA470002CA096 /* VideoCaptureDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoCaptureDevice.m; path = FaceUI/Core/VideoCaptureDevice.m; sourceTree = SOURCE_ROOT; };
 		AD35C9431ED959D500FCD913 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = "../node_modules/react-native-vector-icons/Fonts"; sourceTree = "<group>"; };
 		AD35C9451ED95A3200FCD913 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		AD36AEC62109AECB00444CF4 /* CircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CircleView.h; path = sportsApp/CircleView.h; sourceTree = "<group>"; };
+		AD36AEC72109AECB00444CF4 /* CircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CircleView.m; path = sportsApp/CircleView.m; sourceTree = "<group>"; };
+		AD36AEC82109AECB00444CF4 /* DetectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetectionViewController.h; path = sportsApp/DetectionViewController.h; sourceTree = "<group>"; };
+		AD36AEC92109AECB00444CF4 /* DetectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetectionViewController.m; path = sportsApp/DetectionViewController.m; sourceTree = "<group>"; };
+		AD36AECA2109AECB00444CF4 /* FaceBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FaceBaseViewController.h; path = sportsApp/FaceBaseViewController.h; sourceTree = "<group>"; };
+		AD36AECB2109AECB00444CF4 /* FaceBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FaceBaseViewController.m; path = sportsApp/FaceBaseViewController.m; sourceTree = "<group>"; };
+		AD36AECC2109AECB00444CF4 /* FaceParameterConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FaceParameterConfig.h; path = sportsApp/FaceParameterConfig.h; sourceTree = "<group>"; };
+		AD36AEF62109AEE000444CF4 /* ImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageUtils.h; path = sportsApp/ImageUtils.h; sourceTree = "<group>"; };
+		AD36AEF72109AEE000444CF4 /* ImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageUtils.m; path = sportsApp/ImageUtils.m; sourceTree = "<group>"; };
+		AD36AEF82109AEE000444CF4 /* RemindView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemindView.h; path = sportsApp/RemindView.h; sourceTree = "<group>"; };
+		AD36AEF92109AEE000444CF4 /* RemindView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemindView.m; path = sportsApp/RemindView.m; sourceTree = "<group>"; };
 		AFA9045B53ED4691B133E53A /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B27BB71D43E445B297582F79 /* CoreFoundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		B34FD1B1A5BA48C9AC878C5C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
-		BBFCB9E1D30A47B0B78E1572 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		BD2EC0645B8C4522B05B4DEB /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		C35DABE6AD95411B8A055ACB /* CFNetwork.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		D44E3C1A4399485281AB376A /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
@@ -896,7 +890,6 @@
 				FD1428D32F984016AEC92727 /* CoreFoundation.framework in Frameworks */,
 				9BD81A6DB1F141ECA0E234EB /* Foundation.framework in Frameworks */,
 				BAD27E4E42094C498BA7E716 /* libresolv.tbd in Frameworks */,
-				1C45A8C1DC924A12BFD9112A /* libRNFS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,24 +998,21 @@
 		13B07FAE1A68108700A75B9A /* sportsApp */ = {
 			isa = PBXGroup;
 			children = (
-				50A2734120C7B24000669DA2 /* NextNativeViewController.h */,
-				50A2734220C7B24000669DA2 /* NextNativeViewController.m */,
-				50A2733320C60FC700669DA2 /* FaceBaseViewController.h */,
-				50A2733420C60FC800669DA2 /* FaceBaseViewController.m */,
-				50A2733220C60EA500669DA2 /* FaceParameterConfig.h */,
-				50A2732F20C53B3300669DA2 /* ImageUtils.h */,
-				50A2733020C53B3400669DA2 /* ImageUtils.m */,
-				50A2732920C53AB100669DA2 /* CircleView.h */,
-				50A2732B20C53AB100669DA2 /* CircleView.m */,
-				50A2732C20C53AB100669DA2 /* RemindView.h */,
-				50A2732A20C53AB100669DA2 /* RemindView.m */,
-				50A2732620C53A7F00669DA2 /* DetectionViewController.h */,
-				50A2732720C53A7F00669DA2 /* DetectionViewController.m */,
+				AD36AEF62109AEE000444CF4 /* ImageUtils.h */,
+				AD36AEF72109AEE000444CF4 /* ImageUtils.m */,
+				AD36AEF82109AEE000444CF4 /* RemindView.h */,
+				AD36AEF92109AEE000444CF4 /* RemindView.m */,
+				AD36AEC62109AECB00444CF4 /* CircleView.h */,
+				AD36AEC72109AECB00444CF4 /* CircleView.m */,
+				AD36AEC82109AECB00444CF4 /* DetectionViewController.h */,
+				AD36AEC92109AECB00444CF4 /* DetectionViewController.m */,
+				AD36AECA2109AECB00444CF4 /* FaceBaseViewController.h */,
+				AD36AECB2109AECB00444CF4 /* FaceBaseViewController.m */,
+				AD36AECC2109AECB00444CF4 /* FaceParameterConfig.h */,
 				502CAA5B20B3EA6F000EDC49 /* LaunchScreen.storyboard */,
 				502CAA5920B3EA6F000EDC49 /* Main.storyboard */,
 				4A3E807A2020329B0021E882 /* RCTPushStreamViewManager.m */,
 				4A3E8079202032910021E882 /* RCTPushStreamViewManager.h */,
-				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -1160,7 +1150,6 @@
 				B34FD1B1A5BA48C9AC878C5C /* libRNImagePicker.a */,
 				1C9D3CDED2B743D98DA6D3C7 /* libRNSVG.a */,
 				26F4285D036249419BC91047 /* libRCTJPushModule.a */,
-				BBFCB9E1D30A47B0B78E1572 /* libRNFS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1376,8 +1365,8 @@
 		502CA96F20ABC158000EDC49 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				502CA97020ABC158000EDC49 /* VideoCaptureDevice.h */,
-				502CA97120ABC158000EDC49 /* VideoCaptureDevice.m */,
+				AD0813BB210AA470002CA096 /* VideoCaptureDevice.h */,
+				AD0813BC210AA470002CA096 /* VideoCaptureDevice.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2354,11 +2343,10 @@
 			files = (
 				508FA3D320B9079100C47AA9 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				502CAA3D20B2A176000EDC49 /* DnspodEnterpriseTest.m in Sources */,
-				50A2734320C7B24000669DA2 /* NextNativeViewController.m in Sources */,
 				508FA3D520B9079100C47AA9 /* UIButton+AFNetworking.m in Sources */,
+				AD36AECE2109AECB00444CF4 /* DetectionViewController.m in Sources */,
 				50A272DD20C2786300669DA2 /* FaceViewManager.m in Sources */,
-				50A2732820C53A7F00669DA2 /* DetectionViewController.m in Sources */,
-				50A2733120C53B3400669DA2 /* ImageUtils.m in Sources */,
+				AD36AECD2109AECB00444CF4 /* CircleView.m in Sources */,
 				4A3E81A820205B890021E882 /* rtmp.c in Sources */,
 				508FA3D220B9079100C47AA9 /* UIRefreshControl+AFNetworking.m in Sources */,
 				502CAA3F20B2A176000EDC49 /* NetworkTest.m in Sources */,
@@ -2386,8 +2374,8 @@
 				4A3E818320205B650021E882 /* QNNHttp.m in Sources */,
 				502CAA2F20B2A176000EDC49 /* QNLruCache.m in Sources */,
 				502CAA2C20B2A176000EDC49 /* QNResolvUtil.m in Sources */,
+				AD36AEFA2109AEE000444CF4 /* ImageUtils.m in Sources */,
 				4A3E807B2020329B0021E882 /* RCTPushStreamViewManager.m in Sources */,
-				50A2732D20C53AB100669DA2 /* RemindView.m in Sources */,
 				502CAA4020B2A176000EDC49 /* LruCacheTest.m in Sources */,
 				502CAA3820B2A176000EDC49 /* DnspodFreeTest.m in Sources */,
 				502CAA3E20B2A176000EDC49 /* HostsTest.m in Sources */,
@@ -2399,26 +2387,26 @@
 				4A3E81A320205B890021E882 /* amf.c in Sources */,
 				502CAA4320B2A176000EDC49 /* GetAddrInfoTest.m in Sources */,
 				508FA3F020B907A900C47AA9 /* SVProgressHUD.m in Sources */,
+				AD36AEFB2109AEE000444CF4 /* RemindView.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				4A3E81A720205B890021E882 /* parseurl.c in Sources */,
 				508FA3DC20B9079100C47AA9 /* AFURLSessionManager.m in Sources */,
 				508FA3DE20B9079100C47AA9 /* AFNetworkReachabilityManager.m in Sources */,
-				50A2733520C60FC800669DA2 /* FaceBaseViewController.m in Sources */,
 				4A3E81A620205B890021E882 /* log.c in Sources */,
 				4A3E818720205B650021E882 /* QNNRtmp.m in Sources */,
 				508FA3DA20B9079100C47AA9 /* AFURLResponseSerialization.m in Sources */,
+				AD36AECF2109AECB00444CF4 /* FaceBaseViewController.m in Sources */,
 				4A3E81A520205B890021E882 /* hashswf.c in Sources */,
 				4A3E818820205B650021E882 /* QNNTcpPing.m in Sources */,
 				508FA3D720B9079100C47AA9 /* UIWebView+AFNetworking.m in Sources */,
 				502CAA2620B2A176000EDC49 /* QNIP.m in Sources */,
 				502CAA3020B2A176000EDC49 /* QNNetworkInfo.m in Sources */,
-				502CA97520ABC158000EDC49 /* VideoCaptureDevice.m in Sources */,
 				508FA3D120B9079100C47AA9 /* UIProgressView+AFNetworking.m in Sources */,
 				4A3E81A420205B890021E882 /* error.c in Sources */,
 				508FA3DD20B9079100C47AA9 /* AFURLRequestSerialization.m in Sources */,
-				50A2732E20C53AB100669DA2 /* CircleView.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				4A3E818520205B650021E882 /* QNNPing.m in Sources */,
+				AD0813BD210AA470002CA096 /* VideoCaptureDevice.m in Sources */,
 				502CAA3320B2A176000EDC49 /* QNDnspodFree.m in Sources */,
 				502CAA2D20B2A176000EDC49 /* QNHosts.m in Sources */,
 				508FA3DF20B9079100C47AA9 /* AFSecurityPolicy.m in Sources */,
