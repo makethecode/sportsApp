@@ -73,8 +73,6 @@ import OrderClass from './OrderClass';
 import proxy from "../../utils/Proxy";
 import Config from "../../../config";
 class BadmintonCourseRecord extends Component {
-
-
     navigate2OrderClass() {
         const { navigator } = this.props;
         if (navigator) {
@@ -673,6 +671,7 @@ class BadmintonCourseRecord extends Component {
                                                   if(Platform.OS=== 'android'){
                                                       this.sharetoSomeone.dismiss();
                                                       FaceDetect.faceDetect();
+                                                      {/*test();*/}
                                                   }else{
                                                       FaceViewManager.getFaceView("test");
                                                   }
@@ -766,6 +765,18 @@ class BadmintonCourseRecord extends Component {
 
 }
 
+async function test() {
+    try {
+        var {
+            user_id,
+        } = await FaceDetect.tryPromise("success");
+
+        alert(user_id);
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -822,6 +833,9 @@ export default class NextSecond extends Component {
         );
     }
 }
+
+
+
 
 
 

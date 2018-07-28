@@ -242,6 +242,14 @@ class StudentInformation extends Component {
                             <Icon name={'circle'} size={10} color="#aaa"/>
                         </View>
                         <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
+                            身高体重：{rowData.heightweight}
+                        </Text>
+                    </View>
+                    <View style={{flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
+                            <Icon name={'circle'} size={10} color="#aaa"/>
+                        </View>
+                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
                             联系方式：{rowData.mobilePhone}
                         </Text>
                     </View>
