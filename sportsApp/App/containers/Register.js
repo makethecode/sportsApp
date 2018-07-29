@@ -241,7 +241,7 @@ class Register extends Component {
             clubTypeButtons:['取消','吴教练俱乐部','林青教练俱乐部'],
             sportLevelButtons:['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'],
             coachLevelButtons:['取消', '一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'],
-            venueButtons:[],
+            venueButtons:['取消'],
             selectBirthday:false,
             portrait: null,
             fadeCancel: new Animated.Value(0),
@@ -267,7 +267,7 @@ class Register extends Component {
         const clubTypeButtons=['取消','吴教练俱乐部','林青教练俱乐部'];
         const sportLevelButtons=['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'];
         const coachLevelButtons=['取消','一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'];
-        var venueButtons=[];
+        var venueButtons=['取消'];
 
         return (
             <View style={{flex: 1, backgroundColor: '#fff'}}>

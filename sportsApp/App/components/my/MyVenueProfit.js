@@ -114,6 +114,7 @@ class MyVenueProfit extends Component {
             venue:null,
             coursePay:null,
             eventPay:null,
+            doingFetch:false,
         };
     }
 
@@ -156,14 +157,34 @@ class MyVenueProfit extends Component {
                          actions={[]}
                          onPress={(i)=>{
                          }}>
-                    <View style={{ flex: 1, width: width, backgroundColor: '#66CDAA' }}>
+                    {<View style={{flex:5,backgroundColor:'#eee'}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
+                            <ScrollView
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state.isRefreshing}
+                                        onRefresh={this._onRefresh.bind(this)}
+                                        tintColor="#9c0c13"
+                                        title="刷新..."
+                                        titleColor="#9c0c13"
+                                        colors={['#ff0000', '#00ff00', '#0000ff']}
+                                        progressBackgroundColor="#ffff00"
+                                    />
+                                }
+                            >
+                                {venueList}
+                                {
+                                    venueList==null?
+                                        null:
+                                        <View style={{justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',padding:10}}>
+                                            <Text style={{color:'#343434',fontSize:13,alignItems: 'center',justifyContent:'center'}}>已经全部加载完毕</Text>
+                                        </View>
+                                }
 
-                        <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff',
-                       paddingBottom:10 }}>
-                            {venueList}
+                            </ScrollView>
+
                         </Animated.View>
-
-                    </View>
+                    </View>}
                 </Toolbar>
 
             </View>

@@ -888,6 +888,7 @@ export let addStudents=(courseId,student)=>{
                     courseId:courseId,
                     creatorId:state.user.personInfo.personId,
                     perName:student.perName,
+                    heightweight:student.heightweight,
                     perIdCard:student.perIdCard,
                     mobilePhone:student.mobilePhone,
                     buyCount:parseInt(student.buyCount),
