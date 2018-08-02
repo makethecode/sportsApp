@@ -31,7 +31,8 @@ import SexModal from '../components/groupActivity/SexModal';
 import CoachMessage from '../components/my/MyInformation'
 import PopupDialog,{ScaleAnimation} from 'react-native-popup-dialog';
 const scaleAnimation = new ScaleAnimation();
-
+import { NativeModules } from "react-native";
+const CalendarManager = NativeModules.CalendarManager;
 import MobilePhoneModal from '../components/my/modal/ValidateMobilePhoneModal';
 import ValidateMyInformationModal from '../components/my/modal/ValidateMyInformationModal';
 import Bridge from '../native/Bridge'
@@ -353,7 +354,9 @@ class Home extends Component {
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
-                                          alert("暂未开通");
+                                          {/*alert("暂未开通");*/}
+                                           {/*CalendarManager.addEvent("Birthday Party", "4 Privet Drive, Surrey");*/}
+                                           updateEvents();
                                       }}>
 
                                         {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
@@ -557,6 +560,15 @@ var styles = StyleSheet.create({
     },
 
 });
+
+async function updateEvents() {
+    try {
+        var events=await CalendarManager.testCallbackEventTwo();
+        alert(events)
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 const mapStateToProps = (state, ownProps) => {
 

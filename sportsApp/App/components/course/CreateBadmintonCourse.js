@@ -33,6 +33,7 @@ import SelectCoach from './SelectCoach';
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+import InputScrollView from 'react-native-input-scroll-view'
 
 import{
     distributeCourse,
