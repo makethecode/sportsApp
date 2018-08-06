@@ -341,9 +341,9 @@ class Home extends Component {
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
-                                        this.navigate2Activity();
+                                        {/*this.navigate2Activity();*/}
                                         //this.navigate2CoachMessage();
-                                        //                  alert("该模块暂定");
+                                        alert("该模块暂定");
                                       }}>
                                         <Image resizeMode="stretch" source={require('../../img/dd@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
@@ -354,9 +354,10 @@ class Home extends Component {
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
-                                          {/*alert("暂未开通");*/}
+                                           alert("暂未开通");
                                            {/*CalendarManager.addEvent("Birthday Party", "4 Privet Drive, Surrey");*/}
-                                           updateEvents();
+                                           {/*updateEvents();*/}
+                                            {/*this.navigate2Competition();*/}
                                       }}>
 
                                         {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}

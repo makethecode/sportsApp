@@ -108,19 +108,19 @@ class MyVenueProfitDetail extends Component{
             }
         })
 
-        this.props.dispatch(fetchVenueEventProfitByUnitId(this.props.MyVenueProfitDetail.unitId)).then((json) => {
-            if (json.re == 1) {
-                for(var i=0;i<json.data.length;i++)eventpay+=json.data[i].payment;
-                this.setState({eventPay:eventpay})
-                //this.props.dispatch(makeTabsHidden());
-            }
-            else {
-                if (json.re = -100) {
-                    this.props.dispatch(getAccessToken(false))
-                }
-
-            }
-        })
+        // this.props.dispatch(fetchVenueEventProfitByUnitId(this.props.MyVenueProfitDetail.unitId)).then((json) => {
+        //     if (json.re == 1) {
+        //         for(var i=0;i<json.data.length;i++)eventpay+=json.data[i].payment;
+        //         this.setState({eventPay:eventpay})
+        //         //this.props.dispatch(makeTabsHidden());
+        //     }
+        //     else {
+        //         if (json.re = -100) {
+        //             this.props.dispatch(getAccessToken(false))
+        //         }
+        //
+        //     }
+        // })
     }
 }
 

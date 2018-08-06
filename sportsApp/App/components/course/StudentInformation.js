@@ -125,7 +125,8 @@ class StudentInformation extends Component {
                 name: 'AddStudent',
                 component: AddStudent,
                 params: {
-                    courseId:courseId
+                    courseId:courseId,
+                    setMyCourseList:this.setMyCourseList.bind(this),
                 }
             })
         }
@@ -170,7 +171,7 @@ class StudentInformation extends Component {
         }
     }
 
-    setMyCourseList()
+    setMyCourseList(courseId)
     {
         this.props.dispatch(fetchStudents(courseId)).then((json)=>{
             if(json.re==1)

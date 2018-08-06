@@ -35,7 +35,7 @@ import CreateGroup from './CreateGroup';
 import Coach from '../../components/Coach';
 import SelectTime from './SelectTime';
 import AddField from './AddField';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import {
     fetchMyGroupList,disableMyGroupOnFresh,enableActivityOnFresh
@@ -340,7 +340,7 @@ class AddActivity extends Component{
                          onPress={(i)=>{
                          }}
                 >
-                    <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
+                    <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
 
 
                         {/*活动类型*/}
@@ -883,25 +883,26 @@ class AddActivity extends Component{
                                 温馨提示：您发布的内容应合法、真实、健康、共创文明的网络环境
                             </Text>
                         </View>
-                    </ScrollView>
 
-                    {
-                        this.state.event.costTypeCode==6?
-                        <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
-                marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
-                                          onPress={()=>{
-                                      this.release2();
-                                      }}>
-                            <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
-                        </TouchableOpacity>:
-                    <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
-                marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
-                                      onPress={()=>{
-                                      this.release();
-                                      }}>
-                        <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
-                    </TouchableOpacity>
-                    }
+                        {
+                            this.state.event.costTypeCode==6?
+                                <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
+                                    marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
+                                                  onPress={()=>{
+                                                      this.release2();
+                                                  }}>
+                                    <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
+                                </TouchableOpacity>:
+                                <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
+                                    marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
+                                                  onPress={()=>{
+                                                      this.release();
+                                                  }}>
+                                    <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
+                                </TouchableOpacity>
+                        }
+
+                    </KeyboardAwareScrollView>
                 </Toolbar>
 
             </View>

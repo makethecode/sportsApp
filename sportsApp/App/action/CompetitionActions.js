@@ -18,13 +18,13 @@ export let fetchGames=()=>{
         return new Promise((resolve, reject) => {
 
             var state=getState();
+            var username = state.user.user.username;
             var sessionId = state.user.sessionId;
             Proxy.postes({
                 url: Config.server + '/func/competition/getCanJoinBadmintonCompetitionInfoList',
                 headers: {
 
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
                 },
                 body: {
 

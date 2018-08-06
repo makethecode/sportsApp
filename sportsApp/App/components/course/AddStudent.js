@@ -15,7 +15,8 @@ import {
     Easing,
     Modal,
     DeviceEventEmitter,
-    Alert
+    Alert,
+    KeyboardAvoidingView,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -38,10 +39,12 @@ import{
     distributeCourse,
     enableCoursesOfCoachOnFresh,
     addStudents,
+    enableStudentsOnFresh,
 } from '../../action/CourseActions';
 
 import {getAccessToken,} from '../../action/UserActions';
 import DatePicker from 'react-native-datepicker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class AddStudent extends Component{
 
@@ -154,7 +157,7 @@ class AddStudent extends Component{
 
 
         return (
-            <View style={{flex:1}}>
+            <KeyboardAvoidingView style={{flex:1}} behavior="padding">
                 <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
                 backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
                     <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
@@ -168,7 +171,7 @@ class AddStudent extends Component{
 
                     </View>
                 </View>
-                <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
+                <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
                 <View style={{flex:5,backgroundColor:'#fff'}}>
 
                     {/*学生id*/}
@@ -424,34 +427,39 @@ class AddStudent extends Component{
                     </View>
 
                 </View>
-                </ScrollView>
-
-                <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
-                    <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
-                        justifyContent:'center'}}
-                                      onPress={()=>{
+                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
+                        <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
+                            justifyContent:'center'}}
+                                          onPress={()=>{
                                               this.props.dispatch(addStudents(this.props.courseId,this.state.student))
                                                   .then((json)=>{
                                                       if(json.re==1){
                                                           Alert.alert('信息','已成功增加该学员',[{text:'确认',onPress:()=>{
-                                                                  this.goBack();
-                                                                  //this.props.setMyCourseList();
-                                                              }}]);
+                                                              this.goBack();
+                                                              this.props.setMyCourseList(this.props.courseId);
+                                                          }}]);
                                                       }else{
                                                           if(json.re==-100){
                                                               this.props.dispatch(getAccessToken(false));
                                                           }
                                                       }
                                                   })
-                                      }}>
-                        <Text style={{color:'#fff',fontSize:15}}>确定</Text>
-                    </TouchableOpacity>
+                                          }}>
+                            <Text style={{color:'#fff',fontSize:15}}>确定</Text>
+                        </TouchableOpacity>
 
-                </View>
+                    </View>
+                </KeyboardAwareScrollView>
 
-            </View>
+            </KeyboardAvoidingView>
         );
     }
+
+    componentWillUnmount()
+    {
+        this.props.dispatch(enableStudentsOnFresh());
+    }
+
 }
 
 var styles = StyleSheet.create({
@@ -462,7 +470,6 @@ var styles = StyleSheet.create({
     },
 
 });
-
 
 module.exports = connect(state=>({
         accessToken:state.user.accessToken,

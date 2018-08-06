@@ -1585,3 +1585,29 @@ export let wechatPay2=(pay,courseId)=>{
         })
     }
 }
+
+//获取所有俱乐部
+export let fetchClubList=()=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/getAllClub',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                }
+            }).then((json)=>{
+                if(json.re==1){}
+
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+        })
+    }
+}

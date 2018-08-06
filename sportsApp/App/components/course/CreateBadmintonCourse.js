@@ -15,7 +15,8 @@ import {
     Easing,
     Modal,
     DeviceEventEmitter,
-    Alert
+    Alert,
+    KeyboardAvoidingView,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -34,12 +35,12 @@ const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 import InputScrollView from 'react-native-input-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import{
     distributeCourse,
     enableCoursesOfCoachOnFresh
 } from '../../action/CourseActions';
-
 import {getAccessToken,} from '../../action/UserActions';
 
 class CreateBadmintonCourse extends Component{
@@ -257,7 +258,7 @@ class CreateBadmintonCourse extends Component{
 
                     </View>
                 </View>
-                <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
+                <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
                 <View style={{flex:5,backgroundColor:'#fff'}}>
                     {/*课程等级*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
@@ -554,47 +555,46 @@ class CreateBadmintonCourse extends Component{
                         </Text>
                     </View>
                 </View>
-                </ScrollView>
-
-                <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
-                    <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
-                        justifyContent:'center'}}
-                                      onPress={()=>{
-                                          if(this.props.memberId!==null&&this.props.memberId!==undefined){
-                                              this.props.dispatch(distributeCourse(this.state.course,this.state.venue,parseInt(this.props.memberId),this.state.coachId))
-                                                  .then((json)=>{
-                                                      if(json.re==1){
-                                                          Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
+                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
+                        <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
+                            justifyContent:'center'}}
+                                          onPress={()=>{
+                                              if(this.props.memberId!==null&&this.props.memberId!==undefined){
+                                                  this.props.dispatch(distributeCourse(this.state.course,this.state.venue,parseInt(this.props.memberId),this.state.coachId))
+                                                      .then((json)=>{
+                                                          if(json.re==1){
+                                                              Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
                                                                   this.goBack();
                                                                   this.props.setMyCourseList();
                                                               }}]);
-                                                      }else{
-                                                          if(json.re==-100){
-                                                              this.props.dispatch(getAccessToken(false));
+                                                          }else{
+                                                              if(json.re==-100){
+                                                                  this.props.dispatch(getAccessToken(false));
+                                                              }
                                                           }
-                                                      }
-                                                  })
-                                          }else{
-                                              this.props.dispatch(distributeCourse(this.state.course,this.state.venue,null,this.state.coachId))
-                                                  .then((json)=>{
-                                                      if(json.re==1){
-                                                          Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
+                                                      })
+                                              }else{
+                                                  this.props.dispatch(distributeCourse(this.state.course,this.state.venue,null,this.state.coachId))
+                                                      .then((json)=>{
+                                                          if(json.re==1){
+                                                              Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
                                                                   this.goBack();
                                                                   //this.props.setMyCourseList();
                                                               }}]);
-                                                      }else{
-                                                          if(json.re==-100){
-                                                              this.props.dispatch(getAccessToken(false));
+                                                          }else{
+                                                              if(json.re==-100){
+                                                                  this.props.dispatch(getAccessToken(false));
+                                                              }
                                                           }
-                                                      }
-                                                  })
-                                          }
+                                                      })
+                                              }
 
-                                      }}>
-                        <Text style={{color:'#fff',fontSize:15}}>发布</Text>
-                    </TouchableOpacity>
+                                          }}>
+                            <Text style={{color:'#fff',fontSize:15}}>发布</Text>
+                        </TouchableOpacity>
 
-                </View>
+                    </View>
+                </KeyboardAwareScrollView>
 
                 {/* Add CourseTime Modal*/}
                 <Modal

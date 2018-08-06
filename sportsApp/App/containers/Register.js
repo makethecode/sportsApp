@@ -14,12 +14,12 @@ import {
     RefreshControl,
     Animated,
     Easing,
-    Modal
+    Modal,
+    KeyboardAvoidingView,
 } from 'react-native';
 
 import {connect} from 'react-redux';
 var {height, width} = Dimensions.get('window');
-
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
@@ -35,10 +35,8 @@ import {
     uploadPersonIdCard,
     updatePerBirthday,
     onPerBirthdayUpdate,
+    fetchClubList,
 } from '../action/UserActions';
-import {
-    fetchVenueByClub
-} from '../action/MapActions';
 import Camera from 'react-native-camera';
 var ImagePicker = require('react-native-image-picker');
 import TextInputWrapper from '../../App/encrypt/TextInputWrapper';
@@ -46,7 +44,7 @@ import TextInputWrapper from '../../App/encrypt/TextInputWrapper';
 import ActionSheet from 'react-native-actionsheet'
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import DatePicker from 'react-native-datepicker';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 /**
  * userType:0为用户 1为教练
@@ -194,16 +192,6 @@ class Register extends Component {
         }
 
     }
-    //选场馆类型
-    _handlePress5(index) {
-
-        if(index!==0){
-            var venue = this.state.venueButtons[index];
-            var venueCode = index;
-            this.setState({info:Object.assign(this.state.info,{venue:venue,venueId:venueCode})});
-        }
-
-    }
 
     show(actionSheet) {
         this[actionSheet].show();
@@ -231,24 +219,21 @@ class Register extends Component {
                 clubId:null,
                 sportLevel: null,
                 coachLevel:null,
-                venue:null,
-                venueId:null,
                 heightweight:null,
                 workcity:null,
                 graduate:null,
             },
             sexTypeButtons:['取消','男','女'],
-            clubTypeButtons:['取消','吴教练俱乐部','林青教练俱乐部'],
+            clubTypeButtons:['取消','吴教练俱乐部'],
             sportLevelButtons:['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'],
             coachLevelButtons:['取消', '一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'],
-            venueButtons:['取消'],
             selectBirthday:false,
             portrait: null,
             fadeCancel: new Animated.Value(0),
             fadeNickNameCancel: new Animated.Value(0),
             fadePasswordCancel: new Animated.Value(0),
             fadeSportsLevel: new Animated.Value(0),
-
+            doingFetch:false,
         }
     }
 
@@ -264,10 +249,30 @@ class Register extends Component {
         const DESTRUCTIVE_INDEX = 1
 
         const sexTypeButtons=['取消','男','女'];
-        const clubTypeButtons=['取消','吴教练俱乐部','林青教练俱乐部'];
+        var clubTypeButtons=['取消'];
         const sportLevelButtons=['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'];
         const coachLevelButtons=['取消','一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'];
-        var venueButtons=['取消'];
+
+        if(this.state.doingFetch==false)
+        {
+            this.props.dispatch(fetchClubList()).then((json)=>{
+             if(json.re==1)
+             {
+                    this.setState({clubType:null});
+                    var clubTypes = ['取消'];
+                    for(var i=0;i<json.data.length;i++)
+                        clubTypes.push(json.data[i].name);
+                    clubTypeButtons=clubTypes;
+                    this.setState({clubTypeButtons:clubTypes,doingFetch:true});
+             }
+                else {
+                    if(json.re=-100){
+                        this.props.dispatch(getAccessToken(false))
+                 }
+
+                }
+            })
+        }
 
         return (
             <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -296,7 +301,8 @@ class Register extends Component {
                     </TouchableOpacity>
                 </View>
 
-                <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
+                <View style={{ flex: 1 }}>
+                <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
 
                     <View style={{height:30,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <Text>基本信息</Text>
@@ -619,75 +625,17 @@ class Register extends Component {
                                     this.actionSheet2 =p;
                                 }}
                                 title="请选择俱乐部"
-                                options={clubTypeButtons}
+                                options={this.state.clubTypeButtons}
                                 cancelButtonIndex={CANCEL_INDEX}
                                 destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                 onPress={
                                     (data)=>{
-                                    this.props.dispatch(fetchVenueByClub(data)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.setState({venue:null});
-                                            var venue = ['取消'];
-                                            var venues = json.data[0].fieldName.split(',');
-                                            for(var i=0;i<venues.length;i++)
-                                                venue.push(venues[i]);
-                                            this.setState({venueButtons:venue});
-                                            venueButtons=venue;
-                                        }
-                                        else {
-                                            if(json.re=-100){
-                                                this.props.dispatch(getAccessToken(false))
-                                            }
-
-                                        }
-                                    })
-
                                         this._handlePress2(data);
                                     }
                                 }
                             />
                         </TouchableOpacity>
                     </View>
-
-                    {/*所属场馆*/}
-                    {
-                        this.state.info.clubType!=null?
-                            <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
-                                <View style={{flex:1}}>
-                                    <Text>*场馆：</Text>
-                                </View>
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                    borderRadius:10}}
-                                                  onPress={()=>{ this.show('actionSheet5'); }}>
-                                    {
-                                        this.state.info.venue==null?
-                                            <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#888',fontSize:13}}>请选择场馆</Text>
-                                            </View> :
-                                            <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#444',fontSize:13}}>{this.state.info.venue}</Text>
-                                            </View>
-
-                                    }
-                                    <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                        <Icon name={'angle-right'} size={30} color="#fff"/>
-                                    </View>
-                                    <ActionSheet
-                                        ref={(p) => {
-                                            this.actionSheet5 =p;
-                                        }}
-                                        title="请选择场馆"
-                                        options={this.state.venueButtons}
-                                        cancelButtonIndex={CANCEL_INDEX}
-                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                                        onPress={
-                                            (data)=>{ this._handlePress5(data); }
-                                        }
-                                    />
-                                </TouchableOpacity>
-                            </View>:null
-                    }
 
                     {/*教练资质*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
@@ -764,7 +712,7 @@ class Register extends Component {
                     {/*身高体重*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>身高体重：</Text>
+                            <Text>*身高体重：</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -851,7 +799,8 @@ class Register extends Component {
                         <Text style={{color: '#fff', fontSize: 15}}>完成</Text>
                     </TouchableOpacity>
                     <View style={{marginTop:20}}/>
-                </ScrollView>
+                </KeyboardAwareScrollView>
+                </View>
             </View>
         );
     }
