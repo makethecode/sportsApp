@@ -31,6 +31,7 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
 import{
     fetchPayment,
     onPaymentUpdate,
+    fetchAllPayment,
 } from '../../action/MyProfitActions';
 
 import {
@@ -64,6 +65,7 @@ class Myprofit extends Component {
                 component: DetailProfit,
                 params: {
                     payments:this.state.payments,
+                    totals:this.state.total,
                 }
             })
         }
@@ -155,7 +157,27 @@ class Myprofit extends Component {
 
 componentDidMount(){
 
-    this.props.dispatch(fetchPayment(this.props.clubId)).then((json)=>{
+    // this.props.dispatch(fetchPayment(this.props.clubId)).then((json)=>{
+    //     if(json.re==1)
+    //     {
+    //         var total=0;
+    //         var payments=json.data;
+    //         this.setState({payments:payments});
+    //         payments.map((payment,i)=>{
+    //             if(payment.payment!==null){
+    //                 total+=payment.payment;
+    //             }
+    //
+    //         })
+    //         this.setState({total:total});
+    //     }else{
+    //         if(json.re==-100){
+    //             this.props.dispatch(getAccessToken(false));
+    //         }
+    //     }
+    // })
+
+    this.props.dispatch(fetchAllPayment()).then((json)=>{
         if(json.re==1)
         {
             var total=0;
@@ -174,6 +196,7 @@ componentDidMount(){
             }
         }
     })
+
 }
 
 }

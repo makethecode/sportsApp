@@ -208,6 +208,7 @@ class Register extends Component {
                 password: '1',
                 name:'',
                 sexType:null,
+                sexTypeCode:null,
                 birthday:null,
                 idCard:null,
                 address:null,

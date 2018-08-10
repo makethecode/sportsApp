@@ -370,7 +370,8 @@ class My extends Component{
                         </TouchableOpacity>
 
                         {
-                            this.props.username=="lxq"||this.props.username=="wbh"?
+                            //this.props.username=="lxq"||this.props.username=="wbh"?
+                            this.props.personInfo.perTypeCode=='M'?
                             <TouchableOpacity
                                 style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                 onPress={()=>{

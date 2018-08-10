@@ -32,6 +32,7 @@ import{
     fetchPayment,
     onPaymentUpdate,
     fetchPaymentByTime,
+    fetchAllPaymentByTime,
 } from '../../action/MyProfitActions';
 import Calendar from 'react-native-calendar-select';
 import {
@@ -76,7 +77,8 @@ class DetailProfit extends Component {
     constructor(props) {
         super(props);
         this.state={
-            totals:0,
+            totals:this.props.totals,
+            payments:this.props.payments,
             activitys:0,
             courses:0,
             startDate: new Date(2017, 6, 12),
@@ -91,7 +93,24 @@ class DetailProfit extends Component {
             endDate
         });
 
-        this.props.dispatch(fetchPaymentByTime(this.props.clubId,startDate,endDate)).then((json)=>{
+        // this.props.dispatch(fetchPaymentByTime(this.props.clubId,startDate,endDate)).then((json)=>{
+        //     if(json.re==1)
+        //     {
+        //         // this.props.dispatch(onPaymentUpdate(json.data))
+        //         var dataList = json.data;
+        //         var sum = 0;
+        //         for(i=0;i<dataList.length;i++){
+        //             sum+=dataList[i].payment;
+        //         }
+        //         this.setState({totals:sum});
+        //     }else{
+        //         if(json.re==-100){
+        //             this.props.dispatch(getAccessToken(false));
+        //         }
+        //     }
+        // })
+
+        this.props.dispatch(fetchAllPaymentByTime(startDate,endDate)).then((json)=>{
             if(json.re==1)
             {
                 // this.props.dispatch(onPaymentUpdate(json.data))
@@ -209,22 +228,23 @@ class DetailProfit extends Component {
     }
     componentDidMount(){
 
-        this.props.dispatch(fetchPayment(this.props.clubId)).then((json)=>{
-            if(json.re==1)
-            {
-                //this.setState({total:json.data});
-                var dataList = json.data;
-                var sum = 0;
-                for(i=0;i<dataList.length;i++){
-                    sum+=dataList[i].payment;
-                }
-                this.setState({totals:sum});
-            }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-                }
-            }
-        })
+        // this.props.dispatch(fetchPayment(this.props.clubId)).then((json)=>{
+        //     if(json.re==1)
+        //     {
+        //         //this.setState({total:json.data});
+        //         var dataList = json.data;
+        //         var sum = 0;
+        //         for(i=0;i<dataList.length;i++){
+        //             sum+=dataList[i].payment;
+        //         }
+        //         this.setState({totals:sum});
+        //     }else{
+        //         if(json.re==-100){
+        //             this.props.dispatch(getAccessToken(false));
+        //         }
+        //     }
+        // })
+
     }
 
 }

@@ -61,7 +61,7 @@ import {
     onCoursesUpdate,
     disableCoursesOfCoachOnFresh, enableCoursesOfCoachOnFresh,
     getGroupMember, createCourseGroup, saveOrUpdateBadmintonCourseClassRecords, updateIsHasPhotoStatus,
-    establishEveryDayClass
+    establishEveryDayClass,fetchAllCourses,
 } from '../../action/CourseActions';
 
 import {getAccessToken, onUsernameUpdate, updateUsername,} from '../../action/UserActions';
@@ -289,16 +289,30 @@ class BadmintonCourseRecord extends Component {
 
     setMyCourseList()
     {
-        this.props.dispatch(fetchCoursesByCreatorId(creatorId)).then((json)=>{
-            if(json.re==1)
-            {
-                this.props.dispatch(onCoursesOfCoachUpdate(json.data))
-            }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
+        if(this.props.userType=='M'){
+            this.props.dispatch(fetchAllCourses()).then((json)=>{
+                if(json.re==1)
+                {
+                    this.props.dispatch(onCoursesOfCoachUpdate(json.data))
+                }else{
+                    if(json.re==-100){
+                        this.props.dispatch(getAccessToken(false));
+                    }
                 }
-            }
-        })
+            })
+        }
+        else{
+            this.props.dispatch(fetchCoursesByCreatorId(creatorId)).then((json)=>{
+                if(json.re==1)
+                {
+                    this.props.dispatch(onCoursesOfCoachUpdate(json.data))
+                }else{
+                    if(json.re==-100){
+                        this.props.dispatch(getAccessToken(false));
+                    }
+                }
+            })
+        }
     }
 
     renderRow(rowData, sectionId, rowId) {
@@ -501,6 +515,22 @@ class BadmintonCourseRecord extends Component {
         });
     }
 
+    fetchAllCourses(){
+        this.state.doingFetch=true;
+        this.state.isRefreshing=true;
+        this.props.dispatch(fetchAllCourses()).then((json)=> {
+            if(json.re==-100){
+                this.props.dispatch(getAccessToken(false));
+            }
+            this.props.dispatch(disableCoursesOfCoachOnFresh());
+            this.setState({doingFetch:false,isRefreshing:false})
+        }).catch((e)=>{
+            this.props.dispatch(disableCoursesOfCoachOnFresh());
+            this.setState({doingFetch:false,isRefreshing:false});
+            alert(e)
+        });
+    }
+
     _onRefresh() {
         this.setState({isRefreshing: true, fadeAnim: new Animated.Value(0)});
         setTimeout(function () {
@@ -546,8 +576,12 @@ class BadmintonCourseRecord extends Component {
         //var competitionList=this.state.competitionList;
         if(coursesOfCoachOnFresh==true)
         {
-            if(this.state.doingFetch==false)
-                this.fetchCoursesByCreatorId(this.props.creatorId);
+            if(this.state.doingFetch==false) {
+                if(this.props.userType=='M')
+                    this.fetchAllCourses();
+                else
+                    this.fetchCoursesByCreatorId(this.props.creatorId);
+            }
         }else{
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (coursesOfCoach !== undefined && coursesOfCoach !== null && coursesOfCoach.length > 0)

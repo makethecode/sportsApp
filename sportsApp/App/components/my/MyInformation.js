@@ -1255,6 +1255,11 @@ class MyInformation extends Component{
                                 this.SexDialog.dismiss();
                             }}
                             onConfirm={(val)=>{
+
+                                if(val=='男')val=1;
+                                else val=2;
+                                val = val.toString();
+
                                 if(val!=this.props.genderCode)
                                 {
                                     this.props.dispatch(updateGenderCode(val)).then((json)=>{

@@ -17,6 +17,7 @@ import TextInputWrapper from 'react-native-text-input-wrapper';
 import DateFilter from '../../../utils/DateFilter';
 import DatePicker from 'react-native-datepicker';
 import ActionSheet from 'react-native-actionsheet';
+import CheckBox from 'react-native-check-box';
 
 
 var {height, width} = Dimensions.get('window');
@@ -75,17 +76,42 @@ class SexModal extends Component{
 
     }
 
+    addItem = item => {
+        this.setState({field0: [...this.state.field0, item]})
+    };
+    removeItem = removedItem => {
+        this.setState({
+            field0: this.state.field0.filter(item => {
+                if (item._id !== removedItem._id)
+                    return item;
+            })
+        });
+    };
+
 
     constructor(props)
     {
         super(props);
+        this.dataSource=new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2})
+        var _data=[{"fieldno":1,"check":false,"_id":0}];
+        for(i=0;i<6;i++){
+            _data.push({"fieldno":(i+2),"check":false,"_id":i+1});
+        }
         this.state={
-            val:props.val
+            val:props.val,
+            field0:[],
+            datas:{check0:false,check1:false}
         }
     }
 
+
     render(){
 
+        var field=""
+        this.state.field0.map((field0,i)=>{
+            field+=field0.state+","
+        });
+        field=field.substring(0,field.length-1);
 
         return (
 
@@ -95,20 +121,89 @@ class SexModal extends Component{
                     <View style={{flexDirection:'row',alignItems:'center',padding:4}}>
                         <Text style={{color:'#222',fontSize:17,fontWeight:'bold'}}>修改性别</Text>
                     </View>
-                    <View style={{flexDirection:'row',alignItems:'center',padding:4,paddingTop:15,borderBottomWidth:1,borderColor:'#66CDAA'}}>
+                    <View style={{flexDirection:'column',alignItems:'center',padding:4,paddingTop:15,borderBottomWidth:1,borderColor:'#66CDAA'}}>
+
+                        {this.state.datas.check0==false?
+                            <TouchableOpacity style={{padding:1,margin:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            }}
+                                              onPress={()=>{ }}>
+                                <CheckBox
+                                    style={{padding: 2}}
+                                    onClick={()=>{
+                                        this.setState({datas:Object.assign(this.state.datas,{check0:true})})
+                                        this.addItem({state:"男",_id:0});
+                                    }}
+                                    isChecked={false}
+                                    leftText={null}
+                                />
+
+                                <Text style={{color:'#000',padding:5}}>男</Text>
+                            </TouchableOpacity>:
+                            <TouchableOpacity style={{padding:1,margin:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            }}
+                                              onPress={()=>{ }}>
+                                <CheckBox
+                                    style={{padding: 2}}
+                                    onClick={()=>{
+                                        this.setState({datas:Object.assign(this.state.datas,{check0:false})})
+                                        this.removeItem({state:"男",_id:0})
+                                    }}
+                                    isChecked={true}
+                                    leftText={null}
+                                />
+
+                                <Text style={{color:'#000',padding:5}}>男</Text>
+                            </TouchableOpacity>
+                        }
+
+                        {this.state.datas.check1==false?
+                            <TouchableOpacity style={{padding:1,margin:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            }}
+                                              onPress={()=>{ }}>
+                                <CheckBox
+                                    style={{padding: 2}}
+                                    onClick={()=>{
+                                        this.setState({datas:Object.assign(this.state.datas,{check1:true})})
+                                        this.addItem({state:"女",_id:1});
+
+                                    }}
+                                    isChecked={false}
+                                    leftText={null}
+                                />
+
+                                <Text style={{color:'#000',padding:5}}>女</Text>
+                            </TouchableOpacity>:
+                            <TouchableOpacity style={{padding:1,margin:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            }}
+                                              onPress={()=>{ }}>
+                                <CheckBox
+                                    style={{padding: 2}}
+                                    onClick={()=>{
+                                        this.setState({datas:Object.assign(this.state.datas,{check1:false})})
+                                        this.removeItem({state:"女",_id:1})
+
+                                    }}
+                                    isChecked={true}
+                                    leftText={null}
+                                />
+
+                                <Text style={{color:'#000',padding:5}}>女</Text>
+                            </TouchableOpacity>
+                        }
+
                         <TextInputWrapper
                             placeholderTextColor='#888'
                             textInputStyle={{marginLeft:4,color:'#222',fontSize:15}}
                             placeholder=""
                             val={this.state.val}
                             onChangeText={
-                                    (value)=>{
-                                           this.setState({val:value})
-                                    }}
+                                (value)=>{
+                                    this.setState({val:value})
+                                }}
                             onCancel={
-                                    ()=>{
+                                ()=>{
 
-                                    }}
+                                }}
                         />
                     </View>
 
@@ -130,13 +225,17 @@ class SexModal extends Component{
 
                     <TouchableOpacity style={{flex:1,padding:2,margin:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                 backgroundColor:'#66CDAA',borderRadius:6}}
-                                      onPress={()=>{this.confirm()}}>
+                                      onPress={()=>{
+                                          this.setState({val:field});
+                                          this.confirm();
+                                      }}>
                         <Text style={{color:'#fff',padding:5}}>确定</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         );
     }
+
 }
 
 

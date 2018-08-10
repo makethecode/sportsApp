@@ -227,6 +227,38 @@ export let fetchCoursesByCreatorId=(creatorId)=>{
     }
 }
 
+//显示所有课
+export let fetchAllCourses=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/allow/fetchAllCourses',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    var coursesOfCoach=json.data;
+                    dispatch(onCoursesOfCoachUpdate(coursesOfCoach));
+                    resolve({re:1,data:coursesOfCoach})
+                    //resolve(json);
+                }
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
 export let fetchCourseClass=(courseId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
