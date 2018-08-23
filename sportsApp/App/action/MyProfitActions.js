@@ -6,7 +6,8 @@ import {
 
     ON_PAYMENT_UPDATE,
     SET_PAYMENT,
-
+    ENABLE_PAYMENTS_ONFRESH,
+    DISABLE_PAYMENTS_ONFRESH,
 } from '../constants/MyProfitConstants'
 
 //设置教练列表
@@ -84,11 +85,11 @@ export let fetchPayment=(clubId)=>{
                             }
                         }
                     })
-                    money=money+'';
-                    s1=money.indexOf(".");
-                    str1=money.substring(0,s1);
-                    str2=money.substring(s1,s1+3);
-                    money=str1+''+str2;
+                     money=money+'';
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
                     dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
                 }
                 resolve({re:1,data:payments})
@@ -157,15 +158,15 @@ export let fetchAllPayment=()=>{
                             }
                         }
                     })
-                    money=money+'';
-                    s1=money.indexOf(".");
-                    str1=money.substring(0,s1);
-                    str2=money.substring(s1,s1+3);
-                    money=str1+''+str2;
+                     money=money+'';
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
                     dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
+                    dispatch(onPaymentUpdate(payments))
+                    resolve({re:1,data:payments})
                 }
-                resolve({re:1,data:payments})
-
             }).catch((e)=>{
                 alert(e);
                 reject(e);
@@ -235,11 +236,12 @@ export let fetchPaymentByTime=(clubId,startTime,endTime)=>{
                         }
                     })
                     money=money+'';
-                    s1=money.indexOf(".");
-                    str1=money.substring(0,s1);
-                    str2=money.substring(s1,s1+3);
-                    money=str1+''+str2;
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
                     dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
+                    dispatch(onPaymentUpdate(payments));
                 }
                 resolve({re:1,data:payments})
 
@@ -310,14 +312,76 @@ export let fetchAllPaymentByTime=(startTime,endTime)=>{
                         }
                     })
                     money=money+'';
-                    s1=money.indexOf(".");
-                    str1=money.substring(0,s1);
-                    str2=money.substring(s1,s1+3);
-                    money=str1+''+str2;
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
                     dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
                 }
                 resolve({re:1,data:payments})
 
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+export let fetchCoursePayment=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/pay/getCoursePayFormList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var payments = [];
+                    for(i=0;i<json.data.length;i++)
+                        payments.push(json.data[i][0]);
+
+                    dispatch(onPaymentUpdate(payments));
+                    resolve({re:1,data:payments})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+export let fetchActivityPayment=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/pay/getActivityPayFormList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var payments = [];
+                    for(i=0;i<json.data.length;i++)
+                        payments.push(json.data[i][0]);
+
+                    dispatch(onPaymentUpdate(payments));
+                    resolve({re:1,data:payments})
+                }
             }).catch((e)=>{
                 alert(e);
                 reject(e);
@@ -336,5 +400,17 @@ export let onPaymentUpdate=(payments)=>{
                 payments
             }
         })
+    }
+}
+
+export let enablePaymentsOnFresh=()=>{
+    return {
+        type:ENABLE_PAYMENTS_ONFRESH,
+    }
+}
+
+export let disablePaymentsOnFresh=()=>{
+    return {
+        type:DISABLE_PAYMENTS_ONFRESH,
     }
 }

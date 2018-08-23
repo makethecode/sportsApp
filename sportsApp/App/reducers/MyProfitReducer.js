@@ -7,16 +7,20 @@
 
 import {
         SET_PAYMENT,
-    ON_PAYMENT_UPDATE
+    ON_PAYMENT_UPDATE,
+    ENABLE_PAYMENTS_ONFRESH,
+    DISABLE_PAYMENTS_ONFRESH,
 } from '../constants/MyProfitConstants';
 
 const initialState = {
-        payments:null,
-        total:null,
-        qunhuodong:null,
-        total1:null,
-        huaxiao:null,
-        total2:null,
+    payments:null,
+    paymentsOnFresh:true,
+
+    total:null,
+    qunhuodong:null,
+    total1:null,
+    huaxiao:null,
+    total2:null,
     tel1:null,
     tel2:null,
     wx1:null,
@@ -43,11 +47,16 @@ let myprofit = (state = initialState, action) => {
 
         case ON_PAYMENT_UPDATE:
             return Object.assign({}, state, {
-                payments:action.payments
-
+                payments:action.payments.payments
             })
-
-
+        case ENABLE_PAYMENTS_ONFRESH:
+            return Object.assign({}, state, {
+                paymentsOnFresh:true
+            })
+        case DISABLE_PAYMENTS_ONFRESH:
+            return Object.assign({}, state, {
+                paymentsOnFresh:false
+            })
         default:
             return state;
     }

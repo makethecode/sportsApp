@@ -203,7 +203,7 @@ class StudentInformation extends Component {
             condition="结业"
 
         return (
-            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ddd', marginTop: 4 }}
+            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ddd', marginTop: 4 ,backgroundColor:'#fff'}}
                               onPress={()=>{
 
 

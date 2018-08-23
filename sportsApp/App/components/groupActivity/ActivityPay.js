@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import {
     Alert,
@@ -17,7 +16,6 @@ import {
     BackAndroid
 } from 'react-native';
 import {connect} from 'react-redux';
-var WeChat = require('react-native-wechat');
 import TextInputWrapper from 'react-native-text-input-wrapper';
 import QRCode from 'react-native-qrcode'
 import {
@@ -31,7 +29,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import {getAccessToken,} from '../../action/UserActions';
+
 var {height, width,scale} = Dimensions.get('window');
+var WeChat = require('react-native-wechat');
 
 class ActivityPay extends Component{
     goBack(){
@@ -41,9 +41,9 @@ class ActivityPay extends Component{
         }
     }
 
-    wechatPay(pay,eventId){
+    wechatPay(pay,activityId){
 
-        this.props.dispatch(wechatPay(pay,eventId)).then((json)=>{
+        this.props.dispatch(wechatPay(pay,activityId)).then((json)=>{
             if(json.re==1){
                 if(pay.payType=='2'){
                     var prepayId = json.data.prepayid;
@@ -155,9 +155,9 @@ class ActivityPay extends Component{
             isRefreshing:false,
             activity:this.props.activity,
             pay:{payment:this.props.activity.cost+"",payType:'2'},
-            select:this.props.select,
-            starttime:this.props.starttime,
-            endtime:this.props.endtime
+            // select:this.props.select,
+            // starttime:this.props.starttime,
+            // endtime:this.props.endtime
         };
     }
 
@@ -181,23 +181,23 @@ class ActivityPay extends Component{
                                     <Icon name={'star'} size={16} color="#66CDAA"/>
                                 </View>
                                 <View style={{flex:7,color:'#343434'}}>
-                                    <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventName}</Text>
+                                    <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.name}</Text>
                                 </View>
                             </View>
                             <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
                                 <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                     <Icon name={'circle'} size={10} color="#aaa"/>
                                 </View>
-                                <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventPlaceName}</Text>
+                                <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.placeName}</Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
                                 <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
                                     <Icon name={'circle'} size={10} color="#aaa"/>
                                 </View>
                                 {
-                                    activity.eventBrief==null&&activity.eventBrief==undefined?
+                                    activity.brief==null&&activity.brief==undefined?
                                         <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>无</Text>:
-                                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.eventBrief}</Text>
+                                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.brief}</Text>
                                 }
 
                             </View>
@@ -206,7 +206,7 @@ class ActivityPay extends Component{
                                     <Icon name={'circle'} size={10} color="#aaa"/>
                                 </View>
                                 <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                                    {'活动时间:'+activity.startTimeStr}
+                                    {'活动时间:'+activity.timeStart}
                                 </Text>
                             </View>
 
@@ -222,20 +222,7 @@ class ActivityPay extends Component{
                             </View>
                             <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
-                                <Text style={{color:'#343434'}}>{this.state.pay.payment}</Text>
-                                {/*<TextInputWrapper*/}
-                                    {/*placeholderTextColor='#888'*/}
-                                    {/*textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}*/}
-                                    {/*placeholder="请输入待支付费用"*/}
-                                    {/*val={this.state.pay.payment}*/}
-                                    {/*onChangeText={*/}
-                                    {/*(value)=>{*/}
-                                        {/*this.setState({pay:Object.assign(this.state.pay,{payment:value})})*/}
-                                    {/*}}*/}
-                                    {/*onCancel={*/}
-                                    {/*()=>{this.setState({pay:Object.assign(this.state.pay,{payment:null})});}*/}
-                                {/*}*/}
-                                {/*/>*/}
+                                <Text style={{color:'#343434'}}>{activity.cost}</Text>
                             </View>
                         </View>
 
@@ -244,8 +231,6 @@ class ActivityPay extends Component{
                                 支付方式:
                             </Text>
 
-                            {
-                                this.state.pay.payType=='1'?
                                     <TouchableOpacity style={{flexDirection:'row',marginLeft:20}}
                                                       onPress={()=>{
                                               var pay = this.state.pay;
@@ -255,45 +240,17 @@ class ActivityPay extends Component{
                                     }}>
                                         <Icon name={'dot-circle-o'} size={15} color="#66CDAA"/>
                                         <Text style={{marginLeft:10}}>微信支付</Text>
-                                    </TouchableOpacity>:
-                                    <TouchableOpacity style={{flexDirection:'row',marginLeft:20}}
-                                                      onPress={()=>{
-                                              var pay = this.state.pay;
-                                              pay.payType = '1';
-                                              this.setState({pay:pay});
-                        }}>
-                                        <Icon name={'circle-o'} size={15} color="#66CDAA"/>
-                                        <Text style={{marginLeft:10}}>微信支付</Text>
                                     </TouchableOpacity>
-
-                            }
 
                         </View>
 
-                        {
-                            activity.isChooseYardTime==1?
-                            <TouchableOpacity style={{flexDirection:'row',flex:3,padding:10,justifyContent:'center',alignItems: 'center'}}
-                                              onPress={()=>{
-
-                                if(this.state.pay.payment<=0){
-                                    this.payMoney();
-                                }else{
-                                     this.wechatChoosePay(this.state.pay,this.state.activity.eventId);
-                                }
-                            }}>
-                                <View style={{backgroundColor:'#66CDAA',padding:5,paddingLeft:20,paddingRight:20,borderRadius:5}}>
-                                    <Text style={{color:'#fff'}}>
-                                        确认
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>:
                                 <TouchableOpacity style={{flexDirection:'row',flex:3,padding:10,justifyContent:'center',alignItems: 'center'}}
                                                   onPress={()=>{
 
                                 if(this.state.pay.payment<=0){
                                     this.payMoney();
                                 }else{
-                                     this.wechatPay(this.state.pay,this.state.activity.eventId);
+                                     this.wechatPay(this.state.pay,activity.activityId);
                                 }
                             }}>
                                     <View style={{backgroundColor:'#66CDAA',padding:5,paddingLeft:20,paddingRight:20,borderRadius:5}}>
@@ -302,7 +259,6 @@ class ActivityPay extends Component{
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
-                        }
 
                     </ScrollView>
 

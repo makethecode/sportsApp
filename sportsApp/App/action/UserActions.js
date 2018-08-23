@@ -34,7 +34,8 @@ import {
     ON_HEIGHTWEIGHT_UPDATE,
     ON_WORKCITY_UPDATE,
     ON_COACHBRIEF_UPDATE,
-    UPDATE_PORTRAIT
+    UPDATE_PORTRAIT,
+    GET_CLUB_INFO,
 } from '../constants/UserConstants'
 
 export let updateCertificate=(payload)=>{
@@ -54,6 +55,13 @@ export let updateTrainerInfo=(payload)=>{
 export let updatePersonInfo=(payload)=>{
     return {
         type:UPDATE_PERSON_INFO,
+        payload:payload
+    }
+}
+
+export let getClubInfo=(payload)=>{
+    return {
+        type:GET_CLUB_INFO,
         payload:payload
     }
 }
@@ -1459,22 +1467,23 @@ export let wechatPay=(pay,eventId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-
-            Proxy.postes({
-                url: Config.server + '/func/node/addPaymentInfo',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: {
-                    pay:pay,
-                    eventId:parseInt(eventId)
-                }
-            }).then((json)=>{
-                if(json.re==1){
+            //
+            // Proxy.postes({
+            //     url: Config.server + '/func/node/addPaymentInfo',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: {
+            //         pay:pay,
+            //         eventId:parseInt(eventId)
+            //     }
+            // }).then((json)=>{
+            //     if(json.re==1){
 
                     var total_fee = pay.payment*100;
                     var nonce_str = Math.random().toString(36).substr(2, 15);
-                    var out_trade_no = json.data;
+                    // var out_trade_no = json.data;
+                    var out_trade_no = "201808221524";
 
                     Proxy.postes({
                         url: Config.server + '/func/node/wechatPay',
@@ -1503,17 +1512,17 @@ export let wechatPay=(pay,eventId)=>{
                         reject(e);
                     })
 
-                }
-                else{
-                    console.log('添加支付订单信息不完整');
-
-                }
-
-
-            }).catch((e)=>{
-                alert(e);
-                reject(e);
-            })
+            //     }
+            //     else{
+            //         console.log('添加支付订单信息不完整');
+            //
+            //     }
+            //
+            //
+            // }).catch((e)=>{
+            //     alert(e);
+            //     reject(e);
+            // })
 
 
         })
@@ -1600,7 +1609,10 @@ export let fetchClubList=()=>{
                 body: {
                 }
             }).then((json)=>{
-                if(json.re==1){}
+                if(json.re==1)
+                {
+                    dispatch(getClubInfo({data: json.data}));
+                }
 
                 resolve(json)
 

@@ -13,7 +13,8 @@ import {
     SET_VISIBLE_EVENTS,
     ENABLE_ACTIVITY_ONFRESH,
     DISABLE_ACTIVITY_ONFRESH,
-    SET_FIELD_TIME
+    SET_FIELD_TIME,
+    SET_MEMBER_LIST,
 } from '../constants/ActivityConstants';
 
 const initialState = {
@@ -26,7 +27,8 @@ const initialState = {
     myEvents:null,
     myTakenEvents:null,
     visibleEvents:null,
-    fieldTime:null
+    fieldTime:null,
+    memberList:null,
 };
 
 let activity = (state = initialState, action) => {
@@ -60,6 +62,10 @@ let activity = (state = initialState, action) => {
         case SET_MY_EVENTS:
             return Object.assign({}, state, {
                 myEvents:action.myEvents
+            })
+        case SET_MEMBER_LIST:
+            return Object.assign({}, state, {
+                memberList:action.memberList
             })
         case SET_MY_TAKEN_EVENTS:
             return Object.assign({}, state, {

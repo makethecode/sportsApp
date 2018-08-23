@@ -15,10 +15,7 @@ import {
     Easing,
     ToastAndroid
 } from 'react-native';
-
 import {connect} from 'react-redux';
-var {height, width} = Dimensions.get('window');
-
 import DateFilter from '../../utils/DateFilter';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AddActivity from './AddActivity';
@@ -28,20 +25,26 @@ import ActivityPay from './ActivityPay';
 import ChooseField from './ChooseField';
 import GroupJPush from './GroupJPush';
 import goFieldOrder from './FieldOrder'
+import activityMember from './ActivityMember';
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
-const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
-const scaleAnimation = new ScaleAnimation();
-const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 import QrcodeModal from './QrcodeModal';
 import {
-    fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity
+    fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,deleteActivity,
 } from '../../action/ActivityActions';
 
 import {getAccessToken,} from '../../action/UserActions';
 import WechatShare from '../WechatShare';
-var WeChat=require('react-native-wechat');
-
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
+import AssortFilter from '../../utils/AssortFilter'
+import ModalDropdown from 'react-native-modal-dropdown';
+
+var WeChat=require('react-native-wechat');
+var {height, width} = Dimensions.get('window');
+
+const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
+const scaleAnimation = new ScaleAnimation();
+const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+
 /**
  * 群活动
  */
@@ -104,6 +107,19 @@ class Activity extends Component {
         }
     }
 
+    navigate2ActivityMember(activityId){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'activityMember',
+                component: activityMember,
+                params: {
+                    activityId:activityId
+                }
+            })
+        }
+    }
+
     navigate2MyActivity(myEvents,flag){
         const { navigator } = this.props;
         if(navigator) {
@@ -148,7 +164,7 @@ class Activity extends Component {
             })
     }
 
-    navigate2ActivityPay(event)
+    navigate2ActivityPay(activity)
     {
         const { navigator } = this.props;
         if(navigator) {
@@ -156,7 +172,7 @@ class Activity extends Component {
                 name: 'ActivityPay',
                 component: ActivityPay,
                 params: {
-                    activity:event
+                    activity:activity
                 }
             })
         }
@@ -256,241 +272,128 @@ class Activity extends Component {
 
     renderRow(rowData,sectionId,rowId){
 
-        switch(rowData.costType){
-            case '1':rowData.costType = '按每人收费'; break;
-            case '2':rowData.costType = '按每小时收费'; break;
-            case '3':rowData.costType = '总费用'; break;
-            case '4':rowData.costType = '按每人次收费'; break;
-            case '5':rowData.costType = '按每人每小时收费'; break;
-            case '6':rowData.costType = '按场地小时收费'; break;
-
-        }
-
-        var str=rowData.eventMember;
-        var members=new Array();
-        members=str.split(",");
-        if(members[0]==""){
-            var eventNowMemNum=0;
-        }else{
-            var eventNowMemNum=members.length;
-        }
-
-        var flag=1;
         var row=(
             <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
                     <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
                         <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
                     </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',marginLeft:5}}>
-                        <View>
-                            {/*<Text>{rowData.eventManager.username}</Text>*/}
-                        </View>
-                    </View>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'flex-end'}}>
-                        {
-                            rowData.eventType==0?null:
-                                <Text>组内活动</Text>
-                        }
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
+
+                        <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>组织者</Text></View>
+                                <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.creatorName}</Text>
                     </View>
 
-
-                    {rowData.isNeedCoach!==undefined&&rowData.isNeedCoach==1?
-                        <View style={{flex:2,justifyContent:'center',alignItems: 'flex-end',marginRight:15}}>
-                            <Text>指定教练</Text>
-                        </View> :null
-                    }
-
-
-
-
-                     <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
-                     onPress={()=>{
-                     this.sharetoSomeone.show();
-                     this.state.share=rowData;
-                     }}>
-                     <Text style={{marginRight:5,color:'#66CDAA'}}>分享</Text>
-                     <Icon name={'angle-right'} size={25} color="#66CDAA"/>
-                     </TouchableOpacity>
-
-
-
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        {
-                            rowData.isHasPay==1 && rowData.isHasPay!=null && rowData.isHasPay!=undefined && rowData.isSignUp==1?
-                                <View>
-                                            <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                              onPress={()=>{this.usernameDialog.show()}}>
-                                                <Text style={{color:'#f00',fontSize:12}}>已支付</Text>
-                                            </TouchableOpacity>
-                                </View>:
-                                <View>
-                                    {
-                                        ( rowData.isHasPay==0 || rowData.isHasPay==null || rowData.isHasPay==undefined )&& rowData.isSignUp==1?
-                                            <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                              onPress={()=>{this.isActivityPay(rowData)}}>
-                                                <Text style={{color:'#f00',fontSize:12}}>未支付</Text>
-                                            </TouchableOpacity>:
-                                            null
-                                    }
-
-                                </View>
-                        }
-
-
-                    </View>
+                     <View style={{flex:2,marginRight:3,justifyContent:'center',alignItems:'flex-end'}}>
+                         {
+                             rowData.isOngoing==1?
+                                 <View style={{flexDirection:'row'}}>
+                                     <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>接受报名中</Text></View>
+                                     <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',padding:5,marginLeft:5}}
+                                                       onPress={()=>{this.deleteActivity(rowData.activityId)}}>
+                                         <Image style={{width: 20, height: 20}} source={require('../../../img/delete_icon.png')}></Image>
+                                     </TouchableOpacity>
+                                 </View> :
+                                 <View style={{flexDirection:'row'}}>
+                                 <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>活动已结束</Text></View>
+                                     <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',padding:5,marginLeft:5}}
+                                                       onPress={()=>{this.deleteActivity(rowData.activityId)}}>
+                                         <Image style={{width: 20, height: 20}} source={require('../../../img/delete_icon.png')}></Image>
+                                     </TouchableOpacity>
+                                 </View>
+                         }
+                     </View>
 
                 </View>
                 <View style={{flex:3,padding:10}}>
                     <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'star'} size={16} color="#66CDAA"/>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
+                            <Text style={{color:'#ffffff'}}>名称</Text>
                         </View>
-                        <View style={{flex:7}}>
-                            <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.eventName}</Text>
+                        <View style={{flex:7,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.name}</Text>
                         </View>
+                    </View>
 
-                    </View>
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#ffffff',borderRadius:5,padding:5}}>
+                            <Text style={{color:'#66CDAA'}}>地点</Text>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.eventPlaceName}</Text>
-                    </View>
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                        <View style={{flex:7,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.placeName}</Text>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'时间:'+rowData.startTimeStr+'---'+rowData.endTimeStr}
-                        </Text>
+                    </View>
+
+                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
+                            <Text style={{color:'#ffffff'}}>时间</Text>
+                        </View>
+                        <View style={{flex:7,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.timeStart+'--'+rowData.timeEnd.substring(11,19)}</Text>
+                        </View>
                     </View>
                     {
-                        rowData.eventBrief!=undefined&&rowData.eventBrief!=null&&rowData.eventBrief!=''?
-                        <View style={{flexDirection:'row',marginBottom:3}}>
-
-                            <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                <Icon name={'circle'} size={10} color="#aaa"/>
+                        rowData.brief!=undefined&&rowData.brief!=null&&rowData.brief!=''?
+                            <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
+                                    <Text style={{color:'#66CDAA'}}>简介</Text>
+                                </View>
+                                <View style={{flex:7,padding:5,marginLeft:5}}>
+                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.brief}</Text>
+                                </View>
                             </View>
-                            <Text
-                                style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                                {'比赛简介：' + rowData.eventBrief}
-                            </Text>
-                        </View>:
-                            <View style={{flexDirection:'row',marginBottom:3}}>
-
-                            <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                <Icon name={'circle'} size={10} color="#aaa"/>
+                            :
+                            <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
+                                    <Text style={{color:'#66CDAA'}}>简介</Text>
+                                </View>
+                                <View style={{flex:7,padding:5,marginLeft:5}}>
+                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>无</Text>
+                                </View>
                             </View>
-                            <Text
-                                style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                                {'比赛简介：' + '无'}
-                            </Text>
-                        </View>
                     }
 
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
+                            <Text style={{color:'#ffffff'}}>费用</Text>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'场地数目：'+rowData.yardNum}
-                        </Text>
+                        <View style={{flex:7,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.cost}元/人</Text>
+                        </View>
                     </View>
 
 
                 </View>
                 <View style={{flex:1,flexDirection:'row',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        {
-                            rowData.eventNowMemNum!=null?
-                                <Text style={{color:'#aaa',fontSize:13}}>已报名:{rowData.eventNowMemNum}</Text>:
-                                <Text style={{color:'#aaa',fontSize:13}}>已报名:暂无</Text>
-                        }
 
+                    <View style={{flexDirection:'row',flex:2.5,alignItems:'flex-start'}}>
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
+
+                        <View style={{backgroundColor:'#ffffff',borderRadius:5,padding:5}}><Text style={{color:'#fca482'}}>已报名</Text></View>
+                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.nowNumber}/{rowData.maxNumber}人</Text>
                     </View>
 
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
 
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#aaa',fontSize:13}}>已支付:{rowData.costTotal}</Text>
+                        <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>已支付</Text></View>
+                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.nowPayment}元</Text>
                     </View>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center'}}>
-
                     </View>
 
-                    {
-                        rowData.isSignUp==0 ?
-                            <View>
-                            {
-                                rowData.isChooseYardTime==1?
-                                <View >
-                                    {
-                                        rowData.isChooseYardTime==1?
-                                <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                  onPress={()=>{this.navigate2ActivityChooseField(rowData)}}>
-                                    <Text style={{color:'#f00',fontSize:12}}>我要报名</Text>
-                                </TouchableOpacity>:
-                                    <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}>
-                                        <Text style={{color:'#f00',fontSize:12}}>我要报名</Text>
-                                    </TouchableOpacity>
-                                    }
-                                </View>:
-                                    <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                      onPress={()=>{this.signUpActivity(rowData,eventNowMemNum)}}>
-                                        <Text style={{color:'#f00',fontSize:12}}>我要报名</Text>
-                                    </TouchableOpacity>
-                    }
-
-                            </View>:
-
-                            <View>
-                                {
-                                    rowData.isHasPay==0||rowData.isHasPay==null?
-                                        <View>
-                                                    <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                                                      onPress={()=>{this.exitActivity(rowData)}}>
-                                                        <Text style={{color:'#f00',fontSize:12}}>取消报名</Text>
-                                                    </TouchableOpacity>
-                                        </View>:
-                                        <View>
-                                        <TouchableOpacity style={{flex:2,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'
-                    ,borderRadius:6}}
-                                        >
-                                            <Text style={{color:'#f00',fontSize:12}}>报名成功</Text>
-                                        </TouchableOpacity>
-                                        </View>
-
-                                }
-
-                            </View>
-                    }
+                    <View style={{justifyContent:'flex-end',flexDirection:'row',flex:1}}>
+                    <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
+                                      onPress={()=>{this.navigate2ActivityMember(rowData.activityId)}}
+                    >
+                    <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>查看</Text></View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
+                                      onPress={()=>{this.navigate2ActivityPay(rowData)}}
+                    >
+                    <View style={{backgroundColor:'#fff',borderRadius:5,padding:5}}><Text style={{color:'#fc6254'}}>收款</Text></View>
+                    </TouchableOpacity>
+                    </View>
 
                 </View>
-
-
-                <View style={{flex:1,height:30,flexDirection:'row',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
-
-                    {
-                        rowData.eventMember!=null&&rowData.eventMember!=undefined&&rowData.eventMember!=""?
-                            <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                                <Text style={{color:'#f00',fontSize:13}}>已报名用户:{rowData.eventMember}</Text>
-                            </View>:
-                            <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                                <Text style={{color:'#f00',fontSize:13}}>已报名用户:暂 无</Text>
-                            </View>
-
-                    }
-
-                </View>
-
-
-
             </View>
         );
         return row;
@@ -537,11 +440,14 @@ class Activity extends Component {
         this.state.doingFetch=true;
         this.state.isRefreshing=true;
         this.props.dispatch(fetchActivityList()).then((json)=> {
+            if(json.re==1){
+                this.setState({activityList:json.data})
+            }
             if(json.re==-100){
                 this.props.dispatch(getAccessToken(false));
             }
             this.props.dispatch(disableActivityOnFresh());
-            this.setState({doingFetch:false,isRefreshing:false})
+            this.setState({doingFetch:false,isRefreshing:false,})
         }).catch((e)=>{
             this.props.dispatch(disableActivityOnFresh());
             this.setState({doingFetch:false,isRefreshing:false});
@@ -563,42 +469,40 @@ class Activity extends Component {
                 memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,costTotal:null,isSignUp:null,eventMember:null,isNeedCoach:null,isNeedSparring:null,isHasPay:null,
                 ManagerLoginName:null,groupName:null,groupId:null,cost:null,costType:null,field:null,filedNum:null,time:{startTime:null,endTime:null,eventWeek:null,isSchedule:null,},},
 
+            statusList:['报名中','已结束','全部'],
+            dateList:['今天','明天','后天','一周内','全部'],
+            currentStatus:'状态',
+            currentDate:'日期',
+            showStatusDropDown:false,
+            showDateDropDown:false,
+            activityList:[],
+            activityStatusList:[],
+            activityDateList:[],
+            isChooseDate:false,
+            isChooseStatus:false,
         }
     }
 
     render() {
 
+        let statusicon = this.state.showStatusDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+        let dateicon = this.state.showDateDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
 
-        this.state.event.eventId='244';
-        this.state.event.eventMaxMemNum='100';
-        this.state.event.cost=15;
-        this.state.event.eventName='周末日常活动';
-        this.state.event.eventBrief='周末日常活动';
-        this.state.event.eventPlaceName='山东大学-宇宙级羽毛球馆';
-        this.state.event.startTimeStr='2017-11-18 08:00-2017-12-18 17:00'
         var activityListView=null;
         var {activityList,activityOnFresh,visibleEvents,myEvents,myTakenEvents}=this.props;
-        //this.state.myTakenEvents.isSignUp=myTakenEvents.isSignUp;
         if(activityOnFresh==true)
         {
             if(this.state.doingFetch==false)
                 this.fetchData();
         }else {
-            // myTakenEvents.map((myTakenEvents,i)=>{
-            //     // this.state.myTakenEvents.isSignUp=myTakenEvents.isSignUp;
-            //     // this.state.myTakenEvents.eventName=myTakenEvents.eventName;
-            //     // this.state.myTakenEvents.eventBrief=myTakenEvents.eventBrief;
-            //     this.state.myTakenEvents=myTakenEvents;
-            // })
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            var allActivityList = this.props.activityList;
-            //if (visibleEvents !== undefined && visibleEvents !== null && visibleEvents.length > 0) {
+            var allActivityList = this.state.activityList;
             if (allActivityList !== undefined && allActivityList !== null && allActivityList.length > 0) {
+                var allActivityListAfterFilter = allActivityList;
                 activityListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        //dataSource={ds.cloneWithRows(visibleEvents)}
-                        dataSource={ds.cloneWithRows(allActivityList)}
+                        dataSource={ds.cloneWithRows(AssortFilter.filter(allActivityListAfterFilter,this.props.clubId,this.props.venueId,this.props.typeId))}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
@@ -608,124 +512,71 @@ class Activity extends Component {
         return (
 
             <View style={{flex:1}}>
-
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>群活动</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
-                        <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                          onPress={()=>{this.navigate2goFieldOrder();}}>
-                            <Text style={{color:'#fff',fontSize:18}}>场地预约</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                    {/*<View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>*/}
-                            {/*<View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>*/}
-                                {/*<Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>*/}
-                            {/*</View>*/}
-                            {/*<View style={{marginTop:10,width:200}}>*/}
-                                {/*<View style={{flex:3,flexDirection:'row',marginBottom:0}}>*/}
-                                    {/*<View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>*/}
-                                        {/*<Icon name={'star'} size={16} color="#66CDAA"/>*/}
-                                    {/*</View>*/}
-                                    {/*<View style={{flex:7}}>*/}
-                                        {/*<Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventName}</Text>*/}
-                                    {/*</View>*/}
-                                {/*</View>*/}
-                                {/*<View style={{flex:3,flexDirection:'row',marginBottom:0}}>*/}
-                                    {/*<View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>*/}
-                                        {/*<Icon name={'circle'} size={12} color="#aaa"/>*/}
-                                    {/*</View>*/}
-                                    {/*<View style={{flex:7}}>*/}
-                                        {/*<Text style={{color:'#000',justifyContent:'flex-start',alignItems: 'center'}}>{this.state.myTakenEvents.eventPlaceName}</Text>*/}
-                                    {/*</View>*/}
-                                {/*</View>*/}
-                                {/*<View style={{width:140,justifyContent:'center',alignItems: 'center'}}>*/}
-                                    {/*<View>*/}
-                                        {/*<Text style={{color:'#343434'}}>{this.state.myTakenEvents.eventBrief}</Text>*/}
-                                    {/*</View>*/}
-                                {/*</View>*/}
-                            {/*</View>*/}
-
-
-
-
-                        {/*<View style={{flex:2,flexDirection:'column',justifyContent:'center',alignItems: 'center',marginLeft:20}}>*/}
-                            {/*{*/}
-                                {/*this.state.myTakenEvents.money!=0 && this.state.myTakenEvents.money!=null && this.state.myTakenEvents.money!=undefined && this.state.myTakenEvents.isSignUp==1?*/}
-                                    {/*<View>*/}
-                                        {/*<TouchableOpacity style={{height:25,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'*/}
-                    {/*,borderRadius:6}}*/}
-                                                          {/*onPress={()=>{this.usernameDialog.show()}}>*/}
-                                            {/*<Text style={{color:'#f00',fontSize:12}}>已支付</Text>*/}
-                                        {/*</TouchableOpacity>*/}
-                                    {/*</View>:*/}
-                                    {/*<View>*/}
-                                        {/*{*/}
-                                            {/*( this.state.myTakenEvents.Money==0 || this.state.myTakenEvents.Money==null || this.state.myTakenEvents.Money==undefined )&& this.state.myTakenEvents.isSignUp==1?*/}
-                                                {/*<TouchableOpacity style={{height:25,marginBottom:10,borderWidth:1,borderColor:'#66CDAA',padding:7,justifyContent:'center',alignItems:'center'*/}
-                    {/*,borderRadius:6}}*/}
-                                                                  {/*onPress={()=>{this.isActivityPay(this.state.myTakenEvents)}}>*/}
-                                                    {/*<Text style={{color:'#f00',fontSize:12}}>未支付</Text>*/}
-                                                {/*</TouchableOpacity>:*/}
-                                                {/*null*/}
-                                        {/*}*/}
-
-                                    {/*</View>*/}
-                            {/*}*/}
-
-
-
-                            {/*{*/}
-                                {/*this.state.myTakenEvents.isSignUp==0 ?*/}
-                                    {/*<View>*/}
-                                        {/*{*/}
-
-                                                {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
-                    {/*,borderRadius:6}}*/}
-                                                                  {/*onPress={()=>{this.signUpActivity(this.state.myTakenEvents,1)}}>*/}
-                                                    {/*<Text style={{color:'#f00',fontSize:12}}>我要报名</Text>*/}
-                                                {/*</TouchableOpacity>*/}
-                                        {/*}*/}
-
-                                    {/*</View>:*/}
-
-                                    {/*<View>*/}
-                                        {/*{*/}
-                                            {/*this.state.myTakenEvents.money==0||this.state.myTakenEvents.money==null?*/}
-                                                {/*<View>*/}
-                                                    {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
-                    {/*,borderRadius:6}}*/}
-                                                                      {/*onPress={()=>{this.exitActivity(this.state.myTakenEvents)}}*/}
-                                                    {/*>*/}
-                                                        {/*<Text style={{color:'#f00',fontSize:12}}>取消报名</Text>*/}
-                                                    {/*</TouchableOpacity>*/}
-                                                {/*</View>:*/}
-                                                {/*<View>*/}
-                                                    {/*<TouchableOpacity style={{height:30,borderWidth:1,borderColor:'#66CDAA',padding:5,justifyContent:'center',alignItems:'center'*/}
-                    {/*,borderRadius:6}}*/}
-                                                    {/*>*/}
-                                                        {/*<Text style={{color:'#f00',fontSize:12}}>报名成功</Text>*/}
-                                                    {/*</TouchableOpacity>*/}
-                                                {/*</View>*/}
-
-                                        {/*}*/}
-
-                                    {/*</View>*/}
-                            {/*}*/}
-                        {/*</View>*/}
-
-                    {/*</View>*/}
-
+                <Toolbar width={width} title="群活动" actions={[]} navigator={this.props.navigator}>
                     {/*内容区*/}
+                    <View style={{flexDirection:'row',}}>
+                    <View style={[styles.siftWrapper, {zIndex: 1},{flex:1}]}>
+                        <ModalDropdown
+                            style={styles.siftCell}
+                            textStyle={styles.orderByFont}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.statusList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
+                        >
+                            <View style={styles.siftCell}>
+                                <Text style={styles.orderByFont}>
+                                    {this.state.currentStatus}
+                                </Text>
+                                <Image
+                                    style={{width: 16, height: 16}}
+                                    source={statusicon}
+                                />
+                            </View>
+                        </ModalDropdown>
+                    </View>
+
+                        <View style={[styles.siftWrapper, {zIndex: 1},{flex:1}]}>
+                            <ModalDropdown
+                                style={styles.siftCell}
+                                textStyle={styles.orderByFont}
+                                dropdownStyle={styles.dropdownstyle2}
+                                options={this.state.dateList}
+                                renderRow={this.dropdown_renderRow.bind(this)}
+                                onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
+                                onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
+                                onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
+                            >
+                                <View style={styles.siftCell}>
+                                    <Text style={styles.orderByFont}>
+                                        {this.state.currentDate}
+                                    </Text>
+                                    <Image
+                                        style={{width: 16, height: 16}}
+                                        source={dateicon}
+                                    />
+                                </View>
+                            </ModalDropdown>
+                        </View>
+
+                        <View style={{alignItems:'flex-end',justifyContent:'center',paddingHorizontal:10,flex:3}}>
+                        <TouchableOpacity
+                            onPress={()=>{this.navigate2AddActivity()}}
+                        >
+                        <Image
+                            source={ require('../../../img/create_activity.png')}
+                            style={{width:30,height:30}}
+                            resizeMode={"stretch"}
+                        />
+                        </TouchableOpacity>
+                        </View>
+
+                    </View>
+
                     <View style={{flex:5,backgroundColor:'#eee'}}>
-                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-130,paddingTop:5,paddingBottom:5,}}>
                             <ScrollView
                                 refreshControl={
                                 <RefreshControl
@@ -753,88 +604,275 @@ class Activity extends Component {
                         </Animated.View>
                     </View>
 
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',
-                            position:'absolute',bottom:8}}>
-                        <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
-                            padding:10,margin:5}} onPress={()=>{this.navigate2MyActivity(myEvents,'我的活动');}}>
-                            <Text style={{color:'#fff',}}>我发起的活动</Text>
-                        </TouchableOpacity>
+                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',*/}
+                            {/*position:'absolute',bottom:8}}>*/}
+                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',*/}
+                            {/*padding:10,margin:5}} onPress={()=>{this.navigate2MyActivity(myEvents,'我的活动');}}>*/}
+                            {/*<Text style={{color:'#fff',}}>我发起的活动</Text>*/}
+                        {/*</TouchableOpacity>*/}
 
-                        <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
-                            padding:10,margin:5}} onPress={()=>{this.navigate2AddActivity();}}>
-                            <Text style={{color:'#fff',}}>我要创建活动</Text>
-                        </TouchableOpacity>
-                    </View>
-
-
-                    <View style={{height:50,width:50,borderRadius:25,position:'absolute',bottom:8,left:width*0.5-25}}>
-                        <TouchableOpacity style={{flex:1,backgroundColor:'#fff',justifyContent:'center',alignItems: 'center',padding:5,
-                        borderWidth:1,borderColor:'#eee',borderRadius:50}}
-                        >
-                            <Icon name={'plus-circle'} size={35} color='#66CDAA'/>
-                        </TouchableOpacity>
-                    </View>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.usernameDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <QrcodeModal
-                            onClose={()=>{
-                                this.usernameDialog.dismiss();
-                            }}
-                        />
-
-                    </PopupDialog>
+                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',*/}
+                            {/*padding:10,margin:5}} onPress={()=>{this.navigate2AddActivity();}}>*/}
+                            {/*<Text style={{color:'#fff',}}>我要创建活动</Text>*/}
+                        {/*</TouchableOpacity>*/}
+                    {/*</View>*/}
 
 
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.sharetoSomeone = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.25}
-                    >
-                    <View style={{flex:1,padding:10,alignItems:"center",flexDirection:"row",justifyContent:"center"}}>
+                    {/*<View style={{height:50,width:50,borderRadius:25,position:'absolute',bottom:8,left:width*0.5-25}}>*/}
+                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#fff',justifyContent:'center',alignItems: 'center',padding:5,*/}
+                        {/*borderWidth:1,borderColor:'#eee',borderRadius:50}}*/}
+                        {/*>*/}
+                            {/*<Icon name={'plus-circle'} size={35} color='#66CDAA'/>*/}
+                        {/*</TouchableOpacity>*/}
+                    {/*</View>*/}
 
-                        <View style={{flex:1,flexDirection:"column",alignItems:"center"}}>
-                            <TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}
-                                onPress={()=>{
-                                    this.sharetoSomeone.dismiss();
-                                    this.sharetoperson(this.state.share);
+                    {/*<PopupDialog*/}
+                        {/*ref={(popupDialog) => {*/}
+                        {/*this.usernameDialog = popupDialog;*/}
+                    {/*}}*/}
+                        {/*dialogAnimation={scaleAnimation}*/}
+                        {/*actions={[]}*/}
+                        {/*width={0.8}*/}
+                        {/*height={0.3}*/}
+                    {/*>*/}
 
-                                }}
-                            >
-                            <Icon name={'user-circle'} size={45} color='#00CD00'/>
-                            <Text>好友</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{flex:1,flexDirection:"column",alignItems:"center"}}>
-                            <TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}
-                                onPress={()=>{
-                                    this.sharetoPyq(this.state.share);
-                                    this.sharetoSomeone.dismiss();
-                                }}
-                            >
-                            <Icon name={'wechat'} size={45} color='#00CD00'/>
-                            <Text>朋友圈</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {/*<QrcodeModal*/}
+                            {/*onClose={()=>{*/}
+                                {/*this.usernameDialog.dismiss();*/}
+                            {/*}}*/}
+                        {/*/>*/}
 
-                    </View>
+                    {/*</PopupDialog>*/}
 
 
-                    </PopupDialog>
+                    {/*<PopupDialog*/}
+                        {/*ref={(popupDialog) => {*/}
+                        {/*this.sharetoSomeone = popupDialog;*/}
+                    {/*}}*/}
+                        {/*dialogAnimation={scaleAnimation}*/}
+                        {/*actions={[]}*/}
+                        {/*width={0.8}*/}
+                        {/*height={0.25}*/}
+                    {/*>*/}
+                    {/*<View style={{flex:1,padding:10,alignItems:"center",flexDirection:"row",justifyContent:"center"}}>*/}
+
+                        {/*<View style={{flex:1,flexDirection:"column",alignItems:"center"}}>*/}
+                            {/*<TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}*/}
+                                {/*onPress={()=>{*/}
+                                    {/*this.sharetoSomeone.dismiss();*/}
+                                    {/*this.sharetoperson(this.state.share);*/}
+
+                                {/*}}*/}
+                            {/*>*/}
+                            {/*<Icon name={'user-circle'} size={45} color='#00CD00'/>*/}
+                            {/*<Text>好友</Text>*/}
+                            {/*</TouchableOpacity>*/}
+                        {/*</View>*/}
+                        {/*<View style={{flex:1,flexDirection:"column",alignItems:"center"}}>*/}
+                            {/*<TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}*/}
+                                {/*onPress={()=>{*/}
+                                    {/*this.sharetoPyq(this.state.share);*/}
+                                    {/*this.sharetoSomeone.dismiss();*/}
+                                {/*}}*/}
+                            {/*>*/}
+                            {/*<Icon name={'wechat'} size={45} color='#00CD00'/>*/}
+                            {/*<Text>朋友圈</Text>*/}
+                            {/*</TouchableOpacity>*/}
+                        {/*</View>*/}
+
+                    {/*</View>*/}
+                    {/*</PopupDialog>*/}
+                </Toolbar>
             </View>
         );
+    }
+
+    dropdown_renderRow(rowData, rowID, highlighted){
+        return (
+            <TouchableOpacity >
+                <View style={[styles.dropdownrowstyle]}>
+                    <Text style={[styles.dropdownFont, highlighted && {color: 'mediumaquamarine'}]}>
+                        {rowData}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    dropdown_1_onSelect(idx, value) {
+        this.setState({
+            currentStatus:value,
+        });
+
+        var resList = [];
+        var statusList = [];
+        var dateList = this.state.activityDateList;
+        var activityList = this.props.activityList;
+
+        switch (idx){
+            case '0':
+                //接受报名中
+                for(i=0;i<activityList.length;i++)
+                    if(activityList[i].isOngoing==1)statusList.push(activityList[i]);
+                break;
+            case '1':
+                //已结束
+                for(i=0;i<activityList.length;i++)
+                    if(activityList[i].isOngoing==0)statusList.push(activityList[i]);
+                break;
+            case '2':
+                //全部
+                statusList=activityList;
+                break;
+        }
+
+        if(this.state.isChooseDate){
+            for(i=0;i<statusList.length;i++)
+                for(j=0;j<dateList.length;j++)
+                    if(statusList[i].activityId==dateList[j].activityId)
+                    {resList.push(statusList[i]);break;}
+        }else{resList=statusList;}
+
+        this.setState({activityStatusList:statusList,activityList:resList,isChooseStatus:true})
+    }
+
+    dropdown_1_willShow() {
+        this.setState({
+            showStatusDropDown:true,
+        });
+    }
+
+    dropdown_1_willHide() {
+        this.setState({
+            showStatusDropDown:false,
+        });
+    }
+
+    dropdown_2_onSelect(idx, value) {
+        this.setState({
+            currentDate:value,
+        });
+
+        var resList = [];
+        var statusList = this.state.activityStatusList;
+        var dateList = [];
+        var activityList = this.props.activityList;
+
+        var now   = new Date();
+        var selectedDate = new Date();
+
+        switch (idx){
+            case '0':
+                //今天
+                selectedDate.setDate(now.getDate());
+
+                for(i=0;i<activityList.length;i++){
+                    var activity_time = activityList[i].timeStart.substring(0,10)
+                    var selected_time = this.getNowFormatDate(selectedDate)
+
+                    if(activity_time == selected_time)
+                        dateList.push(activityList[i])
+                }
+                break;
+            case '1':
+                //明天
+                selectedDate.setDate(now.getDate()+1);
+
+                for(i=0;i<activityList.length;i++){
+                    var activity_time = activityList[i].timeStart.substring(0,10)
+                    var selected_time = this.getNowFormatDate(selectedDate)
+
+                    if(activity_time == selected_time)
+                        dateList.push(activityList[i])
+                }
+                break;
+            case '2':
+                //后天
+                selectedDate.setDate(now.getDate()+2);
+
+                for(i=0;i<activityList.length;i++){
+                    var activity_time = activityList[i].timeStart.substring(0,10)
+                    var selected_time = this.getNowFormatDate(selectedDate)
+
+                    if(activity_time == selected_time)
+                        dateList.push(activityList[i])
+                }
+                break;
+            case '3':
+                //一周内
+                selectedDate.setDate(now.getDate()+7);
+
+                for(i=0;i<activityList.length;i++){
+                    var activity_time = activityList[i].timeStart.substring(0,10)
+
+                    var start_time = this.getNowFormatDate(now)
+                    var end_time = this.getNowFormatDate(selectedDate)
+
+                    if(activity_time >= start_time && activity_time <= end_time)
+                        dateList.push(activityList[i])
+                }
+                break;
+            case '4':
+                //全部
+                dateList=activityList;
+                break;
+        }
+
+        if(this.state.isChooseStatus){
+            for(i=0;i<statusList.length;i++)
+                for(j=0;j<dateList.length;j++)
+                    if(statusList[i].activityId==dateList[j].activityId)
+                    {resList.push(statusList[i]);break;}
+        }else{resList=dateList;}
+
+        this.setState({activityDateList:dateList,activityList:resList,isChooseDate:true})
+    }
+
+    dropdown_2_willShow() {
+        this.setState({
+            showDateDropDown:true,
+        });
+    }
+
+    dropdown_2_willHide() {
+        this.setState({
+            showDateDropDown:false,
+        });
+    }
+
+    componentWillUnmount(){
+        this.props.dispatch(enableActivityOnFresh());
+    }
+
+    //时间格式YYYY-MM-DD
+    getNowFormatDate(date) {
+    var seperator1 = "-";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var formatdate = year + seperator1 + month + seperator1 + strDate;
+    return formatdate;
+}
+
+    deleteActivity(idActivity)
+    {
+        this.props.dispatch(deleteActivity(idActivity)).then((json)=>{
+            if(json.re==1){
+                alert('活动撤销成功！');
+                this.props.dispatch(enableActivityOnFresh());
+            }else{
+                if(json.re==-100){
+                    this.props.dispatch(getAccessToken(false));
+                }
+            }
+        });
+
     }
 
 }
@@ -843,7 +881,79 @@ var styles = StyleSheet.create({
     container: {
 
     },
-
+    siftWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        backgroundColor: '#fff',
+        height: 44,
+        borderBottomColor: '#cdcdcd',
+    },
+    viewWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        backgroundColor: '#f5f5f5',
+        height: 50,
+        borderBottomColor: '#cdcdcd',
+    },
+    siftCell: {
+        height: 44,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    viewCell: {
+        height: 50,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+    },
+    orderByFont: {
+        color:'#5c5c5c',
+        marginRight: 5
+    },
+    paymentItem: {
+        height: 80,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 15,
+        backgroundColor: '#fff',
+    },
+    dropdownstyle: {
+        height: 120,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#cdcdcd',
+        borderWidth: 0.7,
+        width:80,
+    },
+    dropdownstyle2: {
+        height: 200,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#cdcdcd',
+        borderWidth: 0.7,
+        width:100,
+    },
+    dropdownFont: {
+        color:'#5c5c5c',
+        marginRight: 5,
+        marginLeft:5,
+    },
+    dropdownrowstyle: {
+        height: 40,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    sortdropdownstyle: {
+        height: 133,
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#cdcdcd',
+        borderWidth: 0.7,
+        width:120,
+    },
 });
 
 

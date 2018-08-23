@@ -56,7 +56,7 @@ class Found extends Component{
     constructor(props) {
         super(props);
         this.state={
-
+            venues:this.props.venues,
         }
     }
 
@@ -122,7 +122,7 @@ var styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
 
     const props = {
-
+        venues:state.map.venues,
     }
     return props
 }

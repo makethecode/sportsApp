@@ -28,7 +28,7 @@ import {
     ON_COACHPHTOTO2_UPDATE,
     ON_COACHPHTOTO3_UPDATE,
     GET_UNIONID_INFO,
-
+    GET_CLUB_INFO,
 
 } from '../constants/UserConstants';
 
@@ -42,7 +42,7 @@ const initialState = {
     trainer: {},
     personInfoAuxiliary: null,
     unionid: null,
-
+    club:{},
 };
 
 let user = (state = initialState, action) => {
@@ -201,6 +201,11 @@ let user = (state = initialState, action) => {
             return Object.assign({},state,  {
                 unionid: unionid
             });
+        case GET_CLUB_INFO:
+            var data = action.payload;
+            return Object.assign({}, state, {
+                club: data
+            })
             break;
 
         default:

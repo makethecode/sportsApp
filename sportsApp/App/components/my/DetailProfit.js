@@ -186,7 +186,7 @@ class DetailProfit extends Component {
                 </View>
 
                <View style={{padding:10,marginLeft:8,flexDirection:'row',alignItems:'center' }}>
-                   <Button title="选择时间" onPress={this.openCalendar}></Button>
+                   <Button title="选择时间" onPress={this.openCalendar} ></Button>
                    <Calendar
                        i18n="en"
                        ref={(calendar) => {this.calendar = calendar;}}

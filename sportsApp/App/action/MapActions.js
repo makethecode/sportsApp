@@ -6,7 +6,8 @@ import Proxy from '../utils/Proxy'
 
 
 import {
-    UPDATE_MAP_CENTER
+    UPDATE_MAP_CENTER,
+    ON_VENUE_INFO,
 } from '../constants/MapConstants';
 
 import {
@@ -22,6 +23,12 @@ export let updateMapCenter=(center)=>{
     }
 }
 
+export let getVenueInfo=(payload)=>{
+    return {
+        type:ON_VENUE_INFO,
+        payload:payload
+    }
+}
 
 export let geocode=(city,address)=>{
     return new Promise((resolve, reject) => {
@@ -94,7 +101,9 @@ export let fetchMaintainedVenue=(unitId)=>{
                     unitId:unitId
                 }
             }).then((json)=>{
-                if(json.re==1){}
+                if(json.re==1){
+                    dispatch(getVenueInfo({data: json.data}));
+                }
 
                 resolve(json)
 
@@ -193,3 +202,4 @@ export let fetchVenueByClub=(clubId)=>{
         })
     }
 }
+

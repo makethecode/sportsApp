@@ -220,6 +220,7 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
         coaches:state.coach.coaches,
+        venues:state.map.venues,
     })
 )(SelectVenue);
 

@@ -14,7 +14,8 @@ import {
     SET_MY_EVENTS,
     SET_MY_TAKEN_EVENTS,
     SET_VISIBLE_EVENTS,
-    SET_FIELD_TIME
+    SET_FIELD_TIME,
+    SET_MEMBER_LIST,
 } from '../constants/ActivityConstants';
 
 //发布群活动
@@ -29,45 +30,20 @@ export let releaseActivity=(event)=>{
             var personMobilePhone = state.user.personInfo.mobilePhone;
 
             var params={
-                eventManagerId:personId,
-                eventManagerName:personName,
-                eventManagerPhone:personMobilePhone,
-                eventName:event.eventName,
-                eventType:event.eventType=='组内'?1:0,
-                eventBrief:event.eventBrief,
-                eventPlaceId:event.unitId,
-                eventPlaceName:event.eventPlace,
-                placeYardStr:event.field,
-                eventMaxMemNum:event.eventType=='公开'?parseInt(event.eventMaxMemNum):100,
-                coachId:parseInt(event.coachId),
-                coachName:event.coachName,
-                coachPhone:event.coachPhone,
-                sparringId:parseInt(event.sparringId),
-                sparringName:event.sparringName,
-                sparringPhone:event.sparringPhone,
-                groupId:parseInt(event.groupId),
-                groupName:event.groupName,
-                //yardNum:event.filedNum==null?1:parseInt(event.filedNum),
-                yardNum:event.field.split(',').length,
-                eventMember:"",
-
-                eventDate:event.time.eventWeek,
-                startTime:event.time.startTime,
-                endTime:event.time.endTime,
-                IsSchedule:event.time.isSchedule,
-
-                memberLevel:event.memberLevel==null?"1":event.memberLevel.toString(),
+                name:event.eventName,
+                idPlace:event.unitId,
+                idCreator:personId,
+                idGroup:parseInt(event.groupId),
+                brief:event.eventBrief,
                 cost:parseInt(event.cost),
-                costType:event.costTypeCode,
-                isNeedCoach:parseInt(event.hasCoach),
-                isNeedSparring:parseInt(event.hasSparring),
-                feeDes:parseInt(event.feeDes),
-                eventNowMemNum:0,
-                status:0,
-                //isChooseYardTime:event.isChooseYardTime,
-                //考虑没有选定场地时间的情况
-                isChooseYardTime:0,
-
+                timeStart:event.time.startTime,
+                timeEnd:event.time.endTime,
+                maxnumber:parseInt(event.eventMaxMemNum),
+                status:1,
+                telnumCreator:personMobilePhone,
+                isprivategroup:event.eventType=='组内'?1:0,
+                nameCreator:personName,
+                isOngoing:1,
             }
 
             Proxy.postes({
@@ -87,11 +63,51 @@ export let releaseActivity=(event)=>{
     }
 }
 
+//邀请群成员
+export let addMemberList=(activityId,member)=>{
+
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+
+            var params={
+                name:member.name,
+                mobilePhone:member.mobilePhone,
+                numMember:parseInt(member.numMember),
+                activityId:parseInt(activityId),
+            }
+
+            Proxy.postes({
+                url: Config.server + '/func/node/addMemberList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body:params
+            }).then((json)=>{
+                //返回增加成员后的成员列表
+                dispatch(setMemberList(json.data));
+                resolve({re:1,data:json.data});
+            }).catch((e)=>{
+                reject(e);
+            })
+
+        });
+    }
+}
+
 //设置全部活动列表
 export let setActivityList=(activityList)=>{
     return {
         type:SET_ACTIVITY_LIST,
         activityList:activityList
+    }
+}
+
+//设置全部成员列表
+export let setMemberList=(memberList)=>{
+    return {
+        type:SET_MEMBER_LIST,
+        memberList:memberList
     }
 }
 
@@ -185,17 +201,12 @@ export let fetchActivityList=()=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-            var activityList = null;
-            var username = state.user.user.username;
-//          var userId = state.user.user.userId;
+            var userid = state.user.personInfo.personId;
 
-            var visibleEvents=[];
+            var activityList = null;
             var myEvents=[];//我发起的活动
-            //var myTakenEvents=[];//我报名的活动
-            var flag2=0;
+
             Proxy.postes({
-               //url: Config.server + '/func/allow/getAllEventsForPhone',
-               //url: Config.server + '/func/allow/getCheckedEvents',
                url: Config.server + '/func/node/fetchActivityList',
                 headers: {
                     'Content-Type': 'application/json',
@@ -210,72 +221,14 @@ export let fetchActivityList=()=>{
                     if (activityList!== undefined && activityList !== null &&activityList.length > 0) {
 
                         activityList.map((activity,i)=>{
-                            var members=new Array();
-                            var flag=0;
-                            var flag2=0;
-                            members=activity.eventMember.split(",");
 
-                            //活动发起者名=当前登录用户名：该活动是我发起的活动
-                            if(activity.eventManagerLoginName==username){
+                            if(activity.idCreator==userid){
                                 myEvents.push(activity);
                             }
-                            // if(activity.eventName=="周六上午日常活动"&&flag2==0){
-                            //     myTakenEvents.push(activity);
-                            //     if(myTakenEvents.length==1){
-                            //         flag2=1;
-                            //     }
-                            // }
-
-                            for(j=0;j<members.length;j++){
-                                //当前登录用户名=活动参与者！=活动发起者：我报名了该活动
-                                //if(username == members[j] && username != activity.eventManagerLoginName){
-                                if(username == members[j]){
-                                    //myTakenEvents.push(activity);
-                                    activity.isSignUp=1;
-                                    flag=1;
-                                    //对于我报名的活动，判断是否支付
-
-                                    Proxy.postes({
-                                        // url: Config.server + '/func/allow/getAllEventsForPhone',
-                                        url: Config.server + '/func/node/verifyIsHasPay',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: {
-                                            userName:username,
-                                            eventId:activity.eventId
-                                        }
-                                    }).then((json)=>{
-                                        if(json.re==1){
-                                            if(json.data==1){
-                                                //已支付
-                                                activity.isHasPay=1;
-                                            }else activity.isHasPay=0;
-                                        }
-
-                                            dispatch(setActivityList(activityList));
-                                            dispatch(setMyEvents(myEvents));
-                                            resolve({re:1});
-
-                                    }).catch((e)=>{
-                                        alert(e);
-                                        reject(e);
-                                    })
-
-                                }
-
-                                // if(activity.eventManager!=members[j]&&activity.eventId!=244){
-                                //     flag++;
-                                //     if(flag==members.length){
-                                //         visibleEvents.push(activity);
-                                //     }
-                                // }
-                            }
-                            if(flag==0)activity.isSignUp=0;
                         });
                     }
-
-                    //dispatch(setMyTakenEvents(myTakenEvents));
+                    dispatch(setActivityList(activityList));
+                    dispatch(setMyEvents(myEvents));
                     resolve({re:1,data:activityList})
                 }else{
 
@@ -285,76 +238,43 @@ export let fetchActivityList=()=>{
                         resolve({re:-1,data:'目前没有已创建的群活动'});
                     }
                 }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
 
-                // Proxy.postes({
-                //     // url: Config.server + '/func/allow/getAllEventsForPhone',
-                //     url: Config.server + '/func/allow/getMyEvents',
-                //     headers: {
-                //
-                //         'Content-Type': 'application/json',
-                //
-                //     },
-                //     body: {
-                //
-                //     }
-                // }).then((json)=>{
-                //     if(json.re==1){
-                //         myEventsList = json.data;
-                //         if (myEventsList!== undefined && myEventsList !== null &&myEventsList.length > 0){
-                //             myEventsList.map((activity,i)=>{
-                //                 var members=new Array();
-                //                 var flag=0;
-                //                 var flag1=0;
-                //                 visibleEvents.map((visibleEvent,k)=>{
-                //
-                //                     if(activity.eventName!=visibleEvent.eventName){
-                //
-                //                         flag1++;
-                //                     }
-                //                     if(flag1==visibleEvents.length){
-                //
-                //                         members=activity.eventMember.split(",");
-                //
-                //                         if(activity.eventManager==username){
-                //                             myEvents.push(activity);
-                //                         }
-                //                         if(activity.eventId!=244){
-                //                             visibleEvents.push(activity);
-                //                         }
-                //
-                //                         // for(j=0;j<members.length;j++){
-                //                         //
-                //                         //     // if(activity.eventManager==members[j]){
-                //                         //     //     myTakenEvents.push(activity);
-                //                         //     // }
-                //                         //     if(activity.eventManager!=members[j]){
-                //                         //         flag++;
-                //                         //         if(flag==members.length){
-                //                         //
-                //                         //             visibleEvents.push(activity);
-                //                         //         }
-                //                         //     }
-                //                         //
-                //                         // }
-                //
-                //                     }
-                //
-                //                 })
-                //
-                //
-                //             });
-                //
-                //         }
-                //     }
-                //     dispatch(setVisibleEvents(visibleEvents));
-                //     dispatch(setMyEvents(myEvents));
-                //     dispatch(setMyTakenEvents(myTakenEvents));
-                //     dispatch(disableActivityOnFresh());
-                //     resolve({re:1});
-                // }).catch((e)=>{
-                //     alert(e);
-                //     reject(e);
-                // })
+        });
+    }
+}
+
+//获取该活动的所有成员
+export let fetchMemberListByActivityId=(activityId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+            var memberList=[];
+
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchMemberListByActivityId',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    activityId:activityId
+                }
+            }).then((json)=>{
+                if (json.re == 1) {
+                    memberList = json.data;
+                    dispatch(setMemberList(memberList));
+                    resolve({re:1,data:memberList})
+                }else{
+
+                    if(json.re==-100){
+                        resolve(json);
+                    }else{
+                        resolve({re:-1});
+                    }
+                }
             }).catch((e)=>{
                 alert(e);
                 reject(e);
@@ -440,7 +360,7 @@ export let signUpFieldTimeActivity=(event,select,startTime,endTime)=>{
 }
 
 //撤销群活动
-export let deleteActivity=(eventId)=>{
+export let deleteActivity=(idActivity)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
@@ -453,7 +373,7 @@ export let deleteActivity=(eventId)=>{
                 },
                 body: {
 
-                    eventId:parseInt(eventId)
+                    idActivity:parseInt(idActivity)
 
                 }
             }).then((json)=>{

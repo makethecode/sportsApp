@@ -166,30 +166,12 @@ class AddActivity extends Component{
         }
     }
 
-    release()
-    {
-
-            var event = this.state.event;
-
-        this.props.dispatch(releaseActivity(event)).then((json)=>{
-            if(json.re==1){
-                Alert.alert('信息','新活动创建成功',[{text:'确认',onPress:()=>{
-                    this.goBack()
-                }}]);
-            }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-
-                }
-            }
-
-        });
-    }
 
     release2()
     {
             this.state.event.cost=60;
             var event = this.state.event;
+
         this.props.dispatch(releaseActivity(event)).then((json)=>{
             if(json.re==1){
                 Alert.alert('信息','新活动创建成功',[{text:'确认',onPress:()=>{
@@ -889,6 +871,7 @@ class AddActivity extends Component{
                                 <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
                                     marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
                                                   onPress={()=>{
+
                                                       this.release2();
                                                   }}>
                                     <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
@@ -896,6 +879,7 @@ class AddActivity extends Component{
                                 <TouchableOpacity style={{height:30,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#66CDAA',margin:10,
                                     marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
                                                   onPress={()=>{
+
                                                       this.release();
                                                   }}>
                                     <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
@@ -908,7 +892,6 @@ class AddActivity extends Component{
             </View>
         );
     }
-
 }
 
 var styles = StyleSheet.create({

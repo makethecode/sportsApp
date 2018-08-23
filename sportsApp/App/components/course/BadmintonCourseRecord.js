@@ -49,6 +49,7 @@ import ClassSignUp from './ClassSignUp';
 
 import TalkingFarm from './TalkingFarm';
 import Camera from '../getCamera';
+import AssortFilter from '../../utils/AssortFilter'
 
 
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
@@ -317,7 +318,7 @@ class BadmintonCourseRecord extends Component {
 
     renderRow(rowData, sectionId, rowId) {
         return (
-            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ddd', marginTop: 4 }}
+            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ddd', marginTop: 4 ,backgroundColor:'#fff'}}
                               onPress={()=>{
 
 
@@ -586,11 +587,12 @@ class BadmintonCourseRecord extends Component {
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (coursesOfCoach !== undefined && coursesOfCoach !== null && coursesOfCoach.length > 0)
             {
+                var coursesAfterFilter = coursesOfCoach;
                 coursesOfCoachListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
                         //列表中数据
-                        dataSource={ds.cloneWithRows(coursesOfCoach)}
+                        dataSource={ds.cloneWithRows(AssortFilter.filter(coursesAfterFilter,this.props.clubId,this.props.venueId,this.props.typeId))}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
@@ -736,10 +738,6 @@ class BadmintonCourseRecord extends Component {
         )
     }
 
-    componentDidMount()
-    {
-
-    }
 
     componentWillMount(){
 
@@ -792,6 +790,11 @@ class BadmintonCourseRecord extends Component {
         })
     }
 
+    componentWillUnmount()
+    {
+        this.props.dispatch(enableCoursesOfCoachOnFresh());
+    }
+
     showState()
     {
         this.setState({content:'已经收到了原生模块发送来的事件'})
@@ -833,7 +836,7 @@ module.exports = connect(state=>({
         userType: state.user.usertype.perTypeCode,
         coursesOfCoach:state.course.coursesOfCoach,
         coursesOfCoachOnFresh:state.course.coursesOfCoachOnFresh,
-        creatorId:state.user.personInfo.personId
+        creatorId:state.user.personInfo.personId,
     })
 )(BadmintonCourseRecord);
 
