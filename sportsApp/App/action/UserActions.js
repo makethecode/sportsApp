@@ -1463,27 +1463,26 @@ export let uploadPortrait=(portrait,personId)=>{
 }
 
 //微信统一下单
-export let wechatPay=(pay,eventId)=>{
+export let wechatPay=(pay,activityId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-            //
-            // Proxy.postes({
-            //     url: Config.server + '/func/node/addPaymentInfo',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: {
-            //         pay:pay,
-            //         eventId:parseInt(eventId)
-            //     }
-            // }).then((json)=>{
-            //     if(json.re==1){
+
+            Proxy.postes({
+                url: Config.server + '/func/node/addPaymentInfo',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    pay:pay,
+                    activityId:parseInt(activityId)
+                }
+            }).then((json)=>{
+                if(json.re==1){
 
                     var total_fee = pay.payment*100;
                     var nonce_str = Math.random().toString(36).substr(2, 15);
-                    // var out_trade_no = json.data;
-                    var out_trade_no = "201808221524";
+                    var out_trade_no = json.data;
 
                     Proxy.postes({
                         url: Config.server + '/func/node/wechatPay',
@@ -1492,37 +1491,34 @@ export let wechatPay=(pay,eventId)=>{
                         },
                         body: {
                             info:{
-                                app_id:'wx9068ac0e88c09e7a',//应用ID
-                                mch_id:'1485755962',//商户号
                                 nonce_str:nonce_str,//随机字符串
-                                notify_url:Config.server +'/func/allow/minirepay',
                                 out_trade_no:out_trade_no,
                                 total_fee:total_fee,
                                 attach:'山东体育热科技有限公司',
                                 body:'群活动费用',
-
+                                product_id:activityId+'',
                             }
 
                         }
                     }).then((json)=>{
-                        resolve(json)
+                        resolve(json.data)
 
                     }).catch((e)=>{
                         alert(e);
                         reject(e);
                     })
 
-            //     }
-            //     else{
-            //         console.log('添加支付订单信息不完整');
-            //
-            //     }
-            //
-            //
-            // }).catch((e)=>{
-            //     alert(e);
-            //     reject(e);
-            // })
+                }
+                else{
+                    console.log('添加支付订单信息不完整');
+
+                }
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
 
 
         })

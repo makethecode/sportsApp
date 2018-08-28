@@ -24,9 +24,7 @@ import {
 import {
     fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,signUpFieldTimeActivity
 } from '../../action/ActivityActions';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import {getAccessToken,} from '../../action/UserActions';
 
@@ -45,46 +43,8 @@ class ActivityPay extends Component{
 
         this.props.dispatch(wechatPay(pay,activityId)).then((json)=>{
             if(json.re==1){
-                if(pay.payType=='2'){
-                    var prepayId = json.data.prepayid;
-                    var sign = json.data.sign;
-                    var timeStamp = json.data.timestamp;
-                    var noncestr = json.data.noncestr;
-
-                    var wechatPayData=
-                        {
-                            partnerId: '1485755962',  // 商家向财付通申请的商家id
-                            prepayId: prepayId,   // 预支付订单
-                            nonceStr: noncestr,   // 随机串，防重发
-                            timeStamp: timeStamp,  // 时间戳，防重发
-                            package: 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
-                            sign: sign // 商家根据微信开放平台文档对数据做的签名
-                        };
-
-                    WeChat.pay(wechatPayData).then(
-                        (result)=>{
-                            console.log(result);
-                            Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
-                                this.props.dispatch(signUpActivity(event.eventId));
-                                this.goBack();
-                            }}]);
-
-
-                        },
-                        (error)=>{
-                            console.log(error);
-                        }
-                    )
-                }
-                else{
-                    Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
-
-                        this.goBack();
-
-                    }}]);
-                }
-
-
+                this.setState({code_url:json.data.code_url});
+                // rnwechatpay(json)
             }else{
                 if(json.re==-100){
                     this.props.dispatch(getAccessToken(false));
@@ -92,62 +52,7 @@ class ActivityPay extends Component{
             }
 
         })
-
-
-    }
-    wechatChoosePay(pay,eventId){
-
-        this.props.dispatch(wechatPay(pay,eventId)).then((json)=>{
-            if(json.re==1){
-                if(pay.payType=='2'){
-                    var prepayId = json.data.prepayid;
-                    var sign = json.data.sign;
-                    var timeStamp = json.data.timestamp;
-                    var noncestr = json.data.noncestr;
-
-                    var wechatPayData=
-                        {
-                            partnerId: '1485755962',  // 商家向财付通申请的商家id
-                            prepayId: prepayId,   // 预支付订单
-                            nonceStr: noncestr,   // 随机串，防重发
-                            timeStamp: timeStamp,  // 时间戳，防重发
-                            package: 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
-                            sign: sign // 商家根据微信开放平台文档对数据做的签名
-                        };
-
-                    WeChat.pay(wechatPayData).then(
-                        (result)=>{
-                            console.log(result);
-                            Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
-                                this.goBack();
-                            }}]);
-
-
-                        },
-                        (error)=>{
-                            console.log(error);
-                        }
-                    )
-                }
-                else{
-                    Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
-
-                        this.goBack();
-
-                    }}]);
-                }
-
-
-            }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-                }
-            }
-
-        })
-
-
-    }
+        }
 
     constructor(props) {
         super(props);
@@ -155,14 +60,11 @@ class ActivityPay extends Component{
             isRefreshing:false,
             activity:this.props.activity,
             pay:{payment:this.props.activity.cost+"",payType:'2'},
+            code_url:null,
             // select:this.props.select,
             // starttime:this.props.starttime,
             // endtime:this.props.endtime
         };
-    }
-
-    payMoney(){
-        alert("请输入大于零的金额");
     }
 
     render(){
@@ -171,107 +73,93 @@ class ActivityPay extends Component{
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="支付" actions={[]} navigator={this.props.navigator}>
+                <Toolbar width={width} title="二维码收款" actions={[]} navigator={this.props.navigator}>
 
-                    <ScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
+                    <View style={{flex:1,height:height-100,width:width,backgroundColor:'#66CDAA',padding:5,flexDirection:'column'}}>
 
-                        <View style={{flex:4,padding:10,margin:5,backgroundColor:'#fff'}}>
-                            <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                    <Icon name={'star'} size={16} color="#66CDAA"/>
-                                </View>
-                                <View style={{flex:7,color:'#343434'}}>
-                                    <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.name}</Text>
-                                </View>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                    <Icon name={'circle'} size={10} color="#aaa"/>
-                                </View>
-                                <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.placeName}</Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                    <Icon name={'circle'} size={10} color="#aaa"/>
-                                </View>
-                                {
-                                    activity.brief==null&&activity.brief==undefined?
-                                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>无</Text>:
-                                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>{activity.brief}</Text>
-                                }
-
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                                    <Icon name={'circle'} size={10} color="#aaa"/>
-                                </View>
-                                <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                                    {'活动时间:'+activity.timeStart}
-                                </Text>
-                            </View>
-
-                            <View style={{flex:1,paddingBottom:5,marginTop:5}}>
-                                <Text style={{fontSize:13,color:'#aaa'}}>Tips:</Text>
-                                <Text  style={{fontSize:13,color:'#aaa'}}>每人15元/次,不限时间,球自备。</Text>
+                        <View style={{flex:1,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
+                            <View style={{flex:1}}>
+                                <Text style={{fontSize:20,color:'#fff',fontWeight:'bold'}}>{activity.name}</Text>
                             </View>
                         </View>
 
-                        <View style={{flexDirection:'row',flex:1,padding:10,margin:5,backgroundColor:'#fff'}}>
-                            <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                                <Text style={{color:'#343434'}}>支付费用：</Text>
-                            </View>
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                            borderRadius:10}}>
-                                <Text style={{color:'#343434'}}>{activity.cost}</Text>
-                            </View>
-                        </View>
-
-                        <View style={{flexDirection:'row',flex:2,padding:10,margin:5,backgroundColor:'#fff'}}>
-                            <Text>
-                                支付方式:
-                            </Text>
-
-                                    <TouchableOpacity style={{flexDirection:'row',marginLeft:20}}
-                                                      onPress={()=>{
-                                              var pay = this.state.pay;
-                                              //pay.payType = null;
-                                              pay.payType = '1'
-                                              this.setState({pay:pay});
-                                    }}>
-                                        <Icon name={'dot-circle-o'} size={15} color="#66CDAA"/>
-                                        <Text style={{marginLeft:10}}>微信支付</Text>
-                                    </TouchableOpacity>
-
-                        </View>
-
-                                <TouchableOpacity style={{flexDirection:'row',flex:3,padding:10,justifyContent:'center',alignItems: 'center'}}
-                                                  onPress={()=>{
-
-                                if(this.state.pay.payment<=0){
-                                    this.payMoney();
-                                }else{
-                                     this.wechatPay(this.state.pay,activity.activityId);
-                                }
-                            }}>
-                                    <View style={{backgroundColor:'#66CDAA',padding:5,paddingLeft:20,paddingRight:20,borderRadius:5}}>
-                                        <Text style={{color:'#fff'}}>
-                                            确认
-                                        </Text>
+                        {
+                            this.state.code_url==null?
+                                <View style={{flex:4,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
+                                    <View style={{padding:15,backgroundColor:'#fff'}}></View>
+                                </View>
+                                :
+                                <View style={{flex:4,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
+                                    <View style={{padding:15,backgroundColor:'#fff'}}>
+                                        <QRCode
+                                            value={this.state.code_url}
+                                            size={200}
+                                            bgColor='black'
+                                            fgColor='white'/>
                                     </View>
-                                </TouchableOpacity>
+                                </View>
+                        }
 
-                    </ScrollView>
+                        <View style={{flex:2,padding:10,margin:5,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
+                            <View style={{flex:1}}>
+                                <Text style={{fontSize:20,color:'#fff'}}>打开微信[扫一扫]</Text>
+                            </View>
+                            <View style={{flex:2}}>
+                                <Text style={{fontSize:13,color:'#fff'}}>山东体育热有限公司</Text>
+                            </View>
+                        </View>
+
+                    </View>
 
                 </Toolbar>
             </View>
         )
     }
+
+    componentDidMount(){
+        this.wechatPay(this.state.pay,activity.activityId);
+    }
 }
+
+
+// async function rnwechatpay(json) {
+//     try {
+//
+//         var appId = json.data.appid;
+//         var partnerId = json.data.mch_id;
+//         var noncestr = json.data.nonce_str;
+//         var prepayId = json.data.prepay_id;
+//         var timeStamp = json.data.timeStamp;
+//         var sign = json.data.sign;
+//
+//         var wechatPayData=
+//             {
+//                 partnerId:partnerId,  // 商家向财付通申请的商家id
+//                 prepayId: prepayId,   // 预支付订单
+//                 nonceStr: noncestr,   // 随机串，防重发
+//                 timeStamp: timeStamp,  // 时间戳，防重发
+//                 package: 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
+//                 sign: sign // 商家根据微信开放平台文档对数据做的签名
+//             };
+//
+//         let result = await WeChat.pay(wechatPayData);
+//         /*支付成功的后续操作*/
+//         console.log(result);
+//         Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
+//         // this.props.dispatch(signUpActivity(event.eventId));
+//         this.goBack();
+//          }}]);
+//     } catch (error) {
+//         /*支付失败的后续操作*/
+//         var errormsg = error ===-2 ? "用户取消" : "订单支付失败"
+//         Alert.alert('支付失败',errormsg)
+//     }
+// }
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:'#eee'
+        backgroundColor:'#66CDAA'
     },
     popoverContent: {
         width: 100,
@@ -297,6 +185,8 @@ const mapStateToProps = (state, ownProps) => {
     }
     return props
 }
+
+
 
 export default connect(mapStateToProps)(ActivityPay);
 
