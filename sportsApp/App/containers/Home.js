@@ -27,6 +27,7 @@ import MyProfit from '../components/my/Myprofit'
 import Mall from './mall/FirstPage';
 import Activity from '../components/groupActivity/Activity';
 import Competition from '../components/competition/CompetitionList';
+import Statistics from '../components/statistics/MainStatistics';
 import SexModal from '../components/groupActivity/SexModal';
 import CoachMessage from '../components/my/MyInformation'
 import PopupDialog,{ScaleAnimation} from 'react-native-popup-dialog';
@@ -132,8 +133,18 @@ class Home extends Component {
         }
     }
 
+    navigate2Statistics(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'statistics',
+                component: Statistics,
+                params: {
 
-
+                }
+            })
+        }
+    }
 
     navigate2Mall(){
         const { navigator } = this.props;
@@ -862,13 +873,12 @@ class Home extends Component {
                                 <TouchableOpacity
                                     style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                     onPress={ ()=>{
-                                        {/*this.navigate2Activity();*/}
+                                        this.navigate2Statistics();
                                         //this.navigate2CoachMessage();
-                                        alert("该模块暂定");
                                       }}>
                                     <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
                                     <View style={{marginTop:0,paddingTop:15}}>
-                                        <Text style={{fontSize:13,color:'#646464'}}>更多</Text>
+                                        <Text style={{fontSize:13,color:'#646464'}}>统计</Text>
                                     </View>
                                 </TouchableOpacity>
 

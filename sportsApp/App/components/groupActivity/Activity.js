@@ -387,7 +387,8 @@ class Activity extends Component {
                     <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>查看</Text></View>
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
-                                      onPress={()=>{this.navigate2ActivityPay(rowData)}}
+                                      //收款处逻辑不成熟
+                                      //onPress={()=>{this.navigate2ActivityPay(rowData)}}
                     >
                     <View style={{backgroundColor:'#fff',borderRadius:5,padding:5}}><Text style={{color:'#fc6254'}}>收款</Text></View>
                     </TouchableOpacity>

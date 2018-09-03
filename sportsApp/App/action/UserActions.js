@@ -4,8 +4,6 @@ import PreferenceStore from '../utils/PreferenceStore';
 import {
     Platform
 } from 'react-native'
-
-
 import {
     UPDATE_CERTIFICATE,
     UPDATE_PERSON_INFO,
@@ -1612,6 +1610,202 @@ export let fetchClubList=()=>{
 
                 resolve(json)
 
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+        })
+    }
+}
+
+//商品支付
+export let wechatGoodsPay=(pay,goods)=> {
+    return (dispatch, getState) => {
+        return new Promise((resolve, reject) => {
+            var state = getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/node/addGoodsPaymentInfo',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    pay: pay,
+                    goods: goods,
+                }
+            }).then((json) => {
+                if (json.re == 1) {
+
+                    var total_fee = pay.payment * 100;
+                    var nonce_str = Math.random().toString(36).substr(2, 15);
+                    var out_trade_no = json.data.outTradeNo;
+                    var id = json.data.clubId;
+
+                    Proxy.postes({
+                        url: Config.server + '/func/node/wechatPay',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: {
+                            info: {
+                                nonce_str: nonce_str,//随机字符串
+                                out_trade_no: out_trade_no,
+                                total_fee: total_fee,
+                                attach: '山东体育热科技有限公司',
+                                body: '商品购买',
+                                product_id: id + '',
+                            }
+
+                        }
+                    }).then((json) => {
+                        resolve(json.data)
+
+                    }).catch((e) => {
+                        alert(e);
+                        reject(e);
+                    })
+
+                }
+                else {
+                    console.log('添加支付订单信息不完整');
+
+                }
+
+
+            }).catch((e) => {
+                alert(e);
+                reject(e);
+            })
+
+
+        })
+    }
+}
+
+    //商品支付成功
+    export let goodsPaySuccess=(goods)=> {
+        return (dispatch, getState) => {
+            return new Promise((resolve, reject) => {
+                var state = getState();
+
+                Proxy.postes({
+                    url: Config.server + '/func/node/goodsPaySuccess',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: {
+                        goods: goods,
+                    }
+                }).then((json) => {
+                }).catch((e) => {
+                    alert(e);
+                    reject(e);
+                })
+
+
+            })
+        }
+    }
+
+        //获得用户今日截至目前的在线人数
+        export let fetchNowLoginNumber=()=>{
+            return (dispatch,getState)=> {
+                return new Promise((resolve, reject) => {
+
+                    var state=getState();
+                    Proxy.postes({
+                        url: Config.server + '/func/node/getAllClub',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: {
+                        }
+                    }).then((json)=>{
+                        if(json.re==1)
+                        {
+                            resolve(json)
+                        }
+                    }).catch((e)=>{
+                        alert(e);
+                        reject(e);
+                    })
+                })
+            }
+        }
+
+        //获得用户今日参与活动和课程的情况
+        export let fetchTodayCourseAndActivity=()=>{
+            return (dispatch,getState)=> {
+                return new Promise((resolve, reject) => {
+
+                    var state=getState();
+                    Proxy.postes({
+                        url: Config.server + '/func/node/fetchTodayCourseAndActivity',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: {
+                        }
+                    }).then((json)=>{
+                        if(json.re==1)
+                        {
+                            resolve(json)
+                        }
+                    }).catch((e)=>{
+                        alert(e);
+                        reject(e);
+                    })
+                })
+            }
+        }
+
+        //获取今日截至目前的收益情况
+        export let fetchNowPayments=()=>{
+            return (dispatch,getState)=> {
+                return new Promise((resolve, reject) => {
+
+                    var state=getState();
+                    Proxy.postes({
+                        url: Config.server + '/func/node/fetchNowPayments',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: {
+                        }
+                    }).then((json)=>{
+                        if(json.re==1)
+                        {
+                            //{time:8,type:'activity',detailTime:'08:23:49',payment:15}
+                            resolve(json)
+                        }
+                    }).catch((e)=>{
+                        alert(e);
+                        reject(e);
+                    })
+                })
+            }
+        }
+
+//获取具体某一天的收益情况
+export let fetchDetailPayments=(currentDate)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchDetailPayments',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    currentDate:currentDate
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    //{time:8,type:'activity',detailTime:'08:23:49',payment:15}
+                    resolve(json)
+                }
             }).catch((e)=>{
                 alert(e);
                 reject(e);

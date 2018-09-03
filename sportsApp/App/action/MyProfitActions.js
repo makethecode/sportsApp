@@ -3,7 +3,6 @@ import Config from '../../config'
 import Proxy from '../utils/Proxy'
 
 import {
-
     ON_PAYMENT_UPDATE,
     SET_PAYMENT,
     ENABLE_PAYMENTS_ONFRESH,
@@ -103,7 +102,7 @@ export let fetchPayment=(clubId)=>{
     }
 }
 
-//拉取教练
+//获取所有账单
 export let fetchAllPayment=()=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {

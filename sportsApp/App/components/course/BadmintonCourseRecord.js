@@ -41,17 +41,13 @@ import CustomerCourseList from './CustomerCourseList';
 import ModifyDistribution from './ModifyDistribution';
 import StudentInformation from './StudentInformation';
 import RecordClass from './RecordClass';
-
 import SignUpModal from '../my/modal/SignUpModal'
 import AddGroup from './AddGroup';
 import AddClass from  './AddClass';
 import ClassSignUp from './ClassSignUp';
-
 import TalkingFarm from './TalkingFarm';
 import Camera from '../getCamera';
 import AssortFilter from '../../utils/AssortFilter'
-
-
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view';
 var { height, width } = Dimensions.get('window');

@@ -21,6 +21,8 @@ import {
     InteractionManager,
     Button,
     Platform,
+    DeviceEventEmitter, // android
+    NativeAppEventEmitter, // ios
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -111,12 +113,6 @@ class Myprofit extends Component {
             })
         }
     }
-
-    _data=[{payername:'张三',paynum:'10',paytime:'2017-1-9 10:00',paymethod:'微信',paytype:'群活动'},
-        {payername:'李思',paynum:'25',paytime:'2017-3-23 23:33',paymethod:'手机',paytype:'购物'},
-        {payername:'王武',paynum:'90',paytime:'2017-4-13 12:34',paymethod:'手机',paytype:'群活动'},
-        {payername:'赵奎',paynum:'80',paytime:'2017-1-1 12:56',paymethod:'微信',paytype:'群活动'}
-    ]
 
     constructor(props) {
         super(props);
@@ -281,7 +277,8 @@ class Myprofit extends Component {
         if(paymentsOnFresh==true)
         {
             if(this.state.doingFetch==false) {
-                    this.fetchAllPays();
+                //筛选获得本月的账单,并按照最近排序
+                this.fetchAllPays();
             }
         }else{
             var payments = this.state.payments;
@@ -329,23 +326,20 @@ class Myprofit extends Component {
                             </View>
                         </ModalDropdown>
 
-                        {this.state.currentType == '分类' ?
-                            <View style={styles.siftCell}/> :
                             <ModalDropdown
                                 style={styles.siftCell}
                                 textStyle={[styles.orderByFont,{color:'#FD545E'}]}
                                 dropdownStyle={styles.sortdropdownstyle}
                                 options={this.state.sortList}
                                 renderRow={this.dropdown_renderRow.bind(this)}
-                                onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
-                            >
+                                onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}>
                                 <View style={styles.siftCell}>
                                     <Text style={[styles.orderByFont,{color:'#FD545E'}]}>
                                         {this.state.currentSort}
                                     </Text>
                                 </View>
                             </ModalDropdown>
-                        }
+
                     </View>
 
                     <View

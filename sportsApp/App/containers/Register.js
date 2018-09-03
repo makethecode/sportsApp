@@ -37,7 +37,6 @@ import {
     onPerBirthdayUpdate,
     fetchClubList,
 } from '../action/UserActions';
-import Camera from 'react-native-camera';
 var ImagePicker = require('react-native-image-picker');
 import TextInputWrapper from '../../App/encrypt/TextInputWrapper';
 
