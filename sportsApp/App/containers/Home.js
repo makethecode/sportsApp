@@ -16,12 +16,8 @@ import {
     InteractionManager,
     Linking
 } from 'react-native';
-
 import {connect} from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import ViewPager from 'react-native-viewpager';
-
-
 import BadmintonCourse from '../components/course/BadmintonCourseRecord';
 import MyProfit from '../components/my/Myprofit'
 import Mall from './mall/FirstPage';
@@ -31,9 +27,7 @@ import Statistics from '../components/statistics/MainStatistics';
 import SexModal from '../components/groupActivity/SexModal';
 import CoachMessage from '../components/my/MyInformation'
 import PopupDialog,{ScaleAnimation} from 'react-native-popup-dialog';
-const scaleAnimation = new ScaleAnimation();
 import { NativeModules } from "react-native";
-const CalendarManager = NativeModules.CalendarManager;
 import MobilePhoneModal from '../components/my/modal/ValidateMobilePhoneModal';
 import ValidateMyInformationModal from '../components/my/modal/ValidateMyInformationModal';
 import Bridge from '../native/Bridge'
@@ -42,7 +36,6 @@ import {
     fetchNewsInfo,
     updateNewsInfo
 } from '../action/NewsActions';
-
 import {
     updateMobilePhone,
     onMobilePhoneUpdate,
@@ -55,53 +48,26 @@ import  {
     getRTMPPushUrl
 } from '../action/LiveActions';
 
+var {height, width} = Dimensions.get('window');
 var IMGS = [
     require('../../img/tt1@2x.png'),
     require('../../img/tt2@2x.jpeg'),
     require('../../img/tt3@2x.jpeg'),
     require('../../img/tt4@2x.jpeg'),
 ];
-import {
-    fetchMaintainedVenue
-} from '../action/MapActions';
-import ModalDropdown from 'react-native-modal-dropdown';
-
-const dropdownWidth = width/3;
+const CalendarManager = NativeModules.CalendarManager;
+const scaleAnimation = new ScaleAnimation();
 
 class Home extends Component {
 
     navigate2Activity(){
         const { navigator } = this.props;
 
-        var clubflag = false;
-        var clubId = -1;
-        var venueId = -1;
-        var typeId = -1;
-        for(var i=0;i<this.state.clubs.length;i++)
-            if(this.state.clubs[i].name == this.state.clubName)
-            {
-                clubId=this.state.clubs[i].id;
-                clubflag = true;
-            }
-        if(clubflag==false)clubId = -1;
-
-        var venueflag = false;
-        for(var i=0;i<this.state.venues.length;i++)
-            if(this.state.venues[i].name == this.state.venueName)
-            {
-                venueId = this.state.venues[i].unitId;
-                venueflag = true
-            }
-        if(venueflag==false)venueId = -1;
-
         if(navigator) {
             navigator.push({
                 name: 'Activity',
                 component: Activity,
                 params: {
-                    clubId:clubId,
-                    venueId:venueId,
-                    typeId:typeId,
                 }
             })
         }
@@ -163,35 +129,12 @@ class Home extends Component {
     navigate2BadmintonCourse()
     {
         const {navigator} =this.props;
-        var clubflag = false;
-        var clubId = -1;
-        var venueId = -1;
-        var typeId = -1;
-        for(var i=0;i<this.state.clubs.length;i++)
-            if(this.state.clubs[i].name == this.state.clubName)
-            {
-                clubId=this.state.clubs[i].id;
-                clubflag = true;
-            }
-        if(clubflag==false)clubId = -1;
-
-        var venueflag = false;
-        for(var i=0;i<this.state.venues.length;i++)
-            if(this.state.venues[i].name == this.state.venueName)
-            {
-                venueId = this.state.venues[i].unitId;
-                venueflag = true
-            }
-        if(venueflag==false)venueId = -1;
 
         if(navigator) {
             navigator.push({
                 name: 'BadmintonCourse',
                 component: BadmintonCourse,
                 params: {
-                    clubId:clubId,
-                    venueId:venueId,
-                    typeId:typeId,
                 }
             })
         }
@@ -201,35 +144,12 @@ class Home extends Component {
     navigate2Profit()
     {
         const {navigator} =this.props;
-        var clubflag = false;
-        var clubId = -1;
-        var venueId = -1;
-        var typeId = -1;
-        for(var i=0;i<this.state.clubs.length;i++)
-            if(this.state.clubs[i].name == this.state.clubName)
-            {
-                clubId=this.state.clubs[i].id;
-                clubflag = true;
-            }
-        if(clubflag==false)clubId = -1;
-
-        var venueflag = false;
-        for(var i=0;i<this.state.venues.length;i++)
-            if(this.state.venues[i].name == this.state.venueName)
-            {
-                venueId = this.state.venues[i].unitId;
-                venueflag = true
-            }
-        if(venueflag==false)venueId = -1;
 
         if(navigator) {
             navigator.push({
                 name: 'MyProfit',
                 component: MyProfit,
                 params: {
-                    club:clubId,
-                    venueId:venueId,
-                    typeId:typeId,
                 }
             })
         }
@@ -333,29 +253,11 @@ class Home extends Component {
         this.state = {
             dataSource: ds.cloneWithPages(IMGS),
             isRefreshing:false,
-
-            clubName:'俱乐部',
-            venueName:'场馆',
-            sportsType:'项目',
-            showClubDropdown:false,
-            showVenueDropdown:false,
-            showTypeDropdown:false,
-            clubList:[],clubs:[],
-            venueList:[],venues:[],
-            typeList:['羽毛球','乒乓球'],
         }
     }
 
 
     render() {
-
-        let clubicon = this.state.showClubDropDown ? require('../../img/test_up.png') : require('../../img/test_down.png');
-        let venueicon = this.state.showVenueDropDown ? require('../../img/test_up.png') : require('../../img/test_down.png');
-        let typeicon = this.state.showTypeDropDown ? require('../../img/test_up.png') : require('../../img/test_down.png');
-
-        var clubName_show = this.lengthFilter(this.state.clubName);
-        var venueName_show = this.lengthFilter(this.state.venueName);
-        var typeName_show = this.lengthFilter(this.state.sportsType);
 
         //针对教练,需要完成手机号，运动水平、真实姓名、身份证的验证
         if(this.props.userType==1){
@@ -463,33 +365,13 @@ class Home extends Component {
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
-                                        {/*this.navigate2Activity();*/}
-                                        //this.navigate2CoachMessage();
-                                        alert("该模块暂定");
+                                        this.navigate2Activity();
                                       }}>
                                         <Image resizeMode="stretch" source={require('../../img/dd@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
                                             <Text style={{fontSize:13,color:'#646464'}}>活动</Text>
                                         </View>
                                     </TouchableOpacity>
-
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                                      onPress={ ()=>{
-                                           alert("暂未开通");
-                                           {/*CalendarManager.addEvent("Birthday Party", "4 Privet Drive, Surrey");*/}
-                                           {/*updateEvents();*/}
-                                            {/*this.navigate2Competition();*/}
-                                      }}>
-
-                                        {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                        <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')} />
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
@@ -515,20 +397,6 @@ class Home extends Component {
 
 
                                                             this.navigate2LiveHome()
-                                          {/*var date=new Date()*/}
-                                          {/*var dateStr=''*/}
-                                          {/*this.props.dispatch(getRTMPPushUrl({*/}
-                                              {/*time:3600,*/}
-                                              {/*loginName:this.props.username,*/}
-                                              {/*title:'test',*/}
-                                              {/*brief:'nothing big deal',*/}
-                                              {/*longbrief:'the same'*/}
-                                          {/*})).then((json)=>{*/}
-                                            {/*//开直播*/}
-                                            {/*Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1514539138&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:IgSHYwr6QmazFJrt9fqMCu2nbKA=")*/}
-                                          {/*})*/}
-                                             //alert('暂未开通');
-                                         //console.log('找教练');
                                        }}>
                                         {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
                                         <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')} />
@@ -541,24 +409,11 @@ class Home extends Component {
                                                       onPress={ ()=>{
                                           this.navigate2Mall();
                                       }}>
-
-                                        {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
                                         <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
                                             <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
                                         </View>
                                     </TouchableOpacity>
-
-                                    {/*                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                     onPress={ ()=>{
-                                     this.navigate2Mall();
-                                     }}>
-                                     /!*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*!/
-                                     <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')} />
-                                     <View style={{marginTop:0,paddingTop:15}}>
-                                     <Text style={{fontSize:13,color:'#646464'}}>暑假班</Text>
-                                     </View>
-                                     </TouchableOpacity>*/}
 
                                 </View>
 
@@ -678,71 +533,6 @@ class Home extends Component {
                         <View style={{flex:8,justifyContent:'center',backgroundColor:'#eee'}}>
 
                             <View style={{flex:5,backgroundColor:'#fff',padding:0,marginBottom:10}}>
-                                <View style={styles.flexContainer}>
-                                    <ModalDropdown
-                                        style={styles.cell}
-                                        textStyle={styles.textstyle}
-                                        dropdownStyle={styles.dropdownstyle}
-                                        options={this.state.clubList}
-                                        renderRow={this.dropdown_renderRow.bind(this)}
-                                        onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
-                                        onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
-                                        onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
-                                    >
-                                        <View style={styles.viewcell}>
-                                            <Text style={styles.textstyle}>
-                                                {clubName_show}
-                                            </Text>
-                                            <Image
-                                                style={styles.dropdown_image}
-                                                source={clubicon}
-                                            />
-                                        </View>
-                                    </ModalDropdown>
-
-                                    <ModalDropdown
-                                        style={styles.cell}
-                                        textStyle={styles.textstyle}
-                                        dropdownStyle={styles.dropdownstyle}
-                                        options={this.state.venueList}
-                                        renderRow={this.dropdown_renderRow.bind(this)}
-                                        onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
-                                        onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
-                                        onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
-                                    >
-                                        <View style={styles.viewcell}>
-                                            <Text style={styles.textstyle}>
-                                                {venueName_show}
-                                            </Text>
-                                            <Image
-                                                style={styles.dropdown_image}
-                                                source={venueicon}
-                                            />
-                                        </View>
-                                    </ModalDropdown>
-
-                                    <ModalDropdown
-                                        style={styles.cell}
-                                        textStyle={styles.textstyle}
-                                        dropdownStyle={styles.dropdownstyle}
-                                        options={this.state.typeList}
-                                        renderRow={this.dropdown_renderRow.bind(this)}
-                                        onSelect={(idx, value) => this.dropdown_3_onSelect(idx, value)}
-                                        onDropdownWillShow={this.dropdown_3_willShow.bind(this)}
-                                        onDropdownWillHide={this.dropdown_3_willHide.bind(this)}
-                                    >
-                                        <View style={styles.viewcell}>
-                                            <Text style={styles.textstyle}>
-                                                {typeName_show}
-                                            </Text>
-                                            <Image
-                                                style={styles.dropdown_image}
-                                                source={typeicon}
-                                            />
-                                        </View>
-                                    </ModalDropdown>
-                                </View>
-
                                  <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems: 'center',}}>
                                     <View
                                         style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
@@ -773,30 +563,49 @@ class Home extends Component {
                                             </View>
                                         </TouchableOpacity>
 
-
                                         <TouchableOpacity
                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                             onPress={ ()=>{
-                                            alert("暂未开通");
-                                      }}>
+                                                this.navigate2Mall();
+                                            }}>
 
                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
                                             <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
+                                                <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
                                             </View>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                             onPress={ ()=>{
-                                           this.navigate2Profit();
-                                      }}>
+                                                // Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1517628206&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:y2fLXXG5llHsrwJlOmVzl_2h0OM=")
 
-                                            {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                            <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
+                                                this.props.dispatch(getRTMPPushUrl()).then((json)=>{
+                                                    var urlsList=null;
+                                                    var pushUrl=null;
+                                                    if(json==null){
+
+                                                    }
+                                                    if(json.re==1){
+                                                        urlsList=json.json;
+                                                        pushUrl=urlsList.rtmppushurl;
+                                                        Bridge.raisePLStream(pushUrl);
+                                                    }else{
+
+                                                        alert('申请地址失败');
+                                                        //TODO:微信分享邀请好友
+
+                                                    }
+                                                });
+
+
+                                                this.navigate2LiveHome()
+                                            }}>
+                                            {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
+                                            <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>收益</Text>
+                                                <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
                                             </View>
                                         </TouchableOpacity>
 
@@ -810,65 +619,18 @@ class Home extends Component {
                                 alignItems: 'center',
                             }}>
 
-                                <TouchableOpacity
-                                    style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                    onPress={ ()=>{
-                                                          // Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1517628206&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:y2fLXXG5llHsrwJlOmVzl_2h0OM=")
+                                        <TouchableOpacity
+                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                            onPress={ ()=>{
+                                                this.navigate2Profit();
+                                            }}>
 
-                                                          this.props.dispatch(getRTMPPushUrl()).then((json)=>{
-                                                              var urlsList=null;
-                                                              var pushUrl=null;
-                                                              if(json==null){
-
-                                                              }
-                                                              if(json.re==1){
-                                                                  urlsList=json.json;
-                                                                  pushUrl=urlsList.rtmppushurl;
-                                                                  Bridge.raisePLStream(pushUrl);
-                                                              }else{
-
-                                                                  alert('申请地址失败');
-                                                                  //TODO:微信分享邀请好友
-
-                                                              }
-                                                          });
-
-
-                                                            this.navigate2LiveHome()
-                                          {/*var date=new Date()*/}
-                                          {/*var dateStr=''*/}
-                                          {/*this.props.dispatch(getRTMPPushUrl({*/}
-                                              {/*time:3600,*/}
-                                              {/*loginName:this.props.username,*/}
-                                              {/*title:'test',*/}
-                                              {/*brief:'nothing big deal',*/}
-                                              {/*longbrief:'the same'*/}
-                                          {/*})).then((json)=>{*/}
-                                            {/*//开直播*/}
-                                            {/*Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1514539138&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:IgSHYwr6QmazFJrt9fqMCu2nbKA=")*/}
-                                          {/*})*/}
-                                             //alert('暂未开通');
-                                         //console.log('找教练');
-                                       }}>
-                                    {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                    <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
-                                    <View style={{marginTop:0,paddingTop:15}}>
-                                        <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                    onPress={ ()=>{
-                                          this.navigate2Mall();
-                                      }}>
-
-                                    {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                    <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
-                                    <View style={{marginTop:0,paddingTop:15}}>
-                                        <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
-                                    </View>
-                                </TouchableOpacity>
+                                            {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
+                                            <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
+                                            <View style={{marginTop:0,paddingTop:15}}>
+                                                <Text style={{fontSize:13,color:'#646464'}}>收益</Text>
+                                            </View>
+                                        </TouchableOpacity>
 
                                 <TouchableOpacity
                                     style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
@@ -882,19 +644,6 @@ class Home extends Component {
                                     </View>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity
-                                    style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                    onPress={ ()=>{
-                                           alert("暂未开通");
-                                            {/*this.navigate2Competition();*/}
-                                      }}>
-
-                                    {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                    <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
-                                    <View style={{marginTop:0,paddingTop:15}}>
-                                        <Text style={{fontSize:13,color:'#646464'}}>更多</Text>
-                                    </View>
-                                </TouchableOpacity>
                                     </View>
                               </View>
 
@@ -987,80 +736,6 @@ class Home extends Component {
         );
     }
 
-    dropdown_renderRow(rowData, rowID, highlighted){
-        return (
-            <TouchableOpacity >
-                <View style={[styles.dropdown_row]}>
-                    <Text style={[styles.dropdown_row_text, highlighted && {color: 'mediumaquamarine'}]}>
-                        {rowData}
-                    </Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
-    dropdown_1_onSelect(idx, value) {
-        this.setState({
-            clubName:value,
-        });
-    }
-
-    dropdown_2_onSelect(idx, value) {
-        this.setState({
-            venueName:value,
-        });
-    }
-
-    dropdown_3_onSelect(idx, value) {
-        this.setState({
-            sportsType:value,
-        });
-    }
-
-    dropdown_1_willShow() {
-        this.setState({
-            showClubDropDown:true,
-        });
-    }
-
-    dropdown_2_willShow() {
-        this.setState({
-            showVenueDropDown:true,
-        });
-    }
-
-    dropdown_3_willShow() {
-        this.setState({
-            showTypeDropDown:true,
-        });
-    }
-
-    dropdown_1_willHide() {
-        this.setState({
-            showClubDropDown:false,
-        });
-    }
-
-    dropdown_2_willHide() {
-        this.setState({
-            showVenueDropDown:false,
-        });
-    }
-
-    dropdown_3_willHide() {
-        this.setState({
-            showTypeDropDown:false,
-        });
-    }
-
-    lengthFilter(data){
-        if(data.length>5){
-            data=data.substring(0,4);
-            data = data+'...'
-        }
-        return data;
-    }
-
     componentDidMount()
     {
         InteractionManager.runAfterInteractions(() => {
@@ -1082,40 +757,6 @@ class Home extends Component {
                     }
                 }
             })
-
-            //获取所有俱乐部
-            this.props.dispatch(fetchClubList()).then((json)=>{
-                if(json.re==1)
-                {
-                    var clubDataList = [];
-                    for(var i=0;i<json.data.length;i++)
-                        clubDataList.push(json.data[i].name);
-                    this.setState({clubList:clubDataList,clubs:json.data});
-                }
-                else {
-                    if(json.re=-100){
-                        this.props.dispatch(getAccessToken(false))
-                    }
-
-                }
-            })
-
-            //获取所有场馆
-            this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
-                if(json.re==1)
-                {
-                    var venueDataList = [];
-                    for(var i=0;i<json.data.length;i++)
-                        venueDataList.push(json.data[i].name);
-                    this.setState({venueList:venueDataList,venues:json.data});
-                }
-                else {
-                    if(json.re=-100){
-                        this.props.dispatch(getAccessToken(false))
-                    }
-
-                }
-            })
         });
     }
 }
@@ -1127,52 +768,6 @@ var styles = StyleSheet.create({
     },
     flexContainer: {
         flexDirection: 'row',
-    },
-    cell: {
-        width:dropdownWidth,
-        alignItems:'center',
-        flexDirection:'row',
-        height:32,
-        borderRightColor:'#cdcdcd',
-        borderRightWidth:0.7,
-        borderBottomColor:'#cdcdcd',
-        borderBottomWidth:0.7,
-    },
-    viewcell: {
-        width:dropdownWidth-0.7,
-        backgroundColor:'#ffffff',
-        alignItems:'center',
-        height:32,
-        justifyContent:'center',
-        flexDirection:'row',
-    },
-    textstyle: {
-        fontSize: 13,
-        textAlign: 'center',
-        color:'#646464',
-        justifyContent:'center',
-    },
-    dropdownstyle: {
-        height: 100,
-        width:dropdownWidth,
-        borderColor: '#cdcdcd',
-        borderWidth: 0.7,
-    },
-    dropdown_row: {
-        flexDirection: 'row',
-        height: 50,
-        alignItems: 'center',
-    },
-    dropdown_row_text: {
-        fontSize: 13,
-        color: '#646464',
-        textAlignVertical: 'center',
-        justifyContent:'center',
-        marginLeft: 5,
-    },
-    dropdown_image: {
-        width: 20,
-        height: 20,
     },
 });
 

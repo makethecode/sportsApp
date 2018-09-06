@@ -180,7 +180,7 @@ class Home extends Component{
                              if(i==0)
                              {
                                  //商城扫码逻辑不成熟
-                                 //this.navigate2ScannerList();
+                                 this.navigate2ScannerList();
                              }
                          }}>
 
