@@ -1749,6 +1749,7 @@ export let wechatGoodsPay=(pay,goods)=> {
                     }).then((json)=>{
                         if(json.re==1)
                         {
+                            //{detailEndTime=2018-09-06 23:59:59, name=周末班, startTime=10, detailStartTime=2018-09-06 10:23:13, endTime=23, type=course}
                             resolve(json)
                         }
                     }).catch((e)=>{
