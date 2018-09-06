@@ -82,7 +82,7 @@ class ProductPay extends Component{
                                 <View style={{flex:4,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
                                     <View style={{padding:15,backgroundColor:'#fff'}}>
                                         <QRCode
-                                            value={'weixin://wxpay/bizpayurl?pr=LU5EYra'}
+                                            value={this.state.code_url}
                                             size={200}
                                             bgColor='black'
                                             fgColor='white'/>
@@ -107,8 +107,7 @@ class ProductPay extends Component{
     }
 
     componentDidMount(){
-        //逻辑不完整
-        //this.wechatPay(this.state.pay,this.state.goods);
+        this.wechatPay(this.state.pay,this.state.goods);
     }
 
     componentWillUnmount(){
@@ -121,10 +120,8 @@ class ProductPay extends Component{
                 }},
                 {text: '是', onPress: () =>
                 {
-
-                    // this.props.dispatch(goodsPaySuccess(this.state.goods)).then((json)=>{
-                    // })
-
+                    this.props.dispatch(goodsPaySuccess(this.state.goods)).then((json)=>{
+                    })
                 }},
             ],
         )

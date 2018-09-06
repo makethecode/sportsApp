@@ -87,7 +87,7 @@ class MainStatistics extends Component {
             //各时间段课程、活动人数柱状图
             courseList:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             activityList:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            //截至目前账单折线图
+            //截至目前账单柱状图
             coursePayList:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             activityPayList:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             goodsPayList:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -106,20 +106,12 @@ class MainStatistics extends Component {
 
     renderRow(rowData, sectionId, rowId) {
             //{time:8,type:'activity',detailTime:'08:23:49',payment:15}
-        var type = '';
-
-        switch (rowData.type){
-            case 'course':type='课程';break;
-            case 'activity':type='群活动';break;
-            case 'goods':type='商品';break;
-        }
-
             return (
                 <View style={styles.noticeItem}>
                 <View style={styles.noticeWrapper}>
                     <View style={{justifyContent: 'center', width: width - 60 - 80,flexDirection:'row'}}>
                         <Text style={{color: '#5c5c5c', fontSize: 13}} numberOfLines={1}>
-                            {rowData.personName} 在 {type} 支出了
+                            {rowData.personName}在{rowData.type}花费了
                         </Text>
                         <Text style={{color: 'red', fontSize: 13}} numberOfLines={1}>
                             {rowData.payment}
@@ -158,7 +150,7 @@ class MainStatistics extends Component {
         var option1={}
         //各时间段人数柱状图
         var option2={}
-        //支付情况折线图
+        //支付情况柱状图
         var option3=
         {
             title: {
@@ -179,9 +171,9 @@ class MainStatistics extends Component {
             },
             color:['#fef894','#fbd193','#f78ea0'],
             series: [
-                {name:'课程',type:'line',data:this.state.coursePayList},
-                {name:'活动',type:'line',data:this.state.activityPayList},
-                {name:'商品',type:'line',data:this.state.goodsPayList},
+                {name:'课程',type:'bar',data:this.state.coursePayList},
+                {name:'活动',type:'bar',data:this.state.activityPayList},
+                {name:'商品',type:'bar',data:this.state.goodsPayList},
             ]
         }
         //支付情况饼状图
@@ -418,9 +410,9 @@ class MainStatistics extends Component {
                             },
                             color:['#fef894','#fbd193','#f78ea0'],
                             series: [
-                                {name:'课程',type:'line',data:courseList},
-                                {name:'活动',type:'line',data:activityList},
-                                {name:'商品',type:'line',data:goodsList},
+                                {name:'课程',type:'bar',data:courseList},
+                                {name:'活动',type:'bar',data:activityList},
+                                {name:'商品',type:'bar',data:goodsList},
                             ]
                         }
 
@@ -510,9 +502,9 @@ class MainStatistics extends Component {
                         },
                         color:['#fef894','#fbd193','#f78ea0'],
                         series: [
-                            {name:'课程',type:'line',data:courseList},
-                            {name:'活动',type:'line',data:activityList},
-                            {name:'商品',type:'line',data:goodsList},
+                            {name:'课程',type:'bar',data:courseList},
+                            {name:'活动',type:'bar',data:activityList},
+                            {name:'商品',type:'bar',data:goodsList},
                         ]
                     }
 
