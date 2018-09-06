@@ -110,7 +110,7 @@ export let fetchAllPayment=()=>{
             var state=getState();
 
             Proxy.postes({
-                url: Config.server + '/func/pay/getFirstAllPayFormList',
+                url: Config.server + '/func/pay/getAllPayFormList',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -119,37 +119,50 @@ export let fetchAllPayment=()=>{
             }).then((json)=>{
                 if(json.re==1){
                     var payments = json.data;
+                    var money=0;
+                    var money1=0;
+                    var money2=0;
+                    var tel1=0;
+                    var tel2=0;
+                    var wx1=0;
+                    var wx2=0;
+                    var qunhuodong=[];
+                    var huaxiao=[];
+                    payments.map((payments,i)=>{
+                        money+=payments.payment;
+                        if(payments.useType=="1"){
+                            qunhuodong.push(payments);
+                            money1+=payments.payment;
+                            if(payments.payType=="1"){
+                                tel1+=payments.payment;
 
-                    dispatch(onPaymentUpdate(payments))
-                    resolve({re:1,data:payments})
-                }
-            }).catch((e)=>{
-                alert(e);
-                reject(e);
-            })
+                            }
+                            if(payments.payType=="2")
+                            {
+                                wx1+=payments.payment;
+                            }
 
-        })
-    }
-}
 
-//获取本月账单（初始状态）
-export let fetchFirstAllPayment=()=>{
-    return (dispatch,getState)=>{
-        return new Promise((resolve, reject) => {
+                        }
+                        if(payments.useType=="2"){
+                            huaxiao.push(payments);
+                            money2+=payments.payment;
+                            if(payments.payType=="1"){
+                                tel2+=payments.payment;
 
-            var state=getState();
-
-            Proxy.postes({
-                url: Config.server + '/func/pay/getFirstAllPayFormList',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: {
-                }
-            }).then((json)=>{
-                if(json.re==1){
-                    var payments = json.data;
-
+                            }
+                            if(payments.payType=="2")
+                            {
+                                wx2+=payments.payment;
+                            }
+                        }
+                    })
+                     money=money+'';
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
+                    dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
                     dispatch(onPaymentUpdate(payments))
                     resolve({re:1,data:payments})
                 }
@@ -243,11 +256,14 @@ export let fetchPaymentByTime=(clubId,startTime,endTime)=>{
 export let fetchAllPaymentByTime=(startTime,endTime)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
+
             var state=getState();
+
             Proxy.postes({
                 url: Config.server + '/func/pay/getAllPayFormListOfTodayByTime',
                 headers: {
                     'Content-Type': 'application/json',
+
                 },
                 body: {
                     startTime:startTime,
@@ -256,6 +272,50 @@ export let fetchAllPaymentByTime=(startTime,endTime)=>{
             }).then((json)=>{
                 if(json.re==1){
                     var payments = json.data;
+                    var money=0;
+                    var money1=0;
+                    var money2=0;
+                    var tel1=0;
+                    var tel2=0;
+                    var wx1=0;
+                    var wx2=0;
+                    var qunhuodong=[];
+                    var huaxiao=[];
+                    payments.map((payments,i)=>{
+                        money+=payments.payment;
+                        if(payments.useType=="1"){
+                            qunhuodong.push(payments);
+                            money1+=payments.payment;
+                            if(payments.payType=="1"){
+                                tel1+=payments.payment;
+
+                            }
+                            if(payments.payType=="2")
+                            {
+                                wx1+=payments.payment;
+                            }
+
+
+                        }
+                        if(payments.useType=="2"){
+                            huaxiao.push(payments);
+                            money2+=payments.payment;
+                            if(payments.payType=="1"){
+                                tel2+=payments.payment;
+
+                            }
+                            if(payments.payType=="2")
+                            {
+                                wx2+=payments.payment;
+                            }
+                        }
+                    })
+                    money=money+'';
+                    // s1=money.indexOf(".");
+                    // str1=money.substring(0,s1);
+                    // str2=money.substring(s1,s1+3);
+                    // money=str1+''+str2;
+                    dispatch(setPayment(payments,money,qunhuodong,huaxiao,money1,money2,tel1,tel2,wx1,wx2));
                 }
                 resolve({re:1,data:payments})
 

@@ -15,7 +15,7 @@ import mycompetitionReducer from './MyCompetationReducer';
 import myprofit from './MyProfitReducer';
 
 import noticeReducer from './NoticeReducer';
-
+import playingList from './LiveReducer'
 
 export default rootReducer = combineReducers({
     tab:tabReducer,
@@ -30,6 +30,7 @@ export default rootReducer = combineReducers({
     mycompetition:mycompetitionReducer,
     myprofit:myprofit,
     notice:noticeReducer,
+    playingList:playingList
 
 
 })

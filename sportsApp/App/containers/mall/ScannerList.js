@@ -32,10 +32,6 @@ import Config from '../../../config';
 import Camera from 'react-native-camera';
 import ProductPay from './ProductPay'
 const {height, width} = Dimensions.get('window');
-const defaultImg = require('../../../img/p1.jpeg')
-const nongfushanquan = require('../../../img/nongfushanquan.jpeg')
-const maidong = require('../../../img/maidong.jpeg')
-const hongniu = require('../../../img/hongniu.jpeg')
 
 class ScannerList extends Component {
 
@@ -105,9 +101,9 @@ class ScannerList extends Component {
             //实现多次扫描
             goods:[
                 {sortId:'1234567',name:'农夫山泉',brief:'农夫山泉 饮用天然水塑膜量贩装',salePrice:2,
-                    inventortNumber:5,size:'550ml',clubId:1,id:1,type:'nongfushanquan'},
+                    inventortNumber:5,size:'550ml',clubId:1,id:1,url:'/badminton/mall/goods/nongfushanquan.jpeg'},
                 {sortId:'678930',name:'脉动',brief:'MIZONE/脉动维生素饮料 青柠味 ',salePrice:4,size:'600ml',clubId:1,id:2,
-                type:'maidong'},
+                url:'/badminton/mall/goods/maidong.jpeg'},
             ],
             money:6,
         };
@@ -115,14 +111,8 @@ class ScannerList extends Component {
 
     renderRow(rowData, sectionId, rowId) {
 
-        //var url = Config.server + rowData.url
-        var img = defaultImg;
-
-        switch (rowData.type){
-            case 'nongfushanquan':img=nongfushanquan;break;
-            case 'maidong':img=maidong;break;
-            case 'hongniu':img=hongniu;break;
-        }
+        const defaultImg = require('../../../img/p1.jpeg')
+        var url = Config.server + rowData.url
 
         var lineStyle=null;
         lineStyle={flex:1,flexDirection:'row',padding:10,paddingLeft:0,paddingRight:0,borderBottomWidth:1,
@@ -131,7 +121,7 @@ class ScannerList extends Component {
         var row=(
             <TouchableOpacity style={lineStyle}>
                 <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                    <Image resizeMode="contain" style={{ width:100,height:100}} source={img} />
+                    <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:url}} />
                 </View>
                 <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
                     <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>

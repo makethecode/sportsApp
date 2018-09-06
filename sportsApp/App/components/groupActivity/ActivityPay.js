@@ -60,7 +60,7 @@ class ActivityPay extends Component{
             isRefreshing:false,
             activity:this.props.activity,
             pay:{payment:this.props.activity.cost+"",payType:'2'},
-            code_url:'weixin://wxpay/bizpayurl?pr=LU5EYra',
+            code_url:null,
             // select:this.props.select,
             // starttime:this.props.starttime,
             // endtime:this.props.endtime
@@ -117,10 +117,44 @@ class ActivityPay extends Component{
     }
 
     componentDidMount(){
-        //逻辑不成熟，暂不实现
-        //this.wechatPay(this.state.pay,activity.activityId);
+        this.wechatPay(this.state.pay,activity.activityId);
     }
 }
+
+
+// async function rnwechatpay(json) {
+//     try {
+//
+//         var appId = json.data.appid;
+//         var partnerId = json.data.mch_id;
+//         var noncestr = json.data.nonce_str;
+//         var prepayId = json.data.prepay_id;
+//         var timeStamp = json.data.timeStamp;
+//         var sign = json.data.sign;
+//
+//         var wechatPayData=
+//             {
+//                 partnerId:partnerId,  // 商家向财付通申请的商家id
+//                 prepayId: prepayId,   // 预支付订单
+//                 nonceStr: noncestr,   // 随机串，防重发
+//                 timeStamp: timeStamp,  // 时间戳，防重发
+//                 package: 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
+//                 sign: sign // 商家根据微信开放平台文档对数据做的签名
+//             };
+//
+//         let result = await WeChat.pay(wechatPayData);
+//         /*支付成功的后续操作*/
+//         console.log(result);
+//         Alert.alert('信息','支付成功',[{text:'确认',onPress:()=>{
+//         // this.props.dispatch(signUpActivity(event.eventId));
+//         this.goBack();
+//          }}]);
+//     } catch (error) {
+//         /*支付失败的后续操作*/
+//         var errormsg = error ===-2 ? "用户取消" : "订单支付失败"
+//         Alert.alert('支付失败',errormsg)
+//     }
+// }
 
 const styles = StyleSheet.create({
     container:{
