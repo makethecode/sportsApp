@@ -667,7 +667,6 @@ class CreateBadmintonCourse extends Component{
     {
         if(this.venueListener)
             this.venueListener.remove();
-        this.props.dispatch(enableCoursesOfCoachOnFresh());
     }
 
 }

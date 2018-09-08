@@ -299,21 +299,21 @@ class My extends Component{
 
 
                         {/*我的比赛*/}
-                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                          onPress={()=>{
-                            this.navigate2MyCompetitionList();
-                        }}
-                        >
+                        {/*<TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}*/}
+                                          {/*onPress={()=>{*/}
+                            {/*this.navigate2MyCompetitionList();*/}
+                        {/*}}*/}
+                        {/*>*/}
 
-                            <View style={{flex:1,backgroundColor:'#FFEC8B',flexDirection:'row',borderRadius:30,padding:5,margin:5,
-                            justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'group'} size={20} color="#fff"/>
-                            </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>我的比赛</Text>
-                            </View>
+                            {/*<View style={{flex:1,backgroundColor:'#FFEC8B',flexDirection:'row',borderRadius:30,padding:5,margin:5,*/}
+                            {/*justifyContent:'center',alignItems: 'center'}}>*/}
+                                {/*<Icon name={'group'} size={20} color="#fff"/>*/}
+                            {/*</View>*/}
+                            {/*<View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>*/}
+                                {/*<Text>我的比赛</Text>*/}
+                            {/*</View>*/}
 
-                        </TouchableOpacity>
+                        {/*</TouchableOpacity>*/}
 
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                           onPress={()=>{

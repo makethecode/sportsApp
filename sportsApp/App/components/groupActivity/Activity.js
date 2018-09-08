@@ -31,15 +31,19 @@ import QrcodeModal from './QrcodeModal';
 import {
     fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,deleteActivity,
 } from '../../action/ActivityActions';
-
 import {getAccessToken,} from '../../action/UserActions';
 import WechatShare from '../WechatShare';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
-import AssortFilter from '../../utils/AssortFilter'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
+import activityAssortFilter from '../../utils/activityAssortFilter'
 import ModalDropdown from 'react-native-modal-dropdown';
+import {
+    fetchMaintainedVenue
+} from '../../action/MapActions';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 var WeChat=require('react-native-wechat');
 var {height, width} = Dimensions.get('window');
+const dropdownWidth = width/3-20;
 
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -192,6 +196,7 @@ class Activity extends Component {
         }
 
     }
+
     signUpActivity(event,eventNowMemNum)
     {
         if(event.eventMaxMemNum<=eventNowMemNum){
@@ -286,16 +291,19 @@ class Activity extends Component {
 
                      <View style={{flex:2,marginRight:3,justifyContent:'center',alignItems:'flex-end'}}>
                          {
-                             rowData.isOngoing==1?
+                             rowData.status==1?
+                                 //已结束1
                                  <View style={{flexDirection:'row'}}>
-                                     <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>接受报名中</Text></View>
+                                     <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>活动已结束</Text></View>
                                      <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',padding:5,marginLeft:5}}
                                                        onPress={()=>{this.deleteActivity(rowData.activityId)}}>
                                          <Image style={{width: 20, height: 20}} source={require('../../../img/delete_icon.png')}></Image>
                                      </TouchableOpacity>
-                                 </View> :
+                                 </View>
+                                 :
+                                 //正在报名0
                                  <View style={{flexDirection:'row'}}>
-                                 <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>活动已结束</Text></View>
+                                     <View style={{backgroundColor:'#66CDAA',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>接受报名中</Text></View>
                                      <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',padding:5,marginLeft:5}}
                                                        onPress={()=>{this.deleteActivity(rowData.activityId)}}>
                                          <Image style={{width: 20, height: 20}} source={require('../../../img/delete_icon.png')}></Image>
@@ -388,7 +396,7 @@ class Activity extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
                                       //收款处逻辑不成熟
-                                      //onPress={()=>{this.navigate2ActivityPay(rowData)}}
+                                      onPress={()=>{this.navigate2ActivityPay(rowData)}}
                     >
                     <View style={{backgroundColor:'#fff',borderRadius:5,padding:5}}><Text style={{color:'#fc6254'}}>收款</Text></View>
                     </TouchableOpacity>
@@ -400,50 +408,10 @@ class Activity extends Component {
         return row;
     }
 
-    sharetoPyq(rowData){
-        WeChat.isWXAppInstalled().then((isInstalled) => {
-            if (isInstalled) {
-                WeChat.shareToTimeline({
-                    type: 'news',
-                    title:rowData.eventName,
-                    description:'活动'+rowData.eventName+'在'+rowData.eventPlaceName+'举行，'+'活动时间为'+rowData.startTimeStr+'---'+rowData.endTimeStr,
-                    thumbImage:'https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike72%2C5%2C5%2C72%2C24/sign=f96438a8b1389b502cf2e800e45c8eb8/d043ad4bd11373f04db74d29ac0f4bfbfaed04ff.jpg',
-                    webpageUrl:'http://211.87.225.204:8080/badmintionhot/ShareTimeLine.html',
-                })
-                    .catch((error) => {
-                        console(error.message);
-                    });
-            } else {
-                console('没有安装微信软件，请您安装微信之后再试');
-            }
-        });
-    }
-
-    sharetoperson(rowData){
-        WeChat.isWXAppInstalled().then((isInstalled) => {
-            if (isInstalled) {
-                WeChat.shareToSession({
-                    type: 'news',
-                    title:rowData.eventName,
-                    description:'活动'+rowData.eventName+'在'+rowData.eventPlaceName+'举行，'+'活动时间为'+rowData.startTimeStr+'---'+rowData.endTimeStr,
-                    thumbImage:'https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike72%2C5%2C5%2C72%2C24/sign=f96438a8b1389b502cf2e800e45c8eb8/d043ad4bd11373f04db74d29ac0f4bfbfaed04ff.jpg',
-                    webpageUrl:'http://211.87.225.204:8080/badmintionhot/ShareTimeLine.html',
-                })
-                    .catch((error) => {
-                        console(error.message);
-                    });
-            } else {
-                console('没有安装微信软件，请您安装微信之后再试');
-            }
-        });
-    }
     fetchData(){
         this.state.doingFetch=true;
         this.state.isRefreshing=true;
         this.props.dispatch(fetchActivityList()).then((json)=> {
-            if(json.re==1){
-                this.setState({activityList:json.data})
-            }
             if(json.re==-100){
                 this.props.dispatch(getAccessToken(false));
             }
@@ -470,40 +438,47 @@ class Activity extends Component {
                 memberLevel:null,hasCoach:0,hasSparring:0,coachId:null,coachName:null,sparringId:null,sparringName:null,costTotal:null,isSignUp:null,eventMember:null,isNeedCoach:null,isNeedSparring:null,isHasPay:null,
                 ManagerLoginName:null,groupName:null,groupId:null,cost:null,costType:null,field:null,filedNum:null,time:{startTime:null,endTime:null,eventWeek:null,isSchedule:null,},},
 
-            statusList:['报名中','已结束','全部'],
-            dateList:['今天','明天','后天','一周内','全部'],
-            currentStatus:'状态',
-            currentDate:'日期',
-            showStatusDropDown:false,
-            showDateDropDown:false,
-            activityList:[],
-            activityStatusList:[],
-            activityDateList:[],
-            isChooseDate:false,
-            isChooseStatus:false,
+            venueName:'场地',
+            dateName:'日期',
+            statusName:'状态',
+            showDateDropdown:false,
+            showVenueDropdown:false,
+            showStatusDropdown:false,
+            venueList:[],venues:[],
+            dateList:['今天','明天','后天','一周内'],dateIdx:-1,
+            statusList:['正在报名','已结束'],statusIdx:-1,
+
+            venueId:-1,
+            dateId:-1,
+            statusId:-1
         }
     }
 
     render() {
 
-        let statusicon = this.state.showStatusDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
-        let dateicon = this.state.showDateDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+        let venueicon = this.state.showVenueDropdown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+        let dateicon = this.state.showDateDropdown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+        let statusicon = this.state.showStatusDropdown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+
+        var venueName_show = this.lengthFilter(this.state.venueName);
+        var dateName_show = this.lengthFilter(this.state.dateName);
+        var statusName_show = this.lengthFilter(this.state.statusName);
 
         var activityListView=null;
         var {activityList,activityOnFresh,visibleEvents,myEvents,myTakenEvents}=this.props;
         if(activityOnFresh==true)
         {
             if(this.state.doingFetch==false)
+                //显示的是从今天起所有的活动
                 this.fetchData();
         }else {
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            var allActivityList = this.state.activityList;
-            if (allActivityList !== undefined && allActivityList !== null && allActivityList.length > 0) {
-                var allActivityListAfterFilter = allActivityList;
+            if (activityList !== undefined && activityList !== null && activityList.length > 0) {
+                var activityAfterFilter = activityAssortFilter.filter(activityList,this.state.venueId,this.state.dateId,this.state.statusId)
                 activityListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(AssortFilter.filter(allActivityListAfterFilter,this.props.clubId,this.props.venueId,this.props.typeId))}
+                        dataSource={ds.cloneWithRows(activityAfterFilter)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
@@ -511,67 +486,128 @@ class Activity extends Component {
         }
 
         return (
-
             <View style={{flex:1}}>
-                <Toolbar width={width} title="群活动" actions={[]} navigator={this.props.navigator}>
+                <Toolbar width={width} title="群活动" navigator={this.props.navigator}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0){
+                                 //清空筛选记录
+                                 var venueId = -1;
+                                 var dateId = -1;
+                                 var statusId = -1;
+
+                                 this.setState({venueId:venueId,dateId:dateId,statusId:statusId,dateIdx:-1,statusIdx:-1,venueName:'场地',dateName:'日期',statusName:'状态'})
+                                 this.navigate2AddActivity()}
+                         }}>
                     {/*内容区*/}
-                    <View style={{flexDirection:'row',}}>
-                    <View style={[styles.siftWrapper, {zIndex: 1},{flex:1}]}>
+                    <View style={styles.flexContainer}>
+                        {/*场馆*/}
                         <ModalDropdown
-                            style={styles.siftCell}
-                            textStyle={styles.orderByFont}
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
                             dropdownStyle={styles.dropdownstyle}
-                            options={this.state.statusList}
+                            options={this.state.venueList}
                             renderRow={this.dropdown_renderRow.bind(this)}
                             onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
                             onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
                             onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
                         >
-                            <View style={styles.siftCell}>
-                                <Text style={styles.orderByFont}>
-                                    {this.state.currentStatus}
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {venueName_show}
                                 </Text>
                                 <Image
-                                    style={{width: 16, height: 16}}
+                                    style={styles.dropdown_image}
+                                    source={venueicon}
+                                />
+                            </View>
+                        </ModalDropdown>
+                        {/*日期*/}
+                        <ModalDropdown
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.dateList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
+                        >
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {dateName_show}
+                                </Text>
+                                <Image
+                                    style={styles.dropdown_image}
+                                    source={dateicon}
+                                />
+                            </View>
+                        </ModalDropdown>
+                        {/*状态*/}
+                        <ModalDropdown
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.statusList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_3_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_3_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_3_willHide.bind(this)}
+                        >
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {statusName_show}
+                                </Text>
+                                <Image
+                                    style={styles.dropdown_image}
                                     source={statusicon}
                                 />
                             </View>
                         </ModalDropdown>
-                    </View>
+                        {/*搜索*/}
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <TouchableOpacity
+                                onPress={()=>{
+                                    //根据筛选条件进行筛选
+                                    var venueflag = false;
+                                    var dateflag = false;
+                                    var statusflag = false;
+                                    var venueId = -1;
+                                    var dateId = -1;
+                                    var statusId = -1;
 
-                        <View style={[styles.siftWrapper, {zIndex: 1},{flex:1}]}>
-                            <ModalDropdown
-                                style={styles.siftCell}
-                                textStyle={styles.orderByFont}
-                                dropdownStyle={styles.dropdownstyle2}
-                                options={this.state.dateList}
-                                renderRow={this.dropdown_renderRow.bind(this)}
-                                onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
-                                onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
-                                onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
+                                    for(var i=0;i<this.state.venues.length;i++)
+                                        if(this.state.venues[i].name == this.state.venueName)
+                                        {
+                                            venueId = this.state.venues[i].unitId;
+                                            venueflag = true
+                                        }
+                                    if(venueflag==false)venueId = -1;
+
+                                    //dateList:['今天','明天','后天','一周内']
+                                    //statusList:['已结束','正在报名']
+                                    dateId = this.state.dateIdx;
+                                    statusId = this.state.statusIdx;
+
+                                    this.setState({venueId:venueId,dateId:dateId,statusId:statusId})
+                                }}
                             >
-                                <View style={styles.siftCell}>
-                                    <Text style={styles.orderByFont}>
-                                        {this.state.currentDate}
-                                    </Text>
-                                    <Image
-                                        style={{width: 16, height: 16}}
-                                        source={dateicon}
-                                    />
-                                </View>
-                            </ModalDropdown>
+                                <Ionicons name='md-search' size={20} color="#5c5c5c"/>
+                            </TouchableOpacity>
                         </View>
+                        {/*清空*/}
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <TouchableOpacity
+                                onPress={()=>{
+                                    var venueId = -1;
+                                    var dateId = -1;
+                                    var statusId = -1;
 
-                        <View style={{alignItems:'flex-end',justifyContent:'center',paddingHorizontal:10,flex:3}}>
-                        <TouchableOpacity
-                            onPress={()=>{this.navigate2AddActivity()}}
-                        >
-                        <Image
-                            source={ require('../../../img/create_activity.png')}
-                            style={{width:30,height:30}}
-                            resizeMode={"stretch"}
-                        />
-                        </TouchableOpacity>
+                                    this.setState({venueId:venueId,dateId:dateId,statusId:statusId,dateIdx:-1,statusIdx:-1,venueName:'场地',dateName:'日期',statusName:'状态'})
+                                }}
+                            >
+                                <Ionicons name='md-refresh' size={20} color="#5c5c5c"/>
+                            </TouchableOpacity>
                         </View>
 
                     </View>
@@ -588,11 +624,9 @@ class Activity extends Component {
                                     titleColor="#9c0c13"
                                     colors={['#ff0000', '#00ff00', '#0000ff']}
                                     progressBackgroundColor="#ffff00"
-                                />
-                            }
+                                />}
                             >
                                 {activityListView}
-
                                 {
                                     activityListView==null?
                                         null:
@@ -600,89 +634,9 @@ class Activity extends Component {
                                             <Text style={{color:'#343434',fontSize:13,alignItems: 'center',justifyContent:'center'}}>已经全部加载完毕</Text>
                                         </View>
                                 }
-
                             </ScrollView>
                         </Animated.View>
                     </View>
-
-                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',*/}
-                            {/*position:'absolute',bottom:8}}>*/}
-                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',*/}
-                            {/*padding:10,margin:5}} onPress={()=>{this.navigate2MyActivity(myEvents,'我的活动');}}>*/}
-                            {/*<Text style={{color:'#fff',}}>我发起的活动</Text>*/}
-                        {/*</TouchableOpacity>*/}
-
-                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',*/}
-                            {/*padding:10,margin:5}} onPress={()=>{this.navigate2AddActivity();}}>*/}
-                            {/*<Text style={{color:'#fff',}}>我要创建活动</Text>*/}
-                        {/*</TouchableOpacity>*/}
-                    {/*</View>*/}
-
-
-                    {/*<View style={{height:50,width:50,borderRadius:25,position:'absolute',bottom:8,left:width*0.5-25}}>*/}
-                        {/*<TouchableOpacity style={{flex:1,backgroundColor:'#fff',justifyContent:'center',alignItems: 'center',padding:5,*/}
-                        {/*borderWidth:1,borderColor:'#eee',borderRadius:50}}*/}
-                        {/*>*/}
-                            {/*<Icon name={'plus-circle'} size={35} color='#66CDAA'/>*/}
-                        {/*</TouchableOpacity>*/}
-                    {/*</View>*/}
-
-                    {/*<PopupDialog*/}
-                        {/*ref={(popupDialog) => {*/}
-                        {/*this.usernameDialog = popupDialog;*/}
-                    {/*}}*/}
-                        {/*dialogAnimation={scaleAnimation}*/}
-                        {/*actions={[]}*/}
-                        {/*width={0.8}*/}
-                        {/*height={0.3}*/}
-                    {/*>*/}
-
-                        {/*<QrcodeModal*/}
-                            {/*onClose={()=>{*/}
-                                {/*this.usernameDialog.dismiss();*/}
-                            {/*}}*/}
-                        {/*/>*/}
-
-                    {/*</PopupDialog>*/}
-
-
-                    {/*<PopupDialog*/}
-                        {/*ref={(popupDialog) => {*/}
-                        {/*this.sharetoSomeone = popupDialog;*/}
-                    {/*}}*/}
-                        {/*dialogAnimation={scaleAnimation}*/}
-                        {/*actions={[]}*/}
-                        {/*width={0.8}*/}
-                        {/*height={0.25}*/}
-                    {/*>*/}
-                    {/*<View style={{flex:1,padding:10,alignItems:"center",flexDirection:"row",justifyContent:"center"}}>*/}
-
-                        {/*<View style={{flex:1,flexDirection:"column",alignItems:"center"}}>*/}
-                            {/*<TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}*/}
-                                {/*onPress={()=>{*/}
-                                    {/*this.sharetoSomeone.dismiss();*/}
-                                    {/*this.sharetoperson(this.state.share);*/}
-
-                                {/*}}*/}
-                            {/*>*/}
-                            {/*<Icon name={'user-circle'} size={45} color='#00CD00'/>*/}
-                            {/*<Text>好友</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                        {/*<View style={{flex:1,flexDirection:"column",alignItems:"center"}}>*/}
-                            {/*<TouchableOpacity style={{flex:1,alignItems:"center",justifyContent:"center"}}*/}
-                                {/*onPress={()=>{*/}
-                                    {/*this.sharetoPyq(this.state.share);*/}
-                                    {/*this.sharetoSomeone.dismiss();*/}
-                                {/*}}*/}
-                            {/*>*/}
-                            {/*<Icon name={'wechat'} size={45} color='#00CD00'/>*/}
-                            {/*<Text>朋友圈</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-
-                    {/*</View>*/}
-                    {/*</PopupDialog>*/}
                 </Toolbar>
             </View>
         );
@@ -691,8 +645,8 @@ class Activity extends Component {
     dropdown_renderRow(rowData, rowID, highlighted){
         return (
             <TouchableOpacity >
-                <View style={[styles.dropdownrowstyle]}>
-                    <Text style={[styles.dropdownFont, highlighted && {color: 'mediumaquamarine'}]}>
+                <View style={[styles.dropdown_row]}>
+                    <Text style={[styles.dropdown_row_text, highlighted && {color: 'mediumaquamarine'}]}>
                         {rowData}
                     </Text>
                 </View>
@@ -702,42 +656,37 @@ class Activity extends Component {
 
     dropdown_1_onSelect(idx, value) {
         this.setState({
-            currentStatus:value,
+            venueName:value,
         });
+    }
 
-        var resList = [];
-        var statusList = [];
-        var dateList = this.state.activityDateList;
-        var activityList = this.props.activityList;
+    dropdown_2_onSelect(idx, value) {
+        this.setState({
+            dateName:value,
+            dateIdx:idx,
+        });
+    }
 
-        switch (idx){
-            case '0':
-                //接受报名中
-                for(i=0;i<activityList.length;i++)
-                    if(activityList[i].isOngoing==1)statusList.push(activityList[i]);
-                break;
-            case '1':
-                //已结束
-                for(i=0;i<activityList.length;i++)
-                    if(activityList[i].isOngoing==0)statusList.push(activityList[i]);
-                break;
-            case '2':
-                //全部
-                statusList=activityList;
-                break;
-        }
-
-        if(this.state.isChooseDate){
-            for(i=0;i<statusList.length;i++)
-                for(j=0;j<dateList.length;j++)
-                    if(statusList[i].activityId==dateList[j].activityId)
-                    {resList.push(statusList[i]);break;}
-        }else{resList=statusList;}
-
-        this.setState({activityStatusList:statusList,activityList:resList,isChooseStatus:true})
+    dropdown_3_onSelect(idx, value) {
+        this.setState({
+            statusName:value,
+            statusIdx:idx,
+        });
     }
 
     dropdown_1_willShow() {
+        this.setState({
+            showVenueDropDown:true,
+        });
+    }
+
+    dropdown_2_willShow() {
+        this.setState({
+            showDateDropDown:true,
+        });
+    }
+
+    dropdown_3_willShow() {
         this.setState({
             showStatusDropDown:true,
         });
@@ -745,93 +694,7 @@ class Activity extends Component {
 
     dropdown_1_willHide() {
         this.setState({
-            showStatusDropDown:false,
-        });
-    }
-
-    dropdown_2_onSelect(idx, value) {
-        this.setState({
-            currentDate:value,
-        });
-
-        var resList = [];
-        var statusList = this.state.activityStatusList;
-        var dateList = [];
-        var activityList = this.props.activityList;
-
-        var now   = new Date();
-        var selectedDate = new Date();
-
-        switch (idx){
-            case '0':
-                //今天
-                selectedDate.setDate(now.getDate());
-
-                for(i=0;i<activityList.length;i++){
-                    var activity_time = activityList[i].timeStart.substring(0,10)
-                    var selected_time = this.getNowFormatDate(selectedDate)
-
-                    if(activity_time == selected_time)
-                        dateList.push(activityList[i])
-                }
-                break;
-            case '1':
-                //明天
-                selectedDate.setDate(now.getDate()+1);
-
-                for(i=0;i<activityList.length;i++){
-                    var activity_time = activityList[i].timeStart.substring(0,10)
-                    var selected_time = this.getNowFormatDate(selectedDate)
-
-                    if(activity_time == selected_time)
-                        dateList.push(activityList[i])
-                }
-                break;
-            case '2':
-                //后天
-                selectedDate.setDate(now.getDate()+2);
-
-                for(i=0;i<activityList.length;i++){
-                    var activity_time = activityList[i].timeStart.substring(0,10)
-                    var selected_time = this.getNowFormatDate(selectedDate)
-
-                    if(activity_time == selected_time)
-                        dateList.push(activityList[i])
-                }
-                break;
-            case '3':
-                //一周内
-                selectedDate.setDate(now.getDate()+7);
-
-                for(i=0;i<activityList.length;i++){
-                    var activity_time = activityList[i].timeStart.substring(0,10)
-
-                    var start_time = this.getNowFormatDate(now)
-                    var end_time = this.getNowFormatDate(selectedDate)
-
-                    if(activity_time >= start_time && activity_time <= end_time)
-                        dateList.push(activityList[i])
-                }
-                break;
-            case '4':
-                //全部
-                dateList=activityList;
-                break;
-        }
-
-        if(this.state.isChooseStatus){
-            for(i=0;i<statusList.length;i++)
-                for(j=0;j<dateList.length;j++)
-                    if(statusList[i].activityId==dateList[j].activityId)
-                    {resList.push(statusList[i]);break;}
-        }else{resList=dateList;}
-
-        this.setState({activityDateList:dateList,activityList:resList,isChooseDate:true})
-    }
-
-    dropdown_2_willShow() {
-        this.setState({
-            showDateDropDown:true,
+            showVenueDropDown:false,
         });
     }
 
@@ -841,25 +704,41 @@ class Activity extends Component {
         });
     }
 
+    dropdown_3_willHide() {
+        this.setState({
+            showStatusDropDown:false,
+        });
+    }
+
+    lengthFilter(data){
+        if(data.length>5){
+            data=data.substring(0,4);
+            data = data+'...'
+        }
+        return data;
+    }
+
     componentWillUnmount(){
         this.props.dispatch(enableActivityOnFresh());
     }
 
-    //时间格式YYYY-MM-DD
-    getNowFormatDate(date) {
-    var seperator1 = "-";
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
+    componentDidMount(){
+        //获取所有场地
+        this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
+            if(json.re==1)
+            {
+                var venueDataList = [];
+                for(var i=0;i<json.data.length;i++)
+                    venueDataList.push(json.data[i].name);
+                this.setState({venueList:venueDataList,venues:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
     }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    var formatdate = year + seperator1 + month + seperator1 + strDate;
-    return formatdate;
-}
 
     deleteActivity(idActivity)
     {
@@ -875,7 +754,6 @@ class Activity extends Component {
         });
 
     }
-
 }
 
 var styles = StyleSheet.create({
@@ -921,39 +799,53 @@ var styles = StyleSheet.create({
         paddingVertical: 15,
         backgroundColor: '#fff',
     },
+    flexContainer: {
+        flexDirection: 'row',
+    },
+    cell: {
+        width:dropdownWidth,
+        alignItems:'center',
+        flexDirection:'row',
+        height:32,
+        borderRightColor:'#cdcdcd',
+        borderRightWidth:0.7,
+
+    },
+    viewcell: {
+        width:dropdownWidth-0.7,
+        backgroundColor:'#ffffff',
+        alignItems:'center',
+        height:32,
+        justifyContent:'center',
+        flexDirection:'row',
+    },
+    textstyle: {
+        fontSize: 13,
+        textAlign: 'center',
+        color:'#646464',
+        justifyContent:'center',
+    },
     dropdownstyle: {
-        height: 120,
-        flexDirection: 'row',
-        alignItems: 'center',
+        height: 100,
+        width:dropdownWidth,
         borderColor: '#cdcdcd',
         borderWidth: 0.7,
-        width:80,
     },
-    dropdownstyle2: {
-        height: 200,
+    dropdown_row: {
         flexDirection: 'row',
+        height: 50,
         alignItems: 'center',
-        borderColor: '#cdcdcd',
-        borderWidth: 0.7,
-        width:100,
     },
-    dropdownFont: {
-        color:'#5c5c5c',
-        marginRight: 5,
-        marginLeft:5,
+    dropdown_row_text: {
+        fontSize: 13,
+        color: '#646464',
+        textAlignVertical: 'center',
+        justifyContent:'center',
+        marginLeft: 5,
     },
-    dropdownrowstyle: {
-        height: 40,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    sortdropdownstyle: {
-        height: 133,
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderColor: '#cdcdcd',
-        borderWidth: 0.7,
-        width:120,
+    dropdown_image: {
+        width: 20,
+        height: 20,
     },
 });
 

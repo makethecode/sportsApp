@@ -1707,18 +1707,19 @@ export let wechatGoodsPay=(pay,goods)=> {
         }
     }
 
-        //获得用户今日截至目前的在线人数
-        export let fetchNowLoginNumber=()=>{
+        //获得用户今日截至目前的预约报名人数
+        export let fetchTodayUserStatus=(currentDate)=>{
             return (dispatch,getState)=> {
                 return new Promise((resolve, reject) => {
 
                     var state=getState();
                     Proxy.postes({
-                        url: Config.server + '/func/node/getAllClub',
+                        url: Config.server + '/func/node/fetchTodayUserStatus',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: {
+                            currentDate:currentDate
                         }
                     }).then((json)=>{
                         if(json.re==1)
@@ -1734,7 +1735,7 @@ export let wechatGoodsPay=(pay,goods)=> {
         }
 
         //获得用户今日参与活动和课程的情况
-        export let fetchTodayCourseAndActivity=()=>{
+        export let fetchTodayCourseAndActivity=(currentDate)=>{
             return (dispatch,getState)=> {
                 return new Promise((resolve, reject) => {
 
@@ -1745,6 +1746,7 @@ export let wechatGoodsPay=(pay,goods)=> {
                             'Content-Type': 'application/json',
                         },
                         body: {
+                            currentDate:currentDate
                         }
                     }).then((json)=>{
                         if(json.re==1)

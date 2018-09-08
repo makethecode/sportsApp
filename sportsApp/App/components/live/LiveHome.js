@@ -24,6 +24,11 @@ import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import{
+    getPushUrl,
+    getPlayUrl,
+} from '../../action/LiveActions';
+
 import PlayKit from './PlayKit';
 import PushStreaming from './PushStreaming';
 import {
