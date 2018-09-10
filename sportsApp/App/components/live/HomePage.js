@@ -138,8 +138,8 @@ class HomePage extends Component{
             body: {}
 
         }).then((json) => {
-            this.setState({playingList:json.data})
-            this.props.dispatch(updatePlayingUrls({ url:json.data }));
+            this.setState({playingList:json.data.data})
+            //this.props.dispatch(updatePlayingUrls({ url:json.data }));
         }).catch((e) => {
             reject(e)
         })
