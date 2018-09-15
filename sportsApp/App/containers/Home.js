@@ -48,6 +48,7 @@ import  {
     getRTMPPushUrl
 } from '../action/LiveActions';
 
+import HomePage from '../components/live/HomePage'
 var {height, width} = Dimensions.get('window');
 var IMGS = [
     require('../../img/tt1@2x.png'),
@@ -160,8 +161,8 @@ class Home extends Component {
         const {navigator} =this.props;
         if(navigator) {
             navigator.push({
-                name: 'LiveHome',
-                component: LiveHome,
+                name: 'HomePage',
+                component: HomePage,
                 params: {
 
                 }
@@ -560,23 +561,23 @@ class Home extends Component {
                                             onPress={ ()=>{
                                                 // Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1517628206&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:y2fLXXG5llHsrwJlOmVzl_2h0OM=")
 
-                                                this.props.dispatch(getRTMPPushUrl()).then((json)=>{
-                                                    var urlsList=null;
-                                                    var pushUrl=null;
-                                                    if(json==null){
-
-                                                    }
-                                                    if(json.re==1){
-                                                        urlsList=json.json;
-                                                        pushUrl=urlsList.rtmppushurl;
-                                                        Bridge.raisePLStream(pushUrl);
-                                                    }else{
-
-                                                        alert('申请地址失败');
-                                                        //TODO:微信分享邀请好友
-
-                                                    }
-                                                });
+                                                // this.props.dispatch(getRTMPPushUrl()).then((json)=>{
+                                                //     var urlsList=null;
+                                                //     var pushUrl=null;
+                                                //     if(json==null){
+                                                //
+                                                //     }
+                                                //     if(json.re==1){
+                                                //         urlsList=json.json;
+                                                //         pushUrl=urlsList.rtmppushurl;
+                                                //         Bridge.raisePLStream(pushUrl);
+                                                //     }else{
+                                                //
+                                                //         alert('申请地址失败');
+                                                //         //TODO:微信分享邀请好友
+                                                //
+                                                //     }
+                                                // });
 
 
                                                 this.navigate2LiveHome()
