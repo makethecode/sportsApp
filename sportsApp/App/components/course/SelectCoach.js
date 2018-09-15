@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import {
     Dimensions,
@@ -20,11 +19,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-var {height, width} = Dimensions.get('window');
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
 import{
     fetchCoaches,
     onCoachUpdate,
+    searchCoaches
 } from '../../action/CoachActions';
 
 import {
@@ -32,7 +31,10 @@ import {
 } from '../../action/UserActions';
 
 import CoachDetail from './CoachDetail'
-import {distributeCourse} from "../../action/CourseActions";
+import {distributeCourse} from "../../action/CourseActions"
+import { SearchBar } from 'react-native-elements'
+
+var {height, width} = Dimensions.get('window');
 
 class SelectCoach extends Component {
 
@@ -96,64 +98,6 @@ class SelectCoach extends Component {
             })
         });
     };
-    renderCoach(rowData, sectionId, rowId) {
-
-        var lineStyle = {
-            flex: 1, flexDirection: 'row', padding:5, paddingLeft: 0, paddingRight: 0,
-            justifyContent: 'flex-start', backgroundColor: 'transparent'
-        };
-
-
-
-        var row = (
-            <TouchableOpacity style={lineStyle} onPress={() => {
-                //this.navigate2CoachDetail(rowData);
-            }}>
-                <View style={{width:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                    <Image source={require('../../../img/portrait.jpg')} style={{ width: 46, height: 46,borderRadius:23 }}
-                           resizeMode="stretch" />
-                </View>
-
-                <View style={{flex:5,flexDirection:'column',borderBottomColor:'#eee',borderBottomWidth:1}}>
-                    <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                        <View style={{flex:1,flexDirection:'row'}}>
-                            <Text style={{ fontSize: 14, justifyContent: 'flex-start', fontWeight: 'bold', alignItems: 'flex-start', color: '#222' }}>
-                                {rowData.perName}
-                            </Text>
-                            <Icon name="mars" size={14} color="#00f" style={{marginLeft:10}}/>
-                        </View>
-                    </View>
-
-                    <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                        <View style={{width:90,flexDirection:'row',justifyContent:'flex-start',paddingRight:5}}>
-                            <Icon name="phone" size={14} color="#00f" style={{marginLeft:5}}/>
-                            <Text style={{fontSize:12,color:'#222'}}>
-                                {rowData.mobilePhone}
-                            </Text>
-                        </View>
-
-                        <View style={{flex:1,paddingLeft:20}}>
-                            <Text style={{fontSize:12,color:'#222'}}>
-                                {this.state.memberLevel[rowData.coachlevel]}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-
-                <View style={{flex:1,alignItems:'center',justifyContent:'center',borderBottomColor:'#eee',borderBottomWidth:1}}>
-                    {
-                        this.state.isSelfCheck==true?
-                            <Icon name={'check-square-o'} size={20} color="#666"/>:
-                            <Icon name={'square-o'} size={20} color="#666"/>
-                    }
-                </View>
-
-
-            </TouchableOpacity>
-        );
-
-        return row;
-    }
 
     constructor(props) {
         super(props);
@@ -177,12 +121,6 @@ class SelectCoach extends Component {
         });
         field=field.substring(0,field.length-1);
 
-        // var field1=""
-        // this.state.coachId.map((field0,i)=>{
-        //     field1+=field0.state+","
-        // });
-        // field1=field1.substring(0,field1.length-1);
-
         var coachList = [];
         var {coaches}=this.state;
 
@@ -191,7 +129,7 @@ class SelectCoach extends Component {
 
             coaches.map((person,i)=>{
                 coachList.push(
-                    <TouchableOpacity key={i} style={{flexDirection:'row',padding:4,paddingHorizontal:10,marginTop:4}}
+                    <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4}}
                                       onPress={()=>{
                                           var _relative=_.cloneDeep(coaches);
                                           _relative.map((_person,j)=>{
@@ -202,109 +140,96 @@ class SelectCoach extends Component {
                                                       _person.checked = false;
                                                       this.removeItem({state: person.perName,perName:person.perName,coachId:person.trainerId});
                                                       //this.removeItem1({state:person.trainerId,trainerId:person.trainerId});
-
                                                   }
                                                   else{
                                                       this.addItem({state:person.perName,perName:person.perName,coachId:person.trainerId});
                                                       _person.checked=true;
-
-                                                      //this.addItem1({state:person.trainerId,trainerId:person.trainerId});
-
-
                                                   }
-
-
                                               }
                                           })
                                           this.setState({coaches:_relative})
-                                      }}
-                    >
+                                      }}>
 
-                        <View style={{width:50,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                            <Image source={require('../../../img/portrait.jpg')} style={{ width: 46, height: 46,borderRadius:23 }}
-                                   resizeMode="stretch" />
-                        </View>
-
-                        <View style={{flex:5,flexDirection:'column',borderBottomColor:'#eee',borderBottomWidth:1}}>
-                            <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                                <View style={{flex:1,flexDirection:'row'}}>
-                                    <Text style={{ fontSize: 14, justifyContent: 'flex-start', fontWeight: 'bold', alignItems: 'flex-start', color: '#222' }}>
-                                        {person.perName}
-                                    </Text>
-                                    <Icon name="mars" size={14} color="#00f" style={{marginLeft:10}}/>
-                                </View>
+                        <View style={{ padding: 6,flexDirection:'row',marginTop:3}}>
+                            <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
+                                {
+                                    person.avatar!=""?
+                                    <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                           source={{uri: person.avatar}}/>:
+                                        <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                               source={require('../../../img/portrait.jpg')}/>
+                                }
                             </View>
-
-                            <View style={{flexDirection: 'row', alignItems: 'center', padding: 6, paddingTop: 2}}>
-                                <View style={{width:90,flexDirection:'row',justifyContent:'flex-start',paddingRight:5}}>
-                                    <Icon name="phone" size={14} color="#00f" style={{marginLeft:5}}/>
-                                    <Text style={{fontSize:12,color:'#222'}}>
-                                        {person.mobilePhone}
-                                    </Text>
-                                </View>
-
-                                <View style={{flex:1,paddingLeft:20}}>
-                                    <Text style={{fontSize:12,color:'#222'}}>
-                                        {this.state.memberLevel[person.coachlevel]}
-                                    </Text>
-                                </View>
+                            <View style={{flex:4,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
+                                <Text style={{ color: '#222', fontSize: 14,marginBottom:5}}>{person.perName}</Text>
+                                <Text style={{ color: '#666', fontSize: 13}}>{person.mobilePhone}</Text>
+                            </View>
+                            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'flex-end',paddingHorizontal:10,width:70}}>
+                                {
+                                    person.checked==true?
+                                        <Ionicons name='md-checkbox-outline' size={20} color="#5c5c5c"/>:
+                                        <Ionicons name='md-square-outline' size={20} color="#5c5c5c"/>
+                                }
                             </View>
                         </View>
 
-                        <View style={{flex:1}}></View>
-                        <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',paddingHorizontal:10,width:70}}>
-                            {
-                                person.checked==true?
-                                    <Icon name={'check-square-o'} size={20} color="#666"/>:
-                                    <Icon name={'square-o'} size={20} cogit lor="#666"/>
-                            }
+                        <View style={{flex:3,padding:10,flexDirection:'column'}}>
+                            <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
+                                    <Text style={{color:'#ffffff'}}>级别</Text>
+                                </View>
+                                <View style={{flex:7,padding:5,marginLeft:5}}>
+                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{person.sportLevel}</Text>
+                                </View>
+                            </View>
+
+                            <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                                <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#ffffff',borderRadius:5,padding:5}}>
+                                    <Text style={{color:'#66CDAA'}}>水平</Text>
+                                </View>
+                                <View style={{flex:7,padding:5,marginLeft:5}}>
+                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{person.coachLevel}</Text>
+                                </View>
+                            </View>
                         </View>
+
+                        <View style={{height:0.7,width:width,backgroundColor:'#c2c2c2'}}></View>
+
                     </TouchableOpacity>
                 )
             })
-
-            // var ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-            // coachList = (
-            //     <ScrollView
-            //         refreshControl={
-            //             <RefreshControl
-            //                 refreshing={this.state.isRefreshing}
-            //                 onRefresh={this._onRefresh.bind(this)}
-            //                 tintColor="#ff0000"
-            //                 title="Loading..."
-            //                 titleColor="#00ff00"
-            //                 colors={['#ff0000', '#00ff00', '#0000ff']}
-            //                 progressBackgroundColor="#ffff00"
-            //             />
-            //         }
-            //     >
-            //         <ListView
-            //             automaticallyAdjustContentInsets={false}
-            //             dataSource={ds.cloneWithRows(coaches)}
-            //             renderRow={this.renderCoach.bind(this)}
-            //         />
-            //     </ScrollView>)
 
         }
 
         return (
             <View style={styles.container}>
-
                 <Toolbar width={width}  title="教练列表" navigator={this.props.navigator}
                          actions={[]}
                          onPress={(i)=>{
                              this.goBack()
                          }}>
-                    <View style={{ flex: 1, width: width, backgroundColor: '#66CDAA' }}>
+                    <SearchBar
+                        lightTheme
+                        onChangeText={
+                            //模糊查询
+                            (text)=>{
+                                this.searchByText(text)
+                            }
+                        }
+                        placeholder='姓名\电话\级别\水平' />
+                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#888',fontSize:13}}>教练名单</Text>
+                    </View>
+                    <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
 
                         <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff' }}>
                             {coachList}
                         </Animated.View>
 
-                    </View>
+                    </ScrollView>
 
-                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
-                        <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
+                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width,marginBottom:10}}>
+                        <TouchableOpacity style={{width:width*1/3,backgroundColor:'#fc6254',padding:10,flexDirection:'row',
                             justifyContent:'center'}}
                                           onPress={()=>{
                                               this.goBack();
@@ -318,8 +243,40 @@ class SelectCoach extends Component {
 
             </View>
         )
-
     }
+
+    searchByText(text){
+
+        //前端实现模糊查询
+
+        if(text==null || text=='')
+        {
+            var {coaches} = this.props;
+            this.setState({coaches:coaches})
+        }
+        else {
+            var {coaches} = this.props;
+            var coachList = [];
+
+            if (coaches && coaches.length > 0) {
+                coaches.map((person, i) => {
+                    if (person.perName) {
+                        if (person.perName.indexOf(text) != -1)
+                            coachList.push(person)
+                    }
+                })
+            }
+
+            this.setState({coaches: coachList})
+        }
+    }
+
+    revertCoach(){
+
+        var {coaches} = this.props;
+        this.setState({coaches:coaches})
+    }
+
     componentWillMount()
     {
        // InteractionManager.runAfterInteractions(() => {

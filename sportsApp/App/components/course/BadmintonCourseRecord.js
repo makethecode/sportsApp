@@ -56,7 +56,6 @@ import {
 } from '../../action/MapActions';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {getAccessToken, onUsernameUpdate, updateUsername,fetchClubList} from '../../action/UserActions';
-
 import BadmintonCourseSignUp from './BadmintonCourseSignUp';
 import FaceDetect from '../../native/FaceDetectModule';
 import FaceCollection from './FaceCollection';
@@ -67,12 +66,12 @@ import{
     fetchCoaches,
     onCoachUpdate,
 } from '../../action/CoachActions';
-
 var FaceViewManager = NativeModules.FaceViewManager;
 const NativeModule = new NativeEventEmitter(FaceViewManager);
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+
 var { height, width } = Dimensions.get('window');
 const dropdownWidth = width/3-20;
 
@@ -439,6 +438,7 @@ class BadmintonCourseRecord extends Component {
 
                         this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练',course:rowData})
                         this.props.dispatch(establishEveryDayClass(rowData)).then((json)=>{
+                        //人脸识别
                         this.sharetoSomeone.show();
                         }).catch((e)={});
                     }
@@ -859,14 +859,13 @@ class BadmintonCourseRecord extends Component {
                                                   if(Platform.OS=== 'android'){
                                                       this.sharetoSomeone.dismiss();
                                                       FaceDetect.faceDetect();
-                                                      {/*test();*/}
                                                   }else{
                                                       FaceViewManager.getFaceView("test");
                                                   }
                                               }}
                             >
-                                <Icon name={'user-circle'} size={45} color='#00CD00'/>
-                                <Text>现场签到</Text>
+                                <Image resizeMode="stretch" style={{height:40,width:40}} source={require('../../../img/sign.png')}/>
+                                <Text style={{marginTop:10,fontSize:13}}>现场签到</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{flex:1,flexDirection:"column",alignItems:"center"}}>
@@ -877,8 +876,8 @@ class BadmintonCourseRecord extends Component {
 
                                               }}
                             >
-                                <CommIcon name="account-check" size={45} color="#0adc5e" />
-                                <Text>预约签到</Text>
+                                <Image resizeMode="stretch" style={{height:40,width:40}} source={require('../../../img/appointment.png')}/>
+                                <Text style={{marginTop:10,fontSize:13}}>预约签到</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -1112,7 +1111,7 @@ const styles = StyleSheet.create({
         width:dropdownWidth,
         alignItems:'center',
         flexDirection:'row',
-        height:32,
+        height:35,
         borderRightColor:'#cdcdcd',
         borderRightWidth:0.7,
 
@@ -1121,7 +1120,7 @@ const styles = StyleSheet.create({
         width:dropdownWidth-0.7,
         backgroundColor:'#ffffff',
         alignItems:'center',
-        height:32,
+        height:35,
         justifyContent:'center',
         flexDirection:'row',
     },

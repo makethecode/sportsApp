@@ -18,9 +18,7 @@ import {
     Alert,
     KeyboardAvoidingView,
 } from 'react-native';
-
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -31,17 +29,18 @@ import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-
 import ActionSheet from 'react-native-actionsheet';
 import SelectVenue from '../../components/venue/SelectVenue';
 import SelectCoach from './SelectCoach';
-const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
-const scaleAnimation = new ScaleAnimation();
-const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 import InputScrollView from 'react-native-input-scroll-view'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
 import{
     distributeCourse,
     enableCoursesOfCoachOnFresh
 } from '../../action/CourseActions';
 import {getAccessToken,} from '../../action/UserActions';
+
+const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
+const scaleAnimation = new ScaleAnimation();
+const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+var {height, width} = Dimensions.get('window');
 
 class CreateBadmintonCourse extends Component{
 
@@ -242,50 +241,59 @@ class CreateBadmintonCourse extends Component{
             );
         }
 
-
         return (
-            <View style={{flex:1}}>
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>创建课程</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
+            <View style={{flex:1,backgroundColor:'#eee'}}>
+                <Toolbar width={width} title="创建课程" actions={[]} navigator={this.props.navigator}>
+                <KeyboardAwareScrollView style={{height:height-180,width:width,padding:5}}>
+                <View style={{flex:5,backgroundColor:'#eee'}}>
 
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>课程基本信息</Text>
                     </View>
-                </View>
-                <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
-                <View style={{flex:5,backgroundColor:'#fff'}}>
-                    {/*课程等级*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
+
+                    {/*课程名称*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程等级：</Text>
+                            <Text style={{color:'#343434'}}>课程名称</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                placeholder="请输入课程名称"
+                                value={this.state.course.className}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{courseName:value})})
+                                    }}
+                            />
+                        </View>
+                    </View>
+
+                    {/*课程类型*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>课程等级</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}
                                           onPress={()=>{ this.show('actionSheet1'); }}>
                             {
                                 this.state.course.classTypeStr==null?
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择课程等级：</Text>
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择课程等级 ></Text>
                                     </View> :
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.course.classTypeStr}</Text>
+                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.course.classTypeStr}</Text>
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
-                            </View>
                             <ActionSheet
                                 ref={(p) => {
                                     this.actionSheet1 =p;
                                 }}
-                                title="请选择课程等级"
+                                title="请选择课程类型"
                                 options={classTypeButtons}
                                 cancelButtonIndex={CANCEL_INDEX1}
                                 destructiveButtonIndex={DESTRUCTIVE_INDEX1}
@@ -296,75 +304,175 @@ class CreateBadmintonCourse extends Component{
                         </TouchableOpacity>
                     </View>
 
-
-
-                    {/*课程名称*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:10,marginBottom:5}}>
+                    {/*课程目标*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程名称：</Text>
+                            <Text style={{color:'#343434'}}>课程目标</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}>
-                            <TextInputWrapper
+                            <TextInput
                                 placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入课程名"
-                                val={this.state.course.className}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                placeholder="请输入课程目标"
+                                value={this.state.course.detail}
                                 onChangeText={
                                     (value)=>{
-                                        this.setState({course:Object.assign(this.state.course,{courseName:value})})
+                                        this.setState({course:Object.assign(this.state.course,{detail:value})})
                                     }}
-                                onCancel={
-                                    ()=>{this.setState({course:Object.assign(this.state.course,{courseName:null})});}
-                                }
                             />
                         </View>
                     </View>
 
-                    {/*课程人数*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程人数：</Text>
+                    {/*上课时间描述*/}
+                    <View style={{height:120,width:width,flexDirection:'column',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{height:40,width:width,justifyContent:'center',textAlign:'left'}}>
+                            <Text style={{color:'#343434'}}>课程安排</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <TextInput
+                            style={{height:80,width:width,fontSize:14,marginTop:5,borderRadius:5,backgroundColor:'#fff'}}
+                            onChangeText={(text) =>
+                            {
+                                this.setState({course:Object.assign(this.state.course,{scheduleDes:text})});
+                            }}
+                            value={this.state.course.scheduleDes}
+                            placeholder='请描述课程时间安排'
+                            placeholderTextColor="#888"
+                            underlineColorAndroid="transparent"
+                            multiline={true}
+                        />
+                    </View>
+
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>授课信息</Text>
+                    </View>
+
+                    {/*课程人数*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>课程容量</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}>
-                            <TextInputWrapper
+                            <TextInput
                                 placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入课程人数"
-                                val={this.state.course.maxNumber}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                placeholder="请输入课程容量"
+                                value={this.state.course.maxNumber}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{maxNumber:parseInt(value)})})
                                     }}
-                                onCancel={
-                                    ()=>{this.setState({course:Object.assign(this.state.course,{maxNumber:null})});}
-                                }
+                                keyboardType='numeric'
                             />
                         </View>
                     </View>
 
-                    {/*支付方式*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
+                    {/*课次*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text>收费类型：</Text>
+                            <Text style={{color:'#343434'}}>授课课次</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                placeholder="请输入授课课次"
+                                value={this.state.course.classCount}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{classCount:parseInt(value)})})
+                                    }}
+                                keyboardType='numeric'
+                            />
+                        </View>
+                    </View>
+
+                    {/*课程场馆*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>授课场地</Text>
+                        </View>
+
+                        {
+                            this.state.venue==null?
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2VenueInspect();
+                                                  }}>
+                                    <Text style={{fontSize:14,color:'#888'}}>
+                                        请选择授课场地 >
+                                    </Text>
+                                </TouchableOpacity>:
+
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2VenueInspect();
+                                                  }}>
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row',textAlign:'right'}}>
+                                        <Text style={{color:'#222',fontSize:14}}>{this.state.venue.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                        }
+
+                    </View>
+
+                    {/*课程教练*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>授课教练</Text>
+                        </View>
+
+                        {
+                            this.state.coached==null?
+                                <TouchableOpacity style={{flex:3,height:28,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',textAlign:'right',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2SelectCoach();
+                                                  }}>
+                                    <Text style={{fontSize:14,color:'#888'}}>
+                                        请选择授课教练 >
+                                    </Text>
+                                </TouchableOpacity>:
+
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',textAlign:'right',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2SelectCoach();
+                                                  }}>
+                                    <View style={{flex:3,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row',textAlign:'right'}}>
+                                        <Text style={{color:'#222',fontSize:14}}>{this.state.coached}</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                        }
+                    </View>
+
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>收费信息</Text>
+                    </View>
+
+                    {/*支付方式*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text>支付方式</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}
                                           onPress={()=>{ this.show('actionSheet'); }}>
                             {
                                 this.state.course.costTypeStr==null?
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择支付方式：</Text>
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择支付方式 ></Text>
                                     </View> :
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.course.costTypeStr}</Text>
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.course.costTypeStr}</Text>
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
-                            </View>
                             <ActionSheet
                                 ref={(p) => {
                                         this.actionSheet =p;
@@ -381,172 +489,24 @@ class CreateBadmintonCourse extends Component{
                     </View>
 
                     {/*课程花费*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程花费：</Text>
+                            <Text style={{color:'#343434'}}>支付费用</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}>
-                            <TextInputWrapper
+                            <TextInput
                                 placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入课程花费"
-                                val={this.state.course.cost}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                placeholder="请输入支付费用"
+                                value={this.state.course.cost}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{cost:parseInt(value)})})
                                     }}
-                                onCancel={
-                                    ()=>{this.setState({course:Object.assign(this.state.course,{cost:null})});}
-                                }
+                                keyboardType='numeric'
                             />
                         </View>
-                    </View>
-
-                    {/*课次*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课次：</Text>
-                        </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                            borderRadius:10}}>
-                            <TextInputWrapper
-                                placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入课次"
-                                val={this.state.course.classCount}
-                                onChangeText={
-                                    (value)=>{
-                                        this.setState({course:Object.assign(this.state.course,{classCount:parseInt(value)})})
-                                    }}
-                                onCancel={
-                                    ()=>{this.setState({course:Object.assign(this.state.course,{classCount:null})});}
-                                }
-                            />
-                        </View>
-                    </View>
-
-                    {/*课程说明*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程说明：</Text>
-                        </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                            borderRadius:10}}>
-                            <TextInputWrapper
-                                placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入课程说明"
-                                val={this.state.course.detail}
-                                onChangeText={
-                                    (value)=>{
-                                        this.setState({course:Object.assign(this.state.course,{detail:value})})
-                                    }}
-                                onCancel={
-                                    ()=>{this.setState({course:Object.assign(this.state.course,{detail:null})});}
-                                }
-                            />
-                        </View>
-                    </View>
-
-                    {/*课程场馆*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程场馆：</Text>
-                        </View>
-
-                        {
-                            this.state.venue==null?
-                                <TouchableOpacity style={{flex:3,height:28,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                            borderRadius:10}}
-                                                  onPress={()=>{
-                                this.navigate2VenueInspect();
-                            }}>
-                                    <Text style={{marginLeft:20,fontSize:13,color:'#888'}}>
-                                        请选择课程场馆
-                                    </Text>
-                                </TouchableOpacity>:
-
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                            borderRadius:10}}
-                                                  onPress={()=>{
-                                this.navigate2VenueInspect();
-                            }}>
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#222',fontSize:13}}>{this.state.venue.name}</Text>
-                                    </View>
-
-                                    <TouchableOpacity style={{width:60,justifyContent:'center',alignItems: 'center',flexDirection:'row',marginLeft:20,padding:5}}
-                                                      onPress={()=>{
-                                                              var venue = null;
-                                                              this.setState({venue:venue});
-                                                          }}>
-                                        <Ionicons name={'md-close-circle'} size={20} color={'red'}/>
-                                    </TouchableOpacity>
-
-                                </TouchableOpacity>
-
-                        }
-
-                    </View>
-
-
-                    {/*课程教练*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程教练：</Text>
-                        </View>
-
-                        {
-                            this.state.coached==null?
-                                <TouchableOpacity style={{flex:3,height:28,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                    borderRadius:10}}
-                                                  onPress={()=>{
-                                                      this.navigate2SelectCoach();
-                                                  }}>
-                                    <Text style={{marginLeft:20,fontSize:13,color:'#888'}}>
-                                        请选择课程教练
-                                    </Text>
-                                </TouchableOpacity>:
-
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                    borderRadius:10}}
-                                                  onPress={()=>{
-                                                      this.navigate2SelectCoach();
-                                                  }}>
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#222',fontSize:13}}>{this.state.coached}</Text>
-                                    </View>
-
-                                    <TouchableOpacity style={{width:60,justifyContent:'center',alignItems: 'center',flexDirection:'row',marginLeft:20,padding:5}}
-                                                      onPress={()=>{
-                                                          var coached =null;
-                                                          this.setState({coached:coached});
-                                                      }}>
-                                        <Ionicons name={'md-close-circle'} size={20} color={'red'}/>
-                                    </TouchableOpacity>
-
-                                </TouchableOpacity>
-
-                        }
-
-                    </View>
-
-                    {/*上课时间描述*/}
-                    <View style={{flex:3,margin:10,marginTop:5,marginBottom:5}}>
-                        <Text>上课时间:</Text>
-                        <TextInput
-                            style={{height:height*120/736,padding:8,fontSize:13,marginTop:5,borderRadius:5,backgroundColor:'#eee'}}
-                            onChangeText={(text) =>
-                                        {
-                                          this.setState({course:Object.assign(this.state.course,{scheduleDes:text})});
-                                        }}
-                            value={this.state.course.scheduleDes}
-                            placeholder='请描述上课时间...'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
-                            multiline={true}
-                        />
                     </View>
 
                     <View style={{backgroundColor:'#fff',padding:10}}>
@@ -555,8 +515,8 @@ class CreateBadmintonCourse extends Component{
                         </Text>
                     </View>
                 </View>
-                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
-                        <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
+                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width,backgroundColor:'#fff',marginBottom:10}}>
+                        <TouchableOpacity style={{width:width*1/3,backgroundColor:'#fc6254',padding:10,flexDirection:'row',
                             justifyContent:'center'}}
                                           onPress={()=>{
                                               if(this.props.memberId!==null&&this.props.memberId!==undefined){
@@ -651,7 +611,7 @@ class CreateBadmintonCourse extends Component{
                         />
                     </View>
                 </PopupDialog>
-
+                </Toolbar>
             </View>
         );
     }
@@ -685,7 +645,7 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
         myGroupList:state.activity.myGroupList,
-        groupOnFresh:state.activity.groupOnFresh
+        groupOnFresh:state.activity.groupOnFresh,
     })
 )(CreateBadmintonCourse);
 

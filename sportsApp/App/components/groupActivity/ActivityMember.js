@@ -95,13 +95,15 @@ class ActivityMember extends Component {
 
     renderRow(rowData,sectionId,rowId){
 
+        var imguri = rowData.avatar;
+
         var row=(
             <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
                     <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
+                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={{uri:imguri}}/>
                     </View>
-                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
+                    <View style={{flex:3,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
 
                         <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>姓名</Text></View>
                                 <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.name}</Text>
@@ -110,9 +112,18 @@ class ActivityMember extends Component {
                      <View style={{flex:2,marginRight:3,justifyContent:'center',alignItems:'flex-end'}}>
                                  <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>{rowData.isPay}</Text></View>
                      </View>
-
                 </View>
                 <View style={{flex:3,padding:10}}>
+
+                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#ffffff',borderRadius:5,padding:5}}>
+                            <Text style={{color:'#66CDAA'}}>携带人数</Text>
+                        </View>
+                        <View style={{flex:4,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.number}人</Text>
+                        </View>
+                    </View>
+
                     <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
                         <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
                             <Text style={{color:'#ffffff'}}>报名时间</Text>
@@ -121,6 +132,7 @@ class ActivityMember extends Component {
                             <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.joinTime}</Text>
                         </View>
                     </View>
+
                 </View>
             </View>
         );

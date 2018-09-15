@@ -71,3 +71,34 @@ export let onCoachUpdate=(coaches)=>{
         })
     }
 }
+
+//拉取教练
+export let searchCoaches=(text)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/node/searchCoaches',
+                headers: {
+                    'Content-Type': 'application/json',
+
+                },
+                body: {
+                    text:text
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var coaches = json.data;
+                }
+                resolve({re:1,data:coaches})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

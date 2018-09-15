@@ -43,8 +43,8 @@ class ActivityPay extends Component{
 
         this.props.dispatch(wechatPay(pay,activityId)).then((json)=>{
             if(json.re==1){
-                this.setState({code_url:json.data.code_url});
-                // rnwechatpay(json)
+                this.setState({code_url:json.data.codeUrl});
+                 // this.rnwechatpay(json.data)
             }else{
                 if(json.re==-100){
                     this.props.dispatch(getAccessToken(false));
@@ -54,13 +54,33 @@ class ActivityPay extends Component{
         })
         }
 
+        rnwechatpay(repay){
+            WeChat.pay(
+                {
+                    partnerId: repay.mchId,  // 商家向财付通申请的商家id
+                    prepayId: repay.prepayId,   // 预支付订单
+                    nonceStr: repay.nonceStr,   // 随机串，防重发
+                    timeStamp: repay.timeStamp,  // 时间戳，防重发
+                    package: repay.package,    // 商家根据财付通文档填写的数据和签名
+                    sign: repay.paySign        // 商家根据微信开放平台文档对数据做的签名
+                }
+            ).then((success)=>{
+                //console.log(success)
+                alert('支付成功')
+            }).catch((error)=>{
+                //console.log(error)
+                alert('支付失败')
+            })
+
+        }
+
     constructor(props) {
         super(props);
         this.state={
             isRefreshing:false,
             activity:this.props.activity,
             pay:{payment:this.props.activity.cost+"",payType:'2'},
-            code_url:'',
+            code_url:null,
             // code_url:'weixin://wxpay/bizpayurl?pr=LU5EYra',
         };
     }

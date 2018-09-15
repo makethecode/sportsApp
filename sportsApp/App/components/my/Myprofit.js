@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
         width:dropdownWidth,
         alignItems:'center',
         flexDirection:'row',
-        height:32,
+        height:35,
         borderRightColor:'#cdcdcd',
         borderRightWidth:0.7,
 
@@ -762,7 +762,7 @@ const styles = StyleSheet.create({
         width:dropdownWidth-0.7,
         backgroundColor:'#ffffff',
         alignItems:'center',
-        height:32,
+        height:35,
         justifyContent:'center',
         flexDirection:'row',
     },

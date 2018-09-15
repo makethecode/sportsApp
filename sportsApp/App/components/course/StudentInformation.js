@@ -186,193 +186,144 @@ class StudentInformation extends Component {
     }
 
     renderRow(rowData, sectionId, rowId) {
-        var date=new Date(rowData.joinTime);
-        var year=date.getFullYear();
-        var month=date.getMonth()+1;
-        var day=date.getDate();
-        var joinTime=year+'年'+month+'月'+day+'日';
-       /* var date1=new Date(rowData.endTime);
-        var year1=date1.getFullYear();
-        var month1=date1.getMonth()+1;
-        var day1=date1.getDate();
-        var endTime=year1+'年'+month1+'月'+day1+'日';*/
-        var condition=null;
-        if(rowData.state==1)
-        condition="报名"
+        var date = new Date(rowData.joinTime);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var joinTime = year + '年' + month + '月' + day + '日';
+
+        var condition = null;
+        if (rowData.state == 1)
+            condition = "报名"
         else
-            condition="结业"
+            condition = "结业"
 
         return (
-            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ddd', marginTop: 4 ,backgroundColor:'#fff'}}
-                              onPress={()=>{
-
-
-                              }}
-            >
-                <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start' }}>
-
-
-
-
-                    <View style={{ padding: 4, paddingHorizontal: 12 ,flexDirection:'row',}}>
-
-                        <View style={{padding:4,flex:1,alignItems:'center',flexDirection:'row'}}>
-                            <Text style={{ color: '#222', fontWeight: 'bold', fontSize: 15 }}>
-                                学员身份证号：{rowData.perIdCard}
-                            </Text>
-                        </View>
-
-                        {rowData.perName!=null?
-                            <View style={{padding:4,marginLeft:10,flexDirection:'row',alignItems:'center'}}>
-                                <CommIcon name="account-check" size={24} color="#0adc5e" style={{backgroundColor:'transparent',}}/>
-                                <Text style={{ color: '#444', fontWeight: 'bold', fontSize: 13,paddingTop:-2 }}>
-                                    {rowData.perName}
-                                </Text>
-                            </View>:
-                            <View style={{padding:4,marginLeft:10,flexDirection:'row',alignItems:'center'}}>
-                                <CommIcon name="account-check" size={24} color="#0adc5e" style={{backgroundColor:'transparent',}}/>
-                                <Text style={{ color: '#444', fontWeight: 'bold', fontSize: 13,paddingTop:-2 }}>
-                                    {rowData.perName}
-                                </Text>
-                            </View>
+            <TouchableOpacity style={{flex: 1, backgroundColor: '#fff', marginTop: 5, marginBottom: 5,}}
+            onPress={
+                ()=>{
+                    this.navigate2StudentsCourseRecord(rowData.courseId,rowData.memberId);
+                }
+            }>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    padding: 5,
+                    borderBottomWidth: 1,
+                    borderColor: '#ddd',
+                    backgroundColor: 'transparent',
+                }}>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        {rowData.avatar!=''?
+                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                   source={{uri: rowData.avatar}}/>:
+                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                   source={require('../../../img/portrait.jpg')}/>
                         }
                     </View>
+                    <View style={{
+                        flex: 3,
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                        marginLeft: 3,
+                        flexDirection: 'row'
+                    }}>
 
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            身高体重：{rowData.heightweight}
-                        </Text>
-                    </View>
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            联系方式：{rowData.mobilePhone}
-                        </Text>
-                    </View>
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            报名时间：{joinTime}
-                        </Text>
+                        <View style={{backgroundColor: '#fca482', borderRadius: 5, padding: 5}}><Text
+                            style={{color: '#ffffff'}}>姓名</Text></View>
+                        <Text style={{color: '#5c5c5c', marginLeft: 5}}>{rowData.perNum}</Text>
                     </View>
 
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            购买课次：{rowData.buyCount}
-                        </Text>
+                    <View style={{flex: 2, marginRight: 3, justifyContent: 'center', alignItems: 'flex-end'}}>
+                        <View style={{backgroundColor: '#fc6254', borderRadius: 5, padding: 5}}><Text
+                            style={{color: '#fff'}}>{condition}</Text></View>
                     </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            优惠课次：{rowData.giftCount}
-                        </Text>
-                    </View>
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            已上课次：{rowData.joinCount}
-                        </Text>
-                    </View>
-                   {/* <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            结业时间：{endTime}
-                        </Text>
-                    </View>
-*/}
-                   {/* <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-
-                        </Text>
-                    </View>*/}
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            状态：{condition}
-                        </Text>
-                    </View>
-
-
-
                 </View>
+                <View style={{flex: 3, padding: 10}}>
 
-                {/*<View style={{ width: 70, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <Icon name={'angle-right'} size={34} color="#444" style={{ backgroundColor: 'transparent', marginTop: -10 }} />
-                </View>*/}
+                    <View style={{flex: 3, flexDirection: 'row', marginBottom: 3}}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            backgroundColor: '#66CDAA',
+                            borderRadius: 5,
+                            padding: 5
+                        }}>
+                            <Text style={{color: '#ffffff'}}>身高体重</Text>
+                        </View>
+                        <View style={{flex: 4, padding: 5, marginLeft: 5}}>
+                            <Text style={{
+                                color: '#5c5c5c',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>{rowData.heightweight}</Text>
+                        </View>
+                    </View>
 
-                <View style={{flex:1,flexDirection:'row',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
-                    <TouchableOpacity style={{
-                        flex: 1,
-                        borderWidth: 1,
-                        borderColor: '#66CDAA',
-                        padding: 5,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 6,
-                        marginLeft:30,
+                    <View style={{flex: 3, flexDirection: 'row', marginBottom: 3}}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            backgroundColor: '#ffffff',
+                            borderRadius: 5,
+                            padding: 5
+                        }}>
+                            <Text style={{color: '#66CDAA'}}>联系方式</Text>
+                        </View>
+                        <View style={{flex: 4, padding: 5, marginLeft: 5}}>
+                            <Text style={{
+                                color: '#5c5c5c',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>{rowData.mobilePhone}</Text>
+                        </View>
+                    </View>
 
-                    }}
+                    <View style={{flex: 3, flexDirection: 'row', marginBottom: 3}}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            backgroundColor: '#66CDAA',
+                            borderRadius: 5,
+                            padding: 5
+                        }}>
+                            <Text style={{color: '#ffffff'}}>报名时间</Text>
+                        </View>
+                        <View style={{flex: 4, padding: 5, marginLeft: 5}}>
+                            <Text style={{
+                                color: '#5c5c5c',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>{joinTime}</Text>
+                        </View>
+                    </View>
 
+                    <View style={{flex: 3, flexDirection: 'row', marginBottom: 3}}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            backgroundColor: '#ffffff',
+                            borderRadius: 5,
+                            padding: 5
+                        }}>
+                            <Text style={{color: '#66CDAA'}}>已上课次</Text>
+                        </View>
+                        <View style={{flex: 4, padding: 5, marginLeft: 5}}>
+                            <Text style={{
+                                color: '#5c5c5c',
+                                justifyContent: 'flex-start',
+                                alignItems: 'center'
+                            }}>{rowData.hasCount}/{rowData.buyCount}</Text>
+                        </View>
 
-                                      onPress={() => {
-                                          this.navigate2StudentsCourseRecord(rowData.courseId,rowData.memberId);
-                                      }
-                                      }>
-                        <Text style={{color: '#66CDAA', fontSize: 12}}>课程信息</Text>
-                    </TouchableOpacity>
-                    {<View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-
-                    </View>}
-                    <TouchableOpacity style={{
-                        flex: 1,
-                        borderWidth: 1,
-                        borderColor: '#66CDAA',
-                        padding: 5,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 6,
-                        marginLeft:30,
-
-                    }}
-
-
-                                      onPress={() => {
-                                          this.navigate2StudentPayInformation(rowData.courseId,rowData.memberId);
-                                      }
-                                      }>
-                        <Text style={{color: '#66CDAA', fontSize: 12}}>缴费记录</Text>
-                    </TouchableOpacity>
+                    </View>
                 </View>
             </TouchableOpacity>
-
-
-
         )
-
-
-
     }
 
     fetchStudents(courseId){
@@ -409,11 +360,6 @@ class StudentInformation extends Component {
         this.props.dispatch(enableStudentsOnFresh());
 
     }
-
-
-
-
-
 
     constructor(props) {
         super(props);
@@ -454,10 +400,13 @@ class StudentInformation extends Component {
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="我的学生" actions={[]} navigator={this.props.navigator}>
-
+                <Toolbar width={width} title="我的学生" navigator={this.props.navigator} actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0){
+                                 this.navigate2AddStudent(this.props.courseId)}
+                         }}>
                     {<View style={{flex:5,backgroundColor:'#eee'}}>
-                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-100,paddingTop:5,paddingBottom:5,}}>
                             <ScrollView
                                 refreshControl={
                                     <RefreshControl
@@ -490,24 +439,6 @@ class StudentInformation extends Component {
 
 
                 </Toolbar>
-
-                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',
-                    position:'absolute',bottom:8}}>
-                    <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
-                        padding:10,margin:5}}>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{flex:1,backgroundColor:'#66CDAA',justifyContent:'center',alignItems: 'center',
-                        padding:10,margin:5}}>
-                    </TouchableOpacity>
-                </View>
-                <View style={{height:50,width:50,borderRadius:25,position:'absolute',bottom:8,left:width*0.5-25}}>
-                    <TouchableOpacity style={{flex:1,backgroundColor:'#fff',justifyContent:'center',alignItems: 'center',padding:5,
-                        borderWidth:1,borderColor:'#eee',borderRadius:50}}
-                                      onPress={()=>{this.navigate2AddStudent(this.props.courseId);}}>
-                        <Icon name={'plus-circle'} size={35} color='#66CDAA'/>
-                    </TouchableOpacity>
-                </View>
-
             </View>
         )
     }

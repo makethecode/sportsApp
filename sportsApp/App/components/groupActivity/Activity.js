@@ -275,13 +275,48 @@ class Activity extends Component {
 
     }
 
+    renderAllAvatars(avatars){
+        var allAvatars = [];
+        if(avatars==null)return null;
+        for(var i=0;i<avatars.length;i++) {
+            var model = avatars[i]
+            var item = this.getImageViewItem(model)
+            allAvatars.push(item);
+        }
+        return allAvatars;
+    }
+
+    getImageViewItem(model){
+
+        return (
+            <View style={{flex:1,padding:1}}>
+            <Image resizeMode="stretch" style={{height:25,width:25,borderRadius:13}} source={{uri:model}}/>
+            </View>
+        );
+    }
+
     renderRow(rowData,sectionId,rowId){
+
+        var imguri = rowData.avatar;
+        var avatars = rowData.avatarList;
+
+        var avatarList = (
+            <ScrollView
+                automaticallyAdjustContentInsets={false}
+                bounces ={false}
+                showsHorizontalScrollIndicator  ={true}
+                ref={(scrollView) => { this._scrollView = scrollView; }}
+                horizontal={true}
+            >
+                {this.renderAllAvatars(avatars)}
+            </ScrollView>
+        );
 
         var row=(
             <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
                     <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
+                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={{uri:imguri}}/>
                     </View>
                     <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
 
@@ -372,7 +407,7 @@ class Activity extends Component {
 
 
                 </View>
-                <View style={{flex:1,flexDirection:'row',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
+                <View style={{flex:1,flexDirection:'column',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
 
                     <View style={{flexDirection:'row',flex:2.5,alignItems:'flex-start'}}>
                     <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
@@ -381,27 +416,23 @@ class Activity extends Component {
                         <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.nowNumber}/{rowData.maxNumber}人</Text>
                     </View>
 
-                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:4,backgroundColor:'#fff',justifyContent:'flex-start',marginBottom:3}}>
+                            <TouchableOpacity onPress={()=>{this.navigate2ActivityMember(rowData.activityId)}}>
+                        {avatarList}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
                         <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>已支付</Text></View>
                         <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.nowPayment}元</Text>
-                    </View>
-                    </View>
 
-                    <View style={{justifyContent:'flex-end',flexDirection:'row',flex:1}}>
-                    <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
-                                      onPress={()=>{this.navigate2ActivityMember(rowData.activityId)}}
-                    >
-                    <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>查看</Text></View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'center'}}
-                                      //收款处逻辑不成熟
-                                      onPress={()=>{this.navigate2ActivityPay(rowData)}}
-                    >
-                    <View style={{backgroundColor:'#fff',borderRadius:5,padding:5}}><Text style={{color:'#fc6254'}}>收款</Text></View>
-                    </TouchableOpacity>
-                    </View>
+                        <TouchableOpacity style={{flex:2,justifyContent:'center',alignItems:'flex-end'}}
+                                          onPress={()=>{this.navigate2ActivityPay(rowData)}}>
+                            <View style={{backgroundColor:'#fc6254',borderRadius:5,padding:5}}><Text style={{color:'#fff'}}>收款</Text></View>
+                        </TouchableOpacity>
 
+                    </View>
                 </View>
             </View>
         );
@@ -806,7 +837,7 @@ var styles = StyleSheet.create({
         width:dropdownWidth,
         alignItems:'center',
         flexDirection:'row',
-        height:32,
+        height:35,
         borderRightColor:'#cdcdcd',
         borderRightWidth:0.7,
 
@@ -815,7 +846,7 @@ var styles = StyleSheet.create({
         width:dropdownWidth-0.7,
         backgroundColor:'#ffffff',
         alignItems:'center',
-        height:32,
+        height:35,
         justifyContent:'center',
         flexDirection:'row',
     },

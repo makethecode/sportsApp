@@ -1,5 +1,4 @@
 
 module.exports={
-    'RTMP_UPDATE_URL':'RTMP_UPDATE_URL',
-    'PLAYING_URLS':'PLAYING_URLS'
+    'RTMP_UPDATE_URL':'RTMP_UPDATE_URL'
 }

@@ -24,9 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import proxy from '../../utils/Proxy'
 import Config from '../../../config';
-
-var {height, width} = Dimensions.get('window');
-import {Toolbar, OPTION_SHOW, OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD,ACTION_PERSON} from 'react-native-toolbar-wrapper'
 import {
     fetchCoaches,
     onCoachUpdate,
@@ -37,6 +35,9 @@ import {
 } from '../../action/UserActions';
 
 import CoachDetail from './CoachDetail'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+var {height, width} = Dimensions.get('window');
 
 class TalkingFarm extends Component {
 
@@ -55,7 +56,24 @@ class TalkingFarm extends Component {
             time: null,
             courseId: this.props.courseId,
             personInfo: this.props.personInfo,
-            _scrollView:null
+            _scrollView:null,
+
+            color: {
+                defaultColor: '#b2b2b2',
+                backgroundTransparent: 'transparent',
+                defaultBlue: '#0084ff',
+                leftBubbleBackground: '#f0f0f0',
+                white: '#fff',
+                carrot: '#e67e22',
+                emerald: '#2ecc71',
+                peterRiver: '#3498db',
+                wisteria: '#8e44ad',
+                alizarin: '#e74c3c',
+                turquoise: '#1abc9c',
+                midnightBlue: '#2c3e50',
+                optionTintColor: '#007AFF',
+                timeTextColor: '#aaa',
+            }
         };
     }
 
@@ -153,51 +171,36 @@ class TalkingFarm extends Component {
 
     renderRow(rowData) {
 
-        if (this.state.time === null) {
-            this.state.time = rowData.timestamp;
-        }
-        if (rowData.timestamp - this.state.time >= 360000) {
-            this.state.time = rowData.timestamp;
-        } else {
-            rowData.time = null;
-        }
+        //{headimgurl=https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ2ib97d8V4abRjO6gG83gJjSftWauMb12boLI1AwqcgeZ9xvg5ic47AzbsOD9vrkMH5cKJhsXIFKUw/132,
+        // pernum=154, time=Sep 14, 2018 1:43:44 PM, content=一样一样, username=邹鹏, timestamp=2018-09-14 13:43:44.0}
 
         if (rowData.pernum === this.state.personInfo.personId) {
             var row =
-                <View>
-                    <View style={{
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                        <Text style={{fontSize: 10}}>
-                            {rowData.time}
-                        </Text>
-                    </View>
+
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'flex-end',
-                        alignItems: 'flex-end',
+                        alignItems:'center',
                     }}>
                         <View style={{
-                            padding: 10, justifyContent: 'flex-end',
-                            alignItems: 'flex-end',
+                            padding: 10,
+                            borderRadius: 8,
+                            backgroundColor:'#a2e563',
+                            minHeight: 20,
+                            marginRight:10,
                         }}>
-                            <Text style={{fontSize: 10}}>
-                                {rowData.username}
-                            </Text>
-                            <Text style={{fontSize: 15, backgroundColor: '#10FFF0', padding: 10, borderRadius: 5}}>
+                            <Text style={{fontSize: 15}}>
                                 {rowData.content}
                             </Text>
                         </View>
+
                         {rowData.headimgurl === null ?
-                            <View style={{width: 40, padding: 10, marginRight: 10}}>
+                            <View style={{width:40,padding: 10, marginRight: 10}}>
                                 <Image
                                     style={{
                                         width: 40,
                                         height: 40,
                                         backgroundColor: 'transparent',
-
                                     }}
                                     resizeMode={'contain'}
                                     source={require('../../../img/portrait.jpg')}
@@ -205,13 +208,12 @@ class TalkingFarm extends Component {
                                 </Image>
                             </View>
                             :
-                            <View style={{width: 40, paddingBottom: 10, marginRight: 10}}>
+                            <View style={{width:40,padding:10,marginRight:10}}>
                                 <Image
                                     style={{
                                         width: 40,
                                         height: 40,
                                         backgroundColor: 'transparent',
-
                                     }}
                                     resizeMode={'contain'}
                                     source={{uri: rowData.headimgurl}}
@@ -219,23 +221,22 @@ class TalkingFarm extends Component {
                                 </Image>
                             </View>
                         }
-                    </View>
-                </View>;
+                    </View>;
             return row;
         }
+
         var row =
             <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection:'row',
+                alignItems:'center',
             }}>
                 {rowData.headimgurl === null ?
-                    <View style={{width: 40, padding: 10, marginRight: 10}}>
+                    <View style={{width: 40, padding: 10,marginRight:10}}>
                         <Image
                             style={{
                                 width: 40,
                                 height: 40,
                                 backgroundColor: 'transparent',
-
                             }}
                             resizeMode={'contain'}
                             source={require('../../../img/portrait.jpg')}
@@ -243,13 +244,12 @@ class TalkingFarm extends Component {
                         </Image>
                     </View>
                     :
-                    <View style={{width: 40, paddingBottom: 10, marginRight: 10}}>
+                    <View style={{width: 40, padding: 10,marginRight:10}}>
                         <Image
                             style={{
                                 width: 40,
                                 height: 40,
                                 backgroundColor: 'transparent',
-
                             }}
                             resizeMode={'contain'}
                             source={{uri: rowData.headimgurl}}
@@ -257,14 +257,19 @@ class TalkingFarm extends Component {
                         </Image>
                     </View>
                 }
-                <View style={{padding: 10}}>
-                    <Text style={{fontSize: 10}}>
-                        {rowData.username}
-                    </Text>
-                    <Text style={{fontSize: 15, backgroundColor: '#10FFF0', padding: 10, borderRadius: 5}}>
+
+                <View style={{
+                    padding: 10,
+                    borderRadius: 8,
+                    backgroundColor:'#fff',
+                    minHeight: 20,
+                    marginLeft:10,
+                }}>
+                    <Text style={{fontSize: 15}}>
                         {rowData.content}
                     </Text>
                 </View>
+
             </View>;
 
         return row;
@@ -298,46 +303,28 @@ class TalkingFarm extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={{
-                    height: 55,
-                    width: width,
-                    paddingTop: 20,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#66CDAA',
-                }}>
-                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}
-                                      onPress={() => {
-                                          this.goBack();
-                                      }}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex: 3, justifyContent: 'center', alignItems: 'center',}}>
-                        <Text style={{color: '#fff', fontSize: 18}}>讨论组</Text>
-                    </View>
-                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
-
-                    </View>
-                </View>
-
-                <View style={{height: height - 140}}>
+                <Toolbar width={width} title="讨论组" navigator={this.props.navigator} actions={[{icon:ACTION_PERSON,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0){}
+                         }}>
+<KeyboardAwareScrollView style={{height:height-180,width:width}}>
+                <View style={{height: height - 130,backgroundColor:'#f3f3f3'}}>
                     <ScrollView>
-                        <View style={{height: 480}}>
+                        <View style={{height: height-190,paddingHorizontal:10,backgroundColor:'#f3f3f3'}}>
                             {talklist}
                         </View>
                     </ScrollView>
                     <View style={{
                         flexDirection: 'row', justifyContent: 'center',
-                        alignItems: 'center', padding: 10
+                        alignItems: 'center', padding: 10,borderTopWidth:0.7,borderTopColor:'#666'
                     }}>
                         <TextInput style={styles.textinput}
-                                   underlineColorAndroid="transparent"
                                    onSubmitEditing={() => this.addTalkingFarm()}
                                    value={this.state.usertextinput}
                                    onChangeText={(event) => this.setState({usertextinput: event})}
+                                   underlineColorAndroid={'#666'}
+                                   placeholder={'请输入...'}
                         >
-
                         </TextInput>
                         <TouchableOpacity style={{
                             flex: 1,
@@ -345,19 +332,19 @@ class TalkingFarm extends Component {
                             justifyContent: 'center',
                             alignItems: 'center',
                             marginLeft: 10,
-                            marginRight: 10,
-                            borderRadius: 4,
-                            backgroundColor: '#CAE1FF'
+                            borderRadius: 5,
+                            backgroundColor: '#23ac29'
                         }} onPress={() => {
                             this.addTalkingFarm()
                         }}>
                             <View style={{padding: 10}}>
-                                <Text style={{color: '#343434', fontSize: 15}}>发送</Text>
+                                <Text style={{color: '#fff', fontSize: 14}}>发送</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-
                 </View>
+</KeyboardAwareScrollView>
+                </Toolbar>
             </View>
         )
 
@@ -375,9 +362,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     textinput: {
-        borderWidth: 1,
-        height: 40,
+        height: 30,
         flex: 6,
+        fontSize:14,
     }
 
 });

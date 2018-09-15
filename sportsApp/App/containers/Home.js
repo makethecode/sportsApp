@@ -259,27 +259,6 @@ class Home extends Component {
 
     render() {
 
-        //针对教练,需要完成手机号，运动水平、真实姓名、身份证的验证
-        if(this.props.userType==1){
-            if(this.props.mobilePhoneValidateFailed==true&&this.mobilePhoneDialog&&this.validateMyInformationDialog)
-            {
-                this.validateMyInformationDialog.show()
-            }
-            else if((this.props.sportLevelValidateFailed==true||this.props.perNameValidateFailed==true||this.props.perIdCardValidateFailed==true)&&
-                this.validateMyInformationDialog)
-            {
-                this.validateMyInformationDialog.show()
-            }
-        }
-
-        //针对用户,需要完成手机号的验证
-        if(this.props.userType==0){
-            if(this.props.mobilePhoneValidateFailed==true&&this.mobilePhoneDialog&&this.validateMyInformationDialog)
-            {
-                this.mobilePhoneDialog.show()
-            }
-        }
-
         var newsList=null
         if(this.props.news&&this.props.news.length>0)
         {
