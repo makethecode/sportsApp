@@ -17,91 +17,220 @@ import {
     Animated,
     Easing
 } from 'react-native';
-
+import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+
+var IMGS = [
+    require('../../../img/v1.jpg'),
+    require('../../../img/v2.jpg'),
+    require('../../../img/v3.jpg'),
+];
+
+var {height, width} = Dimensions.get('window');
+
 class VenueDetail extends Component{
 
     constructor(props) {
         super(props);
+        var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
-            venueDetail:this.props.venueDetail
+            venueDetail:this.props.venueDetail,
+            dataSource:ds.cloneWithPages(IMGS),
         }
     }
 
+    _renderPage(data,pageID){
+        return (
+            <View style={{width:width}}>
+                <Image
+                    source={data}
+                    style={{width:width,flex:3}}
+                    resizeMode={"stretch"}
+                />
+            </View>
+        );
+    }
+
     render() {
+
+        //[{brief=null, feeDes=每人每次15元, address=世纪大道10600号, yardTotal=6, town=历城区, manager=3, city=济南市, latitude=36.693125,
+        // unitNum=U000001, remark=, province=山东省, phone=18254888887, name=山东体育学院羽毛球馆, unitId=1, attachId=null, longitude=117.200185},
 
         var venueDetail = this.state.venueDetail;
         return (
             <View style={{flex:1}}>
 
-                <Toolbar width={width} title={this.state.venueDetail.name} navigator={this.props.navigator}
-                         actions={[]}
-                         onPress={(i)=>{
-                         }}>
-                    <View style={{flex:3}}>
-                        <Image style={{flex:3,width:width,position:'relative'}} source={require('../../../img/my_banner.jpeg')} >
-
-                        </Image>
+                <Toolbar width={width} title='场馆详情' navigator={this.props.navigator} actions={[]}
+                         onPress={(i)=>{}}>
+                    <View style={{width:width,height:180}}>
+                        <ViewPager
+                            style={this.props.style}
+                            dataSource={this.state.dataSource}
+                            renderPage={this._renderPage}
+                            isLoop={true}
+                            autoPlay={true}
+                        />
                     </View>
 
-                    <View style={{flex:5,padding:10,marginTop:10,backgroundColor:'#fff'}}>
-                        <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Icon name={'star'} size={16} color="#66CDAA"/>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>地址：</Text>
+                    <View style={{width:width,height:320,padding:10,marginTop:10,backgroundColor:'#fff'}}>
+
+                        {/*场馆名称*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    场馆名称
+                                </Text>
                             </View>
-                            <View style={{flex:5,color:'#343434',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start'}}>{venueDetail.address}</Text>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.name&&this.state.venueDetail.name!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.name}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
                             </View>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Icon name={'star'} size={16} color="#66CDAA"/>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>管理人：</Text>
+                        {/*场馆编号*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    场馆编号
+                                </Text>
                             </View>
-                            <View style={{flex:5,color:'#343434',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start'}}>{venueDetail.manager}</Text>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.unitNum&&this.state.venueDetail.unitNum!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.unitNum}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
                             </View>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Icon name={'star'} size={16} color="#66CDAA"/>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>联系电话：</Text>
+                        {/*平台合作*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    平台合作
+                                </Text>
                             </View>
-                            <View style={{flex:5,color:'#343434',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start'}}>{venueDetail.phone}</Text>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            合作场地
+                                        </Text>
                             </View>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Icon name={'star'} size={16} color="#66CDAA"/>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>费用说明：</Text>
+                        {/*场地总数*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    场地总数
+                                </Text>
                             </View>
-                            <View style={{flex:5,color:'#343434',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start'}}>{venueDetail.feeDes}</Text>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.yardTotal&&this.state.venueDetail.yardTotal!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.yardTotal}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
                             </View>
                         </View>
-                        <View style={{flex:1,flexDirection:'row',marginBottom:3}}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Icon name={'star'} size={16} color="#66CDAA"/>
-                                <Text style={{color:'#343434',justifyContent:'flex-start',alignItems: 'center'}}>场馆简介：</Text>
-                            </View>
-                            <View style={{flex:5,color:'#343434',justifyContent:'flex-start',alignItems: 'flex-start'}}>
-                                <Text style={{color:'#343434',justifyContent:'flex-start'}}>{venueDetail.brief}</Text>
-                            </View>
-                        </View>
-                        <View style={{flex:2,flexDirection:'row',marginBottom:3}}>
 
+                        {/*负责人*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    负责人
+                                </Text>
+                            </View>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.managerName&&this.state.venueDetail.managerName!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.managerName}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
+                            </View>
+                        </View>
+
+                        {/*详细地址*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    详细地址
+                                </Text>
+                            </View>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.address&&this.state.venueDetail.address!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.address}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
+                            </View>
+                        </View>
+
+                        {/*收费模式*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    收费模式
+                                </Text>
+                            </View>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.feeDes&&this.state.venueDetail.feeDes!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.feeDes}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
+                            </View>
+                        </View>
+
+                        {/*联系电话*/}
+                        <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>
+                            <View style={{flex:1,justifyContent:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    联系电话
+                                </Text>
+                            </View>
+                            <View style={{alignItems:'center',justifyContent:'flex-end'}}>
+                                {
+                                    this.state.venueDetail.phone&&this.state.venueDetail.phone!=''?
+                                        <Text style={{color:'#444',fontSize:15}}>
+                                            {this.state.venueDetail.phone}
+                                        </Text>:
+                                        <Text style={{color:'#777',fontSize:15}}>
+                                            未设置
+                                        </Text>
+                                }
+                            </View>
                         </View>
 
                     </View>
-
                 </Toolbar>
 
             </View>
@@ -111,8 +240,20 @@ class VenueDetail extends Component{
 }
 
 var styles = StyleSheet.create({
-
-
+    container:{
+        flex:1,
+        flexDirection:'column'
+    },
+    popoverContent: {
+        width: 100,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText: {
+        color: '#ccc',
+        fontSize:14
+    }
 });
 
 module.exports = connect(state=>({

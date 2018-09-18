@@ -509,8 +509,6 @@ class BadmintonCourseRecord extends Component {
                             borderRadius: 6,
                             marginLeft: 30
                         }}
-
-
                                           onPress={() => {
                                               //清空筛选记录
                                               var clubId = -1;

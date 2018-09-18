@@ -312,7 +312,7 @@ class Home extends Component {
 
                                     </TouchableOpacity>
                                     <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                                        <Text style={{color:'#fff',fontSize:18}}>羽毛球热</Text>
+
                                     </View>
                                     <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
                                                       onPress={()=>{ _scrollView.scrollToEnd({animated: true});}}>

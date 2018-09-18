@@ -16,22 +16,14 @@ import {
     Alert
 } from 'react-native';
 import {connect} from 'react-redux';
-
 import DatePicker from 'react-native-datepicker';
 import DateFilter from '../../utils/DateFilter';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
-
-const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
-const scaleAnimation = new ScaleAnimation();
-const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
-
-var {height, width} = Dimensions.get('window');
 import TextInputWrapper from 'react-native-text-input-wrapper';
 import ActionSheet from 'react-native-actionsheet';
-
 import UsernameModal from './modal/UsernameModal';
 import PerNameModal from './modal/PerNameModal';
 import MobilePhoneModal from './modal/MobilePhoneModal';
@@ -47,7 +39,6 @@ import SportLevelModal from './modal/sportsLevelModal';
 import CoachLevelModal from './modal/CoachLevel';
 import CoachBriefModal from './modal/CoachBriefModal';
 import CoachPhotoModal from './modal/CoachPhotoModal';
-
 import{
     updateUsername,
     updateSelfLevel,
@@ -88,12 +79,16 @@ import{
     onCoachPhoto1Update,
     onCoachPhoto2Update,
     onCoachPhoto3Update,
-
-
-
-
-
+    fetchMemberInformation,
+    getAccessToken
 } from '../../action/UserActions';
+
+
+const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
+const scaleAnimation = new ScaleAnimation();
+const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+
+var {height, width} = Dimensions.get('window');
 
 class MyInformation extends Component{
     goBack(){
@@ -236,6 +231,9 @@ class MyInformation extends Component{
             portrait1:null,
             portrait2:null,
             portrait3:null,
+
+            //成员信息
+            member:{avatar:null,perNum:null,wechat:null,mobilePhone:null,perName:null,sex:null,birthday:null,heightweight:null}
         };
 
     }
@@ -248,49 +246,33 @@ class MyInformation extends Component{
         return (
             <View style={styles.container}>
                 <Toolbar width={width} title="我的资料" actions={[]} navigator={this.props.navigator}>
-
-
-
-                    {/*<View style={{flexDirection:'row',borderBottomWidth:1,alignItems:"center",justifyContent:"center",padding:8}}>*/}
-                        {/*<View style={{flexDirection:'row',justifyContent:"center",alignItems:"center",marginRight:20,borderBottomLeftRadius:2}}>*/}
-                        {/*<TouchableOpacity style={{flexDirection:'row',backgroundColor:'#eee',}}*/}
-                                          {/*onPress={()=>{*/}
-                                                  {/*this.setState({showPersoninfo:true});*/}
-                                                  {/*this.setState({showCoachinfo:false});*/}
-                                              {/*}}*/}
-                        {/*>*/}
-                            {/*<View style={{flexDirection:'row',alignItems:'center'}}>*/}
-                                {/*<Text style={{color:'#555',fontWeight:'bold',fontSize:18}}>*/}
-                                    {/*基本信息资料*/}
-                                {/*</Text>*/}
-                            {/*</View>*/}
-                        {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                        {/*<View style={{flexDirection:'row',justifyContent:"center",alignItems:"center",marginLeft:20}}>*/}
-                            {/*<TouchableOpacity style={{flexDirection:'row',backgroundColor:'#eee',}}*/}
-                                              {/*onPress={()=>{*/}
-                                                  {/*this.setState({showPersoninfo:false});*/}
-                                                  {/*this.setState({showCoachinfo:true});*/}
-                                              {/*}}*/}
-                            {/*>*/}
-                                {/*<View style={{flexDirection:'row',alignItems:'center'}}>*/}
-                                    {/*<Text style={{color:'#555',fontWeight:'bold',fontSize:18}}>*/}
-                                        {/*专业技能资料*/}
-                                    {/*</Text>*/}
-                                {/*</View>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                    {/*</View>*/}
-
                     {
                         this.state.showPersoninfo==true?
 
                     <View style={{flexDirection:'column'}}>
                     <View style={{backgroundColor:'#fff',padding:10}}>
-                        <ScrollView style={{padding:3,marginTop:4,height:height*0.7,backgroundColor:'white'}}>
+                        <ScrollView style={{padding:3,marginTop:4,height:height*0.8,backgroundColor:'white'}}>
+
+                            {/*头像*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:4,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        头像
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    {
+                                        this.state.member.avatar&&this.state.member.avatar!=''?
+                                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                                   source={{uri: this.state.member.avatar}}/>:
+                                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                    }
+                                </View>
+                            </View>
 
                         {/*用户名*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:4,borderBottomWidth:1,borderColor:'#eee'}}
+                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
                                                   this.showUserNameDialog();
                                               }}
@@ -1669,6 +1651,23 @@ class MyInformation extends Component{
             </View>
         )
     }
+
+    componentWillMount()
+    {
+        this.fetchMemberInformation(this.props.personId)
+    }
+
+    fetchMemberInformation(personId){
+        this.props.dispatch(fetchMemberInformation(personId)).then((json)=> {
+            if(json.re==-100){
+                this.props.dispatch(getAccessToken(false));
+            }
+            this.setState({member:json.data})
+        }).catch((e)=>{
+            alert(e)
+        });
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -1702,6 +1701,7 @@ const mapStateToProps = (state, ownProps) => {
     var tt1=year+'-'+month+'-'+day;
 
     const props = {
+        personId:personInfo.personId,
         username:state.user.user.username,
         perName:personInfo.perName,
         mobilePhone:personInfo.mobilePhone,

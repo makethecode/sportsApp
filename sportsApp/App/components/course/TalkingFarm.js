@@ -29,13 +29,13 @@ import {
     fetchCoaches,
     onCoachUpdate,
 } from '../../action/CoachActions';
-
 import {
     getAccessToken,
 } from '../../action/UserActions';
-
 import CoachDetail from './CoachDetail'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import StudentInformation from './StudentInformation';
+import MemberInformation from './MemberInformation';
 
 var {height, width} = Dimensions.get('window');
 
@@ -45,6 +45,32 @@ class TalkingFarm extends Component {
         const {navigator} = this.props;
         if (navigator) {
             navigator.pop();
+        }
+    }
+
+    navigate2MemberInformation(personId){
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'MemberInformation',
+                component: MemberInformation,
+                params: {
+                    personId:personId,
+                }
+            })
+        }
+    }
+
+    navigate2StudentInformation(courseId){
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'StudentInformation',
+                component: StudentInformation,
+                params: {
+                    courseId:courseId
+                }
+            })
         }
     }
 
@@ -167,8 +193,6 @@ class TalkingFarm extends Component {
 
     }
 
-
-
     renderRow(rowData) {
 
         //{headimgurl=https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJ2ib97d8V4abRjO6gG83gJjSftWauMb12boLI1AwqcgeZ9xvg5ic47AzbsOD9vrkMH5cKJhsXIFKUw/132,
@@ -195,7 +219,10 @@ class TalkingFarm extends Component {
                         </View>
 
                         {rowData.headimgurl === null ?
-                            <View style={{width:40,padding: 10, marginRight: 10}}>
+                            <TouchableOpacity style={{width:40,padding: 10, marginRight: 10}}
+                                              onPress={()=>{
+                                                  this.navigate2MemberInformation(rowData.pernum)
+                                              }}>
                                 <Image
                                     style={{
                                         width: 40,
@@ -206,9 +233,12 @@ class TalkingFarm extends Component {
                                     source={require('../../../img/portrait.jpg')}
                                 >
                                 </Image>
-                            </View>
+                            </TouchableOpacity>
                             :
-                            <View style={{width:40,padding:10,marginRight:10}}>
+                            <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                                  onPress={()=>{
+                                      this.navigate2MemberInformation(rowData.pernum)
+                                  }}>
                                 <Image
                                     style={{
                                         width: 40,
@@ -219,7 +249,7 @@ class TalkingFarm extends Component {
                                     source={{uri: rowData.headimgurl}}
                                 >
                                 </Image>
-                            </View>
+                            </TouchableOpacity>
                         }
                     </View>;
             return row;
@@ -231,7 +261,10 @@ class TalkingFarm extends Component {
                 alignItems:'center',
             }}>
                 {rowData.headimgurl === null ?
-                    <View style={{width: 40, padding: 10,marginRight:10}}>
+                    <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                          onPress={()=>{
+                              this.navigate2MemberInformation(rowData.pernum)
+                          }}>
                         <Image
                             style={{
                                 width: 40,
@@ -242,9 +275,12 @@ class TalkingFarm extends Component {
                             source={require('../../../img/portrait.jpg')}
                         >
                         </Image>
-                    </View>
+                    </TouchableOpacity>
                     :
-                    <View style={{width: 40, padding: 10,marginRight:10}}>
+                    <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                          onPress={()=>{
+                              this.navigate2MemberInformation(rowData.pernum)
+                          }}>
                         <Image
                             style={{
                                 width: 40,
@@ -255,7 +291,7 @@ class TalkingFarm extends Component {
                             source={{uri: rowData.headimgurl}}
                         >
                         </Image>
-                    </View>
+                    </TouchableOpacity>
                 }
 
                 <View style={{
@@ -305,9 +341,11 @@ class TalkingFarm extends Component {
             <View style={styles.container}>
                 <Toolbar width={width} title="讨论组" navigator={this.props.navigator} actions={[{icon:ACTION_PERSON,show:OPTION_SHOW}]}
                          onPress={(i)=>{
-                             if(i==0){}
+                             if(i==0){
+                                 this.navigate2StudentInformation(this.props.courseId)
+                             }
                          }}>
-<KeyboardAwareScrollView style={{height:height-180,width:width}}>
+            <KeyboardAwareScrollView style={{height:height-180,width:width}}>
                 <View style={{height: height - 130,backgroundColor:'#f3f3f3'}}>
                     <ScrollView>
                         <View style={{height: height-190,paddingHorizontal:10,backgroundColor:'#f3f3f3'}}>

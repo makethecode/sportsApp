@@ -239,7 +239,7 @@ class My extends Component{
         return (
             <View style={{flex:1}}>
                 <View style={{flex:2}}>
-                    <Image style={{flex:2,width:width,position:'relative'}} source={require('../../img/my_banner.jpeg')} >
+                    <Image style={{flex:2,width:width,position:'relative'}} source={require('../../img/tt4@2x.jpeg')} >
                         <View style={{marginTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
 
                             {
@@ -266,7 +266,7 @@ class My extends Component{
                         </View>
                     </Image>
                 </View>
-                <View style={{flex:5,backgroundColor:'#eee'}}>
+                <View style={{flex:6,backgroundColor:'#eee'}}>
                     <View style={{flex:12,backgroundColor:'#eee'}}>
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                         onPress={()=>{

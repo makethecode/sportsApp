@@ -1816,3 +1816,31 @@ export let fetchDetailPayments=(currentDate)=>{
         })
     }
 }
+//获得课程成员的信息\群活动成员的信息
+export let fetchMemberInformation=(personId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/node/getMemberInformation',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    personId:personId
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    var member=json.data;
+                    resolve({re:1,data:member})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

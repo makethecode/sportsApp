@@ -65,22 +65,22 @@ class Found extends Component{
         return (
             <View style={{flex:1}}>
                 <View style={{flex:2}}>
-                    <Image style={{flex:2,width:width,position:'relative'}} source={require('../../img/my_banner.jpeg')} >
+                    <Image style={{flex:2,width:width,position:'relative'}} source={require('../../img/tt3@2x.jpeg')} >
 
                     </Image>
                 </View>
 
-                <View style={{flex:5,backgroundColor:'#eee'}}>
+                <View style={{flex:6,backgroundColor:'#eee'}}>
                     <View style={{flex:12,backgroundColor:'#eee'}}>
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                           onPress={()=>{
                             this.navigate2CoachList();
                         }}>
-                            <View style={{flex:1,backgroundColor:'#FF69B4',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,backgroundColor:'#fc3c3f',flexDirection:'row',borderRadius:30,padding:5,margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
                                 <Icon name={'group'} size={18} color="#fff"/>
                             </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
+                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
                                 <Text>教练列表</Text>
                             </View>
                         </TouchableOpacity>
@@ -90,11 +90,11 @@ class Found extends Component{
                         }}
                         >
 
-                            <View style={{flex:1,backgroundColor:'#FFEC8B',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,backgroundColor:'#efb66a',flexDirection:'row',borderRadius:30,padding:5,margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
                                 <Icon name={'user'} size={20} color="#fff"/>
                             </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
+                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
                                 <Text>场馆列表</Text>
                             </View>
 
