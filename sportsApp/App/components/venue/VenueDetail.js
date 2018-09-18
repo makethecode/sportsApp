@@ -20,7 +20,8 @@ import {
 import ViewPager from 'react-native-viewpager';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_MAP} from 'react-native-toolbar-wrapper';
+import VenueMap from './VenueMap';
 
 var IMGS = [
     require('../../../img/v1.jpg'),
@@ -53,6 +54,20 @@ class VenueDetail extends Component{
         );
     }
 
+    navigate2VenueMap(venueDetail){
+
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'VenueMap',
+                component: VenueMap,
+                params: {
+                    venueDetail:venueDetail
+                }
+            })
+        }
+    }
+
     render() {
 
         //[{brief=null, feeDes=每人每次15元, address=世纪大道10600号, yardTotal=6, town=历城区, manager=3, city=济南市, latitude=36.693125,
@@ -62,8 +77,10 @@ class VenueDetail extends Component{
         return (
             <View style={{flex:1}}>
 
-                <Toolbar width={width} title='场馆详情' navigator={this.props.navigator} actions={[]}
-                         onPress={(i)=>{}}>
+                <Toolbar width={width} title='场馆详情' navigator={this.props.navigator} actions={[{icon:ACTION_MAP,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             this.navigate2VenueMap(venueDetail)
+                         }}>
                     <View style={{width:width,height:180}}>
                         <ViewPager
                             style={this.props.style}

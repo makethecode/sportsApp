@@ -14,9 +14,7 @@ import {
     Animated,
     Easing
 } from 'react-native';
-
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyGroup from '../components/groupActivity/MyGroup';
@@ -28,19 +26,20 @@ import PortraitModal from '../components/my/modal/PortraitModal';
 import VenueInspect from '../components/venue/VenueInspect';
 import MyCompentitionList from '../components/competition/MyCompetitionList';
 import CoachMessage from '../components/my/MyInformation'
-
 import TeamSignUp from '../components/competition/TeamSignUp';
-
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
-const scaleAnimation = new ScaleAnimation();
-var WeChat = require('react-native-wechat');
-
 import {
     downloadPortrait,
     updatePortrait,
     uploadPortrait,
     wechatPay,
+    fetchMemberInformation,
+    getAccessToken,
 } from '../action/UserActions';
+
+var {height, width} = Dimensions.get('window');
+const scaleAnimation = new ScaleAnimation();
+var WeChat = require('react-native-wechat');
 
 class My extends Component{
 
@@ -151,55 +150,6 @@ class My extends Component{
         }
     }
 
-    wechatPay(){
-
-
-        WeChat.shareToTimeline({
-            type: 'news',
-            title: '我正在使用捷惠宝App,想与您一起分享',
-            description: 'share resource image to time line',
-            mediaTagName: 'email signature',
-            messageAction: undefined,
-            messageExt: undefined,
-            webpageUrl:'http://139.129.96.231:3000/wx',
-        });
-
-
-        // this.props.dispatch(wechatPay()).then((json)=>{
-        //     if(json.re==1){
-        //         var prepayId = json.data.prepayid;
-        //         var sign = json.data.sign;
-        //         var timeStamp = json.data.timestamp;
-        //         var noncestr = json.data.noncestr;
-        //
-        //         var wechatPayData=
-        //             {
-        //                 partnerId: '1485755962',  // 商家向财付通申请的商家id
-        //                 prepayId: prepayId,   // 预支付订单
-        //                 nonceStr: noncestr,   // 随机串，防重发
-        //                 timeStamp: timeStamp,  // 时间戳，防重发
-        //                 package: 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
-        //                 sign: sign // 商家根据微信开放平台文档对数据做的签名
-        //             };
-        //
-        //         WeChat.pay(wechatPayData).then(
-        //             (result)=>{
-        //                 console.log(result);
-        //
-        //             },
-        //             (error)=>{
-        //                 console.log(error);
-        //             }
-        //         )
-        //
-        //     }
-        //
-        // })
-
-
-    }
-
-
     showPortraitDialog() {
         this.portraitDialog.show();
     }
@@ -226,16 +176,31 @@ class My extends Component{
     constructor(props) {
         super(props);
         this.state={
-           portrait:null
+           portrait:null,
+            member:{avatar:null,perNum:null,wechat:null,mobilePhone:null,perName:null,sex:null,birthday:null,heightweight:null}
         }
     }
 
     componentWillMount(){
+       //this.getPortrait();
+        this.fetchMemberInformation(this.props.personInfo.personId)
+    }
 
-       // this.getPortrait();
+    fetchMemberInformation(personId){
+        this.props.dispatch(fetchMemberInformation(personId)).then((json)=> {
+            if(json.re==-100){
+                this.props.dispatch(getAccessToken(false));
+            }
+            this.setState({member:json.data})
+        }).catch((e)=>{
+            alert(e)
+        });
     }
 
     render() {
+
+        var avatar = this.state.member.avatar;
+
         return (
             <View style={{flex:1}}>
                 <View style={{flex:2}}>
@@ -243,26 +208,20 @@ class My extends Component{
                         <View style={{marginTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
 
                             {
-                                this.state.portrait!==undefined&&this.state.portrait!==null?
+                                avatar!==undefined && avatar!==null?
 
-                                <TouchableOpacity style={{height:height*90/736,width:height*90/736,borderRadius:height*45/736}}
-                                                  onPress={()=>{
-                                         this.showPortraitDialog();
-                                    }}>
-                                    <Image resizeMode="stretch" style={{height:height*90/736,width:height*90/736,
-                            borderRadius:height*45/736}} source={{uri:this.state.portrait}}/>
-                                </TouchableOpacity> :
-                                    <TouchableOpacity style={{height:height*90/736,width:height*90/736,borderRadius:height*45/736}}
-                                    onPress={()=>{
-                                         this.showPortraitDialog();
-                                    }}>
-                                        <Image resizeMode="stretch" style={{height:height*90/736,width:height*90/736,borderRadius:height*45/736}}
-                                               source={require('../../img/portrait.jpg')}/>
-                                    </TouchableOpacity>
+                                <View style={{height:60,width:60}}>
+                                    <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={{uri:avatar}}/>
+                                </View> :
+                                    <View style={{height:60,width:60}}>
+                                        <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={require('../../img/portrait.jpg')}/>
+                                    </View>
                             }
                         </View>
-                        <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:15}}>
-                            <Text style={{color:'#fff',fontSize:18}}>{this.props.username}</Text>
+                        <View style={{width:width,justifyContent:'center',alignItems:'center'}}>
+                        <View style={{alignItems:'center',justifyContent:'center',marginTop:15,width:80,backgroundColor:'#fff',opacity:0.7,borderRadius:5}}>
+                            <Text style={{color:'#333',fontSize:14}}>{this.props.username}</Text>
+                        </View>
                         </View>
                     </Image>
                 </View>
@@ -272,12 +231,12 @@ class My extends Component{
                         onPress={()=>{
                             this.navigate2MyGroup();
                         }}>
-                            <View style={{flex:1,backgroundColor:'#FF69B4',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'group'} size={18} color="#fff"/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/group.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>我的群</Text>
+                                <Text>我的群组</Text>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
@@ -286,9 +245,9 @@ class My extends Component{
                         }}
                         >
 
-                            <View style={{flex:1,backgroundColor:'#FFEC8B',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'user'} size={20} color="#fff"/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/appointment.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
                                 <Text>我的资料</Text>
@@ -296,33 +255,14 @@ class My extends Component{
 
                         </TouchableOpacity>
 
-
-
-                        {/*我的比赛*/}
-                        {/*<TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}*/}
-                                          {/*onPress={()=>{*/}
-                            {/*this.navigate2MyCompetitionList();*/}
-                        {/*}}*/}
-                        {/*>*/}
-
-                            {/*<View style={{flex:1,backgroundColor:'#FFEC8B',flexDirection:'row',borderRadius:30,padding:5,margin:5,*/}
-                            {/*justifyContent:'center',alignItems: 'center'}}>*/}
-                                {/*<Icon name={'group'} size={20} color="#fff"/>*/}
-                            {/*</View>*/}
-                            {/*<View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>*/}
-                                {/*<Text>我的比赛</Text>*/}
-                            {/*</View>*/}
-
-                        {/*</TouchableOpacity>*/}
-
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                           onPress={()=>{
                                 this.navigate2MyCourse();
                             }}
                         >
-                            <View style={{flex:1,backgroundColor:'#98FB98',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                                 justifyContent:'center',alignItems: 'center'}}>
-                                <CommIcon name="library" size={22} color="#fff" style={{backgroundColor:'transparent',}}/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/course.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
                                 <Text>我的课程</Text>
@@ -333,9 +273,9 @@ class My extends Component{
                                 this.navigate2CustomCourse();
                             }}
                         >
-                            <View style={{flex:1,backgroundColor:'#98FB98',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'edit'} size={20} color="#fff"/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/ding.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
                                 <Text>我的定制</Text>
@@ -345,30 +285,14 @@ class My extends Component{
                                           onPress={()=>{
                                 this.navigate2Setting();
                             }}>
-                             <View style={{flex:1,backgroundColor:'#63B8FF',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                             <View style={{flex:1,flexDirection:'row',margin:5,
                                             justifyContent:'center',alignItems: 'center'}}>
-                                 <Icon name={'gear'} size={20} color="#fff"/>
+                                 <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/setting.png')}/>
                              </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                 <Text>设置</Text>
+                                 <Text>我的设置</Text>
                              </View>
                         </TouchableOpacity>
-                        {/*<TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}*/}
-                                          {/*onPress={()=>{*/}
-                                {/*this.wechatPay();*/}
-                                {/*//this.showTimeLine();*/}
-
-                            {/*}}>*/}
-                            {/*<View style={{flex:1,backgroundColor:'#63B8FF',flexDirection:'row',borderRadius:30,padding:5,margin:5,*/}
-                                            {/*justifyContent:'center',alignItems: 'center'}}>*/}
-                                {/*<Icon name={'gear'} size={20} color="#fff"/>*/}
-                            {/*</View>*/}
-                            {/*<View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>*/}
-                                {/*<Text>微信支付测试</Text>*/}
-                            {/*</View>*/}
-                        {/*</TouchableOpacity>*/}
-
-
                     </View>
 
                     <View style={{flex:1,backgroundColor:'#eee'}}>
@@ -397,9 +321,6 @@ class My extends Component{
                                 this.setPortrait(portrait);
                                 this.props.dispatch(uploadPortrait(portrait,this.props.personInfo.personId)).then((json)=>{
                                      alert('上传成功');
-
-
-
                                     {/*if(json.re==1){*/}
                                        {/**/}
                                     {/*}*/}

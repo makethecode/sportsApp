@@ -160,48 +160,50 @@ class Notice extends Component{
         }
 
         return (
-            <View style={styles.container}>
-                <Toolbar width={width} title="消息列表" actions={[]} navigator={this.props.navigator}>
+        <View style={{flex:1}}>
+            <View style={{flex:2}}>
+                <Image style={{flex:2,width:width,position:'relative'}} source={require('../../img/tt2@2x.jpeg')} >
 
-                    {<View style={{flex:5,backgroundColor:'#eee'}}>
-                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
-                            <ScrollView
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.isRefreshing}
-                                        onRefresh={this._onRefresh.bind(this)}
-                                        tintColor="#9c0c13"
-                                        title="刷新..."
-                                        titleColor="#9c0c13"
-                                        colors={['#ff0000', '#00ff00', '#0000ff']}
-                                        progressBackgroundColor="#ffff00"
-                                    />
-                                }
-                            >
-                                {noticeListView}
-                                {
-                                    noticeListView==null?
-                                        null:
-                                        <View style={{justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',padding:10}}>
-                                            <Text style={{color:'#343434',fontSize:13,alignItems: 'center',justifyContent:'center'}}>已经全部加载完毕</Text>
-                                        </View>
-                                }
-
-                            </ScrollView>
-
-                        </Animated.View>
-                    </View>}
-
-
-
-                </Toolbar>
-
+                </Image>
             </View>
+
+            <View style={{flex:6,backgroundColor:'#eee'}}>
+                <View style={{flex:12,backgroundColor:'#eee'}}>
+                    <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    tintColor="#9c0c13"
+                                    title="刷新..."
+                                    titleColor="#9c0c13"
+                                    colors={['#ff0000', '#00ff00', '#0000ff']}
+                                    progressBackgroundColor="#ffff00"
+                                />
+                            }
+                        >
+                            {noticeListView}
+                            {
+                                noticeListView==null?
+                                    null:
+                                    <View style={{justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',padding:10}}>
+                                        <Text style={{color:'#343434',fontSize:13,alignItems: 'center',justifyContent:'center'}}>已经全部加载完毕</Text>
+                                    </View>
+                            }
+                        </ScrollView>
+                    </Animated.View>
+                </View>
+                <View style={{flex:1,backgroundColor:'#eee'}}>
+                </View>
+            </View>
+
+        </View>
         );
     }
+
     componentDidMount()
     {
-
     }
 
 

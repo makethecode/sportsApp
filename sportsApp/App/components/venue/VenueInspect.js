@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper';
@@ -30,7 +29,6 @@ import {
     MapTypes,
     Geolocation
 } from 'react-native-baidu-map';
-
 import {
     localSearch,
     fetchMaintainedVenue
@@ -39,6 +37,7 @@ import{
     getAccessToken
 }from '../../action/UserActions'
 
+var {height, width} = Dimensions.get('window');
 
 class VenueInspect extends Component{
     goBack(){

@@ -76,9 +76,9 @@ class Found extends Component{
                                           onPress={()=>{
                             this.navigate2CoachList();
                         }}>
-                            <View style={{flex:1,backgroundColor:'#fc3c3f',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'group'} size={18} color="#fff"/>
+                                <Image resizeMode="contain" style={{height:30,width:30}} source={require('../../img/coach.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
                                 <Text>教练列表</Text>
@@ -90,9 +90,9 @@ class Found extends Component{
                         }}
                         >
 
-                            <View style={{flex:1,backgroundColor:'#efb66a',flexDirection:'row',borderRadius:30,padding:5,margin:5,
+                            <View style={{flex:1,flexDirection:'row',margin:5,
                             justifyContent:'center',alignItems: 'center'}}>
-                                <Icon name={'user'} size={20} color="#fff"/>
+                                <Image resizeMode="contain" style={{height:30,width:30}} source={require('../../img/venue.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
                                 <Text>场馆列表</Text>
