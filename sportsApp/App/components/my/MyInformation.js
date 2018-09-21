@@ -20,7 +20,7 @@ import DatePicker from 'react-native-datepicker';
 import DateFilter from '../../utils/DateFilter';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_CHECK} from 'react-native-toolbar-wrapper'
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
 import TextInputWrapper from 'react-native-text-input-wrapper';
 import ActionSheet from 'react-native-actionsheet';
@@ -80,9 +80,12 @@ import{
     onCoachPhoto2Update,
     onCoachPhoto3Update,
     fetchMemberInformation,
-    getAccessToken
+    getAccessToken,
+    modifyUser,
+    uploadImage
 } from '../../action/UserActions';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Config from '../../../config'
 
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -103,52 +106,6 @@ class MyInformation extends Component{
        return tt;
     }
 
-    showUserNameDialog() {
-        this.usernameDialog.show();
-    }
-
-    showPerNameDialog()
-    {
-        this.perNameDialog.show()
-    }
-
-    showMobilePhoneDialog()
-    {
-        this.mobilePhoneDialog.show()
-    }
-
-    showWxDialog()
-    {
-        this.wxDialog.show()
-    }
-
-    showSexDialog()
-    {
-        this.SexDialog.show()
-    }
-
-    showIdCardDialog()
-    {
-        this.idCardDialog.show()
-    }
-    showUniversityDialog(){
-       this.universityDialog.show()
-    }
-    showHeightWeightDialog(){
-        this.HeightWeightDialog.show()
-    }
-    showWorkCityDialog(){
-        this.WorkCityDialog.show()
-    }
-    showMajorDialog(){
-        this.MajorDialog.show()
-    }
-    showWSportLevelDialog(){
-        this.SportLevelDialog.show()
-    }
-    showCoachBriefDialog(){
-        this.CoachBriefDialog.show()
-    }
     showCoachPhotoDialog(){
         this.CoachPhotoDialog.show()
     }
@@ -161,34 +118,21 @@ class MyInformation extends Component{
     showCoachPhoto3Dialog(){
         this.CoachPhoto3Dialog.show()
     }
-    showCoachLevelDialog(){
-        this.CoachLevelDialog.show()
-    }
     show(actionSheet) {
         this[actionSheet].show();
     }
 
-    //个人水平设置
+    //教练星级设置
     _handlePress1(index) {
 
         if(index>1){
-            var selfLevel = this.state.memberLevelButtons[index];
-            var selfLevelCode = index-1;
-            this.setState({selfLevel:selfLevel,selfLevelCode:selfLevelCode});
-            //TODO:make a dispatch
-            this.props.dispatch(updateSelfLevel(selfLevelCode)).then((json)=>{
-                if(json.re==1)
-                    this.props.dispatch(onSelfLevelUpdate(selfLevelCode))
-            })
+            var coachLevel = this.state.coachLevelButtons[index];
+            var coachLevelCode = index-1;
+            this.setState({member:Object.assign(this.state.member,{coachLevel:coachLevel}),coachLevelCode:coachLevelCode});
         }else if(index==1)
         {
             //设置'无'
-            //TODO:make a dispatch
-            this.setState({selfLevel:null,selfLevelCode:null});
-            this.props.dispatch(updateSelfLevel(null)).then((json)=>{
-                if(json.re==1)
-                    this.props.dispatch(onSelfLevelUpdate(null))
-            })
+            this.setState({member:Object.assign(this.state.member,{coachLevel:null}),coachLevelCode:null});
         }else{}
 
     }
@@ -197,23 +141,13 @@ class MyInformation extends Component{
     _handlePress2(index)
     {
         if(index>1){
-            var sportLevel = this.state.memberLevelButtons[index];
+            var sportLevel = this.state.sportLevelButtons[index];
             var sportLevelCode = index-1;
-            this.setState({sportLevel:sportLevel,selfLevelCode:sportLevelCode});
-            //TODO:make a dispatch
-            this.props.dispatch(updateSportLevel(sportLevelCode)).then((json)=>{
-                if(json.re==1)
-                    this.props.dispatch(onSportLevelUpdate(sportLevelCode))
-            })
+            this.setState({member:Object.assign(this.state.member,{sportLevel:sportLevel}),sportLevelCode:sportLevelCode});
         }else if(index==1)
         {
             //设置'无'
-            //TODO:make a dispatch
-            this.setState({selfLevel:null,selfLevelCode:null});
-            this.props.dispatch(updateSportLevel(null)).then((json)=>{
-                if(json.re==1)
-                    this.props.dispatch(onSportLevelUpdate(null))
-            })
+            this.setState({member:Object.assign(this.state.member,{sportLevel:null}),sportLevelCode:null});
         }else{}
     }
 
@@ -223,17 +157,36 @@ class MyInformation extends Component{
         this.state={
             isRefreshing:false,
             selectBirthday:false,
-            memberLevelButtons:['取消','无','体育本科','国家一级运动员','国家二级运动员','国家三级运动员'],
-            showPersoninfo:true,
-            showCoachinfo:false,
-            photo:{photo0:false,photo1:false,photo2:false,photo3:false,photo4:false},
-            portrait0:null,
-            portrait1:null,
-            portrait2:null,
-            portrait3:null,
+            sportLevelButtons:['取消','无','体育本科','国家一级运动员','国家二级运动员','国家三级运动员'],
+            coachLevelButtons:['取消','无','一星级教练','二星级教练','三星级教练','四星级教练','五星级教练'],
 
-            //成员信息
-            member:{avatar:null,perNum:null,wechat:null,mobilePhone:null,perName:null,sex:null,birthday:null,heightweight:null}
+            //个人信息
+            //{birthday=1991-10-18, workcity=济南市，日照市, university=还没, sex=男, wechat=, perIdCard=gghh ,
+            // perNum=wbh, avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+            // coachLevel=五星级教练, heightweight=, mobilePhone=18254888887, perName=小吴, sportLevel=国家一级运动员, coachPhoto4=4,
+            // coachPhoto1=1, coachBrief=, coachPhoto3=3, isCoach=1, coachPhoto2=2}
+
+            member:{
+                personId:this.props.personId,
+                avatar:null,
+                perNum:null,
+                wechat:null,
+                mobilePhone:null,
+                perName:null,
+                sex:null,
+                birthday:null,
+                heightweight:null,
+                sportLevel:this.props.sportLevel,
+                coachLevel:this.props.coachLevel,
+                perIdCard:null,
+                coachBrief:null,
+                coachPhoto:null,
+                coachPhoto1:null,
+                coachPhoto2:null,
+                coachPhoto3:null,
+                workcity:null,
+                university:null,
+            },
         };
 
     }
@@ -243,18 +196,46 @@ class MyInformation extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
+        var personId = this.props.personId;
+
+        var photo = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/1.jpg';
+        var photo1 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/2.jpg';
+        var photo2 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/3.jpg';
+        var photo3 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/4.jpg';
+
+        // var photo = Config.server+'/file/coach'+this.props.personId+'/1.jpg';
+        // var photo1 = Config.server+'/file/coach'+this.props.personId+'/2.jpg';
+        // var photo2 = Config.server+'/file/coach'+this.props.personId+'/3.jpg';
+        // var photo3 = Config.server+'/file/coach'+this.props.personId+'/4.jpg';
+
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="我的资料" actions={[]} navigator={this.props.navigator}>
-                    {
-                        this.state.showPersoninfo==true?
-
+                <Toolbar width={width} title="我的资料" actions={[{icon:ACTION_CHECK,show:OPTION_SHOW}]} navigator={this.props.navigator}
+                         onPress={(i)=>{
+                             this.props.dispatch(modifyUser(this.state.member))
+                                 .then((json)=>{
+                                     if(json.re==1){
+                                         Alert.alert('信息','个人资料成功',[{text:'确认',onPress:()=>{
+                                             this.goBack();
+                                         }}]);
+                                     }else{
+                                         if(json.re==-100){
+                                             this.props.dispatch(getAccessToken(false));
+                                         }
+                                     }
+                                 })
+                         }}
+                         >
                     <View style={{flexDirection:'column'}}>
-                    <View style={{backgroundColor:'#fff',padding:10}}>
-                        <ScrollView style={{padding:3,marginTop:4,height:height*0.8,backgroundColor:'white'}}>
+                    <View style={{backgroundColor:'#fff'}}>
+                        <KeyboardAwareScrollView style={{height:height-120,width:width,padding:5,backgroundColor:'#fff'}}>
+
+                            <View style={{height:30,width:width,justifyContent:'center',textAlign:'left',backgroundColor:'#eee',paddingHorizontal:10}}>
+                                <Text style={{color:'#666',fontSize:13}}>基本信息</Text>
+                            </View>
 
                             {/*头像*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:4,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                     <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
                                         头像
@@ -272,142 +253,73 @@ class MyInformation extends Component{
                             </View>
 
                         {/*用户名*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showUserNameDialog();
-                                              }}
-                        >
+                        <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                 <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
                                     用户名
                                 </Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.username&&this.props.username!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.username}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-
+                                <TextInput
+                                    placeholderTextColor='#888'
+                                    style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                    placeholder={this.props.username}
+                                    value={this.state.member.perNum}
+                                    onChangeText={
+                                        (value)=>{
+                                            this.setState({member:Object.assign(this.state.member,{perNum:value})})
+                                        }}
+                                />
                             </View>
-                        </TouchableOpacity>
+                        </View>
 
-
-                        {/*微信号*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    微信号
-                                </Text>
+                        {/*真实姓名*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        真实姓名
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={this.props.perName}
+                                        value={this.state.member.perName}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{perName:value})})
+                                            }}
+                                    />
+                                </View>
                             </View>
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.wechat&&this.props.wechat!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.wechat}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-                            </View>
-                        </TouchableOpacity>
-
-                        {/*手机号*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:8,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showMobilePhoneDialog();
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    手机号
-                                </Text>
-                            </View>
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.mobilePhone&&this.props.mobilePhone!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.mobilePhone}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-
-                            </View>
-
-                        </TouchableOpacity>
-
-
-                        {/*教练姓名*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showPerNameDialog();
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    教练姓名
-                                </Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-
-                                {
-                                    this.props.perName&&this.props.perName!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.perName}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-
-                            </View>
-                        </TouchableOpacity>
 
 
                         {/*性别*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showSexDialog();
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    教练性别
-                                </Text>
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        性别
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.genderCode==1?'男':'女'
+                                        }
+                                        value={this.state.member.sex}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{sex:value})})
+                                            }}
+                                    />
+                                </View>
                             </View>
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.genderCode&&this.props.genderCode!=''?
-                                    <View>{
-                                        this.props.genderCode==1?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                男
-                                            </Text>:                                        <Text style={{color:'#444',fontSize:15}}>
-                                           女
-                                        </Text>
-                                    }
-
-                                    </View>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-                            </View>
-                        </TouchableOpacity>
 
 
-                        {/*年龄*/}
+                        {/*出生日期*/}
                         <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
 
                         >
@@ -417,20 +329,12 @@ class MyInformation extends Component{
                                 </Text>
                             </View>
                             <View style={{flex:2,marginLeft:30,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.perBirthday&&this.props.perBirthday!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.perBirthday}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置{this.props.perBirthday}
-                                        </Text>
-                                }
+                             <Text style={{color:'#444',fontSize:15}}>{this.state.member.birthday}</Text>
                             </View>
 
-                            <View style={{height:35,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                            <View style={{height:25,marginRight:0,flexDirection:'row',alignItems:'center'}}>
                                 <DatePicker
-                                    style={{width:60,marginLeft:0,borderWidth:0}}
+                                    style={{width:25,marginLeft:0,borderWidth:0}}
                                     customStyles={{
                                         placeholderText:{color:'transparent',fontSize:12},
                                         dateInput:{height:30,borderWidth:0},
@@ -443,161 +347,114 @@ class MyInformation extends Component{
                                     confirmBtnText="确认"
                                     cancelBtnText="取消"
                                     showIcon={true}
-                                    iconComponent={<Icon name={'calendar'} size={30} color="#888"/>}
+                                        iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
                                     onDateChange={(date) => {
-                                        if(this.state.selectBirthday==false)
-                                        {
-                                            this.state.selectBirthday=true;
-                                            this.setState({selectBirthday:false});
-
-
-                                            this.props.dispatch(updatePerBirthday(date)).then((json)=>{
-                                                if(json.re==1){
-                                                    this.props.dispatch(onPerBirthdayUpdate(date))
-                                                }
-                                            })
-
-                                        }
-
+                                        this.setState({member:Object.assign(this.state.member,{birthday:date})})
                                     }}
                                 />
                             </View>
                         </View>
 
                             {/*身高体重*/}
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                              onPress={()=>{
-                                                  this.showHeightWeightDialog();
-                                              }}
-                            >
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                     <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
                                         身高体重
                                     </Text>
                                 </View>
-                                <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.heightweight&&this.props.heightweight!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.heightweight}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.heightweight
+                                        }
+                                        value={this.state.member.heightweight}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{heightweight:value})})
+                                            }}
+                                    />
                                 </View>
-                            </TouchableOpacity>
+                            </View>
 
-                            {/*服务城市*/}
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                              onPress={()=>{
-                                                  this.showWorkCityDialog();
-
-                                              }}
-                            >
+                            {/*身份证*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                     <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        服务城市
+                                        身份证
                                     </Text>
                                 </View>
-                                <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.workcity&&this.props.workcity!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.workcity}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.perIdCard
+                                        }
+                                        value={this.state.member.perIdCard}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{perIdCard:value})})
+                                            }}
+                                    />
                                 </View>
-                            </TouchableOpacity>
-
-                        {/*毕业院校*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showUniversityDialog();
-
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    毕业院校
-                                </Text>
                             </View>
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.university&&this.props.university!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.university}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
 
+                            <View style={{height:30,width:width,justifyContent:'center',textAlign:'left',backgroundColor:'#eee',paddingHorizontal:10}}>
+                                <Text style={{color:'#666',fontSize:13}}>联系方式</Text>
                             </View>
-                        </TouchableOpacity>
 
-                        {/*毕业专业*/}
-                        {/*<TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}*/}
-                                          {/*onPress={()=>{*/}
-                                                  {/*this.showMajorDialog();*/}
-
-                                              {/*}}*/}
-                        {/*>*/}
-                            {/*<View style={{flex:1,flexDirection:'row',alignItems:'center'}}>*/}
-                                {/*<Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>*/}
-                                    {/*毕业专业*/}
-                                {/*</Text>*/}
-                            {/*</View>*/}
-                            {/*<View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>*/}
-                                {/*{*/}
-                                    {/*this.props.major&&this.props.major!=''?*/}
-                                        {/*<Text style={{color:'#444',fontSize:15}}>*/}
-                                            {/*{this.props.major}*/}
-                                        {/*</Text>:*/}
-                                        {/*<Text style={{color:'#777',fontSize:15}}>*/}
-                                            {/*未设置*/}
-                                        {/*</Text>*/}
-                                {/*}*/}
-
-                            {/*</View>*/}
-                        {/*</TouchableOpacity>*/}
-
-                        {/*教练资质*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showWSportLevelDialog();
-
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    教练资质
-                                </Text>
+                            {/*微信号*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        微信号
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={this.props.wechat}
+                                        value={this.state.member.wechat}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{wechat:value})})
+                                            }}
+                                    />
+                                </View>
                             </View>
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.sportLevel&&this.props.sportLevel!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.sportLevel}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
 
+                            {/*手机号*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        手机号
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={this.props.mobilePhone}
+                                        value={this.state.member.mobilePhone}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{mobilePhone:value})})
+                                            }}
+                                    />
+                                </View>
                             </View>
-                        </TouchableOpacity>
+
+                            <View style={{height:30,width:width,justifyContent:'center',textAlign:'left',backgroundColor:'#eee',paddingHorizontal:10}}>
+                                <Text style={{color:'#666',fontSize:13}}>教练信息</Text>
+                            </View>
 
                         {/*教练星级*/}
                         <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
-                                                  this.showCoachLevelDialog();
-
+                                              this.show('actionSheet1');
                                               }}
                         >
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
@@ -606,917 +463,213 @@ class MyInformation extends Component{
                                 </Text>
                             </View>
                             <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.coachLevel&&this.props.coachLevel!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.coachLevel}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-
-                            </View>
-                        </TouchableOpacity>
-
-                        {/*身份证*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showIdCardDialog();
-
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    身份证
-                                </Text>
-                            </View>
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.perIdCard&&this.props.perIdCard!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.perIdCard}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-
-                            </View>
-                        </TouchableOpacity>
-
-                        {/*教练简介*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                                  this.showCoachBriefDialog();
-                                              }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    教练简介
-                                </Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                {
-                                    this.props.coachBrief&&this.props.coachBrief!=''?
-                                        <Text style={{color:'#444',fontSize:15}}>
-                                            {this.props.coachBrief}
-                                        </Text>:
-                                        <Text style={{color:'#777',fontSize:15}}>
-                                            未设置
-                                        </Text>
-                                }
-                            </View>
-                        </TouchableOpacity>
-
-                            {/*上传教练图片*/}
-                            <View style={{flexDirection:'column'}}>
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderColor:'#eee'}}
-                                              onPress={()=>{
-
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        上传教练图片
-                                    </Text>
-                                    <Icon />
-                                </View>
-                            </TouchableOpacity>
-
-
-                             <View style={{flexDirection:'row',borderBottomWidth:1}}>
-                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:0,borderColor:'#eee'}}
-                                                   onPress={()=>{
-                                                        this.showCoachPhotoDialog();
-                                              }}
-                                 >
-                                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {this.props.coachPhoto==null||this.props.coachPhoto==''||this.props.coachPhoto==undefined?
-
-                                         <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                 source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                         />:
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                    source={{uri:this.props.coachPhoto}}
-                                         />
-
-                                         }
-                                     </View>
-                                 </TouchableOpacity>
-
-                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:0,borderColor:'#eee'}}
-                                                   onPress={()=>{
-                                                        this.showCoachPhoto1Dialog();
-                                              }}
-                                 >
-                                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {this.props.coachPhoto1==null||this.props.coachPhoto1==''||this.props.coachPhoto1==undefined?
-
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:this.props.coachPhoto1}}
-                                             />
-
-                                         }
-                                     </View>
-                                 </TouchableOpacity>
-
-                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:0,borderColor:'#eee'}}
-                                                   onPress={()=>{
-                                                        this.showCoachPhoto2Dialog();
-                                              }}
-                                 >
-                                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {this.props.coachPhoto2==null||this.props.coachPhoto2==''||this.props.coachPhoto2==undefined?
-
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:this.props.coachPhoto2}}
-                                             />
-
-                                         }
-                                     </View>
-                                 </TouchableOpacity>
-
-                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:0,borderColor:'#eee'}}
-                                                   onPress={()=>{
-                                                        this.showCoachPhoto3Dialog();
-                                              }}
-                                 >
-                                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {this.props.coachPhoto3==null||this.props.coachPhoto3==''||this.props.coachPhoto3==undefined?
-
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.25}}
-                                                     source={{uri:this.props.coachPhoto3}}
-                                             />
-
-                                         }
-                                     </View>
-                                 </TouchableOpacity>
-
-                             </View>
-                            </View>
-
-                        </ScrollView>
-
-                    </View>
-
-                    <View style={{backgroundColor:'#fff',padding:10}}>
-
-
-                        {/*自身水平*/}
-                        {
-                            this.props.userType==0?
-                                <View style={{flexDirection:'row',alignItems: 'center',paddingHorizontal:10,padding:12,paddingBottom:4}}>
-                                    <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                        <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>自身水平</Text>
-                                    </View>
-                                    <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                        borderRadius:10}}
-                                                      onPress={()=>{ this.show('actionSheet1'); }}>
-
-                                        {
-                                            this.props.selfLevel==null?
-                                                <View style={{flex:3,marginLeft:15,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                    <Text style={{color:'#888',fontSize:13}}>请选择自身水平：</Text>
-                                                </View> :
-                                                <View style={{flex:3,marginLeft:15,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                    <Text style={{color:'#444',fontSize:13,fontWeight:'bold'}}>
-                                                        {this.state.memberLevelButtons[parseInt(this.props.selfLevel)+1]}
-                                                    </Text>
-                                                </View>
-                                        }
-                                        <View style={{width:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-                                            <Icon name={'angle-down'} size={30} color="#fff"/>
-                                        </View>
-                                        <ActionSheet
-                                            ref={(o) => {
+                                <Text style={{color:'#444',fontSize:15}}>{this.state.member.coachLevel}</Text>
+                                <ActionSheet
+                                    ref={(o) => {
                                         this.actionSheet1 = o;
                                     }}
-                                            title="请选择自身水平"
-                                            options={this.state.memberLevelButtons}
-                                            cancelButtonIndex={CANCEL_INDEX}
-                                            destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                                            onPress={
+                                    title="请选择教练星级"
+                                    options={this.state.coachLevelButtons}
+                                    cancelButtonIndex={CANCEL_INDEX}
+                                    destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                    onPress={
                                         (data)=>{ this._handlePress1(data); }
                                     }
-                                        />
-                                    </TouchableOpacity>
-                                </View>:null
-                        }
+                                />
+                            </View>
+                        </TouchableOpacity>
 
-                        {/*运动水平*/}
-                        {
-                            this.props.userType==1?
-                                <View style={{flexDirection:'row',alignItems: 'center',paddingHorizontal:10,padding:12,paddingBottom:4}}>
-                                    <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                        <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>运动水平</Text>
-                                    </View>
-                                    <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                        borderRadius:10}}
-                                                      onPress={()=>{ this.show('actionSheet1'); }}>
-
-                                        {
-                                            this.props.sportLevel==null?
-                                                <View style={{flex:3,marginLeft:15,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                    <Text style={{color:'#888',fontSize:13}}>请选择运动水平：</Text>
-                                                </View> :
-                                                <View style={{flex:3,marginLeft:15,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                                    <Text style={{color:'#444',fontSize:13,fontWeight:'bold'}}>
-                                                        {this.state.memberLevelButtons[parseInt(this.props.sportLevel)+1]}
-                                                    </Text>
-                                                </View>
+                            {/*运动水平*/}
+                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
+                                              onPress={()=>{
+                                                  this.show('actionSheet2');
+                                              }}
+                            >
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        运动水平
+                                    </Text>
+                                </View>
+                                <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <Text style={{color:'#444',fontSize:15}}>{this.state.member.sportLevel}</Text>
+                                    <ActionSheet
+                                        ref={(o) => {
+                                            this.actionSheet2 = o;
+                                        }}
+                                        title="请选择运动水平"
+                                        options={this.state.sportLevelButtons}
+                                        cancelButtonIndex={CANCEL_INDEX}
+                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                        onPress={
+                                            (data)=>{ this._handlePress2(data); }
                                         }
-                                        <View style={{width:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-                                            <Icon name={'angle-down'} size={30} color="#fff"/>
-                                        </View>
-                                        <ActionSheet
-                                            ref={(o) => {
-                                                this.actionSheet1 = o;
+                                    />
+                                </View>
+                            </TouchableOpacity>
+
+                            {/*服务城市*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        服务城市
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.workcity
+                                        }
+                                        value={this.state.member.workcity}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{workcity:value})})
                                             }}
-                                            title="请选择运动水平"
-                                            options={this.state.memberLevelButtons}
-                                            cancelButtonIndex={CANCEL_INDEX}
-                                            destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                                            onPress={
-                                                (data)=>{ this._handlePress2(data); }
-                                            }
-                                        />
-                                    </TouchableOpacity>
-                                </View>:null
-                        }
-
-
-                    </View>
-
-                    </View>:
-
-                    <View style={{flexDirection:'column'}}>
-
-                        <View style={{flexDirection:'column',padding:8}}>
-                            {/*微信号*/}
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        教练姓名
-                                    </Text>
+                                    />
                                 </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
+                            </View>
 
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        教练性别
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        教练年龄
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-
-
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
+                            {/*毕业院校*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                     <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
                                         毕业院校
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.university
+                                        }
+                                        value={this.state.member.university}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{university:value})})
+                                            }}
+                                    />
                                 </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        教练等级
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        从业年限
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        身份证号
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
-                                              onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                            >
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                        教练姓名
-                                    </Text>
-                                </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                                    {
-                                        this.props.wechat&&this.props.wechat!=''?
-                                            <Text style={{color:'#444',fontSize:15}}>
-                                                {this.props.wechat}
-                                            </Text>:
-                                            <Text style={{color:'#777',fontSize:15}}>
-                                                未设置
-                                            </Text>
-                                    }
-                                </View>
-                            </TouchableOpacity>
-
-
-                            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',marginTop:15}}>
-                                <TouchableOpacity style={{flexDirection:'row',padding:12,backgroundColor:'#00BCD4',borderRadius:10,marginRight:10}}
-                                                  onPress={()=>{
-                                                  this.showWxDialog();
-                                              }}
-                                >
-                                    <View style={{flexDirection:'row',alignItems:'center'}}>
-                                        <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                            上传教练图片
-                                        </Text>
-                                    </View>
-                                </TouchableOpacity>
-
                             </View>
-                        </View>
+
+                        {/*教练简介*/}
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        教练简介
+                                    </Text>
+                                </View>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <TextInput
+                                        placeholderTextColor='#888'
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        placeholder={
+                                            this.props.coachBrief
+                                        }
+                                        value={this.state.member.coachBrief}
+                                        onChangeText={
+                                            (value)=>{
+                                                this.setState({member:Object.assign(this.state.member,{coachBrief:value})})
+                                            }}
+                                    />
+                                </View>
+                            </View>
+
+                            {/*上传教练图片*/}
+                            <View style={{flexDirection:'column'}}>
+                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderColor:'#eee'}}>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                        上传教练图片
+                                    </Text>
+                                    <Icon />
+                                </View>
+                            </View>
 
 
+                             <View style={{flexDirection:'row',borderBottomWidth:1}}>
+                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,borderColor:'#eee'}}
+                                                   onPress={()=>{
+                                                        this.showCoachPhotoDialog();
+                                              }}
+                                 >
+                                     <View style={{flexDirection:'row',alignItems:'center'}}>
+                                         {photo==null||photo==''||photo==undefined?
+
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
+                                             />:
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                    source={{uri:photo}}
+                                         />
+
+                                         }
+                                     </View>
+                                 </TouchableOpacity>
+
+                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,borderColor:'#eee'}}
+                                                   onPress={()=>{
+                                                        this.showCoachPhoto1Dialog();
+                                              }}
+                                 >
+                                     <View style={{flexDirection:'row',alignItems:'center'}}>
+                                         {photo1==null||photo1==''||photo1==undefined?
+
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
+                                             />:
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:photo1}}
+                                             />
+
+                                         }
+                                     </View>
+                                 </TouchableOpacity>
+
+                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,borderColor:'#eee'}}
+                                                   onPress={()=>{
+                                                        this.showCoachPhoto2Dialog();
+                                              }}
+                                 >
+                                     <View style={{flexDirection:'row',alignItems:'center'}}>
+                                         {photo2==null||photo2==''||photo2==undefined?
+
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
+                                             />:
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:photo2}}
+                                             />
+
+                                         }
+                                     </View>
+                                 </TouchableOpacity>
+
+                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,borderColor:'#eee'}}
+                                                   onPress={()=>{
+                                                        this.showCoachPhoto3Dialog();
+                                              }}
+                                 >
+                                     <View style={{flexDirection:'row',alignItems:'center'}}>
+                                         {photo3==null||photo3==''||photo3==undefined?
+
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
+                                             />:
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
+                                                     source={{uri:photo3}}
+                                             />
+
+                                         }
+                                     </View>
+                                 </TouchableOpacity>
+                             </View>
+                            </View>
+
+                        </KeyboardAwareScrollView>
                     </View>
-                    }
-
-
-
-
-
-                    {/*保存用户名*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.usernameDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <UsernameModal
-                            val={this.props.username}
-                            onClose={()=>{
-                                this.usernameDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.username)
-                                {
-                                    //TODO:进行用户名的保存
-                                    this.props.dispatch(updateUsername(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onUsernameUpdate(val))
-                                        }
-                                        this.usernameDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*保存真实姓名*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.perNameDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <PerNameModal
-                            val={this.props.perName}
-                            onClose={()=>{
-                                this.perNameDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.perName)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updatePerName(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onPerNameUpdate(val))
-                                        }
-                                        this.perNameDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.mobilePhoneDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.85}
-                        height={0.4}
-                    >
-
-                        <ValidateMobilePhoneModal
-                            val={this.props.mobilePhone}
-                            onVerify={(data)=>{
-                                this.props.dispatch(verifyMobilePhone(data))
-                                .then((json)=>{
-                                    if(json.re==1)
-                                    {
-                                        this.state.verifyCode=json.data
-                                    }
-                                })
-                            }}
-                            onClose={()=>{
-                                this.mobilePhoneDialog.dismiss();
-                            }}
-                            onConfirm={(data)=>{
-                                var {mobilePhone,verifyCode}=data
-                                if(this.state.verifyCode!==null&&this.state.verifyCode!==undefined&&this.state.verifyCode==verifyCode)
-                                {
-                                      this.props.dispatch(updateMobilePhone(mobilePhone)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onMobilePhoneUpdate(mobilePhone))
-                                        }
-                                        this.mobilePhoneDialog.dismiss();
-                                        Alert.alert('信息','手机号验证通过',[{text:'确认',onPress:()=>{
-                                             console.log();
-                                        }}]);
-                                    })
-                                }else{
-                                    Alert.alert('信息','验证码输入错误',[{text:'确认',onPress:()=>{
-                                             console.log();
-                                        }}]);
-                                }
-
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.wxDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <WxModal
-                            val={this.props.wechat}
-                            onClose={()=>{
-                                this.wxDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.wechat)
-                                {
-                                    this.props.dispatch(updateWeChat(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onWeChatUpdate(val))
-                                        }
-                                        this.wxDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*性别*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.SexDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <SexModal
-                            val={this.props.genderCode}
-                            onClose={()=>{
-                                this.SexDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-
-                                if(val=='男')val=1;
-                                else val=2;
-                                val = val.toString();
-
-                                if(val!=this.props.genderCode)
-                                {
-                                    this.props.dispatch(updateGenderCode(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onGenderCodeUpdate(val))
-                                        }
-                                        this.SexDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.idCardDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <IdCardModal
-                            val={this.props.perIdCard}
-                            onClose={()=>{
-                                this.idCardDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.perIdCard)
-                                {
-                                    this.props.dispatch(updatePerIdCard(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onPerIdCardUpdate(val))
-                                        }
-                                        this.idCardDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.universityDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <UniversityModal
-                            val={this.props.university}
-                            onClose={()=>{
-                                this.universityDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.university)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateUniversity(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onUniversityUpdate(val))
-                                        }
-                                        this.universityDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*身高体重*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.HeightWeightDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <HeightWeightModal
-                            val={this.props.heightweight}
-                            onClose={()=>{
-                                this.HeightWeightDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.heightweight)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateHeightWeight(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onHeightWeightUpdate(val))
-                                        }
-                                        this.HeightWeightDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*服务城市*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.WorkCityDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <WorkCityModal
-                            val={this.props.workcity}
-                            onClose={()=>{
-                                this.WorkCityDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.workcity)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateWorkCity(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onWorkCityUpdate(val))
-                                        }
-                                        this.WorkCityDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*毕业专业*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.MajorDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <MajorModal
-                            val={this.props.major}
-                            onClose={()=>{
-                                this.MajorDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.major)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateMajor(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onMajorUpdate(val))
-                                        }
-                                        this.MajorDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*教练资质*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.SportLevelDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.55}
-                    >
-
-                        <SportLevelModal
-                            val={this.props.sportlevel}
-                            onClose={()=>{
-                                this.SportLevelDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.sportlevel)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateSportLevel(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onSportLevelUpdate(val))
-                                        }
-                                        this.SportLevelDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*教练星级*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.CoachLevelDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.5}
-                    >
-
-                        <CoachLevelModal
-                            val={this.props.coachlevel}
-                            onClose={()=>{
-                                this.CoachLevelDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.coachlevel)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachLevel(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachLevelUpdate(val))
-                                        }
-                                        this.CoachLevelDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    {/*教练简介*/}
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.CoachBriefDialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.3}
-                    >
-
-                        <CoachBriefModal
-                            val={this.props.coachBrief}
-                            onClose={()=>{
-                                this.CoachBriefDialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.coachBrief)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachBrief(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachBriefUpdate(val))
-                                        }
-                                        this.CoachBriefDialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
+                    </View>
 
                     {/*上传教练图片*/}
                     <PopupDialog
@@ -1530,118 +683,28 @@ class MyInformation extends Component{
                     >
 
                         <CoachPhotoModal
-                            val={this.props.major}
+                            val={photo}
                             onClose={()=>{
                                 this.CoachPhotoDialog.dismiss();
                             }}
                             onConfirm={(val)=>{
-                                if(val!=this.props.coachphoto)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachPhoto0(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachPhoto0Update(val))
-                                        }
-                                        this.CoachPhotoDialog.dismiss();
-                                    })
+
+                                let params = {
+                                    userId:this.props.personId+'',
+                                    path:val,
+                                    idx:1,
                                 }
-                            }}
-                        />
 
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.CoachPhoto1Dialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.45}
-                    >
-
-                        <CoachPhotoModal
-                            val={this.props.major}
-                            onClose={()=>{
-                                this.CoachPhoto1Dialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.coachphoto)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachPhoto1(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachPhoto1Update(val))
+                                this.props.dispatch(uploadImage(params))
+                                    .then((json)=>{
+                                        if(json.re==1){
+                                            alert('上传成功')
+                                        }else{
+                                            if(json.re==-100){
+                                                this.props.dispatch(getAccessToken(false));
+                                            }
                                         }
-                                        this.CoachPhoto1Dialog.dismiss();
                                     })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.CoachPhoto2Dialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.45}
-                    >
-
-                        <CoachPhotoModal
-                            val={this.props.major}
-                            onClose={()=>{
-                                this.CoachPhoto2Dialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.coachphoto)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachPhoto2(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachPhoto2Update(val))
-                                        }
-                                        this.CoachPhoto2Dialog.dismiss();
-                                    })
-                                }
-                            }}
-                        />
-
-                    </PopupDialog>
-
-                    <PopupDialog
-                        ref={(popupDialog) => {
-                        this.CoachPhoto3Dialog = popupDialog;
-                    }}
-                        dialogAnimation={scaleAnimation}
-                        actions={[]}
-                        width={0.8}
-                        height={0.45}
-                    >
-
-                        <CoachPhotoModal
-                            val={this.props.major}
-                            onClose={()=>{
-                                this.CoachPhoto3Dialog.dismiss();
-                            }}
-                            onConfirm={(val)=>{
-                                if(val!=this.props.coachphoto)
-                                {
-                                    //TODO:进行真实姓名的保存
-                                    this.props.dispatch(updateCoachPhoto3(val)).then((json)=>{
-                                        if(json.re==1)
-                                        {
-                                            this.props.dispatch(onCoachPhoto3Update(val))
-                                        }
-                                        this.CoachPhoto3Dialog.dismiss();
-                                    })
-                                }
                             }}
                         />
 
@@ -1723,7 +786,6 @@ const mapStateToProps = (state, ownProps) => {
         coachPhoto1:trainerInfo.attachId1,
         coachPhoto2:trainerInfo.attachId2,
         coachPhoto3:trainerInfo.attachId3,
-
     }
 
     if(trainerInfo)

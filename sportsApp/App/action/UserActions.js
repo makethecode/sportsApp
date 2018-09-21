@@ -1430,36 +1430,6 @@ export let downloadPortrait=()=>{
         });
     }
 }
-
-//上传头像
-export let uploadPortrait=(portrait,personId)=>{
-    return (dispatch,getState)=> {
-        return new Promise((resolve, reject) => {
-            var state=getState();
-          //  var accessToken=state.user.accessToken;
-
-            // Create the form data object
-            var data = new FormData();
-            data.append('images ', {uri: portrait, name: 'portrait.jpg', type: 'multipart/form-data'});
-
-
-            //限定为jpg后缀
-            Proxy.post({
-                url:Config.server+'/func/node/uploadCoachHead?personId='+personId.toString(),
-                headers: {
-                    'Content-Type':'multipart/form-data',
-                },
-                body: data,
-            },(json)=> {
-                resolve(json)
-
-            }, (err) =>{
-                //reject(err)
-            });
-        });
-    }
-}
-
 //微信统一下单
 export let wechatPay=(pay,activityId)=>{
     return (dispatch,getState)=>{
@@ -1842,5 +1812,91 @@ export let fetchMemberInformation=(personId)=>{
             })
 
         })
+    }
+}
+//修改个人信息
+export let modifyUser=(member)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/node/modifyUser',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    member:member
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//上传照片
+export let uploadImage=(params)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            let formData = new FormData();
+
+            //限定为jpg后缀
+            let file = {uri: params.path, type: 'multipart/form-data', name: 'img.jpg'};
+
+            formData.append('images ', file);
+
+            //限定为jpg后缀
+            Proxy.post({
+                url:Config.server+'/func/node/uploadImg?personId='+params.userId+'&idx='+params.idx+'',
+                headers: {
+                    'Content-Type':'multipart/form-data',
+                },
+                body: formData,
+            },(json)=> {
+                resolve(json)
+
+            }, (err) =>{
+                //reject(err)
+            });
+
+        })
+    }
+}
+
+//上传头像
+export let uploadPortrait=(portrait,personId)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+            var state=getState();
+            //  var accessToken=state.user.accessToken;
+
+            // Create the form data object
+            var data = new FormData();
+            data.append('images ', {uri: portrait, name: 'portrait.jpg', type: 'multipart/form-data'});
+
+
+            //限定为jpg后缀
+            Proxy.post({
+                url:Config.server+'/func/node/uploadCoachHead?personId='+personId.toString(),
+                headers: {
+                    'Content-Type':'multipart/form-data',
+                },
+                body: data,
+            },(json)=> {
+                resolve(json)
+
+            }, (err) =>{
+                //reject(err)
+            });
+        });
     }
 }

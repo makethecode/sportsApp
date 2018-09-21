@@ -223,6 +223,6 @@ let Proxy={
             throw new Error('lack of url field');
         }
 
-    }
+    },
 }
 module.exports=Proxy;

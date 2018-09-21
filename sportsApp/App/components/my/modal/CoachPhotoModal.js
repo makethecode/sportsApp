@@ -11,14 +11,14 @@ import  {
     TouchableOpacity,
     Dimensions
 } from 'react-native';
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import TextInputWrapper from 'react-native-text-input-wrapper';
-var ImagePicker = require('react-native-image-picker');
-var {height, width} = Dimensions.get('window');
 import {
     uploadPortrait
 } from '../../../action/UserActions';
+
+var ImagePicker = require('react-native-image-picker');
+var {height, width} = Dimensions.get('window');
 
 class CoachPhotoModal extends Component{
 
@@ -54,6 +54,7 @@ class CoachPhotoModal extends Component{
         if(this.props.onConfirm!==undefined&&this.props.onConfirm!==null)
         {
             this.props.onConfirm(this.state.portrait);
+            this.close();
         }
     }
 
@@ -108,7 +109,8 @@ class CoachPhotoModal extends Component{
     {
         super(props);
         this.state={
-            portrait:null,
+            //this.props.val:http://192.168.1.103:8080/badmintonhotnull/3/1.jpeg
+            portrait:this.props.val,
         }
     }
 
@@ -118,7 +120,7 @@ class CoachPhotoModal extends Component{
         return (
 
             <View style={styles.container}>
-                <View style={{margin:10}}>
+                <View style={{margin:12}}>
                     <Text>上传教练照片</Text>
                 </View>
 
