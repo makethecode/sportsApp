@@ -33,6 +33,7 @@ import ValidateMyInformationModal from '../components/my/modal/ValidateMyInforma
 import Bridge from '../native/Bridge'
 import LiveHome from '../components/live/LiveHome'
 import {
+    getNewsInfo,
     fetchNewsInfo,
     updateNewsInfo
 } from '../action/NewsActions';
@@ -49,6 +50,8 @@ import  {
 } from '../action/LiveActions';
 
 import HomePage from '../components/live/HomePage'
+import NewsDetail from '../components/news/NewsDetail'
+
 var {height, width} = Dimensions.get('window');
 var IMGS = [
     require('../../img/tt1@2x.png'),
@@ -164,7 +167,20 @@ class Home extends Component {
                 name: 'HomePage',
                 component: HomePage,
                 params: {
+                }
+            })
+        }
+    }
 
+    navigate2NewsDetail(docid)
+    {
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'NewsDetail',
+                component: NewsDetail,
+                params: {
+                    docid:docid
                 }
             })
         }
@@ -195,51 +211,30 @@ class Home extends Component {
 
     renderRow(rowData,sectionId,rowId){
         return(
-            <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',marginTop:4,padding:5}}
+            <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',padding:5}}
                 onPress={()=>{
-                    {/*this.props.dispatch(getNewsContentUrl(rowData.themeId)).then((json)=>{*/}
-                        {/*if(json.re==1)*/}
-                        {/*{*/}
-                            {/*var url=json.data*/}
-                            {/*this.navigate2NewsContentDetail(url)*/}
-                        {/*}*/}
-                    {/*})*/}
-
-                    Linking.openURL("http://114.215.99.2:8880/news/"+rowData.newsNum+"/index.html").catch(err => console.error('An error occurred', err));
-
+                   // Linking.openURL("http://114.215.99.2:8880/news/"+rowData.newsNum+"/index.html").catch(err => console.error('An error occurred', err));
+               this.navigate2NewsDetail(rowData.docid)
                 }}
             >
-
-                <View style={{flexDirection:'column',width:70,justifyContent:'center',alignItems:'center'}}>
-                    <Image  resizeMode="stretch" style={{width:65,height:65}}
-                    source={{uri: rowData.img}}
+                <View style={{flexDirection:'column',width:100,justifyContent:'center',alignItems:'center'}}>
+                    <Image  resizeMode="stretch" style={{width:100,height:75}}
+                            source={{uri:rowData.imgsrc}}
                     />
-
                 </View>
 
                 <View style={{flex:1,flexDirection:'column',alignItems:'flex-start'}}>
                     <View style={{padding:4,paddingHorizontal:12}}>
-                        <Text style={{color:'#646464',fontWeight:'bold',fontSize:15}}>
+                        <Text style={{color:'#666',fontSize:16}}>
                             {rowData.title}
                         </Text>
                     </View>
 
-                    <View style={{padding:4,paddingHorizontal:12}}>
-                        <Text style={{color:'#646464',fontSize:13}}>
-                            {rowData.brief}
-                        </Text>
-                    </View>
+                    <View style={{paddingTop:12,paddingBottom:4,flexDirection:'row',alignItems:'center'}}>
 
-                    <View style={{paddingTop:12,paddingBottom:4,paddingHorizontal:12,flexDirection:'row',alignItems:'center'}}>
-                        <View style={{padding:4,paddingHorizontal:6,}}>
-                            <Text style={{color:'#323232',fontSize:13}}>
-                                阅读：{rowData.readCount}
-                            </Text>
-                        </View>
-
-                        <View style={{padding:4,paddingHorizontal:6,}}>
-                            <Text style={{color:'#323232',fontSize:13}}>
-                                {this.dateFormat(rowData.createTime)}
+                        <View style={{padding:4,paddingHorizontal:12,}}>
+                            <Text style={{color:'#888',fontSize:11}}>
+                                {rowData.ptime}
                             </Text>
                         </View>
                     </View>
@@ -254,6 +249,7 @@ class Home extends Component {
         this.state = {
             dataSource: ds.cloneWithPages(IMGS),
             isRefreshing:false,
+            news:null,
         }
     }
 
@@ -261,7 +257,7 @@ class Home extends Component {
     render() {
 
         var newsList=null
-        if(this.props.news&&this.props.news.length>0)
+        if(this.state.news&&this.state.news.length>0)
         {
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             newsList=(
@@ -271,9 +267,9 @@ class Home extends Component {
                         <RefreshControl
                             refreshing={this.state.isRefreshing}
                             onRefresh={this._onRefresh.bind(this)}
-                            tintColor="#ff0000"
-                            title="拉取球讯..."
-                            titleColor="#00ff00"
+                            tintColor="#9c0c13"
+                            title="刷新..."
+                            titleColor="#9c0c13"
                             colors={['#ff0000', '#00ff00', '#0000ff']}
                             progressBackgroundColor="#ffff00"
                         />
@@ -286,7 +282,7 @@ class Home extends Component {
                 >
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(this.props.news)}
+                        dataSource={ds.cloneWithRows(this.state.news)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 </ScrollView>
@@ -516,7 +512,7 @@ class Home extends Component {
                                         style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
 
                                         <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
+                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                             onPress={ ()=>{
                                              this.navigate2BadmintonCourse();
                                              //this.navigate2BadmintonCourseForCoach();
@@ -554,40 +550,6 @@ class Home extends Component {
                                             </View>
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                                // Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1517628206&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:y2fLXXG5llHsrwJlOmVzl_2h0OM=")
-
-                                                // this.props.dispatch(getRTMPPushUrl()).then((json)=>{
-                                                //     var urlsList=null;
-                                                //     var pushUrl=null;
-                                                //     if(json==null){
-                                                //
-                                                //     }
-                                                //     if(json.re==1){
-                                                //         urlsList=json.json;
-                                                //         pushUrl=urlsList.rtmppushurl;
-                                                //         Bridge.raisePLStream(pushUrl);
-                                                //     }else{
-                                                //
-                                                //         alert('申请地址失败');
-                                                //         //TODO:微信分享邀请好友
-                                                //
-                                                //     }
-                                                // });
-
-
-                                                this.navigate2LiveHome()
-                                            }}>
-                                            {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                            <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-
                                     </View>
 
                                     < View style={{
@@ -596,6 +558,18 @@ class Home extends Component {
                                 justifyContent: 'center',
                                 alignItems: 'center',
                             }}>
+
+                                        <TouchableOpacity
+                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                            onPress={ ()=>{
+                                                this.navigate2LiveHome()
+                                            }}>
+                                            {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
+                                            <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
+                                            <View style={{marginTop:0,paddingTop:15}}>
+                                                <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
+                                            </View>
+                                        </TouchableOpacity>
 
                                         <TouchableOpacity
                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
@@ -613,9 +587,8 @@ class Home extends Component {
                                 <TouchableOpacity
                                     style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                     onPress={ ()=>{
-                                        //this.navigate2Statistics();
+                                        this.navigate2Statistics();
                                         //this.navigate2CoachMessage();
-                                        alert("此模块尚未开通")
                                       }}>
                                     <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
                                     <View style={{marginTop:0,paddingTop:15}}>
@@ -718,24 +691,20 @@ class Home extends Component {
     componentDidMount()
     {
         InteractionManager.runAfterInteractions(() => {
-            this.props.dispatch(fetchNewsInfo()).then((json)=>{
-                if(json.re==1)
-                {
-                    this.props.dispatch(updateNewsInfo(json.data));
-                    // this.props.dispatch(fetchGames()).then((json)=>{
-                    //     if(json.re==1){
-                    //         this.state.games = json.data;
-                    //     }
-                    //
-                    //
-                    // });
 
-                }else{
-                    if(json.re==-100){
-                        this.props.dispatch(getAccessToken(false));
-                    }
-                }
+            //通过网易新闻的接口获取新闻
+            //体育类T1348649079062
+
+            var newsKey = 'T1348649079062'
+
+            this.props.dispatch(getNewsInfo()).then((json)=>{
+
+                this.setState({
+                    news:json
+                });
+
             })
+
         });
     }
 }
@@ -770,7 +739,7 @@ const mapStateToProps = (state, ownProps) => {
     var trainerInfo=state.user.trainer
 
     const props = {
-        news:state.newsTheme.news,
+        // news:state.newsTheme.news,
         mobilePhone:mobilePhone,
         userType:parseInt(state.user.personInfo.perTypeCode),
         perName:personInfo.perName,

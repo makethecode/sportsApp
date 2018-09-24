@@ -44,7 +44,7 @@ class AboutUs extends Component{
             <View style={styles.container}>
                 <Toolbar width={width} title="关于我们" actions={[]} navigator={this.props.navigator}>
 
-                    <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',
+                    <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',
                             borderRadius:10}}>
                         <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10}} source={require('../../../img/logo.png')}/>
                        <Text style={{marginLeft:10}}>山东运动热科技有限公司</Text>
@@ -71,7 +71,7 @@ class AboutUs extends Component{
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:'#eee'
+        backgroundColor:'#fff'
     },
     popoverContent: {
         width: 100,

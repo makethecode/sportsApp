@@ -47,12 +47,28 @@ let Proxy={
                 body:params.body
             };
 
-            fetch(url,options)
-                .then((response) => response.text())
-                .then((res) => {
-                   // success(JSON.parse(res));
-                })
-                .done();
+            // fetch(url,options)
+            //     .then((response) => response.text())
+            //     .then((res) => {
+            //        //success(JSON.parse(res));
+            //         resolve(JSON.parse(res));
+            //     })
+            //     .done();
+
+            return new Promise((resolve,reject) => {
+                fetch(url,options)
+                    .then(
+                        (response) => response.text()
+                    )
+                    .then((res) => {
+                        resolve(JSON.parse(res));
+                    })
+                    .catch((err) => {
+                        reject(new Error(err));
+                        console.warn(err);
+                    }).done();
+
+            });
 
         }else{
             throw new Error('lack of url field');
@@ -179,7 +195,7 @@ let Proxy={
             var options={
                 method:params.method!==undefined&&params.method!==null?params.method:'GET',
                 headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
-                cache:'default'
+                cache:'default',
             };
             return new Promise((resolve,reject) => {
                 fetch(url,options)
@@ -223,6 +239,34 @@ let Proxy={
             throw new Error('lack of url field');
         }
 
+    },
+
+    fetchNews:(params)=>{
+        var url=params.url;
+        var newsKey = 'T1348649079062';
+        if(url!==undefined&&url!==null)
+        {
+
+            var options={
+                method:params.method!==undefined&&params.method!==null?params.method:'GET',
+                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                cache:'default',
+            };
+            return new Promise((resolve,reject) => {
+                fetch(url,options)
+                    .then((response) => response.json())
+                    .then((responseJson) => {
+                        var res=responseJson[newsKey];
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(new Error(err));
+                        console.warn(err);
+                    }).done();
+            });
+        }else{
+            throw new Error('lack of url field');
+        }
     },
 }
 module.exports=Proxy;

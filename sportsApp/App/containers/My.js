@@ -36,6 +36,8 @@ import {
     fetchMemberInformation,
     getAccessToken,
 } from '../action/UserActions';
+import MyCourseRecord from '../components/my/MyCourseRecord'
+import MyActivityRecord from '../components/my/MyActivityRecord'
 
 var {height, width} = Dimensions.get('window');
 const scaleAnimation = new ScaleAnimation();
@@ -88,8 +90,22 @@ class My extends Component{
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'MyCourses',
-                component: MyCourses,
+                name: 'MyCourseRecord',
+                component: MyCourseRecord,
+                params: {
+
+                }
+            })
+        }
+    }
+
+    //导航进我的活动
+    navigate2MyActivity(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'MyActivityRecord',
+                component: MyActivityRecord,
                 params: {
 
                 }
@@ -270,7 +286,7 @@ class My extends Component{
                         </TouchableOpacity>
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                           onPress={()=>{
-                                this.navigate2CustomCourse();
+                                this.navigate2MyActivity();
                             }}
                         >
                             <View style={{flex:1,flexDirection:'row',margin:5,
@@ -278,7 +294,7 @@ class My extends Component{
                                 <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/ding.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>我的定制</Text>
+                                <Text>我的活动</Text>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}

@@ -27,6 +27,7 @@ import { connect } from 'react-redux';
 
 import { Navigator } from 'react-native-deprecated-custom-components';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import TabNavigator from 'react-native-tab-navigator';
 import ActivityDetail from '../components/groupActivity/ActivityDetail';
 //import GroupJPush from '../components/groupActivity/GroupJPush';
@@ -83,8 +84,8 @@ class App extends Component {
                 title={route}
                 titleStyle={{color:'#C6C5CA',fontSize:13}}
                 selectedTitleStyle={{color:'#34C87A'}}
-                renderIcon={() => <Icon name={icon} size={26} color="#C6C5CA" />}
-                renderSelectedIcon={() => <Icon name={icon} size={26} color='#66CDAA' />}
+                renderIcon={() => <Ionicons name={icon} size={26} color="#C6C5CA" />}
+                renderSelectedIcon={() => <Ionicons name={icon} size={26} color='#66CDAA' />}
                 onPress={() => {
                     this.setState({ selectedTab: route });
                     this.props.dispatch(updateRootTab({tab:route}));
@@ -137,8 +138,8 @@ class App extends Component {
                 title={route}
                 titleStyle={{color:'#C6C5CA',fontSize:13}}
                 selectedTitleStyle={{color:'#34C87A'}}
-                renderIcon={() => <Icon name={icon} size={26} color="#C6C5CA" />}
-                renderSelectedIcon={() => <Icon name={icon} size={26} color='#66CDAA' />}
+                renderIcon={() => <Ionicons name={icon} size={26} color="#C6C5CA" />}
+                renderSelectedIcon={() => <Ionicons name={icon} size={26} color='#66CDAA' />}
                 onPress={() => {
                     this.setState({ selectedTab: route });
                     this.props.dispatch(updateRootTab({tab:route}));
@@ -399,10 +400,10 @@ class App extends Component {
 
 
                 <TabNavigator  tabBarStyle={defaultStyle} sceneStyle={defaultSceneStyle}>
-                    {this._createNavigatorItem('首页','home')}
-                    {this._createNavigatorItem('消息','comment-o')}
-                    {this._createNavigatorItem('发现','search')}
-                    {this._createNavigatorItem('我的','user-o')}
+                    {this._createNavigatorItem('首页','md-home')}
+                    {this._createNavigatorItem('消息','md-notifications-outline')}
+                    {this._createNavigatorItem('发现','md-search')}
+                    {this._createNavigatorItem('我的','md-person')}
                 </TabNavigator>
             );
         }else{

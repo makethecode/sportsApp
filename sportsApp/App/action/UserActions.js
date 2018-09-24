@@ -1304,6 +1304,44 @@ export let doLogin=function(username,password){
     }
 }
 
+export let doLogout=function(username){
+
+    return dispatch=> {
+
+        return new Promise((resolve, reject) => {
+            var versionName = '1';
+
+            Proxy.postes({
+                url: Config.server + '/func/auth/webLogout',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                }
+            }).then((json)=>{
+
+                if(json.errorMessageList!==null&&json.errorMessageList!==undefined&&json.errorMessageList.length>0){
+                    resolve({re:-1,data:json.errorMessageList[1]});
+
+                }else{
+                    //TODO:make a dispatch
+
+                    PreferenceStore.delete('username');
+                    PreferenceStore.delete('password');
+                    dispatch(getAccessToken(false));
+
+                    resolve(json)
+                }
+
+            }).catch((err)=> {
+                dispatch(getAccessToken(false));
+                //dispatch(setSessionId(sessionId));
+                reject(err)
+            })
+        })
+    }
+}
+
 //上传身份证
 export let uploadPersonIdCard=(path,personId)=> {
     //var personId = personId.toString();
@@ -1861,14 +1899,14 @@ export let uploadImage=(params)=>{
                     'Content-Type':'multipart/form-data',
                 },
                 body: formData,
-            },(json)=> {
+            }).then((json)=> {
                 resolve(json)
 
-            }, (err) =>{
+            }).catch((err) =>{
                 //reject(err)
-            });
-
+            })
         })
+
     }
 }
 

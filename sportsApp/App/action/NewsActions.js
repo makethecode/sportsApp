@@ -120,3 +120,31 @@ export let updateNewsInfo=(news)=>{
         })
     }
 }
+
+//获得网易新闻
+export let getNewsInfo=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+
+            Proxy.fetchNews({
+                url: 'http://c.3g.163.com/nc/article/list/T1348649079062/0-10.html',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: {
+
+                }
+            }).then((json)=>{
+
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+
+        });
+    }
+}

@@ -92,8 +92,10 @@ const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 
 var {height, width} = Dimensions.get('window');
+const server = 'http://192.168.1.103:8080/'
 
 class MyInformation extends Component{
+
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
@@ -180,13 +182,20 @@ class MyInformation extends Component{
                 coachLevel:this.props.coachLevel,
                 perIdCard:null,
                 coachBrief:null,
-                coachPhoto:null,
-                coachPhoto1:null,
-                coachPhoto2:null,
-                coachPhoto3:null,
+                coachPhoto:'',
+                coachPhoto1:'',
+                coachPhoto2:'',
+                coachPhoto3:'',
                 workcity:null,
                 university:null,
             },
+
+            coachPhotoUrl:server+'file/coach'+this.props.personId+'/1.jpg',
+            coachPhoto1Url:server+'file/coach'+this.props.personId+'/2.jpg',
+            coachPhoto2Url:server+'file/coach'+this.props.personId+'/3.jpg',
+            coachPhoto3Url:server+'file/coach'+this.props.personId+'/4.jpg',
+
+            isUpload:false,
         };
 
     }
@@ -196,17 +205,12 @@ class MyInformation extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
-        var personId = this.props.personId;
-
-        var photo = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/1.jpg';
-        var photo1 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/2.jpg';
-        var photo2 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/3.jpg';
-        var photo3 = 'http://192.168.1.103:8080/file/coach'+this.props.personId+'/4.jpg';
-
-        // var photo = Config.server+'/file/coach'+this.props.personId+'/1.jpg';
-        // var photo1 = Config.server+'/file/coach'+this.props.personId+'/2.jpg';
-        // var photo2 = Config.server+'/file/coach'+this.props.personId+'/3.jpg';
-        // var photo3 = Config.server+'/file/coach'+this.props.personId+'/4.jpg';
+        // var photo = server + this.state.member.coachPhoto;
+        // var photo1 = server + this.state.member.coachPhoto;
+        // var photo2 = server+'/file/coach'+this.props.personId+'/3.jpg';
+        // var photo3 = server+'/file/coach'+this.props.personId+'/4.jpg';
+        //
+        // var defaultCoachPhoto = Config.server+'/file/coachPhoto.jpg';
 
         return (
             <View style={styles.container}>
@@ -215,7 +219,7 @@ class MyInformation extends Component{
                              this.props.dispatch(modifyUser(this.state.member))
                                  .then((json)=>{
                                      if(json.re==1){
-                                         Alert.alert('信息','个人资料成功',[{text:'确认',onPress:()=>{
+                                         Alert.alert('信息','个人资料修改成功',[{text:'确认',onPress:()=>{
                                              this.goBack();
                                          }}]);
                                      }else{
@@ -228,7 +232,7 @@ class MyInformation extends Component{
                          >
                     <View style={{flexDirection:'column'}}>
                     <View style={{backgroundColor:'#fff'}}>
-                        <KeyboardAwareScrollView style={{height:height-120,width:width,padding:5,backgroundColor:'#fff'}}>
+                        <KeyboardAwareScrollView style={{height:height-140,width:width,backgroundColor:'#fff'}}>
 
                             <View style={{height:30,width:width,justifyContent:'center',textAlign:'left',backgroundColor:'#eee',paddingHorizontal:10}}>
                                 <Text style={{color:'#666',fontSize:13}}>基本信息</Text>
@@ -588,20 +592,20 @@ class MyInformation extends Component{
                             </View>
 
 
-                             <View style={{flexDirection:'row',borderBottomWidth:1}}>
-                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,borderColor:'#eee'}}
+                             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                                 <TouchableOpacity style={{flexDirection:'row',padding:2,paddingHorizontal:3,}}
                                                    onPress={()=>{
                                                         this.showCoachPhotoDialog();
                                               }}
                                  >
-                                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {photo==null||photo==''||photo==undefined?
+                                     <View style={{alignItems:'center',width:width*0.22,height:width*0.22}}>
+                                         {this.state.member.coachPhoto==null||this.state.member.coachPhoto==''||this.state.member.coachPhoto==undefined?
 
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
+                                                     source={require('../../../img/coachPhoto.jpg')}
                                              />:
-                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                    source={{uri:photo}}
+                                             <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22,}}
+                                                    source={{uri:this.state.coachPhotoUrl}}
                                          />
 
                                          }
@@ -614,13 +618,12 @@ class MyInformation extends Component{
                                               }}
                                  >
                                      <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {photo1==null||photo1==''||photo1==undefined?
+                                         {this.state.member.coachPhoto1==null||this.state.member.coachPhoto1==''||this.state.member.coachPhoto1==undefined?
 
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
+                                                     source={require('../../../img/coachPhoto.jpg')}/>:
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:photo1}}
+                                                     source={{uri:this.state.coachPhoto1Url}}
                                              />
 
                                          }
@@ -633,13 +636,12 @@ class MyInformation extends Component{
                                               }}
                                  >
                                      <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {photo2==null||photo2==''||photo2==undefined?
+                                         {this.state.member.coachPhoto2==null||this.state.member.coachPhoto2==''||this.state.member.coachPhoto2==undefined?
 
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
+                                                     source={require('../../../img/coachPhoto.jpg')}/>:
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:photo2}}
+                                                     source={{uri:this.state.coachPhoto2Url}}
                                              />
 
                                          }
@@ -652,13 +654,12 @@ class MyInformation extends Component{
                                               }}
                                  >
                                      <View style={{flexDirection:'row',alignItems:'center'}}>
-                                         {photo3==null||photo3==''||photo3==undefined?
+                                         {this.state.member.coachPhoto3==null||this.state.member.coachPhoto3==''||this.state.member.coachPhoto3==undefined?
 
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1516790705842&di=fa9dbc85e6ad5f3a56ffca077dbcf8fa&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fbaike%2Fw%3D268%2Fsign%3D792273edf9edab6474724ac6cf36af81%2Fa08b87d6277f9e2fda25102e1d30e924b899f380.jpg"}}
-                                             />:
+                                                     source={require('../../../img/coachPhoto.jpg')} />:
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
-                                                     source={{uri:photo3}}
+                                                     source={{uri:this.state.coachPhoto3Url}}
                                              />
 
                                          }
@@ -671,7 +672,7 @@ class MyInformation extends Component{
                     </View>
                     </View>
 
-                    {/*上传教练图片*/}
+                    {/*上传教练图片1*/}
                     <PopupDialog
                         ref={(popupDialog) => {
                         this.CoachPhotoDialog = popupDialog;
@@ -681,9 +682,8 @@ class MyInformation extends Component{
                         width={0.8}
                         height={0.45}
                     >
-
                         <CoachPhotoModal
-                            val={photo}
+                            val={this.state.coachPhotoUrl}
                             onClose={()=>{
                                 this.CoachPhotoDialog.dismiss();
                             }}
@@ -698,7 +698,10 @@ class MyInformation extends Component{
                                 this.props.dispatch(uploadImage(params))
                                     .then((json)=>{
                                         if(json.re==1){
+                                            //上传图片并将地址保存到数据库,返回member.photo对应类型的uri
+                                            //file/coach4/1.jpg
                                             alert('上传成功')
+                                            this.setState({member:Object.assign(this.state.member,{coachPhoto:json.data}),coachPhotoUrl:val})
                                         }else{
                                             if(json.re==-100){
                                                 this.props.dispatch(getAccessToken(false));
@@ -707,7 +710,120 @@ class MyInformation extends Component{
                                     })
                             }}
                         />
+                    </PopupDialog>
 
+                    {/*上传教练图片2*/}
+                    <PopupDialog
+                        ref={(popupDialog) => {
+                            this.CoachPhoto1Dialog = popupDialog;
+                        }}
+                        dialogAnimation={scaleAnimation}
+                        actions={[]}
+                        width={0.8}
+                        height={0.45}
+                    >
+                        <CoachPhotoModal
+                            val={this.state.coachPhoto1Url}
+                            onClose={()=>{
+                                this.CoachPhoto1Dialog.dismiss();
+                            }}
+                            onConfirm={(val)=>{
+
+                                let params = {
+                                    userId:this.props.personId+'',
+                                    path:val,
+                                    idx:2,
+                                }
+
+                                this.props.dispatch(uploadImage(params))
+                                    .then((json)=>{
+                                        if(json.re==1){
+                                            alert('上传成功')
+                                            this.setState({member:Object.assign(this.state.member,{coachPhoto1:json.data}),coachPhoto1Url:val})
+                                        }else{
+                                            if(json.re==-100){
+                                                this.props.dispatch(getAccessToken(false));
+                                            }
+                                        }
+                                    })
+                            }}
+                        />
+                    </PopupDialog>
+
+                    {/*上传教练图片3*/}
+                    <PopupDialog
+                        ref={(popupDialog) => {
+                            this.CoachPhoto2Dialog = popupDialog;
+                        }}
+                        dialogAnimation={scaleAnimation}
+                        actions={[]}
+                        width={0.8}
+                        height={0.45}
+                    >
+                        <CoachPhotoModal
+                            val={this.state.coachPhoto21Url}
+                            onClose={()=>{
+                                this.CoachPhoto2Dialog.dismiss();
+                            }}
+                            onConfirm={(val)=>{
+
+                                let params = {
+                                    userId:this.props.personId+'',
+                                    path:val,
+                                    idx:3,
+                                }
+
+                                this.props.dispatch(uploadImage(params))
+                                    .then((json)=>{
+                                        if(json.re==1){
+                                            alert('上传成功')
+                                            this.setState({member:Object.assign(this.state.member,{coachPhoto2:json.data}),coachPhoto2Url:val})
+                                        }else{
+                                            if(json.re==-100){
+                                                this.props.dispatch(getAccessToken(false));
+                                            }
+                                        }
+                                    })
+                            }}
+                        />
+                    </PopupDialog>
+
+                    {/*上传教练图片2*/}
+                    <PopupDialog
+                        ref={(popupDialog) => {
+                            this.CoachPhoto3Dialog = popupDialog;
+                        }}
+                        dialogAnimation={scaleAnimation}
+                        actions={[]}
+                        width={0.8}
+                        height={0.45}
+                    >
+                        <CoachPhotoModal
+                            val={this.state.coachPhoto31Url}
+                            onClose={()=>{
+                                this.CoachPhoto3Dialog.dismiss();
+                            }}
+                            onConfirm={(val)=>{
+
+                                let params = {
+                                    userId:this.props.personId+'',
+                                    path:val,
+                                    idx:4,
+                                }
+
+                                this.props.dispatch(uploadImage(params))
+                                    .then((json)=>{
+                                        if(json.re==1){
+                                            alert('上传成功')
+                                            this.setState({member:Object.assign(this.state.member,{coachPhoto3:json.data}),coachPhoto3Url:val})
+                                        }else{
+                                            if(json.re==-100){
+                                                this.props.dispatch(getAccessToken(false));
+                                            }
+                                        }
+                                    })
+                            }}
+                        />
                     </PopupDialog>
 
                 </Toolbar>
@@ -726,6 +842,11 @@ class MyInformation extends Component{
                 this.props.dispatch(getAccessToken(false));
             }
             this.setState({member:json.data})
+            this.setState({coachPhotoUrl:server + this.state.member.coachPhoto,
+                           coachPhoto1Url:server + this.state.member.coachPhoto1,
+                           coachPhoto2Url:server + this.state.member.coachPhoto2,
+                           coachPhoto3Url:server+this.state.member.coachPhoto3})
+
         }).catch((e)=>{
             alert(e)
         });
@@ -782,10 +903,6 @@ const mapStateToProps = (state, ownProps) => {
         university:trainerInfo.university,
         coachLevel:trainerInfo.coachLevel,
         coachBrief:trainerInfo.brief,
-        coachPhoto:trainerInfo.attachId,
-        coachPhoto1:trainerInfo.attachId1,
-        coachPhoto2:trainerInfo.attachId2,
-        coachPhoto3:trainerInfo.attachId3,
     }
 
     if(trainerInfo)

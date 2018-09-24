@@ -115,8 +115,6 @@ class CoachPhotoModal extends Component{
     }
 
     render(){
-
-
         return (
 
             <View style={styles.container}>
@@ -140,7 +138,7 @@ class CoachPhotoModal extends Component{
                                           this.showImagePicker()
                                     }}>
                                 <Image resizeMode="stretch" style={{height:height*0.25,width:height*0.25,}}
-                                       source={require('../../../../img/portrait.jpg')}/>
+                                       source={require('../../../../img/coachPhoto.jpg')}/>
                             </TouchableOpacity>
                     }
                 </View>

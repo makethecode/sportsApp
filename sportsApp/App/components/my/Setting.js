@@ -21,11 +21,20 @@ import {
 import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
-var {height, width} = Dimensions.get('window');
 import PreferenceStore from '../../utils/PreferenceStore';
 import AboutUs from './AboutUs';
+import {
+    PAGE_LOGIN,
+} from '../../constants/PageStateConstants';
+import {
+    updatePageState
+} from '../../action/PageStateActions';
+import {
+    doLogin,doGetType,getAccessToken,wechatregisterUser,wechatGetOpenid,wechatGetUserInfo,doLogout,
+} from '../../action/UserActions';
+
+var {height, width} = Dimensions.get('window');
 
 class Setting extends Component{
     goBack(){
@@ -84,13 +93,22 @@ class Setting extends Component{
                         {/*退出*/}
                         <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
                                           onPress={()=>{
-                                               BackAndroid.exitApp();
-                                               PreferenceStore.delete('username');
-                                               PreferenceStore.delete('password');
+                                              // BackAndroid.exitApp();
+                                              // PreferenceStore.delete('username');
+                                              // PreferenceStore.delete('password');
+
+                                              this.props.dispatch(doLogout())
+                                                  .then((json)=>{
+                                                      this.navigate2Login()
+                                                  })
+                                                  .catch((e)=>{
+                                                      alert(e);
+                                                  })
+
                                               }}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                                 <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
-                                    退出
+                                    切换用户
                                 </Text>
                             </View>
                         </TouchableOpacity>
@@ -101,6 +119,11 @@ class Setting extends Component{
                 </Toolbar>
             </View>
         )
+    }
+
+    navigate2Login() {
+        //TODO:dispatch a action
+        this.props.dispatch(updatePageState({state: PAGE_LOGIN}))
     }
 }
 

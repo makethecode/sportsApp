@@ -222,7 +222,7 @@ export let fetchActivityList=()=>{
 
                         activityList.map((activity,i)=>{
 
-                            if(activity.idCreator==userid){
+                            if(activity.idcreator==userid){
                                 myEvents.push(activity);
                             }
                         });
