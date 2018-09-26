@@ -578,12 +578,7 @@ export let fetchMyGroupList=()=>{
             }).then((json)=>{
                 if (json.re == 1) {
                     myGroupList = json.data;
-
-                    if (myGroupList !== undefined && myGroupList !== null &&myGroupList.length > 0) {
-                        dispatch(setMyGroupList(myGroupList));
-                        dispatch(disableMyGroupOnFresh());
-                        resolve({re:1,data:myGroupList});
-                    }
+                    resolve({re:1,data:myGroupList});
                 }else{
                     if(json.re==-100){
                         resolve(json);
@@ -618,23 +613,10 @@ export let fetchAllGroupList=()=>{
             }).then((json)=>{
                 if (json.re == 1) {
                     allGroupList = json.data;
-                    //
-                    // if (allGroupList!== undefined && allGroupList !== null &&allGroupList.length > 0) {
-                    //
-                    //     var groupList = [];
-                    //     allGroupList.map((group)=>{
-                    //         var flag = 0;
-                    //         group.memberList.map((member)=>{
-                    //             if(member.personId==state.user.personInfo.personId)
-                    //                 flag++;
-                    //         });
-                    //         if(flag==0){
-                    //             groupList.push(group);
-                    //         }
-                    //     })
+
                         dispatch(setAllGroupList(allGroupList));
                         dispatch(disableAllGroupOnFresh());
-                        resolve({re:1});
+                        resolve({re:1,data:allGroupList});
                     //}
                 }else{
                     if(json.re==-100){
@@ -664,9 +646,7 @@ export let joinGroup=(groupId)=>{
                     'Content-Type': 'application/json',
                 },
                 body: {
-
                         groupId:parseInt(groupId)
-
                 }
             }).then((json)=>{
                 if (json.re == 1) {
@@ -759,7 +739,6 @@ export let fetchEventMemberList=(eventId)=>{
             Proxy.postes({
                 url: Config.server + '/func/node/fetchEventMemberList',
                 headers: {
-
                     'Content-Type': 'application/json',
                 },
                 body: {
@@ -777,7 +756,7 @@ export let fetchEventMemberList=(eventId)=>{
 }
 
 //获取群组成员
-export let fetchGroupMemberList=(group)=>{
+export let fetchGroupMemberList=(groupId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
@@ -787,7 +766,31 @@ export let fetchGroupMemberList=(group)=>{
                     'Content-Type': 'application/json',
                 },
                 body: {
-                    groupId:parseInt(group.groupId)
+                    groupId:parseInt(groupId)
+
+                }
+            }).then((json)=>{
+                resolve(json)
+            }).catch((e)=>{
+                alert(e)
+            })
+
+        });
+    }
+}
+
+//获取群组成员2
+export let fetchGroupMemberFormList=(groupId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchGroupMemberFormList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    groupId:groupId
 
                 }
             }).then((json)=>{

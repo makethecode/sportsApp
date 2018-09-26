@@ -70,7 +70,7 @@ class Notice extends Component{
 
     renderRow(rowData,sectionId,rowId){
         var row=(
-            <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,borderBottomWidth:1,borderBottomColor:'#aaa'}}>
+            <View style={{flex:1,backgroundColor:'#eee',marginTop:3,borderBottomWidth:1,borderBottomColor:'#aaa'}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
 
                     {/*<TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
@@ -83,7 +83,7 @@ class Notice extends Component{
                     </TouchableOpacity>*/}
                 </View>
 
-                <View style={{flex:3,padding:10}}>
+                <View style={{flex:3,padding:5,backgroundColor:'#fff'}}>
 
                     <View style={{flexDirection:'row',marginBottom:3}}>
                         <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
@@ -100,6 +100,15 @@ class Notice extends Component{
                         </View>
                         <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
                             {'消息题目：'+rowData.title}
+                        </Text>
+                    </View>
+
+                    <View style={{flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
+                            <Icon name={'circle'} size={10} color="#aaa"/>
+                        </View>
+                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
+                            {'消息内容：'+rowData.contents}
                         </Text>
                     </View>
 

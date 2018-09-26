@@ -12,19 +12,23 @@ import {
     RefreshControl,
     Animated,
     Easing,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GridView from 'react-native-grid-view';
 import GroupMemberModal from './GroupMemberModal';
 import {
-   searchMember,deleteGroup,exitGroup
+   searchMember,deleteGroup,exitGroup,fetchGroupMemberList,joinGroup,enableMyGroupOnFresh
 } from '../../action/ActivityActions';
 import {getAccessToken,} from '../../action/UserActions';
+import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import MemberInformation from '../course/MemberInformation';
+
+var {height, width} = Dimensions.get('window');
 
 class GroupDetail extends Component{
 
@@ -35,33 +39,62 @@ class GroupDetail extends Component{
         }
     }
 
+    navigate2MemberInformation(personId){
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'MemberInformation',
+                component: MemberInformation,
+                params: {
+                    personId:personId,
+                }
+            })
+        }
+    }
+
     renderRow(rowData)
     {
+  //      if(rowData.addNewOne==true && this.props.personInfo.personId == this.props.groupInfo.groupManagerId)
         if(rowData.addNewOne==true)
         {
             return  (
-                <View>
-                    <TouchableOpacity style={{height:50,width:50,borderRadius:10,borderWidth:1,borderColor:'#ddd',margin:5,
-                justifyContent:'center',alignItems: 'center'}}
+                <View style={{alignItems:'center',justifyContent:'center',margin:5}}>
+                    <TouchableOpacity style={{height:50,width:50,justifyContent:'center',alignItems: 'center',borderWidth:2,borderColor:'#ddd',borderRadius:25}}
                                       onPress={()=>{
-                        this.setState({modalVisible:true});
+                                          //this.setState({modalVisible:true});
+                                          //添加群成员
                 }}>
-                        <Ionicons name='md-add' size={26} color="#ddd"/>
+                        <Ionicons name='md-add' size={30} color="#ddd"/>
                     </TouchableOpacity>
-                    <View>
-                        <Text> </Text>
+                    <View style={{width:60,alignItems:'center',justifyContent:'center'}}>
+                        <Text style={{numberOfLines:1,fontSize:12,color:'#666'}}> </Text>
                     </View>
                 </View>
 
             );
         }else{
             return  (
-                <View>
-                    <View style={{height:50,width:50,borderRadius:10,borderWidth:1,borderColor:'#eee',margin:5}}>
-                        <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10,}} source={rowData.portrait}/>
-                    </View>
-                    <View>
-                        <Text numberOfLines={1}>{rowData}</Text>
+                <View style={{alignItems:'center',justifyContent:'center',margin:5}}>
+                    {
+                        rowData.avatar ==''?
+                            <TouchableOpacity style={{height:60,width:60,alignItems:'center',justifyContent:'center'}}
+                                              onPress={()=>{
+                                                  //成员信息
+                                                  //this.navigate2MemberInformation(rowData.personId);
+                                              }}>
+                                <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:25,}} source={require('../../../img/portrait.jpg')}/>
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity style={{height:60,width:60,alignItems:'center',justifyContent:'center'}}
+                                  onPress={()=>{
+                                      //成员信息
+                                      //this.navigate2MemberInformation(rowData.personId);
+                                  }}>
+                                 <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:25,}} source={{uri:rowData.avatar}}/>
+                            </TouchableOpacity>
+                    }
+                    <View style={{width:60,alignItems:'center',justifyContent:'center'}}>
+                        <Text style={{numberOfLines:1,fontSize:12,color:'#666'}}>{rowData.name.substring(0,4)}</Text>
                     </View>
                 </View>
             );
@@ -87,13 +120,11 @@ class GroupDetail extends Component{
     {
         this.props.dispatch(deleteGroup(groupId)).then((json)=>{
             if(json.re==1){
-                alert('删除成功');
+                Alert.alert('成功','删除成功');
                 this.props.setMyGroupList();
                 this.goBack();
             }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-                }
+                Alert.alert('失败','删除失败');
             }
         });
 
@@ -103,20 +134,36 @@ class GroupDetail extends Component{
     {
         this.props.dispatch(exitGroup(group)).then((json)=>{
             if(json.re==1){
-                alert('退群成功');
+                Alert.alert('成功','退群成功');
                 this.props.setMyGroupList();
                 this.goBack();
             }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-                }
+                Alert.alert('失败','退群失败');
             }
         });
     }
 
+    joinGroup(groupId)
+    {
+        this.props.dispatch(joinGroup(groupId)).then((json)=> {
+            if(json.re==1){
+                Alert.alert('成功','加入成功');
+                this.setMyGroupList();
+                this.goBack();
+            }else{
+                Alert.alert('失败','您已加入')
+            }
+        }).catch((e)=>{
+            alert(e)
+        });
+    }
+
+    setMyGroupList(){
+        this.props.dispatch(enableMyGroupOnFresh());
+    }
+
     constructor(props) {
         super(props);
-        var memberList = this.props.memberList;
         this.state={
             modalVisible:false,
             doingFetch: false,
@@ -124,117 +171,120 @@ class GroupDetail extends Component{
             fadeAnim: new Animated.Value(1),
             groupInfo:this.props.groupInfo,
             member:null,
-            memberList:memberList,
+            memberList:null,
         }
     }
 
     render() {
 
-        var memberList = this.state.memberList;
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        var dataSource=ds.cloneWithRows(memberList);
+        var membergridView = null;
+
+        if(this.state.memberList!=null && this.state.memberList.length>0) {
+
+            var memberList = this.state.memberList;
+            var dataSource = memberList;
+            membergridView = (
+            <GridView
+                items={dataSource}
+                itemsPerRow={5}
+                renderItem={this.renderRow}
+                style={styles.listView}
+            />
+            );
+
+        }
+
+
         var flag = this.props.flag;
         var {personInfo}=this.props;
 
         return (
             <View style={{flex:1, backgroundColor:'#eee',}}>
 
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',
-                    backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>{this.state.groupInfo.groupName}</Text>
-                    </View>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
-                    </TouchableOpacity>
-                </View>
+                <Toolbar width={width}  title="群组详情" navigator={this.props.navigator}
+                         actions={[]}
+                         onPress={(i)=>{
+                             this.goBack()
+                         }}>
 
                 <ScrollView style={{width:width,height:height,backgroundColor:'#eee',}}>
                     <View style={{flex:1,backgroundColor:'#eee',marginBottom:5}}>
-                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:10}}>
-                            <View style={{justifyContent:'center',alignItems: 'center',}}>
+                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff'}}>
+                            <View style={{justifyContent:'center',alignItems: 'center',padding:10}}>
                                 <Text>群成员</Text>
                             </View>
-                            <TouchableOpacity style={{marginLeft:10,justifyContent:'center',alignItems: 'center',}}
-                                              onPress={()=>{this.setState({ modalVisible:true,})}}>
-                                <Icon name={'plus-square-o'} size={20} color="#888"/>
-                            </TouchableOpacity>
                         </View>
-                        <View style={{backgroundColor:'#fff',padding:10}}>
-                            <GridView
-                                items={dataSource}
-                                itemsPerRow={5}
-                                renderItem={this.renderRow.bind(this)}
-                                style={styles.listView}
-                            />
+                        <View style={{backgroundColor:'#fff',paddingHorizontal:10,paddingVertical:5}}>
+                            {membergridView}
                         </View>
                     </View>
 
-                    <View style={{flex:1,backgroundColor:'#fff',padding:5,paddingBottom:0}}>
-                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:5,justifyContent:'center',alignItems: 'center',
+                    <View style={{flex:1,backgroundColor:'#fff',paddingHorizontal:5}}>
+                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:12,justifyContent:'center',alignItems: 'center',
                                       borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:2}}>
-                                <Text>群组名称:</Text>
+                                <Text>群组名称</Text>
                             </View>
-                            <View style={{flex:4,}}>
-                                <Text>{this.state.groupInfo.groupName}</Text>
-                            </View>
-                            <View style={{flex:1,}}>
-                                <Icon name={'angle-right'} size={25} color="#aaa"/>
+                            <View style={{flex:4,textAlign:'right',alignItems:'flex-end'}}>
+                                <Text style={{color:'#444'}}>{this.state.groupInfo.groupName}</Text>
                             </View>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:5,justifyContent:'center',alignItems: 'center',
+                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:12,justifyContent:'center',alignItems: 'center',
                                       borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:2}}>
-                                <Text>群号:</Text>
+                                <Text>群号</Text>
                             </View>
-                            <View style={{flex:4,}}>
-                                <Text>{this.state.groupInfo.groupNum}</Text>
-                            </View>
-                            <View style={{flex:1,}}>
-                                <Icon name={'angle-right'} size={25} color="#aaa"/>
+                            <View style={{flex:4,textAlign:'right',alignItems:'flex-end'}}>
+                                <Text style={{color:'#444'}}>{this.state.groupInfo.groupNum}</Text>
                             </View>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:5,justifyContent:'center',alignItems: 'center',
+                        <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',padding:12,justifyContent:'center',alignItems: 'center',
                          borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:2}}>
-                                <Text>群简介:</Text>
+                                <Text>群简介</Text>
                             </View>
-                            <View style={{flex:4,}}>
-                                <Text>{this.state.groupInfo.groupBrief}</Text>
-                            </View>
-                            <View style={{flex:1,}}>
-                                <Icon name={'angle-right'} size={25} color="#aaa"/>
+                            <View style={{flex:4,textAlign:'right',alignItems:'flex-end'}}>
+                                <Text style={{color:'#444'}}>{this.state.groupInfo.groupBrief}</Text>
                             </View>
                         </View>
                     </View>
 
                     {
-
-                        (flag=='我的组详情'&&this.props.groupInfo.groupManager==personInfo.personId)?
-                    <TouchableOpacity style={{height:30,backgroundColor:'#EE6A50',margin:20,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
+                        (flag=='我的组详情'&&this.state.groupInfo.groupManagerId==personInfo.personId)?
+                            <View style={{alignItems:'center',justifyContent:'center'}}>
+                    <TouchableOpacity style={{height:40,width:200,backgroundColor:'#EE6A50',margin:20,justifyContent:'center',alignItems: 'center'}}
                                       onPress={()=>{
                                             this.deleteGroup(this.props.groupInfo.groupId);
                                       }}>
-                        <Text style={{color:'#fff',fontSize:15}}>删除并退出</Text>
-                    </TouchableOpacity>:null
-
+                        <Text style={{color:'#fff',fontSize:15}}>删除群组</Text>
+                    </TouchableOpacity></View>:null
                     }
 
                     {
-                        (flag=='我的组详情'&&this.props.groupInfo.groupManager!==personInfo.personId)?
-                            <TouchableOpacity style={{height:30,backgroundColor:'#EE6A50',margin:20,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
+                        (flag=='我的组详情'&&this.state.groupInfo.groupManagerId!==personInfo.personId)?
+                            <View style={{alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity style={{height:40,width:200,backgroundColor:'#EE6A50',margin:20,justifyContent:'center',alignItems: 'center'}}
                                               onPress={()=>{
                                                   this.exitGroup(this.props.groupInfo);
                                       }}>
-                                <Text style={{color:'#fff',fontSize:15}}>退出</Text>
-                            </TouchableOpacity>:null
+                                <Text style={{color:'#fff',fontSize:15}}>退出群组</Text>
+                            </TouchableOpacity></View>:null
+                    }
 
+                    {
+                        (flag=='其他组详情'&&this.state.groupInfo.groupManagerId!==personInfo.personId)?
+                            <View style={{alignItems:'center',justifyContent:'center'}}>
+                            <TouchableOpacity style={{height:40,width:200,backgroundColor:'#66CDAA',margin:20,justifyContent:'center',alignItems: 'center'}}
+                                              onPress={()=>{
+                                                  if(this.props.groupInfo.groupMaxMemNum==this.props.groupInfo.groupNowMemNum)
+                                                      alert("人数已满")
+                                                  else
+                                                  this.joinGroup(this.props.groupInfo.groupId);
+                                              }}>
+                                <Text style={{color:'#fff',fontSize:15}}>加入群组</Text>
+                            </TouchableOpacity></View>:null
                     }
 
 
@@ -271,22 +321,34 @@ class GroupDetail extends Component{
 
                 </Modal>
 
-
+                </Toolbar>
             </View>
         );
+    }
+
+    componentDidMount(){
+        this.props.dispatch(fetchGroupMemberList(this.props.groupInfo.groupId))
+            .then((json)=> {
+
+                var memberList = json.data;
+                this.setState({memberList:memberList})
+
+            }).catch((e)=>{
+            alert(e)
+        });
     }
 
 }
 
 var styles = StyleSheet.create({
-
+    listView: {
+        backgroundColor: '#fff',
+    },
 
 });
 
 module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
-        groupList:state.activity.groupList,
-        groupOnFresh:state.activity.groupOnFresh
     })
 )(GroupDetail);

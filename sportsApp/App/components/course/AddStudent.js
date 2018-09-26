@@ -20,7 +20,6 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -31,10 +30,6 @@ import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-
 import ActionSheet from 'react-native-actionsheet';
 import SelectVenue from '../../components/venue/SelectVenue';
 import SelectCoach from './SelectCoach';
-const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
-const scaleAnimation = new ScaleAnimation();
-const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
-
 import{
     distributeCourse,
     enableCoursesOfCoachOnFresh,
@@ -45,6 +40,11 @@ import{
 import {getAccessToken,} from '../../action/UserActions';
 import DatePicker from 'react-native-datepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
+const scaleAnimation = new ScaleAnimation();
+const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
+var {height, width} = Dimensions.get('window');
 
 class AddStudent extends Component{
 
@@ -158,19 +158,11 @@ class AddStudent extends Component{
 
         return (
             <KeyboardAvoidingView style={{flex:1}} behavior="padding">
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>增加学员</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
-
-                    </View>
-                </View>
+                <Toolbar width={width}  title="增加学员" navigator={this.props.navigator}
+                         actions={[]}
+                         onPress={(i)=>{
+                             this.goBack()
+                         }}>
                 <KeyboardAwareScrollView style={{height:height-200,width:width,backgroundColor:'#fff',padding:5}}>
                 <View style={{flex:5,backgroundColor:'#fff'}}>
 
@@ -450,7 +442,7 @@ class AddStudent extends Component{
 
                     </View>
                 </KeyboardAwareScrollView>
-
+                </Toolbar>
             </KeyboardAvoidingView>
         );
     }

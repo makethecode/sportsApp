@@ -11,22 +11,23 @@ import {
     TouchableOpacity,
     RefreshControl,
     Animated,
-    Easing
+    Easing,
+    InteractionManager
 } from 'react-native';
-
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import TextInputWrapper from 'react-native-text-input-wrapper';
 import GroupDetail from './GroupDetail';
 import {
-    fetchAllGroupList,disableAllGroupOnFresh,joinGroup,fetchGroupMemberList
+    fetchAllGroupList,disableAllGroupOnFresh,joinGroup,fetchGroupMemberList,enableMyGroupOnFresh
 } from '../../action/ActivityActions';
-
 import {
     getAccessToken,
 } from '../../action/UserActions';
+import { SearchBar } from 'react-native-elements'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+
+var {height, width} = Dimensions.get('window');
 
 class AllGroup extends Component{
 
@@ -37,32 +38,8 @@ class AllGroup extends Component{
         }
     }
 
-    _onRefresh() {
-        this.setState({ isRefreshing: true, fadeAnim: new Animated.Value(0) });
-        setTimeout(function () {
-            this.setState({
-                isRefreshing: false,
-            });
-            Animated.timing(          // Uses easing functions
-                this.state.fadeAnim,    // The value to drive
-                {
-                    toValue: 1,
-                    duration: 600,
-                    easing: Easing.bounce
-                },           // Configuration
-            ).start();
-        }.bind(this), 500);
-
-        this.props.dispatch(enableAllGroupOnFresh());
-
-    }
-
-    navigate2GroupDetail(group){
-
-        this.props.dispatch(fetchGroupMemberList(group))
-            .then((json)=> {
-                if (json.re == 1) {
-                    var memberList = json.data;
+    navigate2GroupDetail(group)
+    {
                     const { navigator } = this.props;
                     if(navigator) {
                         navigator.push({
@@ -70,46 +47,11 @@ class AllGroup extends Component{
                             component: GroupDetail,
                             params: {
                                 groupInfo:group,
-                                memberList:memberList,
+                                // memberList:this.state.memberList,
                                 flag:'其他组详情'
                             }
                         })
                     }
-                }else{
-                    if(json.re==-100){
-                        this.props.dispatch(getAccessToken(false));
-                    }
-                }
-            })
-
-    }
-
-    renderRow(rowData,sectionId,rowId){
-
-        var row=(
-            <TouchableOpacity style={{flex:1,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:10}}
-                              onPress={()=>{
-                    this.navigate2GroupDetail(rowData);
-                }}>
-                <View style={{flex:1,}}>
-                    <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
-                </View>
-                <View style={{flex:3,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                    <Text style={{color:'#343434'}}>{rowData.groupName}</Text>
-                    <Text style={{color:'#343434'}}>({rowData.groupNowMember})</Text>
-                </View>
-                <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
-
-                </View>
-                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',margin:10,borderWidth:1,borderColor:'#66CDAA',borderRadius:5}}
-                                  onPress={()=>{
-                                      this.joinGroup(rowData.groupId);
-                }}>
-                    <Text style={{color:'#66CDAA',fontSize:12,}}>加入</Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-        return row;
     }
 
     joinGroup(groupId)
@@ -117,7 +59,7 @@ class AllGroup extends Component{
         this.props.dispatch(joinGroup(groupId)).then((json)=> {
            if(json.re==1){
                alert('加入成功！');
-               this.props.setMyGroupList();
+               this.setMyGroupList();
                this.goBack();
            }else{
                if(json.re==-100){
@@ -130,134 +72,142 @@ class AllGroup extends Component{
 
     }
 
-    fetchData(){
-        this.state.doingFetch=true;
-        this.state.isRefreshing=true;
-        this.props.dispatch(fetchAllGroupList()).then((json)=> {
-            if(json.re==-100){
-                this.props.dispatch(getAccessToken(false));
-            }else{
-                this.props.dispatch(disableAllGroupOnFresh());
-                this.setState({doingFetch:false,isRefreshing:false})
-            }
-        }).catch((e)=>{
-            this.props.dispatch(disableAllGroupOnFresh());
-            this.setState({doingFetch:false,isRefreshing:false});
-            alert(e)
-        });
-    }
-
-
     constructor(props) {
         super(props);
         this.state={
-            groupName:null,
-            doingFetch: false,
-            isRefreshing: false,
-            fadeAnim: new Animated.Value(1),
+            groups:null,
+            allGroups:null,
 
+            memberList:null,
         }
     }
 
     render() {
 
-        var groupListView=null;
-        var {allGroupList,allGroupOnFresh}=this.props;
+        var groupList = [];
+        var {groups}=this.state;
 
-        if(allGroupOnFresh==true)
+        if(groups&&groups.length>0)
         {
-            if(this.state.doingFetch==false)
-                this.fetchData();
-        }else {
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            if (allGroupList !== undefined && allGroupList !== null && allGroupList.length > 0) {
 
-                groupListView = (
-                    <ListView
-                        automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(allGroupList)}
-                        renderRow={this.renderRow.bind(this)}
-                    />
-                );
-            }
+            groups.map((group,i)=>{
+
+                groupList.push(
+
+                    <TouchableOpacity key={i} style={{flexDirection:'column'}}
+                                      onPress={()=>{
+                                          this.navigate2GroupDetail(group);
+                                      }}>
+
+                        <View style={{ padding: 8,paddingHorizontal:3,flexDirection:'row'}}>
+                            {
+                                group.avatar==""?
+                                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Image resizeMode="contain" style={{height: 40, width: 40, borderRadius: 20} }
+                                               source={require('../../../img/groupIcon.png')}/>
+                                    </View>
+                                    :
+                                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Image resizeMode="contain" style={{height: 40, width: 40, borderRadius: 20} }
+                                           source={{uri: group.avatar}}/>
+                                </View>
+                            }
+                            <View style={{flex:3,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
+                                <Text style={{ color: '#222', fontSize: 16,marginBottom:6}}>{group.groupName}</Text>
+                                <Text style={{ color: '#666', fontSize: 12,marginBottom:3}}>群主：{group.groupManagerLoginName}</Text>
+                                <Text style={{ color: '#666', fontSize: 12}}>简介：{group.groupBrief}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{height:0.7,width:width,backgroundColor:'#c2c2c2'}}></View>
+
+                    </TouchableOpacity>
+                )
+            })
+
         }
 
         return (
-            <View style={{flex:1, backgroundColor:'#eee',}}>
-
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',
-                    backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>所有群组</Text>
+            <View style={styles.container}>
+                <Toolbar width={width}  title="群组列表" navigator={this.props.navigator}
+                         actions={[]}
+                         onPress={(i)=>{
+                             this.goBack()
+                         }}>
+                    <SearchBar
+                        lightTheme
+                        onChangeText={
+                            //模糊查询
+                            (text)=>{
+                                this.searchByText(text)
+                            }
+                        }
+                        placeholder='群名' />
+                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#888',fontSize:13}}>群组名单</Text>
                     </View>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
+                    <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
 
-                    </TouchableOpacity>
-                </View>
-
-                {/*//搜索框*/}
-                <View style={{flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:8,padding:5,borderRadius:8}}>
-                    <TextInputWrapper
-                        style={{fontSize:13}}
-                        onConfirm={()=>{alert('ccc');}}
-                        search={true}
-                        onChangeText={(groupName) => {
-                                      this.setState({groupName:groupName});
-                                    }}
-                        value={this.state.groupName==null?'':this.state.groupName}
-                        placeholder='搜索群组'
-                        placeholderTextColor="#aaa"
-                        underlineColorAndroid="transparent"
-                        onCancel={
-                           ()=>{this.setState({groupName:''});}
-                        }
-                    />
-                </View>
-
-                <View style={{backgroundColor:'#eee',padding:5}}>
-                    <Text style={{color:'#343434'}}>全部群组(4)</Text>
-                </View>
-
-                <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,borderTopWidth:1,borderColor:'#eee'}}>
-                    <ScrollView
-                        refreshControl={
-                                     <RefreshControl
-                                         refreshing={this.state.isRefreshing}
-                                         onRefresh={this._onRefresh.bind(this)}
-                                         tintColor="#9c0c13"
-                                         title="刷新..."
-                                         titleColor="#9c0c13"
-                                         colors={['#ff0000', '#00ff00', '#0000ff']}
-                                         progressBackgroundColor="#ffff00"
-                                     />
-                                    }
-                    >
-
-                        {
-                            groupListView==null?
-                                <View style={{justifyContent:'center',alignItems: 'center',marginTop:20}}>
-                                    <Text style={{color:'#343434'}}>还没有已创建的群组</Text>
-                                </View> :
-                               null
-                        }
-
-                        {groupListView}
+                        <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff' }}>
+                            {groupList}
+                        </Animated.View>
 
                     </ScrollView>
-                </Animated.View>
+
+                </Toolbar>
             </View>
-        );
+        )
+
+    }
+
+    searchByText(text){
+
+        //前端实现模糊查询
+
+        if(text==null || text=='')
+        {
+            var groups = this.state.allGroups;
+            this.setState({groups:groups})
+        }
+        else {
+            var groups = this.state.allGroups;
+            var groupList = [];
+
+            if (groups && groups.length > 0) {
+                groups.map((group, i) => {
+                    if (group.groupName) {
+                        if (group.groupName.indexOf(text) != -1)
+                            groupList.push(group)
+                    }
+                })
+            }
+
+            this.setState({groups: groupList})
+        }
+    }
+
+
+    componentDidMount()
+    {
+        InteractionManager.runAfterInteractions(() => {
+
+            this.props.dispatch(fetchAllGroupList()).then((json)=> {
+
+                this.setState({groups:json.data,allGroups:json.data})
+
+            }).catch((e)=>{
+                alert(e)
+            });
+
+        });
     }
 
 }
 
 var styles = StyleSheet.create({
-
-
+    container: {
+        flex: 1,
+    },
 });
 
 module.exports = connect(state=>({

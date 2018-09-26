@@ -21,7 +21,6 @@ export let fetchNotices=()=>{
                 url: Config.server + '/func/notices/getNoticesInfo',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
                 },
                 body: {
 
