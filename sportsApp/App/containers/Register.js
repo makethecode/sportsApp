@@ -276,29 +276,21 @@ class Register extends Component {
 
         return (
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <View style={{
-                    height: 55,
-                    width: width,
-                    paddingTop: 20,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#66CDAA',
-                    borderBottomWidth: 1,
-                    borderColor: '#ddd'
-                }}>
-                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}
-                                      onPress={() => {
-                                          this.navigate2Login();
+
+                <View style={styles.defaultStyle1}>
+                    <TouchableOpacity style={{width:60,justifyContent:'center',alignItems: 'center',}}
+                                      onPress={()=>{
+                                          this.navigate2Login()
                                       }}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
+                                <Ionicons name={'md-arrow-back'} size={25} color="#fff"/>
                     </TouchableOpacity>
-                    <View style={{flex: 3, justifyContent: 'center', alignItems: 'center',}}>
-                        <Text style={{color: '#fff', fontSize: 18}}>注册</Text>
+                    <View style={{flex:3,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                        <Text style={{color:'#fff',fontSize:18}}>
+                            注册
+                        </Text>
                     </View>
-                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
-                        {/*<Text style={{color:'#fff',fontSize:15}}>下一步</Text>*/}
-                    </TouchableOpacity>
+                    <View style={{flex:1}}>
+                    </View>
                 </View>
 
                 <View style={{ flex: 1 }}>
@@ -312,7 +304,7 @@ class Register extends Component {
                     {/*用户名*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*用户名：</Text>
+                            <Text>*用户名</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -335,7 +327,7 @@ class Register extends Component {
                     {/*密码*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*密码：</Text>
+                            <Text>*密码</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -358,7 +350,7 @@ class Register extends Component {
                     {/*姓名*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*姓名：</Text>
+                            <Text>*姓名</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -381,7 +373,7 @@ class Register extends Component {
                     {/*性别*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*性别：</Text>
+                            <Text>*性别</Text>
                         </View>
                         <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}
@@ -396,8 +388,8 @@ class Register extends Component {
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            <View style={{width:60,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',marginRight:10}}>
+                                <Icon name={'angle-right'} size={30} color="#888"/>
                             </View>
                             <ActionSheet
                                 ref={(p) => {
@@ -417,7 +409,7 @@ class Register extends Component {
                     {/*出生日期*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*出生日期：</Text>
+                            <Text>*出生日期</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -447,7 +439,7 @@ class Register extends Component {
                                     confirmBtnText="确认"
                                     cancelBtnText="取消"
                                     showIcon={true}
-                                    iconComponent={<Icon name={'calendar'} size={30} color="#888"/>}
+                                    iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
                                     onDateChange={(date) => {
                                         this.setState({info:Object.assign(this.state.info,{birthday:date})})
                                     }}
@@ -459,7 +451,7 @@ class Register extends Component {
                     {/*手机号*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*手机号：</Text>
+                            <Text>*手机号</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -482,7 +474,7 @@ class Register extends Component {
                     {/*身份证号*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*身份证号：</Text>
+                            <Text>*身份证号</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -505,7 +497,7 @@ class Register extends Component {
                     {/*地址*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>地址：</Text>
+                            <Text>地址</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -528,7 +520,7 @@ class Register extends Component {
                     {/*qq号*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>QQ：</Text>
+                            <Text>QQ</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -551,7 +543,7 @@ class Register extends Component {
                     {/*email*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>email：</Text>
+                            <Text>email</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -574,7 +566,7 @@ class Register extends Component {
                     {/*微信号*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>微信号：</Text>
+                            <Text>微信号</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -602,7 +594,7 @@ class Register extends Component {
                     {/*俱乐部*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*俱乐部：</Text>
+                            <Text>*俱乐部</Text>
                         </View>
                         <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}
@@ -617,8 +609,8 @@ class Register extends Component {
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            <View style={{width:60,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',marginRight:10}}>
+                                <Icon name={'angle-right'} size={30} color="#888"/>
                             </View>
                             <ActionSheet
                                 ref={(p) => {
@@ -640,7 +632,7 @@ class Register extends Component {
                     {/*教练资质*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*教练资质：</Text>
+                            <Text>*教练资质</Text>
                         </View>
                         <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}
@@ -655,8 +647,8 @@ class Register extends Component {
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            <View style={{width:60,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',marginRight:10}}>
+                                <Icon name={'angle-right'} size={30} color="#888"/>
                             </View>
                             <ActionSheet
                                 ref={(p) => {
@@ -676,7 +668,7 @@ class Register extends Component {
                     {/*教练星级*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*教练星级：</Text>
+                            <Text>*教练星级</Text>
                         </View>
                         <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}
@@ -691,8 +683,8 @@ class Register extends Component {
                                     </View>
 
                             }
-                            <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems: 'center',marginLeft:20}}>
-                                <Icon name={'angle-right'} size={30} color="#fff"/>
+                            <View style={{width:60,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',marginRight:10}}>
+                                <Icon name={'angle-right'} size={30} color="#888"/>
                             </View>
                             <ActionSheet
                                 ref={(p) => {
@@ -712,7 +704,7 @@ class Register extends Component {
                     {/*身高体重*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>*身高体重：</Text>
+                            <Text>*身高体重</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -735,7 +727,7 @@ class Register extends Component {
                     {/*服务城市*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>服务城市：</Text>
+                            <Text>服务城市</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -758,7 +750,7 @@ class Register extends Component {
                     {/*毕业院校*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
                         <View style={{flex:1}}>
-                            <Text>毕业院校：</Text>
+                            <Text>毕业院校</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -855,6 +847,13 @@ var styles = StyleSheet.create({
         marginTop: 10,
         borderWidth: 2,
     },
+    defaultStyle1: {
+        height:70,
+        paddingTop:30,
+        flexDirection:'row',
+        justifyContent:'center',
+        backgroundColor:'#66CDAA'
+    }
 });
 
 const mapStateToProps = (state, ownProps) => {

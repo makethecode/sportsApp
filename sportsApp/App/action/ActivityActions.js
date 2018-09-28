@@ -467,7 +467,7 @@ export let searchMember=(searchInfo)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
             Proxy.postes({
-                url: Config.server + '/func/node/searchOnePerson',
+                url: Config.server + '/func/node/searchMorePerson',
                 headers: {
                     'Content-Type': 'application/json',
                 },

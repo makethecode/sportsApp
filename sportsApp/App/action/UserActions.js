@@ -255,17 +255,6 @@ export let onCoachPhoto2Update=(coachphoto)=>{
     }
 }
 
-export let onCoachPhoto3Update=(coachphoto)=>{
-    return (dispatch,getState)=>{
-        dispatch({
-            type:ON_COACHPHTOTO3_UPDATE,
-            payload: {
-                coachphoto
-            }
-        })
-    }
-}
-
 
 export let onCoachLevelUpdate=(coachlevel)=>{
     return (dispatch,getState)=>{
@@ -1371,9 +1360,13 @@ export let uploadPersonIdCard=(path,personId)=> {
 }
 
 export let updatePortrait=(payload)=>{
-    return {
-        type:UPDATE_PORTRAIT,
-        payload:payload
+    return (dispatch,getState)=>{
+        dispatch({
+            type:UPDATE_PORTRAIT,
+            payload: {
+                payload
+            }
+        })
     }
 }
 

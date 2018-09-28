@@ -29,11 +29,10 @@ class GroupMemberModal extends Component{
         }
     }
 
-    setMemberList(){
-        this.close();
+    setMemberList(choose){
         if(this.props.setMemberList!==undefined&&this.props.setMemberList!==null)
         {
-            this.props.setMemberList();
+            this.props.setMemberList(choose);
         }
     }
 
@@ -48,72 +47,218 @@ class GroupMemberModal extends Component{
         this.state={
            searchInfo:null,
             member:this.props.member,
+            searchList:this.props.searchList,
+            isSearch:false,
         }
+    }
+
+    renderRow(rowData,sectionId,rowId){
+
+        var row=(
+            <View style={{flex:3,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
+                borderColor:'#eee',borderRadius:8}}>
+                {rowData.avatar == ""?
+                    < View style={{flex:1,}}>
+                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
+                    </View>
+                    :
+                < View style={{flex:1,}}>
+                    <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={{uri:rowData.avatar}}/>
+                    </View>
+                }
+                <View style={{flex:3,marginLeft:5}}>
+                    <View style={{flexDirection:'row',marginLeft:10}}>
+                        <Icon name={'user'} size={15} color="pink"/>
+                        <Text style={{marginLeft:10,color:'#343434'}}>{rowData.perNum.substring(0,6)}</Text>
+                    </View>
+                    <View  style={{flexDirection:'row',marginLeft:10,marginTop:5}}>
+                        <Icon name={'phone'} size={15} color="#87CEFF"/>
+                        <Text style={{marginLeft:10,color:'#aaa'}}>{rowData.mobilePhone}</Text>
+                    </View>
+                </View>
+                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',margin:10,borderWidth:1,borderColor:'#66CDAA',borderRadius:5}}
+                                  onPress={()=>{
+                                      //加入
+                                      this.setMemberList(rowData)
+                                  }}>
+                    <Text style={{color:'#66CDAA',fontSize:12,}}>添加</Text>
+                </TouchableOpacity>
+
+            </View>
+        );
+
+        return row;
+
     }
 
     render(){
 
+        var searchListView = null;
+        var searchList = this.props.searchList;
+
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (searchList !== undefined && searchList !== null && searchList.length > 0) {
+            searchListView = (
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds.cloneWithRows(searchList)}
+                    renderRow={this.renderRow.bind(this)}
+                />
+            );
+        }
+
         return (
             <View>
-                <View style={{height:height*0.4,width:width*0.8,padding:5,margin:width*0.1,marginTop:100,borderColor:'#66CDAA',borderWidth:1,
-                backgroundColor:'#fff',borderRadius:6}}>
+                {this.state.isSearch == true ?
+                    <View style={{
+                        height: height * 0.6,
+                        width: width * 0.8,
+                        padding: 5,
+                        margin: width * 0.1,
+                        marginTop: 100,
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                        backgroundColor: '#fff'
+                    }}>
 
-                    <View style={{flex:2}}>
-                        {/*//搜索框*/}
-                        <View style={{flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',margin:8,padding:5,borderRadius:8}}>
-                            <TextInputWrapper
-                                style={{fontSize:13}}
-                                onConfirm={()=>{this.props.searchMember(this.state.searchInfo);}}
-                                search={true}
-                                onChangeText={(searchInfo) => {
-                                      this.setState({searchInfo:searchInfo});
+                        <View style={{flex: 1}}>
+                            {/*//搜索框*/}
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: '#eee',
+                                padding: 3,
+                                margin:10,
+                                borderRadius: 10,
+                                paddingHorizontal: 10
+                            }}>
+                                <TextInputWrapper
+                                    style={{fontSize: 13, paddingLeft: 10}}
+                                    textInputStyle={{fontSize: 13, color: '#666'}}
+                                    onConfirm={() => {
+                                        this.setState({isSearch: true})
+                                        this.props.searchMember(this.state.searchInfo);
                                     }}
-                                value={this.state.searchInfo==null?'':this.state.searchInfo}
-                                placeholder='请输入用户名搜索'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                            />
+                                    search={true}
+                                    onChangeText={(searchInfo) => {
+                                        this.setState({searchInfo: searchInfo});
+                                    }}
+                                    value={this.state.searchInfo == null ? '' : this.state.searchInfo}
+                                    placeholder='请输入用户名搜索'
+                                    placeholderTextColor="#aaa"
+                                    underlineColorAndroid="transparent"
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{
+                            flex: 5,
+                            flexDirection: 'row',
+                            backgroundColor: '#fff',
+                            marginBottom: 5,
+                            padding: 5,
+                            borderBottomWidth: 1,
+                            borderColor: '#eee',
+                            borderRadius: 8
+                        }}>
+                            {searchListView}
+                        </View>
+
+                        <View style={{
+                            flex: 1,
+                            padding: 2,
+                            margin: 4,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'flex-end'
+                        }}>
+                            <TouchableOpacity style={{
+                                flex: 1,
+                                padding: 2,
+                                margin: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: '#66CDAA',
+                                borderRadius: 6
+                            }}
+                                              onPress={() => {
+                                                  this.close();
+                                              }}>
+                                <Text style={{color: '#fff', padding: 5}}>取消</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
+                    :
+                    <View style={{
+                        height: height * 0.2,
+                        width: width * 0.8,
+                        padding: 5,
+                        margin: width * 0.1,
+                        marginTop: 200,
+                        borderColor: '#eee',
+                        borderWidth: 1,
+                        backgroundColor: '#fff'
+                    }}>
 
-                    {
-                        this.props.member==null?null:
-                            <View style={{flex:3,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
-            borderColor:'#eee',borderRadius:8}}>
-                                <View style={{flex:1,}}>
-                                    <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
-                                </View>
-                                <View style={{flex:3,marginLeft:5}}>
-                                    <View style={{flexDirection:'row',marginLeft:10}}>
-                                        <Icon name={'user'} size={15} color="pink"/>
-                                        <Text style={{marginLeft:10,color:'#343434'}}>{this.props.member.perNum}</Text>
-                                    </View>
-                                    <View  style={{flexDirection:'row',marginLeft:10,marginTop:5}}>
-                                        <Icon name={'mobile'} size={15} color="#87CEFF"/>
-                                        <Text style={{marginLeft:10,color:'#aaa'}}>{this.props.member.mobilePhone}</Text>
-                                    </View>
-                                </View>
-                                <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
-
-                                </View>
-
+                        <View style={{flex: 1}}>
+                            {/*//搜索框*/}
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: '#eee',
+                                margin: 10,
+                                padding: 3,
+                                borderRadius: 10,
+                                paddingHorizontal: 10
+                            }}>
+                                <TextInputWrapper
+                                    style={{fontSize: 13, paddingLeft: 10}}
+                                    textInputStyle={{fontSize: 13, color: '#666'}}
+                                    onConfirm={() => {
+                                        this.setState({isSearch: true})
+                                        this.props.searchMember(this.state.searchInfo);
+                                    }}
+                                    search={true}
+                                    onChangeText={(searchInfo) => {
+                                        this.setState({searchInfo: searchInfo});
+                                    }}
+                                    value={this.state.searchInfo == null ? '' : this.state.searchInfo}
+                                    placeholder='请输入用户名搜索'
+                                    placeholderTextColor="#aaa"
+                                    underlineColorAndroid="transparent"
+                                />
                             </View>
-                    }
+                        </View>
 
-                    <View style={{flex:1,padding:2,margin:4,flexDirection:'row',justifyContent:'center',alignItems:'flex-end'}}>
-                        <TouchableOpacity style={{flex:1,padding:2,margin:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                    backgroundColor:'#fff',borderRadius:6,borderWidth:1,borderColor:'#66CDAA'}}
-                                          onPress={()=>{ this.close(); }}>
-                            <Text style={{color:'#66CDAA',padding:5}}>取消</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{flex:1,padding:2,margin:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                    backgroundColor:'#66CDAA',borderRadius:6}}
-                                          onPress={()=>{this.setMemberList();}}>
-                            <Text style={{color:'#fff',padding:5}}>添加</Text>
-                        </TouchableOpacity>
+                        <View style={{
+                            flex: 1,
+                            padding: 5,
+                            margin: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <TouchableOpacity style={{
+                                flex: 1,
+                                padding: 3,
+                                margin: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: '#66CDAA',
+                                borderRadius: 6
+                            }}
+                                              onPress={() => {
+                                                  this.close();
+                                              }}>
+                                <Text style={{color: '#fff', padding: 5}}>取消</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                }
             </View>
         );
     }

@@ -172,7 +172,7 @@ class Home extends Component{
     render() {
 
         return (
-            <View style={{flex:1,backgroundColor:'#eee'}}>
+            <View style={{flex:1,backgroundColor:'#fff'}}>
 
                 <Toolbar width={width} title="商城" navigator={this.props.navigator}
                          actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
@@ -184,7 +184,7 @@ class Home extends Component{
                              }
                          }}>
 
-                <ScrollView style={{width:width,height:height,backgroundColor:'#eee'}}>
+                <ScrollView style={{width:width,height:height,backgroundColor:'#fff'}}>
                     <View style={{width:width,height:height*0.3}}>
                         <ViewPager
                             style={this.props.style}
@@ -200,7 +200,7 @@ class Home extends Component{
 
                         <View style={{flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#rgba(255, 255, 255, 0.6)',borderRadius:50,}}>
                             <View style={{backgroundColor:'transparent',marginLeft:10,padding:4}}>
-                                <Icon name={'search'} size={20} color="#eee"/>
+                                <Icon name={'search'} size={20} color="#fff"/>
                             </View>
                             <TextInput
                                 style={{height:35*height/736,width:width*0.7,paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:2,fontSize:14}}
@@ -214,9 +214,6 @@ class Home extends Component{
                                 underlineColorAndroid="transparent"
                                 autoCapitalize="characters"
                             />
-                        </View>
-                        <View style={{backgroundColor:'transparent',marginLeft:10}}>
-                            <Icon name={'comment-o'} size={22} color="#fff"/>
                         </View>
                     </View>
 

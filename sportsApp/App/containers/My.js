@@ -52,7 +52,6 @@ class My extends Component{
                 name: 'my_group',
                 component: MyGroup,
                 params: {
-
                 }
             })
         }
@@ -208,6 +207,7 @@ class My extends Component{
                 this.props.dispatch(getAccessToken(false));
             }
             this.setState({member:json.data})
+            this.props.dispatch(updatePortrait(json.data.avatar));
         }).catch((e)=>{
             alert(e)
         });

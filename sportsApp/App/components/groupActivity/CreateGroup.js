@@ -15,9 +15,8 @@ import {
     Easing,
     Modal,
 } from 'react-native';
-
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -26,6 +25,8 @@ import {
     createGroup,searchMember,enableMyGroupOnFresh
 } from '../../action/ActivityActions';
 import {getAccessToken,} from '../../action/UserActions';
+
+var {height, width} = Dimensions.get('window');
 
 class CreateGroup extends Component{
 
@@ -39,7 +40,7 @@ class CreateGroup extends Component{
     searchMember(info){
         this.props.dispatch(searchMember(info)).then((json)=>{
             if(json.re==1){
-                this.setState({member:json.data});
+                this.setState({searchList:json.data});
             }else{
                 if(json.re==-100){
                     this.props.dispatch(getAccessToken(false));
@@ -87,17 +88,26 @@ class CreateGroup extends Component{
     renderRow(rowData,sectionId,rowId){
         var row=(
             <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
-            borderColor:'#eee',borderRadius:8}}>
-                <View style={{flex:1}}>
-                    <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={rowData.portrait}/>
-                </View>
+            borderColor:'#eee',borderRadius:3}}>
+                {
+                    rowData.avatar==""?
+                        <View style={{flex: 1}}>
+                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                   source={require('../../../img/portrait.jpg')}/>
+                        </View>
+                        :
+                    <View style={{flex: 1}}>
+                        <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                               source={{uri: rowData.avatar}}/>
+                    </View>
+                }
                 <View style={{flex:3,marginLeft:5}}>
                     <View style={{flexDirection:'row',marginLeft:10}}>
                         <Icon name={'user'} size={15} color="pink"/>
                         <Text style={{marginLeft:10,color:'#343434'}}>{rowData.perNum}</Text>
                     </View>
                     <View  style={{flexDirection:'row',marginLeft:10,marginTop:5}}>
-                        <Icon name={'mobile'} size={15} color="#87CEFF"/>
+                        <Icon name={'phone'} size={15} color="#87CEFF"/>
                         <Text style={{marginLeft:10,color:'#aaa'}}>{rowData.mobilePhone}</Text>
                     </View>
                 </View>
@@ -123,10 +133,11 @@ class CreateGroup extends Component{
             doingFetch: false,
             isRefreshing: false,
             member:null,
-            memberList:[]
+            memberList:[],
+            searchList:[],
         }
-        var person = this.props.personInfo;
-        person.username = this.props.user.username;
+        var person = {personId:this.props.personInfo.personId,perNum:this.props.personInfo.perNum,mobilePhone:this.props.personInfo.mobilePhone,avatar:this.props.portrait};
+        // person.username = this.props.user.username;
         this.state.memberList.push(person);
     }
 
@@ -148,27 +159,19 @@ class CreateGroup extends Component{
 
         return (
             <View style={{flex:1}}>
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>创建群</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
+                <Toolbar width={width}  title="创建新群" navigator={this.props.navigator}
+                         actions={[]}
+                         onPress={(i)=>{
+                             this.goBack()
+                         }}>
 
-                    </View>
-                </View>
-
-                <View style={{flex:5,backgroundColor:'#fff'}}>
+                <View style={{flex:5,backgroundColor:'#fff',padding:10}}>
 
                     {/*群名*/}
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff'
                     ,margin:10,marginTop:5,marginBottom:5}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>群名：</Text>
+                            <Text style={{color:'#343434'}}>群名</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -193,7 +196,7 @@ class CreateGroup extends Component{
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,
                     marginTop:5,marginBottom:5}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>群简介：</Text>
+                            <Text style={{color:'#343434'}}>群简介</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -218,7 +221,7 @@ class CreateGroup extends Component{
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,
                     marginTop:5,marginBottom:5}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>成员上限：</Text>
+                            <Text style={{color:'#343434'}}>成员上限</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
@@ -243,15 +246,15 @@ class CreateGroup extends Component{
                     <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
                     margin:10,marginTop:5,marginBottom:10}}>
                         <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start',}}>
-                            <Text style={{color:'#343434'}}>添加成员：</Text>
+                            <Text style={{color:'#343434'}}>添加成员</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#eee',
                             borderRadius:10}}>
-                            <TouchableOpacity style={{marginRight:15}}
+                            <TouchableOpacity style={{marginRight:15,padding:3,alignItems:'center',justifyContent:'center'}}
                             onPress={()=>{
                                 this.setState({modalVisible:true});
                             }}>
-                                <Ionicons name='md-add-circle'  size={26} color="#66CDAA"/>
+                                <Ionicons name='md-add-circle'  size={20} color="#bbb"/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -301,20 +304,17 @@ class CreateGroup extends Component{
                             this.searchMember(info);
                         }}
                         member={this.state.member}
+                        searchList = {this.state.searchList}
                         accessToken={this.props.accessToken}
-                        setMemberList={()=>{
-                            if(this.state.member!==null&&this.state.member!==undefined){
+                        setMemberList={(choose)=>{
                                 var memberList = this.state.memberList;
-                                memberList.push(this.state.member);
+                                memberList.push(choose);
                                 this.setState({memberList:memberList});
-                            }
                         }}
                     />
 
                 </Modal>
-
-
-
+                </Toolbar>
             </View>
         );
     }
@@ -331,6 +331,7 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
         user:state.user.user,
+        portrait:state.user.portrait.payload,
         myGroupList:state.activity.myGroupList,
         groupOnFresh:state.activity.groupOnFresh
     })

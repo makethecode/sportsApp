@@ -202,28 +202,28 @@ var  Login =React.createClass({
 
                 <Image resizeMode="stretch" source={require('../../img/beijing@2x.png')} style={{width:width,height:height}}>
 
-                    <View style={{backgroundColor:'transparent',flex:2}}>
-
+                    <View style={{backgroundColor:'transparent',flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Image resizeMode="contain" source={require('../../img/loginlogo.png')} style={{justifyContent:'center',alignItems:'center',width:400,height:200,marginLeft:150,marginTop:50}}/>
                     </View>
 
-                    <View style={{paddingVertical:2,backgroundColor:'transparent',flex:5}} >
+                    <View style={{paddingVertical:2,paddingHorizontal:25,backgroundColor:'transparent',flex:1,alignItems:'center'}} >
 
                         {/*输入用户名*/}
-                        <View style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'transparent',margin:10, borderWidth:1,borderColor:"#66CDAA",borderRadius:20,padding:3}}>
+                        <View style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'rgba(255,255,255,0.2)',margin:10,padding:3,borderRadius:5}}>
 
                             <View style={{flex:6}}>
                                 <View style={{flex:1,flexDirection:'row'}}>
 
                                     <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',padding:4
                                         ,marginLeft:0,paddingHorizontal:2}}>
-                                        <Icon size={18} name="user-o" color="#66CDAA"></Icon>
+                                        <Icon size={18} name="user-o" color="#eee"></Icon>
                                     </View>
 
 
                                     <View style={{flex:6,flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>
                                         <TextInputWrapper
-                                            textInputStyle={{color:'#aaa'}}
-                                            placeholder="帐号/手机号"
+                                            textInputStyle={{color:'#eee'}}
+                                            placeholder="请输入帐号/手机号"
                                             val={this.state.user.username}
                                             onChangeText={(value)=>{
                                                 this.setState({user:Object.assign(this.state.user,{username:value})})
@@ -240,19 +240,19 @@ var  Login =React.createClass({
                         </View>
 
                         {/*输入密码*/}
-                        <View style={{flexDirection:'row',height:42,marginTop:10,backgroundColor:'transparent',margin:10,borderWidth:1,borderColor:"#66CDAA",borderRadius:20}}>
+                        <View style={{flexDirection:'row',height:45,marginTop:10,backgroundColor:'rgba(255,255,255,0.2)',margin:10,padding:3,borderRadius:5}}>
 
                             <View style={{flex:6}}>
                                 <View style={{flex:1,flexDirection:'row'}}>
 
                                     <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',padding:4,
                                         paddingHorizontal:2,marginLeft:0}}>
-                                        <Icon size={20} name="lock" color="#66CDAA"></Icon>
+                                        <Icon size={20} name="lock" color="#eee"></Icon>
                                     </View>
 
                                     <View style={{flex:6,flexDirection:'row',alignItems:'center',justifyContent:'flex-start'}}>
                                         <TextInput
-                                            style={{height: 42,flex:1,paddingLeft:0,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16,color:'#aaa'}}
+                                            style={{height: 42,flex:1,paddingLeft:0,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16,color:'#eee'}}
                                             onChangeText={(password) => {
 
                                               if( password&&password!='')//不为空
@@ -307,83 +307,75 @@ var  Login =React.createClass({
                             </View>
                         </View>
 
-                        {/*登录注册按钮*/}
-                        <View style={{flexDirection:'row',justifyContent:'center',marginBottom:10,marginTop:20}}>
+                        {/*登录按钮*/}
+                        <TouchableOpacity style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'#eee',margin:10,marginTop:25,padding:3,borderRadius:5}}
+                                          onPress={()=>{
+                                              if(this.state.user&&
+                                                  this.state.user.username&&this.state.user.username!=''&&
+                                                  this.state.user.password&&this.state.user.password!='')
+                                              {
+                                                  this.setState({showProgress: true});
+                                                  this.props.dispatch(doLogin(this.state.user.username,this.state.user.password))
+                                                      .then((json)=>{
+                                                          this.setState({showProgress: false,user:{}});
+                                                          if(json.re==-1){
+                                                              setTimeout(()=>{
+                                                                  alert(json.data);
+                                                              },900)
 
-                                <View style={{flexDirection:'row',width:width*5/6,alignItems:'center',}}>
-                                    <TouchableOpacity style={{justifyContent:'center',flexDirection:'row',width:width/3
-                                    ,backgroundColor:'#66CDAA',padding:8,borderRadius:20}}
-                                                      onPress={()=>{
-                                        this.navigate2Register();
-                                    }}>
-                                        <Text style={{color:'#fff',fontSize:16,fontWeight:'bold'}}>注册</Text>
-                                    </TouchableOpacity>
-
-                                    <View style={{flex:1}}>
-
-                                    </View>
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'center',flexDirection:'row',width:width/3,
-                                     borderColor:'#66CDAA',padding:8,paddingHorizontal:16,borderRadius:20,borderWidth:1,}}
-                                      onPress={()=>{
-                                          if(this.state.user&&
-                                          this.state.user.username&&this.state.user.username!=''&&
-                                          this.state.user.password&&this.state.user.password!='')
-                                          {
-                                              this.setState({showProgress: true});
-                                              this.props.dispatch(doLogin(this.state.user.username,this.state.user.password))
-                                              .then((json)=>{
-                                                  this.setState({showProgress: false,user:{}});
-                                                  if(json.re==-1){
-                                                      setTimeout(()=>{
-                                                            alert(json.data);
-                                                      },900)
-
-                                                  }
-                                                  if(json.re==-100){
-                                                        this.setState({showProgress: false,user:{}});
-                                                  }
-                                              })
-                                              .catch((e)=>{
-                                                        alert(e);
-                                               })
-                                          }
-                                       // this.props.dispatch(fetchGames()).then((json)=>{
-                                       //     if(json.data!==null||json.data!==undefined)
-                                       //     {
-                                       //         // Alert.alert('信息','有新的比赛！',[{text:'是',onPress:()=>{
-                                       //         //     this.props.dispatch(enableCompetitionItemOnFresh());
-                                       //         //
-                                       //         // }},
-                                       //         //
-                                       //         // ])   ;
-                                       //
-                                       //     }
-                                       //    });
-
-
-                                    }}>
-                                        <Text style={{color:'#66CDAA',fontSize:16,fontWeight:'bold'}}>登录</Text>
-                                    </TouchableOpacity>
+                                                          }
+                                                          if(json.re==-100){
+                                                              this.setState({showProgress: false,user:{}});
+                                                          }
+                                                      })
+                                                      .catch((e)=>{
+                                                          alert(e);
+                                                      })
+                                              }
+                                          }}>
+                            <View style={{flex:1}}>
+                                    <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
+                                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                            <Text style={{color:'#66CDAA',fontSize:16,fontWeight:'bold'}}>登录</Text>
+                                        </View>
                                 </View>
-
-                        </View>
-                        {
-                            this.state.isInstalled==true?
-                        <View style={{flexDirection:'row',justifyContent:'center',marginBottom:10,marginTop:60}}>
-                            <View style={{flexDirection:"column",alignItems:"center"}}>
-                                <TouchableOpacity style={{alignItems:"center",justifyContent:"center"}}
-                                                  onPress={()=>{
-                                                      this.WXLogin();
-                                                      //this.sharetoSomeone.dismiss();
-                                                  }}
-                                >
-                                    <Icon name={'wechat'} size={45} color='#00CD00'/>
-                                    <Text>使用微信快速登录</Text>
-                                </TouchableOpacity>
                             </View>
-                        </View >:null
-                        }
+                        </TouchableOpacity>
+
+                        <View style={{width:width,justifyContent:'center',AlignItems:'center'}}>
+                        <Text style={{width:width,justifyContent:'center',textAlign:'center',color:'#eee',fontSize:12}}>忘记密码?</Text>
+                        </View>
+
+                    </View>
+
+
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'column',paddingHorizontal:28}}>
+
+                        <View style={{flex:1,backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:110}}>
+                            <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
+                            <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
+                            <Text style={{justifyContent:'center',textAlign:'center',color:'#eee',fontSize:12}}>
+                                还没有帐号?
+                            </Text>
+                            </View>
+                            <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
+                        </View>
+
+                        {/*注册按钮*/}
+                        <TouchableOpacity style={{flexDirection:'row',height:45,marginBottom:30,backgroundColor:'transparent',margin:10,padding:3,borderRadius:5,
+                        borderWidth:1,borderColor:'#eee'}}
+                                          onPress={()=>{
+                                              this.navigate2Register();
+                                          }}>
+                            <View style={{flex:1}}>
+                                <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
+                                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                        <Text style={{color:'#eee',fontSize:16,fontWeight:'bold'}}>注册</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+
                         {/*loading模态框*/}
                         <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
 
@@ -410,13 +402,6 @@ var  Login =React.createClass({
                                 </View>
                             </TouchableOpacity>
                         </Modal>
-                        {   this.state.unionid!=null?
-                            <View>
-
-                                <Text>asdasda</Text>
-                            </View>:null
-                        }
-
                     </View>
 
                 </Image>
