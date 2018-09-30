@@ -370,8 +370,6 @@ class Home extends Component {
 
                                                               }
                                                           });
-
-
                                                             this.navigate2LiveHome()
                                        }}>
                                         {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}

@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="44734b84-8bf0-45a1-aabd-08d90048c186" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/img/play.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/img/stop.png" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/assets/index.android.bundle.meta" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/assets/index.android.bundle.meta" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi-v11/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi-v11/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi-v9/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi-v9/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-hdpi/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi-v11/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi-v11/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi-v9/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi-v9/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner1.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner1.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner2.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner2.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner3.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner3.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner4.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_banner4.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_good1.jpg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_good1.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_good3.jpg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_good3.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_logo.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_logo.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_logo80.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_logo80.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_my_banner.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_my_banner.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_p1.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_p1.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_p2.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_p2.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_person.jpg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_person.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_portrait.jpg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_portrait.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t1.jpg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t1.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t2.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t2.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t3.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/img_t3.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_indeterminate_check_box.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativecheckbox_img_ic_indeterminate_check_box.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativedatepicker_date_icon.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-mdpi/node_modules_reactnativedatepicker_date_icon.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi-v11/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi-v11/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi-v9/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi-v9/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_beijing.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_beijing.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_dd.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_dd.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_dingzhi.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_dingzhi.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_shangc.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_shangc.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt1.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt2.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt2.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt3.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt3.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt4.jpeg" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_tt4.jpeg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_zhibo.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/img_zhibo.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xhdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi-v11/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi-v11/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi-v9/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi-v9/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/icon_notify.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/icon_notify.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/node_modules_reactnativecheckbox_img_ic_check_box.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/drawable-xxhdpi/node_modules_reactnativecheckbox_img_ic_check_box_outline_blank.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/img/activity.png" afterPath="$PROJECT_DIR$/sportsApp/img/activity.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/img/course.png" afterPath="$PROJECT_DIR$/sportsApp/img/course.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/img/loginlogo.png" afterPath="$PROJECT_DIR$/sportsApp/img/loginlogo.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/action/LiveActions.js" afterPath="$PROJECT_DIR$/sportsApp/App/action/LiveActions.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/containers/Home.js" afterPath="$PROJECT_DIR$/sportsApp/App/containers/Home.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/containers/Login.js" afterPath="$PROJECT_DIR$/sportsApp/App/containers/Login.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/utils/Proxy.js" afterPath="$PROJECT_DIR$/sportsApp/App/utils/Proxy.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/build.gradle" afterPath="$PROJECT_DIR$/sportsApp/android/app/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/assets/index.android.bundle" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/assets/index.android.bundle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/MainActivity.java" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/MainApplication.java" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/MainApplication.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/plsteam/SWCameraStreamingActivity.java" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/plsteam/SWCameraStreamingActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/protogenesis/Bridge.java" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/protogenesis/Bridge.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/reactPackage/AnExampleReactPackage.java" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/java/com/sportsapp/reactPackage/AnExampleReactPackage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/layout/activity_swcamera_streaming.xml" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/layout/activity_swcamera_streaming.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/sportsApp/android/app/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/faceplatform-ui/build.gradle" afterPath="$PROJECT_DIR$/sportsApp/android/faceplatform-ui/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/gradle/wrapper/gradle-wrapper.properties" afterPath="$PROJECT_DIR$/sportsApp/android/gradle/wrapper/gradle-wrapper.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/gradlew" afterPath="$PROJECT_DIR$/sportsApp/android/gradlew" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/android/settings.gradle" afterPath="$PROJECT_DIR$/sportsApp/android/settings.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/config.js" afterPath="$PROJECT_DIR$/sportsApp/config.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/FaceViewManager.m" afterPath="$PROJECT_DIR$/sportsApp/ios/FaceViewManager.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp.xcodeproj/project.pbxproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp/Base.lproj/LaunchScreen.xib" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp/Base.lproj/LaunchScreen.xib" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp/CalendarManager.h" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp/CalendarManager.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp/CalendarManager.m" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp/CalendarManager.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp/Info.plist" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp/Info.plist" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/package-lock.json" afterPath="$PROJECT_DIR$/sportsApp/package-lock.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/package.json" afterPath="$PROJECT_DIR$/sportsApp/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/yarn.lock" afterPath="$PROJECT_DIR$/sportsApp/yarn.lock" />
+    </list>
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="sportsApp">
+      <favorite_root url="file://$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+    </favorites_list>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="LiveActions.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/action/LiveActions.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="495">
+              <caret line="39" column="41" lean-forward="false" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HomePage.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BadmintonCourseRecord.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/BadmintonCourseRecord.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-669">
+              <caret line="60" column="38" lean-forward="false" selection-start-line="60" selection-start-column="38" selection-end-line="60" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AddFacePhoto.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/native/AddFacePhoto.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Login.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="198" column="0" lean-forward="false" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
+              <folding>
+                <element signature="e#511#642#0" expanded="true" />
+                <element signature="e#1014#1076#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/config.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="55" lean-forward="false" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Proxy.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/utils/Proxy.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3600">
+              <caret line="240" column="0" lean-forward="false" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Bridge.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/native/Bridge.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="105">
+              <caret line="7" column="33" lean-forward="false" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+              <folding>
+                <element signature="e#16#64#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>allGroupOnFresh</find>
+      <find>refresh</find>
+      <find>RefreshContro</find>
+      <find>refreshc</find>
+      <find>renderrow</find>
+      <find>paymentsListView</find>
+      <find>&gt;</find>
+      <find>&lt;/text&gt;</find>
+      <find>membergridView</find>
+      <find>modal</find>
+      <find>renderr</find>
+      <find>出生日期</find>
+      <find>20</find>
+      <find>angle-right</find>
+      <find>showProgress</find>
+      <find>商城</find>
+      <find>直播间</find>
+      <find>style</find>
+      <find>popoverContent</find>
+      <find>spacing</find>
+      <find>renderitem</find>
+      <find>construc</find>
+      <find>dataSource</find>
+      <find>horizontal</find>
+      <find>Modal</find>
+      <find>searchMember</find>
+      <find>签到</find>
+      <find>TextInputWrapper</find>
+      <find>face</find>
+      <find>component</find>
+    </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/sportsApp/App/store</dir>
+      <dir>$PROJECT_DIR$</dir>
+      <dir>$PROJECT_DIR$/sportsApp/App</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/ActivityMember.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/SelectCoach.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/ModifyDistribution.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/TalkingExample.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/CreateBadmintonCourse.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/StudentInformation.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/TalkingFarm.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/AddClass.js" />
+        <option value="$PROJECT_DIR$/sportsApp/config.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/MemberInformation.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/TrainerInformation.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/CoachList.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/venue/VenueInspect.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/venue/VenueDetail.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/venue/VenueMap.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/Found.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/CourseActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/modal/CoachPhotoModal.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/MyInformation.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/BadmintonCourseRecord.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/MyCourseRecord.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/MyActivityRecord.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/AboutUs.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/App.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/my/Setting.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/NewsActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/news/NewsDetail.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/NoticeActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/Notice.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupMemberInformation.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/venue/SelectVenue.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/course/AddStudent.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/AllGroup.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/MyGroup.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/reducers/UserReducer.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/My.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/UserActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/node_modules/react-native-text-input-wrapper/lib/src/TextInputWrapper.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/ActivityActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/Activity.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupMemberModal.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupDetail.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/groupActivity/CreateGroup.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/Register.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/mall/FirstPage.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/Home.js" />
+        <option value="$PROJECT_DIR$/sportsApp/node_modules/react-native-toolbar-wrapper/index.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/utils/Proxy.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/LiveActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/containers/Login.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>false</service-enabled>
+    <exe-path />
+    <annotation-enable>false</annotation-enable>
+    <other-services-enabled>false</other-services-enabled>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/sportsApp/node_modules" />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="44" />
+    <option name="y" value="23" />
+    <option name="width" value="1325" />
+    <option name="height" value="809" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="App" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="App" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sportsApp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="App" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="components" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="course" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="nodejs_interpreter_path" value="/usr/local/bin/node" />
+    <property name="js.eslint.eslintPackage" value="" />
+    <property name="js-jscs-nodeInterpreter" value="/usr/local/bin/node" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/danding/Documents/workspace/sportsApp/sportsApp/App/components/course/BadmintonCourseRecord.js" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sportsApp/App/components/groupActivity" />
+      <recent name="$PROJECT_DIR$/sportsApp/App/components/news" />
+      <recent name="$PROJECT_DIR$/sportsApp/App/components/my" />
+      <recent name="$PROJECT_DIR$/sportsApp/App/components/my/modal" />
+      <recent name="$PROJECT_DIR$/sportsApp/App/components/venue" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sportsApp/img" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.Home.js">
+    <configuration default="false" name="Home.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="project" path-to-js-file="Home.js" working-dir="$PROJECT_DIR$/sportsApp/App/containers">
+      <method />
+    </configuration>
+    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
+      <method />
+    </configuration>
+    <configuration default="true" type="DartTestRunConfigurationType" factoryName="Dart Test">
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
+      <config-file value="" />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" working-dir="">
+      <method />
+    </configuration>
+    <configuration default="true" type="cucumber.js" factoryName="Cucumber.js">
+      <option name="cucumberJsArguments" value="" />
+      <option name="executablePath" />
+      <option name="filePath" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner" factoryName="Mocha">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <working-directory />
+      <pass-parent-env>true</pass-parent-env>
+      <envs />
+      <ui />
+      <extra-mocha-options />
+      <test-kind>DIRECTORY</test-kind>
+      <test-directory />
+      <recursive>false</recursive>
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="Node.js.Home.js" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Node.js.Home.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="44734b84-8bf0-45a1-aabd-08d90048c186" name="Default" comment="" />
+      <created>1530254425405</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1530254425405</updated>
+      <workItem from="1530254426766" duration="5915000" />
+      <workItem from="1530428296145" duration="76000" />
+      <workItem from="1530435246716" duration="1008000" />
+      <workItem from="1530512750901" duration="72286000" />
+      <workItem from="1530927596011" duration="1242000" />
+      <workItem from="1531018720232" duration="38025000" />
+      <workItem from="1531268000208" duration="4006000" />
+      <workItem from="1531294476125" duration="598000" />
+      <workItem from="1531302079486" duration="726000" />
+      <workItem from="1531354123242" duration="26022000" />
+      <workItem from="1531440796319" duration="17137000" />
+      <workItem from="1531474325467" duration="5923000" />
+      <workItem from="1531527593824" duration="20911000" />
+      <workItem from="1531617614929" duration="4599000" />
+      <workItem from="1531637573894" duration="7017000" />
+      <workItem from="1531699597332" duration="1315000" />
+      <workItem from="1531721299805" duration="2799000" />
+      <workItem from="1531724820348" duration="6451000" />
+      <workItem from="1531785885719" duration="13178000" />
+      <workItem from="1531873920069" duration="16184000" />
+      <workItem from="1531959304415" duration="6475000" />
+      <workItem from="1531980597233" duration="15851000" />
+      <workItem from="1532045875894" duration="24755000" />
+      <workItem from="1532131773487" duration="19594000" />
+      <workItem from="1532219258864" duration="4409000" />
+      <workItem from="1532226881144" duration="1492000" />
+      <workItem from="1532239202423" duration="7302000" />
+      <workItem from="1532305898023" duration="4770000" />
+      <workItem from="1532326126632" duration="8779000" />
+      <workItem from="1532391469153" duration="11234000" />
+      <workItem from="1532477867825" duration="4994000" />
+      <workItem from="1532505128889" duration="3601000" />
+      <workItem from="1532564361758" duration="6529000" />
+      <workItem from="1532603194513" duration="662000" />
+      <workItem from="1532650597182" duration="251000" />
+      <workItem from="1532767515574" duration="2270000" />
+      <workItem from="1532774532468" duration="1062000" />
+      <workItem from="1532823920993" duration="5155000" />
+      <workItem from="1532910569969" duration="5124000" />
+      <workItem from="1532930115934" duration="1540000" />
+      <workItem from="1532934416000" duration="2053000" />
+      <workItem from="1533018126437" duration="825000" />
+      <workItem from="1533027878302" duration="1011000" />
+      <workItem from="1533028896909" duration="3051000" />
+      <workItem from="1533082412443" duration="5097000" />
+      <workItem from="1533091251717" duration="1705000" />
+      <workItem from="1533104667728" duration="637000" />
+      <workItem from="1533108146503" duration="8037000" />
+      <workItem from="1533168963859" duration="1910000" />
+      <workItem from="1533175887029" duration="1198000" />
+      <workItem from="1533179126338" duration="316000" />
+      <workItem from="1533190411966" duration="7052000" />
+      <workItem from="1533203140239" duration="597000" />
+      <workItem from="1533255836059" duration="619000" />
+      <workItem from="1533263737736" duration="12474000" />
+      <workItem from="1533342190517" duration="3849000" />
+      <workItem from="1533349000514" duration="2054000" />
+      <workItem from="1533364518710" duration="2003000" />
+      <workItem from="1533432537236" duration="6356000" />
+      <workItem from="1533515554713" duration="9994000" />
+      <workItem from="1533551930831" duration="1089000" />
+      <workItem from="1533601367312" duration="505000" />
+      <workItem from="1533688256856" duration="1642000" />
+      <workItem from="1533709258003" duration="974000" />
+      <workItem from="1533775611399" duration="1078000" />
+      <workItem from="1533862394866" duration="17476000" />
+      <workItem from="1533890857506" duration="35000" />
+      <workItem from="1533976841004" duration="2861000" />
+      <workItem from="1534984752970" duration="253000" />
+      <workItem from="1534991197325" duration="555000" />
+      <workItem from="1535012732496" duration="2569000" />
+      <workItem from="1535069653226" duration="1797000" />
+      <workItem from="1535089456145" duration="43000" />
+      <workItem from="1535182650143" duration="2779000" />
+      <workItem from="1535243787902" duration="5542000" />
+      <workItem from="1535329361567" duration="14074000" />
+      <workItem from="1535418225327" duration="13433000" />
+      <workItem from="1535501712450" duration="20031000" />
+      <workItem from="1535587629162" duration="20720000" />
+      <workItem from="1535674649865" duration="3119000" />
+      <workItem from="1535677902449" duration="24450000" />
+      <workItem from="1535760742202" duration="17922000" />
+      <workItem from="1535847721644" duration="17201000" />
+      <workItem from="1535933602502" duration="24147000" />
+      <workItem from="1536019437016" duration="32248000" />
+      <workItem from="1536106954816" duration="18503000" />
+      <workItem from="1536192716896" duration="30625000" />
+      <workItem from="1536287565529" duration="19442000" />
+      <workItem from="1536365700834" duration="10202000" />
+      <workItem from="1536403089897" duration="239000" />
+      <workItem from="1536453386117" duration="11732000" />
+      <workItem from="1536498255891" duration="1417000" />
+      <workItem from="1536537856773" duration="15331000" />
+      <workItem from="1536624064198" duration="16087000" />
+      <workItem from="1536661763487" duration="488000" />
+      <workItem from="1536711490772" duration="18912000" />
+      <workItem from="1536805193843" duration="19508000" />
+      <workItem from="1536883324568" duration="6831000" />
+      <workItem from="1536981425612" duration="17673000" />
+      <workItem from="1537077474976" duration="14204000" />
+      <workItem from="1537149982038" duration="15719000" />
+      <workItem from="1537227665769" duration="17992000" />
+      <workItem from="1537314440996" duration="16257000" />
+      <workItem from="1537400084871" duration="17232000" />
+      <workItem from="1537495316684" duration="13714000" />
+      <workItem from="1537575373964" duration="23505000" />
+      <workItem from="1537668282264" duration="13176000" />
+      <workItem from="1537756677769" duration="13248000" />
+      <workItem from="1537836701293" duration="12405000" />
+      <workItem from="1537927806569" duration="19396000" />
+      <workItem from="1538012390758" duration="17250000" />
+      <workItem from="1538040592232" duration="1206000" />
+      <workItem from="1538041838712" duration="139000" />
+      <workItem from="1538051528449" duration="1334000" />
+      <workItem from="1538100922565" duration="18254000" />
+      <workItem from="1538184149338" duration="4389000" />
+      <workItem from="1538201182880" duration="6962000" />
+      <workItem from="1538216594473" duration="2912000" />
+      <workItem from="1538270318672" duration="7360000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="1102292000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-preview-enabled value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="44" y="23" width="1325" height="809" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1702454" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09623431" sideWeight="0.51937985" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32914925" sideWeight="0.48062015" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12831241" sideWeight="0.4947146" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24860336" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23709902" sideWeight="0.45102185" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39944133" sideWeight="0.49753347" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="processedProjectFiles" value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="33" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/MyGroup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-147">
+          <caret line="131" column="39" lean-forward="true" selection-start-line="131" selection-start-column="4" selection-end-line="131" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/EcmaScript.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="469">
+          <caret line="85" column="48" lean-forward="true" selection-start-line="85" selection-start-column="48" selection-end-line="85" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/reducers/ActivityReducer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="24" column="19" lean-forward="false" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/ActivityActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="552" column="37" lean-forward="false" selection-start-line="552" selection-start-column="13" selection-end-line="552" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/my/Myprofit.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4530">
+          <caret line="354" column="28" lean-forward="false" selection-start-line="354" selection-start-column="12" selection-end-line="354" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/ActivityDetail.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-405">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-grid-view/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/loginlogo.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/My.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="209" column="38" lean-forward="false" selection-start-line="209" selection-start-column="38" selection-end-line="209" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/venue/SelectVenue.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="153" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Register.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="389" column="29" lean-forward="true" selection-start-line="389" selection-start-column="29" selection-end-line="389" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/mall/FirstPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="194" column="26" lean-forward="true" selection-start-line="194" selection-start-column="26" selection-end-line="194" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/zhibo-@2x.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/banner2.jpeg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/badminton.jpeg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/canlendar.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/coachPhoto.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/ding.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/good2.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/good3.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/goods.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/t2.jpeg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/tt2@2x.jpeg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/v3.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/v2.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/v1.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/PushStreamView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/PushStreaming.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-270">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/LiveHome.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1635">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/MyView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-toolbar-wrapper/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2925">
+          <caret line="207" column="45" lean-forward="false" selection-start-line="207" selection-start-column="45" selection-end-line="207" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/Activity.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="532" column="29" lean-forward="true" selection-start-line="532" selection-start-column="29" selection-end-line="532" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/img/zhibo1.jpeg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupDetail.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="60" column="74" lean-forward="false" selection-start-line="60" selection-start-column="30" selection-end-line="60" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/venue/VenueDetail.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+            <element signature="e#48#86#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2265">
+          <caret line="203" column="5" lean-forward="false" selection-start-line="203" selection-start-column="5" selection-end-line="203" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/CreateGroup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="7" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupMemberModal.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1860">
+          <caret line="140" column="63" lean-forward="false" selection-start-line="140" selection-start-column="51" selection-end-line="140" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-super-grid/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="7" column="6" lean-forward="false" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/LiveActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="39" column="41" lean-forward="false" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="198" column="0" lean-forward="false" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
+          <folding>
+            <element signature="e#511#642#0" expanded="true" />
+            <element signature="e#1014#1076#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/utils/Proxy.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3600">
+          <caret line="240" column="0" lean-forward="false" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-text-input-wrapper/lib/src/TextInputWrapper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="114" column="20" lean-forward="false" selection-start-line="114" selection-start-column="20" selection-end-line="114" selection-end-column="91" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="55" lean-forward="false" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/native/Bridge.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="33" lean-forward="false" selection-start-line="7" selection-start-column="33" selection-end-line="7" selection-end-column="33" />
+          <folding>
+            <element signature="e#16#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/native/FaceDetectModule.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/FaceCollection.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="46" column="51" lean-forward="false" selection-start-line="46" selection-start-column="51" selection-end-line="46" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/native/AddFacePhoto.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/BadmintonCourseRecord.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-669">
+          <caret line="60" column="38" lean-forward="false" selection-start-line="60" selection-start-column="38" selection-end-line="60" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native/ReactAndroid/src/androidTest/assets/AndroidTestBundle.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="18425" column="21" lean-forward="false" selection-start-line="18425" selection-start-column="21" selection-end-line="18425" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/live/HomePage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

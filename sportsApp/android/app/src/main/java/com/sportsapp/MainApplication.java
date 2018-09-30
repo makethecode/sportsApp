@@ -9,10 +9,11 @@ import android.util.Log;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.theweflex.react.WeChatPackage;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.BaseActivityEventListener;
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.qiniu.pili.droid.streaming.StreamingEnv;
 import com.theweflex.react.WeChatPackage;
 
@@ -47,11 +48,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFSPackage(),
+            new RCTCameraPackage(),
+            new WeChatPackage(),
+
             new WeChatPackage(),
             new JPushPackage(false,false),
             new ImagePickerPackage(),
-              new RCTCameraPackage(),
             new RNSensitiveInfoPackage(),
             new PickerViewPackage(),
             new VectorIconsPackage(),

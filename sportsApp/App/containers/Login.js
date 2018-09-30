@@ -308,7 +308,7 @@ var  Login =React.createClass({
                         </View>
 
                         {/*登录按钮*/}
-                        <TouchableOpacity style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'#eee',margin:10,marginTop:25,padding:3,borderRadius:5}}
+                        <TouchableOpacity style={{flexDirection:'row',height:45,margin:10,marginBottom:5,backgroundColor:'#eee',marginTop:20,padding:3,borderRadius:5}}
                                           onPress={()=>{
                                               if(this.state.user&&
                                                   this.state.user.username&&this.state.user.username!=''&&
@@ -351,10 +351,10 @@ var  Login =React.createClass({
 
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'column',paddingHorizontal:28}}>
 
-                        <View style={{flex:1,backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:110}}>
+                        <View style={{flex:1,backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:height/6}}>
                             <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
-                            <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                            <Text style={{justifyContent:'center',textAlign:'center',color:'#eee',fontSize:12}}>
+                            <View style={{flex:1}}>
+                            <Text style={{textAlign:'center',color:'#eee',fontSize:12}}>
                                 还没有帐号?
                             </Text>
                             </View>

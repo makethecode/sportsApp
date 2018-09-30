@@ -22,6 +22,7 @@ import com.baidu.idl.face.platform.FaceEnvironment;
 import com.baidu.idl.face.platform.FaceSDKManager;
 import com.baidu.idl.face.platform.LivenessTypeEnum;
 import com.facebook.react.ReactActivity;
+import com.theweflex.react.WeChatPackage;
 import com.sportsapp.faceDetect.ExampleApplication;
 
 import java.io.File;

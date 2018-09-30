@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">sportsApp</string>
     <string name="android_auto_update_dialog_title">发现新版本</string>
 

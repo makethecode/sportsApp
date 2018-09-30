@@ -261,7 +261,6 @@ let Proxy={
                     })
                     .catch((err) => {
                         reject(new Error(err));
-                        console.warn(err);
                     }).done();
             });
         }else{

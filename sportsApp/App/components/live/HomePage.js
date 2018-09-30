@@ -13,7 +13,8 @@ import {
     Animated,
     Easing,
     TextInput,
-    BackAndroid
+    BackAndroid,
+    DeviceEventEmitter
 } from 'react-native';
 import {connect} from 'react-redux';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -27,7 +28,7 @@ import {
     fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,signUpFieldTimeActivity
 } from '../../action/ActivityActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_VEDIO} from 'react-native-toolbar-wrapper'
 import {getAccessToken,} from '../../action/UserActions';
 import  {
     getRTMPPushUrl,
@@ -35,9 +36,19 @@ import  {
 } from '../../action/LiveActions';
 import Config from "../../../config";
 import Proxy from "../../utils/Proxy";
+import ViewPager from 'react-native-viewpager';
+
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
+
+var IMGS = [
+    require('../../../img/zhibo1.jpeg'),
+    require('../../../img/zhibo2.jpeg'),
+    require('../../../img/zhibo3.jpeg'),
+];
+
 class HomePage extends Component{
+
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
@@ -45,20 +56,35 @@ class HomePage extends Component{
         }
     }
 
+    _renderPage(data,pageID){
+        return (
+            <View style={{width:width}}>
+                <Image
+                    source={data}
+                    style={{width:width,flex:3}}
+                    resizeMode={"stretch"}
+                />
+            </View>
+        );
+    }
+
     constructor(props) {
         super(props);
+        var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
             isRefreshing:false,
             activity:{name:"sda"},
            playingList:[],
             code_url:null,
+            dataSource:ds.cloneWithPages(IMGS),
         };
     }
 
     render(){
 
         const items = [
-            { name: 'TURQUOISE', code: '#1abc9c' }, { name: 'EMERALD', code: '#2ecc71' },
+            { name: 'TURQUOISE', code: '#1abc9c' },
+            { name: 'EMERALD', code: '#2ecc71' },
             { name: 'PETER RIVER', code: '#3498db' }, { name: 'AMETHYST', code: '#9b59b6' },
             { name: 'WET ASPHALT', code: '#34495e' }, { name: 'GREEN SEA', code: '#16a085' },
             { name: 'NEPHRITIS', code: '#27ae60' }, { name: 'BELIZE HOLE', code: '#2980b9' },
@@ -72,60 +98,76 @@ class HomePage extends Component{
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="直播间" actions={[]} navigator={this.props.navigator}>
+                <Toolbar width={width} title="直播间" navigator={this.props.navigator} actions={[{icon:ACTION_VEDIO,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0){
+                                 this.props.dispatch(getRTMPPushUrl(this.props.personId)).then((json)=>{
+                                     var urlsList=null;
+                                     var pushUrl=null;
+                                     if(json.re==1){
+                                         urlsList=json.json;
+                                         pushUrl=urlsList.rtmppushurl;
+                                         //生成推流地址交给原生安卓处理
+                                         //Bridge.raisePLStream(pushUrl);
+                                         //用Promise进行原生模块与rn模块的交互
+                                         Bridge.raisePLStream(pushUrl).then(msg=>{
+                                             //alert(msg);
+                                         }).catch(e=>{alert(e)});
+                                     }else{
+                                         alert('申请地址失败');
+                                         //TODO:微信分享邀请好友
+                                     }
+                                 });
+                                 }
+                         }}>
 
-                    <View style={{flex:1,height:height-100,width:width,backgroundColor:'#66CDAA',padding:5,flexDirection:'column'}}>
+                    <ScrollView style={{flex:1,height:height-100,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
-                        <View style={{flex:2,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
-                            <View style={{flex:1}}>
-
-                                <TouchableOpacity style={{flex:1,width:0.9*width,alignItems:'center',justifyContent:'center',backgroundColor:'grey',borderWidth:2,borderRadius:10,borderColor:'black',}}
-                                    onPress={()=>{
-
-                                        this.props.dispatch(getRTMPPushUrl(this.props.personId)).then((json)=>{
-                                            var urlsList=null;
-                                            var pushUrl=null;
-                                            if(json.re==1){
-                                                urlsList=json.json;
-                                                pushUrl=urlsList.rtmppushurl;
-                                                Bridge.raisePLStream(pushUrl);
-                                            }else{
-
-                                                alert('申请地址失败');
-                                                //TODO:微信分享邀请好友
-
-                                            }
-                                        });
-
-                                    }}>
-                                    {/*<Icon name={'plug'} size={50} color={'#aaa'}/>*/}
-                                    <Text style={{fontSize:20,color:'#fff',fontWeight:'bold'}}>---您尚未开播---</Text>
-                                    <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>点击开播</Text>
-                                </TouchableOpacity>
-
-                            </View>
-                        </View>
-
-                        <View style={{flex:2,padding:10,margin:5,alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-                            <GridView
-                                itemDimension={130}
-                                items={this.state.playingList}
-                                style={styles.gridView}
-                                renderItem={item => (
-                                    <TouchableOpacity style={[styles.itemContainer, { backgroundColor: '#7f8c8d' }]}>
-                                        <Text style={styles.itemName}>{item.title}</Text>
-
-                                        <Text style={styles.itemCode}>{item.brief}</Text>
-                                    </TouchableOpacity>
-                                )}
+                        <View style={{width:width,height:140}}>
+                            <ViewPager
+                                style={this.props.style}
+                                dataSource={this.state.dataSource}
+                                renderPage={this._renderPage}
+                                isLoop={true}
+                                autoPlay={true}
                             />
                         </View>
 
-                    </View>
+                        <View style={{width:width,height:30,justifyContent:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                            <Text style={{fontSize:13,color:'#666'}}>全部直播</Text>
+                        </View>
+
+                        <View style={{flex:1,alignItems:'center',justifyContent:'center',flexDirection:'column',padding:2}}>
+                            <GridView
+                                itemsPerRow={2}
+                                spacing={3}
+                                items={this.state.playingList}
+                                style={styles.gridView}
+                                renderItem={this.renderRow.bind(this)}
+                            />
+                        </View>
+
+                    </ScrollView>
 
                 </Toolbar>
             </View>
         )
+    }
+
+    renderRow(rowData)
+    {
+        return(
+        <TouchableOpacity style={{height:150,width:width/2-10,}}
+                          onPress={()=>{
+
+                          }}
+        >
+            <Image style={{height:150,width:width/2-10,padding:5,}} source={require('../../../img/zhibologo.jpeg')} resizeMode={'stretch'}>
+                    <Text style={[styles.itemName,{backgroundColor:'transparent'}]}>{rowData.title}</Text>
+                    <Text style={[styles.itemCode,{backgroundColor:'transparent'}]}>{rowData.brief}</Text>
+            </Image>
+        </TouchableOpacity>
+        );
     }
 
     componentWillMount(){
@@ -143,6 +185,12 @@ class HomePage extends Component{
         }).catch((e) => {
             reject(e)
         })
+
+        DeviceEventEmitter.addListener('EventName', function  (msg) {
+            //alert(msg);
+            //直播结束后处理
+        });
+
     }
 }
 
@@ -150,26 +198,23 @@ const styles = StyleSheet.create({
     itemName: {
         fontSize: 16,
         color: '#fff',
-        fontWeight: '600',
+        fontWeight:'bold'
     },
     itemCode: {
-        fontWeight: '600',
         fontSize: 12,
         color: '#fff',
     },
     itemContainer: {
+        flex:1,
         justifyContent: 'flex-end',
-        borderRadius: 5,
-        padding: 10,
-        height: 150,
     },
     gridView: {
-        paddingTop: 25,
         flex: 1,
+        paddingTop:5,
     },
     container:{
         flex:1,
-        backgroundColor:'#66CDAA'
+        backgroundColor:'#fff'
     },
     popoverContent: {
         width: 100,
@@ -180,6 +225,11 @@ const styles = StyleSheet.create({
     popoverText: {
         color: '#ccc',
         fontSize:14
+    },
+    itemStyle:{
+        height: 150,
+        width:150,
+        padding:5
     }
 });
 

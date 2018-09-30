@@ -1,5 +1,11 @@
 package com.sportsapp.reactPackage;
 
+import android.support.annotation.Nullable;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.sportsapp.module.FaceDetectModule;
 import com.sportsapp.module.UpdateModule;
 import com.facebook.react.ReactPackage;
@@ -35,4 +41,5 @@ public class AnExampleReactPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
+
 }

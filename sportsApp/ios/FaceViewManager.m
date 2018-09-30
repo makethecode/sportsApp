@@ -27,6 +27,9 @@ RCT_EXPORT_METHOD(getFaceView:(NSString *)msg )
   NSLog(@"RN传入原生界面的数据为:%@",msg);
   //主要这里必须使用主线程发送,不然有可能失效
  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(testNotificationEventReminderReceived:) name:@"testNotification" object:nil];
+  //通知在多线程中使用
+  //通知在接收的方法跟发送通知所在的线程中一样
+  //异步发送通知, 主线程监听通知, 接收通知的方法在子线程中
   dispatch_async(dispatch_get_main_queue(), ^{
     //[[NSNotificationCenter defaultCenter]postNotificationName:@"RNOpenVC" object:nil];
     

@@ -33,6 +33,7 @@ export let getRTMPPushUrl = () => {
                 },
                 body: {
                     time:120,
+                    source:"source1",
                     // hubName:"sportshot",
                     // type:"RTMP",
                     // hubType:1,
