@@ -18,6 +18,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.pili.pldroid.player.AVOptions;
+import com.sportsapp.R;
+import com.sportsapp.plsteam.PLVideoViewActivity;
 import com.sportsapp.plsteam.SWCameraStreamingActivity;
 
 import java.text.SimpleDateFormat;
@@ -36,18 +39,17 @@ public class Bridge extends ReactContextBaseJavaModule {
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
         @Override
         public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
-            //activity
+            //activity结束时向rn进行回调
                 WritableMap writableMap = new WritableNativeMap();
                 writableMap.putString("key", "123");
                 sendTransMisson(reactContext, "EventName", writableMap);
-
         }
     };
 
         /**
          * @param reactContext
          * @param eventName    事件名
-         * @param params       传惨
+         * @param params       传参
          */
         public void sendTransMisson(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
             reactContext
@@ -105,6 +107,34 @@ public class Bridge extends ReactContextBaseJavaModule {
         intent.setClass(getCurrentActivity(), SWCameraStreamingActivity.class);
         intent.putExtra("url",url);
         getCurrentActivity().startActivityForResult(intent,1);
+
+    }
+
+    @ReactMethod
+    public void playVideo(String url){
+
+        Intent intent=new Intent();
+        intent.setClass(getCurrentActivity(), PLVideoViewActivity.class);
+        //播放地址，默认播放source1的地址：rtmp://pili-live-rtmp.sportshot.cn/sportshot/source1
+        intent.putExtra("videoPath", url);
+
+        //播放配置
+        //软解、硬解、自动
+        intent.putExtra("mediaCodec", AVOptions.MEDIA_CODEC_AUTO);
+        //直播、点播
+        intent.putExtra("liveStreaming", 1);
+        //离线缓存（点播）
+        intent.putExtra("cache", false);
+        //循环播放（点播）
+        intent.putExtra("loop", false);
+        //视频数据回调
+        intent.putExtra("video-data-callback", false);
+        //音频数据回调
+        intent.putExtra("audio-data-callback", false);
+        //关闭日志
+        intent.putExtra("disable-log", false);
+
+        getCurrentActivity().startActivity(intent);
 
     }
 

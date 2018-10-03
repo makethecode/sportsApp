@@ -73,3 +73,7 @@
 -keep class com.tencent.mm.sdk.** {
    *;
 }
+
+# pili
+-keep class com.pili.pldroid.player.** { *; }
+-keep class com.qiniu.qplayer.mediaEngine.MediaPlayer{*;}

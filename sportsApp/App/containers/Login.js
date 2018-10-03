@@ -351,7 +351,7 @@ var  Login =React.createClass({
 
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'column',paddingHorizontal:28}}>
 
-                        <View style={{flex:1,backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:height/6}}>
+                        <View style={{backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:height/6}}>
                             <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
                             <View style={{flex:1}}>
                             <Text style={{textAlign:'center',color:'#eee',fontSize:12}}>

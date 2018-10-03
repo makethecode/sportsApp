@@ -263,6 +263,7 @@ class CreateBadmintonCourse extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入课程名称"
                                 value={this.state.course.className}
+                                underlineColorAndroid={false}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{courseName:value})})
@@ -316,6 +317,7 @@ class CreateBadmintonCourse extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入课程目标"
                                 value={this.state.course.detail}
+                                underlineColorAndroid={false}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{detail:value})})
@@ -359,6 +361,7 @@ class CreateBadmintonCourse extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入课程容量"
                                 value={this.state.course.maxNumber}
+                                underlineColorAndroid={false}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{maxNumber:parseInt(value)})})
@@ -380,6 +383,7 @@ class CreateBadmintonCourse extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入授课课次"
                                 value={this.state.course.classCount}
+                                underlineColorAndroid={false}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{classCount:parseInt(value)})})
@@ -500,6 +504,7 @@ class CreateBadmintonCourse extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入支付费用"
                                 value={this.state.course.cost}
+                                underlineColorAndroid={false}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{cost:parseInt(value)})})

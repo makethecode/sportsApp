@@ -21,15 +21,7 @@ import TextInputWrapper from 'react-native-text-input-wrapper';
 import QRCode from 'react-native-qrcode'
 import Bridge from '../../native/Bridge'
 import GridView from 'react-native-super-grid'
-import {
-    wechatPay,
-} from '../../action/UserActions';
-import {
-    fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,signUpFieldTimeActivity
-} from '../../action/ActivityActions';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_VEDIO} from 'react-native-toolbar-wrapper'
-import {getAccessToken,} from '../../action/UserActions';
 import  {
     getRTMPPushUrl,
     updatePlayingUrls,
@@ -37,6 +29,8 @@ import  {
 import Config from "../../../config";
 import Proxy from "../../utils/Proxy";
 import ViewPager from 'react-native-viewpager';
+import CreateLiveHome from './CreateLiveHome'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
@@ -53,6 +47,19 @@ class HomePage extends Component{
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
+        }
+    }
+
+    navigate2CreateLiveHome(urls) {
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'CreateLiveHome',
+                component: CreateLiveHome,
+                params: {
+                    urls:urls
+                }
+            })
         }
     }
 
@@ -102,17 +109,12 @@ class HomePage extends Component{
                          onPress={(i)=>{
                              if(i==0){
                                  this.props.dispatch(getRTMPPushUrl(this.props.personId)).then((json)=>{
-                                     var urlsList=null;
-                                     var pushUrl=null;
+                                     var urls
                                      if(json.re==1){
-                                         urlsList=json.json;
-                                         pushUrl=urlsList.rtmppushurl;
-                                         //生成推流地址交给原生安卓处理
-                                         //Bridge.raisePLStream(pushUrl);
-                                         //用Promise进行原生模块与rn模块的交互
-                                         Bridge.raisePLStream(pushUrl).then(msg=>{
-                                             //alert(msg);
-                                         }).catch(e=>{alert(e)});
+                                         //{[rtmppushurl],[rtmpplayurl],[snapshot]}
+                                         urls=json.data;
+                                         this.navigate2CreateLiveHome(urls);
+
                                      }else{
                                          alert('申请地址失败');
                                          //TODO:微信分享邀请好友
@@ -156,15 +158,27 @@ class HomePage extends Component{
 
     renderRow(rowData)
     {
+
+        //{brief=单纯测试, longbrief=单纯测试1111, snapShotUrl=http://live-snapshot/sportshot/EEvvee.jpg,
+        // personId=4, perNum=lxq, id=5, title=reTest的直播间, playUrl=rtmp://pili-live-rtmp.sportshot.cn/sportshot/EEvvee}
+
         return(
         <TouchableOpacity style={{height:150,width:width/2-10,}}
                           onPress={()=>{
-
+                              //播放source1的直播
+                              var playUrl = 'rtmp://pili-live-rtmp.sportshot.cn/sportshot/source1'
+                              Bridge.playVideo(playUrl)
                           }}
         >
             <Image style={{height:150,width:width/2-10,padding:5,}} source={require('../../../img/zhibologo.jpeg')} resizeMode={'stretch'}>
+                <View style={{flex:6,backgroundColor:'transparent'}}>
                     <Text style={[styles.itemName,{backgroundColor:'transparent'}]}>{rowData.title}</Text>
                     <Text style={[styles.itemCode,{backgroundColor:'transparent'}]}>{rowData.brief}</Text>
+                </View>
+                <View style={{flex:1,backgroundColor:'transparent',flexDirection:'row'}}>
+                    <Ionicons name={'md-person'} size={13} color="#fff"/>
+                    <Text style={[styles.itemPlayer,{backgroundColor:'transparent',marginLeft:6}]}>{rowData.perNum}</Text>
+                </View>
             </Image>
         </TouchableOpacity>
         );
@@ -172,6 +186,7 @@ class HomePage extends Component{
 
     componentWillMount(){
 
+        //获得正在直播的房间
         Proxy.postes({
             url: Config.server + '/func/allow/getRtmpPlayUrl',
             headers: {
@@ -180,17 +195,11 @@ class HomePage extends Component{
             body: {}
 
         }).then((json) => {
-            this.setState({playingList:json.data.data})
+            this.setState({playingList:json.data})
             //this.props.dispatch(updatePlayingUrls({ url:json.data }));
         }).catch((e) => {
             reject(e)
         })
-
-        DeviceEventEmitter.addListener('EventName', function  (msg) {
-            //alert(msg);
-            //直播结束后处理
-        });
-
     }
 }
 
@@ -202,6 +211,10 @@ const styles = StyleSheet.create({
     },
     itemCode: {
         fontSize: 12,
+        color: '#fff',
+    },
+    itemPlayer: {
+        fontSize: 13,
         color: '#fff',
     },
     itemContainer: {
@@ -244,7 +257,6 @@ const mapStateToProps = (state, ownProps) => {
         personId:personInfo.personId,
         wechat:personInfo.wechat,
         perIdCard:personInfo.perIdCard,
-        playingList:state.playingList
     }
     return props
 }

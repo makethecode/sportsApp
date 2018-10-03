@@ -44,11 +44,79 @@ export let getRTMPPushUrl = () => {
 
                 }
             }).then((json) => {
-                dispatch(updateRtmpUrl({ url:json.data }));
-                resolve({re:1,json:json.data})
+                //dispatch(updateRtmpUrl({ url:json.data }));
+                resolve(json.data)
             }).catch((e) => {
                 reject(e)
             })
         })
     }
 }
+
+//创建直播间
+export let createLiveHome = (personId,title,brief,longbrief,rtmppushurl,rtmpplayurl,snapshot) => {
+    return (dispatch, getState) => {
+
+        return new Promise((resolve, reject) => {
+
+            var state = getState();
+            var accessToken = state.user.accessToken;
+
+            Proxy.postes({
+                url: Config.server + '/func/allow/createLiveHome',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+
+                    personId:personId,
+
+                    time:120,
+                    source:"source1",
+                    hubName:"sportshot",
+                    type:"RTMP",
+                    hubType:1,
+                    streamName:"test",
+
+                    title:title,
+                    brief:brief,
+                    longbrief:longbrief,
+                    rtmppushurl:rtmppushurl,
+                    rtmpplayurl:rtmpplayurl,
+                    snapshot:snapshot,
+                }
+            }).then((json) => {
+               resolve(json.data)
+            }).catch((e) => {
+                reject(e)
+            })
+        })
+    }
+}
+
+//结束直播并关闭直播间
+export let closeLiveHome = (id) => {
+    return (dispatch, getState) => {
+
+        return new Promise((resolve, reject) => {
+
+            var state = getState();
+            var accessToken = state.user.accessToken;
+
+            Proxy.postes({
+                url: Config.server + '/func/allow/closeLiveHome',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    id:id
+                }
+            }).then((json) => {
+                resolve(json.data)
+            }).catch((e) => {
+                reject(e)
+            })
+        })
+    }
+}
+
