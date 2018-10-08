@@ -210,6 +210,8 @@ class Home extends Component {
     }
 
     renderRow(rowData,sectionId,rowId){
+
+        if(Platform.OS=== 'ios'){
         return(
             <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',padding:5}}
                 onPress={()=>{
@@ -240,7 +242,40 @@ class Home extends Component {
                     </View>
                 </View>
 
-            </TouchableOpacity>)
+            </TouchableOpacity>)}
+            else{
+            return (
+                <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',padding:5}}
+                                  onPress={()=>{
+                                      //Linking.openURL("http://114.215.99.2:8880/news/"+rowData.newsNum+"/index.html").catch(err => console.error('An error occurred', err));
+                                  }}
+                >
+                    <View style={{flexDirection:'column',width:100,justifyContent:'center',alignItems:'center'}}>
+                        <Image  resizeMode="stretch" style={{width:100,height:75}}
+                                source={require('../../img/zhibo2.jpeg')}
+                        />
+                    </View>
+
+                    <View style={{flex:1,flexDirection:'column',alignItems:'flex-start'}}>
+                        <View style={{padding:4,paddingHorizontal:12}}>
+                            <Text style={{color:'#666',fontSize:16}}>
+                                {rowData.title}
+                            </Text>
+                        </View>
+
+                        <View style={{paddingTop:12,paddingBottom:4,flexDirection:'row',alignItems:'center'}}>
+
+                            <View style={{padding:4,paddingHorizontal:12,}}>
+                                <Text style={{color:'#888',fontSize:11}}>
+                                    {rowData.createTime}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+
+                </TouchableOpacity>
+            );
+        }
     }
 
     constructor(props) {
@@ -399,81 +434,7 @@ class Home extends Component {
                             </View>
 
                         </View>
-
-
-                        <PopupDialog
-                            ref={(popupDialog) => {
-                                    this.mobilePhoneDialog = popupDialog;
-                                }}
-                            dialogAnimation={scaleAnimation}
-                            dismissOnTouchOutside={false}
-                            actions={[]}
-                            width={0.8}
-                            height={0.4}
-                        >
-
-                            <MobilePhoneModal
-                                val={this.props.mobilePhone}
-                                onVerify={(data)=>{
-                                            this.props.dispatch(verifyMobilePhone(data)).then((json)=>{
-                                                if(json.re==1)
-                                                {
-                                                    this.state.verifyCode=json.data
-                                                }
-                                            })
-                                        }}
-                                onClose={()=>{
-                                            this.mobilePhoneDialog.dismiss();
-                                        }}
-                                onConfirm={(data)=>{
-                                            var {mobilePhone,verifyCode}=data
-                                            if(this.state.verifyCode==verifyCode)
-                                            {
-                                                  this.props.dispatch(updateMobilePhone(mobilePhone)).then((json)=>{
-                                                    if(json.re==1)
-                                                    {
-                                                        this.props.dispatch(onMobilePhoneUpdate(mobilePhone))
-                                                    }
-                                                    this.mobilePhoneDialog.dismiss();
-                                                    Alert.alert('信息','手机号验证通过',[{text:'确认',onPress:()=>{
-                                                         console.log();
-                                                    }}]);
-                                                })
-                                            }
-
-                                        }}
-                            />
-
-                        </PopupDialog>
-
-
-                        <PopupDialog
-                            ref={(popupDialog) => {
-                                    this.validateMyInformationDialog = popupDialog;
-                                }}
-                            dialogAnimation={scaleAnimation}
-                            dismissOnTouchOutside={false}
-                            actions={[]}
-                            width={0.8}
-                            height={0.2}
-                        >
-
-                            <ValidateMyInformationModal
-                                val=''
-
-                                onClose={()=>{
-                                        }}
-                                onConfirm={(data)=>{
-
-                                        }}
-                            />
-
-                        </PopupDialog>
-
-
-
                     </View>
-
                 </View>
                 :
             <View style={{flex:1,backgroundColor:'#fff'}}>
@@ -598,87 +559,11 @@ class Home extends Component {
                               </View>
 
                             </View>
-
-
-
                             <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                                 {newsList}
                             </View>
 
                         </View>
-
-
-                        <PopupDialog
-                            ref={(popupDialog) => {
-                                    this.mobilePhoneDialog = popupDialog;
-                                }}
-                            dialogAnimation={scaleAnimation}
-                            dismissOnTouchOutside={false}
-                            actions={[]}
-                            width={0.8}
-                            height={0.4}
-                        >
-
-                            <MobilePhoneModal
-                                val={this.props.mobilePhone}
-                                onVerify={(data)=>{
-                                            this.props.dispatch(verifyMobilePhone(data)).then((json)=>{
-                                                if(json.re==1)
-                                                {
-                                                    this.state.verifyCode=json.data
-                                                }
-                                            })
-                                        }}
-                                onClose={()=>{
-                                            this.mobilePhoneDialog.dismiss();
-                                        }}
-                                onConfirm={(data)=>{
-                                            var {mobilePhone,verifyCode}=data
-                                            if(this.state.verifyCode==verifyCode)
-                                            {
-                                                  this.props.dispatch(updateMobilePhone(mobilePhone)).then((json)=>{
-                                                    if(json.re==1)
-                                                    {
-                                                        this.props.dispatch(onMobilePhoneUpdate(mobilePhone))
-                                                    }
-                                                    this.mobilePhoneDialog.dismiss();
-                                                    Alert.alert('信息','手机号验证通过',[{text:'确认',onPress:()=>{
-                                                         console.log();
-                                                    }}]);
-                                                })
-                                            }
-
-                                        }}
-                            />
-
-                        </PopupDialog>
-
-
-                        <PopupDialog
-                            ref={(popupDialog) => {
-                                    this.validateMyInformationDialog = popupDialog;
-                                }}
-                            dialogAnimation={scaleAnimation}
-                            dismissOnTouchOutside={false}
-                            actions={[]}
-                            width={0.8}
-                            height={0.2}
-                        >
-
-                            <ValidateMyInformationModal
-                                val=''
-
-                                onClose={()=>{
-                                        }}
-                                onConfirm={(data)=>{
-
-                                        }}
-                            />
-
-                        </PopupDialog>
-
-
-
                     </View>
 
             </View>
@@ -690,18 +575,28 @@ class Home extends Component {
     {
         InteractionManager.runAfterInteractions(() => {
 
+            //只是用于ios不适用于android
             //通过网易新闻的接口获取新闻
             //体育类T1348649079062
 
-            var newsKey = 'T1348649079062'
-
-            this.props.dispatch(getNewsInfo()).then((json)=>{
-
-                this.setState({
-                    news:json
-                });
-
-            })
+            if(Platform.OS == 'ios' )
+                {
+                    //ios用网易接口
+                    var newsKey = 'T1348649079062';
+                    this.props.dispatch(getNewsInfo()).then((json)=>{
+                        this.setState({
+                        news:json
+                    });
+                })}
+                else
+                {
+                    //安卓用数据库
+                    this.props.dispatch(fetchNewsInfo()).then((json)=>{
+                        this.setState({
+                            news:json.data
+                        })
+                    })
+                }
 
         });
     }
@@ -729,33 +624,25 @@ async function updateEvents() {
 const mapStateToProps = (state, ownProps) => {
 
     var personInfo=state.user.personInfo;
-    var mobilePhone=personInfo.mobilePhone;
-
     var personInfoAuxiliary = state.user.personInfoAuxiliary;
-    var checkedMobile = personInfoAuxiliary.checkedMobile;
-
     var trainerInfo=state.user.trainer
 
     const props = {
-        // news:state.newsTheme.news,
-        mobilePhone:mobilePhone,
         userType:parseInt(state.user.personInfo.perTypeCode),
-        perName:personInfo.perName,
-        perIdCard:personInfo.perIdCard,
     }
 
-    if(trainerInfo)
-    {
-        props.sportLevelValidateFailed=(!(trainerInfo.sportLevel!==undefined&&trainerInfo.sportLevel!==null))//运动水平没验证
-        props.perNameValidateFailed=(!(personInfo.perName&&personInfo.perName!=''))//真实姓名没验证
-        props.perIdCardValidateFailed=(!(personInfo.perIdCard&&personInfo.perIdCard!=''))//身份证没验证
-    }
-
-    //手机号没验证
-    if(mobilePhone&&mobilePhone!=''&&checkedMobile==true)
-        props.mobilePhoneValidateFailed=false
-    else
-        props.mobilePhoneValidateFailed=true
+    // if(trainerInfo)
+    // {
+    //     props.sportLevelValidateFailed=(!(trainerInfo.sportLevel!==undefined&&trainerInfo.sportLevel!==null))//运动水平没验证
+    //     props.perNameValidateFailed=(!(personInfo.perName&&personInfo.perName!=''))//真实姓名没验证
+    //     props.perIdCardValidateFailed=(!(personInfo.perIdCard&&personInfo.perIdCard!=''))//身份证没验证
+    // }
+    //
+    // //手机号没验证
+    // if(mobilePhone&&mobilePhone!=''&&checkedMobile==true)
+    //     props.mobilePhoneValidateFailed=false
+    // else
+    //     props.mobilePhoneValidateFailed=true
 
     return props
 }

@@ -236,7 +236,7 @@ class My extends Component{
                         </View>
                         <View style={{width:width,justifyContent:'center',alignItems:'center'}}>
                         <View style={{alignItems:'center',justifyContent:'center',marginTop:15,width:80,backgroundColor:'#fff',opacity:0.7,borderRadius:5}}>
-                            <Text style={{color:'#333',fontSize:14}}>{this.props.username}</Text>
+                            <Text style={{color:'#333',fontSize:14}}>{this.props.personInfo.perNum}</Text>
                         </View>
                         </View>
                     </Image>

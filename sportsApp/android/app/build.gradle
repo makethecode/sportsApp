@@ -164,6 +164,12 @@ dependencies {
     // From node_modules
     compile files('src/main/libs/pldroid-media-streaming-2.2.1.jar')
     compile files('src/main/libs/pldroid-player-2.1.5.jar')
+
+    compile 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
+    compile 'com.github.ctiao:ndkbitmap-armv7a:0.9.21'
+
+    compile 'com.github.ctiao:ndkbitmap-armv5:0.9.21'
+    compile 'com.github.ctiao:ndkbitmap-x86:0.9.21'
 }
 
 // Run this once to be able to run the application with BUCK

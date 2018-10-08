@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
 
     const props = {
-        userType: parseInt(state.user.usertype),
+        userType: state.user.user.usertype,
         relative:state.user.relative,
         username:state.user.user.username,
         personInfo:state.user.personInfo,

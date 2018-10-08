@@ -73,7 +73,7 @@ const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 
 var { height, width } = Dimensions.get('window');
-const dropdownWidth = width/3-20;
+const dropdownWidth = width/4-20;
 
 class BadmintonCourseRecord extends Component {
     navigate2OrderClass() {
@@ -412,8 +412,9 @@ class BadmintonCourseRecord extends Component {
                         var clubId = -1;
                         var venueId = -1;
                         var coachId = -1;
+                        var typeId = -1;
 
-                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                         this.navigate2StudentInformation(rowData.courseId);}
                     }>
                         <Text style={{color: '#66CDAA', fontSize: 14}}>学员信息</Text>
@@ -435,8 +436,9 @@ class BadmintonCourseRecord extends Component {
                         var clubId = -1;
                         var venueId = -1;
                         var coachId = -1;
+                        var typeId = -1;
 
-                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练',course:rowData})
+                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                         this.props.dispatch(establishEveryDayClass(rowData)).then((json)=>{
                         //人脸识别
                         this.sharetoSomeone.show();
@@ -463,8 +465,9 @@ class BadmintonCourseRecord extends Component {
                             var clubId = -1;
                             var venueId = -1;
                             var coachId = -1;
+                            var typeId = -1;
 
-                            this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                            this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                             this.navigate2ModifyDistribution(rowData);
                             }
                         }>
@@ -488,8 +491,9 @@ class BadmintonCourseRecord extends Component {
                                                   var clubId = -1;
                                                   var venueId = -1;
                                                   var coachId = -1;
+                                                  var typeId = -1;
 
-                                                  this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                                                  this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                                                   this.navigate2TalkingFarm(rowData.courseId);
                                               }
                                               }>
@@ -514,8 +518,9 @@ class BadmintonCourseRecord extends Component {
                                               var clubId = -1;
                                               var venueId = -1;
                                               var coachId = -1;
+                                              var typeId = -1;
 
-                                              this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                                              this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                                               this.navigate2AddClass1(rowData);
                                           }
                                           }>
@@ -589,16 +594,20 @@ class BadmintonCourseRecord extends Component {
             clubName:'俱乐部',
             venueName:'场地',
             coachName:'教练',
+            typeName:'分类',
             showClubDropdown:false,
             showVenueDropdown:false,
             showCoachDropdown:false,
+            showTypeDropdown:false,
             clubList:[],clubs:[],
             venueList:[],venues:[],
             coachList:[],coaches:[],
+            typeList:['羽毛球','篮球','足球'],types:['羽毛球','篮球','足球'],
 
             clubId:-1,
             venueId:-1,
             coachId:-1,
+            typeId:-1,
 
         };
     }
@@ -641,10 +650,12 @@ class BadmintonCourseRecord extends Component {
         let clubicon = this.state.showClubDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
         let venueicon = this.state.showVenueDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
         let coachicon = this.state.showCoachDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
+        let typeicon = this.state.showTypeDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
 
         var clubName_show = this.lengthFilter(this.state.clubName);
         var venueName_show = this.lengthFilter(this.state.venueName);
         var coachName_show = this.lengthFilter(this.state.coachName);
+        var typeName_show = this.lengthFilter(this.state.typeName);
 
         return (
             <View style={styles.container}>
@@ -655,8 +666,9 @@ class BadmintonCourseRecord extends Component {
                                  var clubId = -1;
                                  var venueId = -1;
                                  var coachId = -1;
+                                 var typeId = -1;
 
-                                 this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                                 this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
 
                                  this.navigate2AddCourse()}
                          }}>
@@ -723,6 +735,27 @@ class BadmintonCourseRecord extends Component {
                                 />
                             </View>
                         </ModalDropdown>
+
+                        <ModalDropdown
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.typeList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_4_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_4_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_4_willHide.bind(this)}
+                        >
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {typeName_show}
+                                </Text>
+                                <Image
+                                    style={styles.dropdown_image}
+                                    source={typeicon}
+                                />
+                            </View>
+                        </ModalDropdown>
                         {/*搜索*/}
                         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                         <TouchableOpacity
@@ -768,11 +801,13 @@ class BadmintonCourseRecord extends Component {
                         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                             <TouchableOpacity
                                 onPress={()=>{
+                                    //清空筛选记录
                                     var clubId = -1;
                                     var venueId = -1;
                                     var coachId = -1;
+                                    var typeId = -1;
 
-                                    this.setState({clubId:clubId,venueId:venueId,coachId:coachId,clubName:'俱乐部',venueName:'场地',coachName:'教练'})
+                                    this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
                                 }}
                             >
                                 <Ionicons name='md-refresh' size={20} color="#5c5c5c"/>
@@ -917,6 +952,12 @@ class BadmintonCourseRecord extends Component {
         });
     }
 
+    dropdown_4_onSelect(idx, value) {
+        this.setState({
+            typeName:value,
+        });
+    }
+
     dropdown_1_willShow() {
         this.setState({
             showClubDropDown:true,
@@ -932,6 +973,12 @@ class BadmintonCourseRecord extends Component {
     dropdown_3_willShow() {
         this.setState({
             showCoachDropDown:true,
+        });
+    }
+
+    dropdown_4_willShow() {
+        this.setState({
+            showTypeDropDown:true,
         });
     }
 
@@ -953,6 +1000,12 @@ class BadmintonCourseRecord extends Component {
         });
     }
 
+    dropdown_4_willHide() {
+        this.setState({
+            showTypeDropDown:false,
+        });
+    }
+
     lengthFilter(data){
         if(data.length>5){
             data=data.substring(0,4);
@@ -962,9 +1015,6 @@ class BadmintonCourseRecord extends Component {
     }
 
     componentWillMount(){
-        NativeModule.addListener('EventName',(data)=>{
-           // alert("asdadasd");
-        });
 
         DeviceEventEmitter.addListener('EventName',(img)=>{
 
@@ -1153,7 +1203,7 @@ const styles = StyleSheet.create({
 });
 
 module.exports = connect(state=>({
-        userType: state.user.usertype.perTypeCode,
+        userType: state.user.user.usertype,
         coursesOfCoach:state.course.coursesOfCoach,
         coursesOfCoachOnFresh:state.course.coursesOfCoachOnFresh,
         creatorId:state.user.personInfo.personId,

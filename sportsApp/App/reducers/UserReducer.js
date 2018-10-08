@@ -29,20 +29,20 @@ import {
     ON_COACHPHTOTO3_UPDATE,
     GET_UNIONID_INFO,
     GET_CLUB_INFO,
-
+    SET_WECHAT_INFO,
 } from '../constants/UserConstants';
 
 const initialState = {
     accessToken: null,
     auth: false,
     sessionId: null,
+    user: {username:null,password:null,usertype:null},
     personInfo: null,
-    portrait: null,
-    user: {},
-    trainer: {},
+    trainer: null,
     personInfoAuxiliary: null,
-    unionid: null,
-    club:{},
+    club:null,
+    wechat:null,
+    portrait:null,
 };
 
 let user = (state = initialState, action) => {
@@ -78,16 +78,13 @@ let user = (state = initialState, action) => {
         case UPDATE_USERTYPE:
             var {usertype} = action.payload;
             return Object.assign({}, state, {
-                usertype: usertype
+                user: Object.assign(state.user, {usertype:usertype})
             })
         case UPDATE_CERTIFICATE:
 
             var {username, password} = action.payload;
             return Object.assign({}, state, {
-                user: {
-                    username,
-                    password,
-                }
+                user: Object.assign(state.user, {username: username,password:password})
             })
         case ON_USER_NAME_UPDATE:
             var {username} = action.payload;
@@ -207,7 +204,12 @@ let user = (state = initialState, action) => {
                 club: data
             })
             break;
-
+        case SET_WECHAT_INFO:
+            var data = action.payload;
+            return Object.assign({}, state, {
+                wechat: data
+            })
+            break;
         default:
             return state;
     }

@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
 });
 
 module.exports = connect(state=>({
-        userType: state.user.usertype.perTypeCode,
+    userType: state.user.user.usertype,
         students:state.course.studentsOfCourse,
         studentsOnFresh:state.course.studentsOnFresh,
         creatorId:state.user.personInfo.personId

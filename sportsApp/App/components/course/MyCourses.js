@@ -534,6 +534,6 @@ var styles = StyleSheet.create({
 module.exports = connect(state => ({
         myCourses: state.course.myCourses,
         myCoursesOnFresh: state.course.myCoursesOnFresh,
-        userType: parseInt(state.user.usertype.perTypeCode)
+    userType: state.user.user.usertype,
     })
 )(MyCourses);

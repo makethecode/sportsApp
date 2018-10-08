@@ -18,12 +18,9 @@ import {
 } from 'react-native';
 import {fetchGames,enableCompetitionItemOnFresh} from '../action/CompetitionActions';
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
-var Proxy = require('../utils/Proxy');
 import {
-    doLogin,doGetType,getAccessToken,wechatregisterUser,wechatGetOpenid,wechatGetUserInfo,
+    doLogin,doGetType,getAccessToken,wechatregisterUser,wechatGetOpenid,wechatGetUserInfo,setWechatInfo,
 } from '../action/UserActions';
-
 import PreferenceStore from '../utils/PreferenceStore';
 import {
     PAGE_REGISTER,
@@ -31,18 +28,22 @@ import {
 import {
     updatePageState
 } from '../action/PageStateActions';
-
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-//import TextInputWrapper from '../encrypt/TextInputWrapper';
 import TextInputWrapper from 'react-native-text-input-wrapper'
 import Config from "../../config";
+import EmojiFilter from '../utils/EmojiFilter'
+
 var wechat=require('react-native-wechat');
-var  Login =React.createClass({
+var {height, width} = Dimensions.get('window');
+var Proxy = require('../utils/Proxy');
+
+var Login =React.createClass({
 
     navigate2Register:function(){
         //TODO:dispatch a action
-        this.props.dispatch(updatePageState({state:PAGE_REGISTER}))
+        this.props.dispatch(updatePageState(
+            {state:PAGE_REGISTER}))
     },
 
     getInitialState:function(){
@@ -54,33 +55,46 @@ var  Login =React.createClass({
             fadeCancel: new Animated.Value(0),
             fadePassword:new Animated.Value(0),
             unionid:null,
+
             isInstalled:false,
+            //微信开放平台接口
+            appid : 'wx9068ac0e88c09e7a',
+            secret : '3ea1d52ac88a6861472f279bd4010fc3',
+            wechat:{openid:null,nickname:null,sex:null,province:null,city:null,country:null,headimgurl:null,unionid:null},
         });
     },
 
     WXregister:function(unionid,nickname){
-       var url= "https://open.weixin.qq.com/connect/qrconnect?" +
-           "appid=wx9068ac0e88c09e7a&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        var url= "https://open.weixin.qq.com/connect/qrconnect?" +
+            "appid=wx9068ac0e88c09e7a&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
     },
 
     WXLogin(){
+        //微信获取用户信息：1.unionid2.headimgurl3.appopenid（必得）
+
+        //（授权作用域）获取用户信息
         let scope = 'snsapi_userinfo';
         let state = '12361231267312';
         //判断微信是否安装
         wechat.isWXAppInstalled()
             .then((isInstalled) => {
                 if (isInstalled) {
-                    //发送授权请求
+                    //发送授权登录请求,获得code
                     wechat.sendAuthRequest(scope,state)
                         .then(responseCode => {
                             //返回code码，通过code获取access_token
-                            appid=responseCode.appid;
-                            secret="3ea1d52ac88a6861472f279bd4010fc3";
-                           //this.props.dispatch(getAccessToken(true));
-                            var access_token=null;
-                            var openid=null;
-                            var unionid=null;
-                            var nickname=null;
+                            appid=this.state.appid;
+                            secret=this.state.secret;
+                            //this.props.dispatch(getAccessToken(true));
+                            var access_token = null;
+                            var openid = null;
+                            var unionid = null;
+                            var headimgurl = null;
+                            var nickname = null;
+                            var sex = 1;
+                            var province = null;
+                            var city = null;
+                            var country = null;
                             var url="https://api.weixin.qq.com/sns/oauth2/access_token?appid="+appid+"&secret="+secret+"&code="+responseCode.code+"&grant_type=authorization_code";
                             this.props.dispatch(wechatGetOpenid(url))
                                 .then((json)=>{
@@ -89,33 +103,34 @@ var  Login =React.createClass({
                                     var url1="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
                                     this.props.dispatch(wechatGetUserInfo(url1))
                                         .then((json)=>{
+                                            //{openid,nickname,sex,province,city,country,headimgurl,privilege,unionid}
+                                            openid = json.openid;
+                                            //nickname=EmojiFilter.filter(json.nickname);
+                                            nickname = json.nickname.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, "")
+                                            sex = json.sex;
+                                            province = json.province;
+                                            city = json.city;
+                                            country = json.country;
+                                            headimgurl = json.headimgurl;
                                             unionid=json.unionid;
-                                            nickname="wx"+json.nickname;
-                                            this.props.dispatch((wechatregisterUser(unionid,nickname)))
-                                                .then((json)=>{
-                                                    var nickname=json.data.nickName;
-                                                    var password=json.data.password;
-                                                    this.setState({showProgress: true});
-                                                    this.props.dispatch(doLogin(nickname,password))
-                                                        .then((json)=>{
-                                                            this.setState({showProgress: false,user:{}});
-                                                            if(json.re==-1){
-                                                                setTimeout(()=>{
-                                                                    alert(json.data);
-                                                                },900)
 
-                                                            }
-                                                            if(json.re==-100){
-                                                                this.setState({showProgress: false,user:{}});
-                                                            }
-                                                        })
-                                                        .catch((e)=>{
-                                                            alert(e);
-                                                        })
+                                            this.setState({wechat:Object.assign(this.state.wechat,
+                                                {
+                                                    openid:openid,
+                                                    nickname:nickname,
+                                                    sex:sex,
+                                                    province:province,
+                                                    city:city,
+                                                    country:country,
+                                                    headimgurl:headimgurl,
+                                                    unionid:unionid,
+                                                })});
 
-                                                }).catch((e)=>{
-                                                    alert(e);
-                                            })
+                                            //存入props.user.wechat中
+                                            this.props.dispatch(setWechatInfo(this.state.wechat))
+
+                                            this.navigate2Register();
+
                                         })
                                         .catch((e)=>{
                                             alert(e);
@@ -126,56 +141,6 @@ var  Login =React.createClass({
                                     alert(e);
                                 })
 
-
-
-
-                            // fetch(url).then(function(response) {
-                            //     return response.json();
-                            // }).then(function(data) {
-                            //     access_token=data.access_token;
-                            //     openid=data.openid;
-                            //     var url1="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
-                            //     fetch(url1).then(function(response) {
-                            //         return response.json();
-                            //     }).then(function(data) {
-                            //         unionid=data.unionid;
-                            //         nickname=data.nickname;
-                            //         //this.WXregister(unionid,nickname);
-                            //
-                            //         Proxy.postes({
-                            //             url: Config.server + '/func/register/wechatuserRegister',
-                            //             headers: {
-                            //                 'Content-Type': 'application/json',
-                            //             },
-                            //             body: {
-                            //                 nickName: nickname,
-                            //                 password:"1",
-                            //                 phoneNum:' ',
-                            //                 Trainer:1,
-                            //                 unionid:unionid,
-                            //                 LoginType:1
-                            //             }
-                            //         }).then((response)=>response.text())
-                            //             .then((res)=>{
-                            //                 var data=res;
-                            //             }).catch((e)=>{
-                            //             alert(e);
-                            //
-                            //         })
-                            //         // Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
-                            //         //     {text: '确定',onPress:()=>this.WXregister(unionid,nickname)}
-                            //         // ])
-                            //     }).catch(function(e) {
-                            //         console.log("Oops, error");
-                            //     });
-                            //
-                            // }).catch(function(e) {
-                            //     console.log("Oops, error");
-                            // });
-                            // fetch(url).then(response => response.json())
-                            //     .then(data => console.log(data))
-                            //     .catch(e => console.log("Oops, error", e))
-
                         })
                         .catch(err => {
                             Alert.alert('登录授权发生错误：', err.message, [
@@ -184,11 +149,10 @@ var  Login =React.createClass({
                         })
                 } else {
                     Platform.OS == 'ios' ?
-                        Alert.alert('没有安装微信', '是否安装微信？', [
-                            {text: '取消'},
+                        Alert.alert('没有安装微信', '请先安装微信', [
                             {text: '确定'}
                         ]) :
-                        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+                        Alert.alert('没有安装微信', '请先安装微信', [
                             {text: '确定'}
                         ])
                 }
@@ -322,7 +286,6 @@ var  Login =React.createClass({
                                                               setTimeout(()=>{
                                                                   alert(json.data);
                                                               },900)
-
                                                           }
                                                           if(json.re==-100){
                                                               this.setState({showProgress: false,user:{}});
@@ -342,16 +305,12 @@ var  Login =React.createClass({
                             </View>
                         </TouchableOpacity>
 
-                        <View style={{width:width,justifyContent:'center',AlignItems:'center'}}>
-                        <Text style={{width:width,justifyContent:'center',textAlign:'center',color:'#eee',fontSize:12}}>忘记密码?</Text>
-                        </View>
-
                     </View>
 
 
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'column',paddingHorizontal:28}}>
 
-                        <View style={{backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:height/6}}>
+                        <View style={{backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:10}}>
                             <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
                             <View style={{flex:1}}>
                             <Text style={{textAlign:'center',color:'#eee',fontSize:12}}>
@@ -362,10 +321,10 @@ var  Login =React.createClass({
                         </View>
 
                         {/*注册按钮*/}
-                        <TouchableOpacity style={{flexDirection:'row',height:45,marginBottom:30,backgroundColor:'transparent',margin:10,padding:3,borderRadius:5,
+                        <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,
                         borderWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
-                                              this.navigate2Register();
+                                              this.WXLogin();
                                           }}>
                             <View style={{flex:1}}>
                                 <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
@@ -429,23 +388,6 @@ var  Login =React.createClass({
                     username:username,
                     password:password
                 }})
-                // this.setState({showProgress: true});
-                // this.props.dispatch(doLogin(username,password))
-                //     .then((json)=>{
-                //         this.setState({showProgress: false,user:{}});
-                //         if(json.re==-1){
-                //             setTimeout(()=>{
-                //                 alert(json.data);
-                //             },900)
-                //
-                //         }
-                //         if(json.re==-100){
-                //             this.setState({showProgress: false,user:{}});
-                //         }
-                //     })
-                //     .catch((e)=>{
-                //         alert(e);
-                //     })
             }
         })
 
@@ -453,8 +395,10 @@ var  Login =React.createClass({
     componentWillUnmount() {
 
     },
+
     componentWillMount(){
         wechat.registerApp('wx9068ac0e88c09e7a').then(function (res) {
+
         })
 
         wechat.isWXAppInstalled().then((isInstall)=>{
@@ -465,7 +409,6 @@ var  Login =React.createClass({
         }).catch((er)=>{
             alert(er)
         })
-
     }
 
 });

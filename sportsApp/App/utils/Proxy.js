@@ -246,7 +246,6 @@ let Proxy={
         var newsKey = 'T1348649079062';
         if(url!==undefined&&url!==null)
         {
-
             var options={
                 method:params.method!==undefined&&params.method!==null?params.method:'GET',
                 headers:params.headers!==undefined&&params.headers!==null?params.headers:null,

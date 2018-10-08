@@ -34,6 +34,7 @@ import {
     ON_COACHBRIEF_UPDATE,
     UPDATE_PORTRAIT,
     GET_CLUB_INFO,
+    SET_WECHAT_INFO,
 } from '../constants/UserConstants'
 
 export let updateCertificate=(payload)=>{
@@ -841,6 +842,19 @@ export let storeUnionid=(unionid)=>{
     }
 }
 
+//存储wechat
+export let setWechatInfo=(wechat)=>{
+    return (dispatch)=>{
+
+        dispatch({
+            type:SET_WECHAT_INFO,
+            payload: {
+                wechat
+            }
+        })
+    }
+}
+
 //新增用户关联人
 export let addRelativePerson=(payload)=> {
     return (dispatch, getState) => {
@@ -878,12 +892,14 @@ export let addRelativePerson=(payload)=> {
 }
 
 //用户注册
-export let registerUser=(payload)=>{
+export let registerUser=(info,wechatinfo)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
             var {userType,username,password,mobilePhone,name,sexType,sexTypeCode,birthday,idCard,address,QQ,email,wechat,clubType,clubId,
-            sportLevel,coachLevel,venue,heightweight,workcity,graduate}=payload;
+            sportLevel,coachLevel,venue,heightweight,workcity,graduate}=info;
+            var {openid,nickname,sex,province,city,country,headimgurl,unionid} = wechatinfo;
+
             Proxy.postes({
                 url: Config.server + '/func/register/userRegister',
                 headers: {
@@ -910,6 +926,15 @@ export let registerUser=(payload)=>{
                     heightweight:heightweight,
                     workcity:workcity,
                     graduate:graduate,
+                    //微信信息
+                    openid:openid,
+                    nickname:nickname,
+                    sex:sex,
+                    province:province,
+                    city:city,
+                    country:country,
+                    headimgurl:headimgurl,
+                    unionid:unionid
                 }
             }).then((json)=>{
                 resolve(json)
@@ -1031,133 +1056,9 @@ export let wechatGetUserInfo=(url)=>{
     }
 }
 
-
-//用户登录
-// export let doLogin=function(username,password){
-//
-//     return dispatch=> {
-//
-//         return new Promise((resolve, reject) => {
-//             var versionName = '1';
-//             var sessionId = null;
-//
-//             Proxy.getSession({
-//                 url: Config.server + '/func/auth/webLogin',
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 },
-//                 body: {
-//                     loginName: username,
-//                     password: password,
-//                     loginType:1,
-//                     parameter:{appVersion:versionName}
-//                 }
-//             }).then((response)=> {
-//
-//                 var json=response.text().then((res) => {
-//                     resolve(JSON.parse(res));
-//                 });
-//
-//                 console.log('json='+json);
-//
-//                 sessionId = response.headers.map['set-cookie'][0];
-//
-//                 //TODO:make a dispatch
-//                 dispatch(updateCertificate({username: username, password: password}));
-//
-//
-//                 PreferenceStore.put('username', username);
-//                 PreferenceStore.put('password', password);
-//
-//                 return Proxy.postes({
-//                     url:Config.server + '/func/node/getUserTypeByPersonId',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Cookie':sessionId,
-//
-//                     },
-//                     body: {
-//
-//                     }
-//                 });
-//
-//             }).then((json)=> {
-//
-//                 if (json.re == 1) {
-//                     dispatch(updateUserType(json.data))
-//                 }
-//                 var userType = json.data.perTypeCode;
-//                 if (parseInt(userType) == 0)//用户
-//                 {
-//                     return {re: 1}
-//                 } else {
-//                     //教练,获取教练信息
-//                     return Proxy.postes({
-//                         url: Config.server + '/func/node/fetchBadmintonTrainerInfo',
-//                         headers: {
-//                             'Content-Type': 'application/json',
-//                             'Cookie':sessionId,
-//                         },
-//                         body: {
-//
-//                         }
-//                     });
-//                 }
-//             }).then((json)=>{
-//
-//                 if(json.re==1&&json.data)
-//                 {
-//                     dispatch(updateTrainerInfo({data:json.data}))
-//                 }
-//
-//
-//
-//                 return Proxy.postes({
-//                     url: Config.server + '/func/node/getPersonInfoByPersonId',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Cookie':sessionId,
-//                     },
-//                     body: {
-//
-//                     }
-//                 });
-//             }).then((json) => {
-//
-//                 if (json.re == 1)
-//                     dispatch(updatePersonInfo({data: json.data}));
-//
-//
-//                 return Proxy.postes({
-//                     url: Config.server + '/func/node/getPersonInfoAuxiliaryByPersonId',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                         'Cookie':sessionId,
-//                     },
-//                     body: {
-//
-//                     }
-//                 })
-//
-//             }).then((json)=>{
-//                 if(json.re==1)
-//                     dispatch(updatePersonInfoAuxiliary({data: json.data}));
-//                 //dispatch(getAccessToken(accessToken));
-//                 dispatch(setSessionId(sessionId));
-//                 resolve(json)
-//             }).catch((err)=> {
-//                 //dispatch(getAccessToken(null));
-//                 dispatch(setSessionId(sessionId));
-//                 reject(err)
-//             });
-//         });
-//     }
-// }
-
 export let doLogin=function(username,password){
 
     return dispatch=> {
-
         return new Promise((resolve, reject) => {
             var versionName = '1';
 
@@ -1179,8 +1080,6 @@ export let doLogin=function(username,password){
 
                 }else{
                     //TODO:make a dispatch
-                    dispatch(updateCertificate({username: username, password: password}));
-
 
                     PreferenceStore.put('username', username);
                     PreferenceStore.put('password', password);
@@ -1190,92 +1089,75 @@ export let doLogin=function(username,password){
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: {
-
-                        }
+                        body: {}
                     }).then((json)=> {
-                        if(json.re==-100){
-                            resolve(json);
-                        }else{
-                            if (json.re == 1) {
-                                dispatch(updateUserType(json.data))
-                            }
-                            var userType = json.data.perTypeCode;
-                            if (parseInt(userType) == 0)//用户
-                            {
-                                return {re: 1}
-                            } else {
-                                //教练,获取教练信息
+
+                                 //获得用户身份
+                                 //教练/俱乐部管理员与微信号绑定
+                                 //userType='M'超级管理员（属于教练(信息无用)不属于任何俱乐部）与微信号不绑定
+                                 var userType = json.data.perTypeCode;
+
+                                //教练与俱乐部管理员,获取教练信息；超级管理员，无用的教练信息
                                 return Proxy.postes({
                                     url: Config.server + '/func/node/fetchBadmintonTrainerInfo',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
                                     body: {
-
                                     }
-                                })
-                                return {re: 1}
-
-                            }
-
-                        }
-
-                    }).then((json)=>{
-                        if(json.re==-100){
-                            resolve(json);
-                        }
-                        else{
-                            if(json.re==1&&json.data)
-                            {
-                                dispatch(updateTrainerInfo({data:json.data}))
-                            }
-                            Proxy.postes({
-                                url: Config.server + '/func/node/getPersonInfoByPersonId',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: {
-
-                                }
-                            }).then((json) => {
-                                if(json.re==-100){
-                                    resolve(json);
-                                }
-                                else{
-                                    if (json.re == 1)
-                                        dispatch(updatePersonInfo({data: json.data}));
+                                }).then((json)=>{
+                                    //存入props.user.trainer中
+                                    if(json.re==1)
+                                    dispatch(updateTrainerInfo({data:json.data}))
 
                                     Proxy.postes({
-                                        url: Config.server + '/func/node/getPersonInfoAuxiliaryByPersonId',
+                                        url: Config.server + '/func/node/getPersonInfoByPersonId',
                                         headers: {
                                             'Content-Type': 'application/json',
                                         },
                                         body: {
 
                                         }
-                                    }).then((json)=>{
+                                    }).then((json) => {
                                         if(json.re==-100){
                                             resolve(json);
                                         }
                                         else{
-                                            if(json.re==1)
-                                                dispatch(updatePersonInfoAuxiliary({data: json.data}));
-                                            dispatch(getAccessToken(true));
-                                            resolve(json)
+                                            if (json.re == 1)
+                                                dispatch(updatePersonInfo({data: json.data}));
+
+                                            Proxy.postes({
+                                                url: Config.server + '/func/node/getPersonInfoAuxiliaryByPersonId',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: {
+
+                                                }
+                                            }).then((json)=>{
+                                                if(json.re==-100){
+                                                    resolve(json);
+                                                }
+                                                else{
+                                                    if(json.re==1)
+                                                        dispatch(updatePersonInfoAuxiliary({data: json.data}));
+
+                                                    dispatch(getAccessToken(true));
+                                                    resolve(json)
+                                                }
+                                            }).catch((err)=> {
+
+                                                reject(err)
+                                            });
+
                                         }
                                     }).catch((err)=> {
-
+                                        dispatch(getAccessToken(false));
+                                        //dispatch(setSessionId(sessionId));
                                         reject(err)
-                                    });
+                                    })
 
-                                }
-                            }).catch((err)=> {
-                                dispatch(getAccessToken(false));
-                                //dispatch(setSessionId(sessionId));
-                                reject(err)
-                            })
-                        }
+                                })
 
                     }).catch((err)=> {
                         dispatch(getAccessToken(false));
@@ -1283,7 +1165,6 @@ export let doLogin=function(username,password){
                         reject(err)
                     })
                 }
-
             }).catch((err)=> {
                 dispatch(getAccessToken(false));
                 //dispatch(setSessionId(sessionId));
@@ -1606,9 +1487,34 @@ export let fetchClubList=()=>{
             }).then((json)=>{
                 if(json.re==1)
                 {
-                    dispatch(getClubInfo({data: json.data}));
                 }
 
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+        })
+    }
+}
+
+//获取我的俱乐部
+export let fetchMyClub=(clubId)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/getAllClub',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    clubId:clubId
+                }
+            }).then((json)=>{
+                dispatch(getClubInfo({data: json.data}));
                 resolve(json)
 
             }).catch((e)=>{

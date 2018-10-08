@@ -376,7 +376,7 @@ export default connect(mapStateToProps)(MyDistribution);
 */
 
 module.exports = connect(state=>({
-    userType: state.user.usertype.perTypeCode,
+    userType: state.user.user.usertype,
     studentsCourseRecord:state.course.studentsCourseRecord,
     studentsCourseRecordOnFresh:state.course.studentsCourseRecordOnFresh,
     creatorId:state.user.personInfo.personId

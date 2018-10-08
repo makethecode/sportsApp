@@ -31,6 +31,7 @@ import Proxy from "../../utils/Proxy";
 import ViewPager from 'react-native-viewpager';
 import CreateLiveHome from './CreateLiveHome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import proxy from "../../utils/Proxy";
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
@@ -200,6 +201,35 @@ class HomePage extends Component{
         }).catch((e) => {
             reject(e)
         })
+
+        this.Listener = DeviceEventEmitter.addListener('addDanmaku',(data)=>{
+
+            proxy.postes({
+                url: Config.server + '/func/allow/addDanMaKu',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    //如何获得直播间id?
+                    liveId:1,
+                    text:data,
+                }
+            }).then((json) => {
+                if(json.re==1){
+                    console.log('success')
+                }
+                else{
+                    console.log('fail')
+                }
+            }).catch((err) => {
+                alert(err);
+            });
+        })
+
+    }
+
+    componentWillUnmount(){
+        this.Listener.remove();
     }
 }
 

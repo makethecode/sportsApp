@@ -34,6 +34,7 @@ public class Bridge extends ReactContextBaseJavaModule {
     public Bridge(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        PLVideoViewActivity.reactContext = reactContext;
     }
 
     private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
@@ -117,22 +118,6 @@ public class Bridge extends ReactContextBaseJavaModule {
         intent.setClass(getCurrentActivity(), PLVideoViewActivity.class);
         //播放地址，默认播放source1的地址：rtmp://pili-live-rtmp.sportshot.cn/sportshot/source1
         intent.putExtra("videoPath", url);
-
-        //播放配置
-        //软解、硬解、自动
-        intent.putExtra("mediaCodec", AVOptions.MEDIA_CODEC_AUTO);
-        //直播、点播
-        intent.putExtra("liveStreaming", 1);
-        //离线缓存（点播）
-        intent.putExtra("cache", false);
-        //循环播放（点播）
-        intent.putExtra("loop", false);
-        //视频数据回调
-        intent.putExtra("video-data-callback", false);
-        //音频数据回调
-        intent.putExtra("audio-data-callback", false);
-        //关闭日志
-        intent.putExtra("disable-log", false);
 
         getCurrentActivity().startActivity(intent);
 

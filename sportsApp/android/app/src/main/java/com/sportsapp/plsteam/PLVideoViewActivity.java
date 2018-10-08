@@ -1,10 +1,26 @@
 package com.sportsapp.plsteam;
 
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLOnAudioFrameListener;
 import com.pili.pldroid.player.PLOnBufferingUpdateListener;
@@ -16,7 +32,22 @@ import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.sportsapp.R;
 
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+
+import master.flame.danmaku.controller.DrawHandler;
+import master.flame.danmaku.controller.IDanmakuView;
+import master.flame.danmaku.danmaku.loader.ILoader;
+import master.flame.danmaku.danmaku.loader.IllegalDataException;
+import master.flame.danmaku.danmaku.loader.android.DanmakuLoaderFactory;
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.DanmakuTimer;
+import master.flame.danmaku.danmaku.model.IDisplayer;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+import master.flame.danmaku.danmaku.model.android.Danmakus;
+import master.flame.danmaku.danmaku.parser.BaseDanmakuParser;
+import master.flame.danmaku.danmaku.parser.IDataSource;
 
 /**
  * This is a demo activity of PLVideoView
@@ -25,61 +56,59 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
     private static final String TAG = PLVideoViewActivity.class.getSimpleName();
 
+    //直播UI
     private PLVideoView mVideoView;
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
-    private TextView mStatInfoTextView;
     private MediaController mMediaController;
+    private View loadingView;
 
-    private boolean mIsLiveStreaming;
+    //弹幕UI
+    private static final int MAX_COUNT = 30;
+    protected DanmakuContext mDanmakuContext = null;
+    protected IDanmakuView mDanmakuView ;
+    protected BaseDanmakuParser mParser = null;
+    private EditText mEtDanmaku;
+    private TextView tv_count;
+    private Button mBtnSend;
+
+    //播放地址
+    private String videoPath;
+    //用于与js端交互
+    public static ReactApplicationContext reactContext;
+    public static String info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_pl_video_view);
 
-        String videoPath = getIntent().getStringExtra("videoPath");
-        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
+        //获取直播配置的值
+        videoPath = getIntent().getStringExtra("videoPath");
 
+        //初始化直播
         mVideoView = (PLVideoView)findViewById(R.id.VideoView);
-
-        View loadingView = findViewById(R.id.LoadingView);
+        loadingView = findViewById(R.id.LoadingView);
         mVideoView.setBufferingIndicator(loadingView);
+        initPLVideoView();
 
-        View mCoverView = findViewById(R.id.CoverView);
-        mVideoView.setCoverView(mCoverView);
+        //初始化弹幕
+        mDanmakuView = (IDanmakuView) findViewById(R.id.danmaku_view);
+        mEtDanmaku = (EditText) findViewById(R.id.et_danmaku);
+        tv_count = (TextView) findViewById(R.id.tv_waring);
+        mBtnSend = (Button) findViewById(R.id.btn_send_danmaku);
+        initDanmakuView();
+    }
 
-        mStatInfoTextView = (TextView)findViewById(R.id.StatInfoTextView);
+    public void initPLVideoView(){
 
-        // 1 -> hw codec enable, 0 -> disable [recommended]
-        int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
         AVOptions options = new AVOptions();
-        // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-        // 1 -> hw codec enable, 0 -> disable [recommended]
-        options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
-        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
-        boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
-//        options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
-        options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
-        boolean cache = getIntent().getBooleanExtra("cache", false);
-        if (!mIsLiveStreaming && cache) {
-            options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
-        }
-        boolean vcallback = getIntent().getBooleanExtra("video-data-callback", false);
-        if (vcallback) {
-            options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
-        }
-        boolean acallback = getIntent().getBooleanExtra("audio-data-callback", false);
-        if (acallback) {
-            options.setInteger(AVOptions.KEY_AUDIO_DATA_CALLBACK, 1);
-        }
-        if (!mIsLiveStreaming) {
-            int startPos = getIntent().getIntExtra("start-pos", 0);
-            options.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
-        }
+        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
+        options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+        options.setInteger(AVOptions.KEY_LOG_LEVEL, 0);
         mVideoView.setAVOptions(options);
 
-        // Set some listeners
         mVideoView.setOnInfoListener(mOnInfoListener);
         mVideoView.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
@@ -87,56 +116,85 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView.setOnErrorListener(mOnErrorListener);
         mVideoView.setOnVideoFrameListener(mOnVideoFrameListener);
         mVideoView.setOnAudioFrameListener(mOnAudioFrameListener);
-
         mVideoView.setVideoPath(videoPath);
-        mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
+        mVideoView.setLooping(false);
 
-        // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, !mIsLiveStreaming, mIsLiveStreaming);
+        mMediaController = new MediaController(this, false, true);
         mMediaController.setOnClickSpeedAdjustListener(mOnClickSpeedAdjustListener);
         mVideoView.setMediaController(mMediaController);
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mVideoView.start();
-    }
+    public void initDanmakuView(){
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mMediaController.getWindow().dismiss();
-        mVideoView.pause();
-    }
+        mDanmakuContext = DanmakuContext.create();
+        HashMap<Integer, Integer> maxLine = new HashMap<>();
+        maxLine.put(BaseDanmaku.TYPE_SCROLL_RL, 3);// 滚动弹幕最大显示3行
+        // 设置是否禁止重叠
+        HashMap<Integer, Boolean> overlappingEnablePair = new HashMap<Integer, Boolean>();
+        overlappingEnablePair.put(BaseDanmaku.TYPE_SCROLL_RL, true);
+        overlappingEnablePair.put(BaseDanmaku.TYPE_FIX_TOP, true);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3)//设置描边样式
+                .setDuplicateMergingEnabled(false)//是否启用合并重复弹幕
+                .setScrollSpeedFactor(1.2f) //设置弹幕滚动速度系数,只对滚动弹幕有效
+                .setScaleTextSize(1.2f)//设置字体缩放
+                .setMaximumLines(maxLine)//设置最大显示行数
+                .preventOverlapping(overlappingEnablePair);//设置防弹幕重叠
+        if (mDanmakuView != null) {
+            mDanmakuView.setCallback(new DrawHandler.Callback() {
+                @Override
+                public void prepared() {
+                    //开始播放弹幕
+                    mDanmakuView.start();
+                }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mVideoView.stopPlayback();
-    }
+                @Override
+                public void updateTimer(DanmakuTimer timer) {
 
-    public void onClickSwitchScreen(View v) {
-        mDisplayAspectRatio = (mDisplayAspectRatio + 1) % 5;
-        mVideoView.setDisplayAspectRatio(mDisplayAspectRatio);
-        switch (mVideoView.getDisplayAspectRatio()) {
-            case PLVideoView.ASPECT_RATIO_ORIGIN:
-                Utils.showToastTips(this, "Origin mode");
-                break;
-            case PLVideoView.ASPECT_RATIO_FIT_PARENT:
-                Utils.showToastTips(this, "Fit parent !");
-                break;
-            case PLVideoView.ASPECT_RATIO_PAVED_PARENT:
-                Utils.showToastTips(this, "Paved parent !");
-                break;
-            case PLVideoView.ASPECT_RATIO_16_9:
-                Utils.showToastTips(this, "16 : 9 !");
-                break;
-            case PLVideoView.ASPECT_RATIO_4_3:
-                Utils.showToastTips(this, "4 : 3 !");
-                break;
-            default:
-                break;
+                }
+
+                @Override
+                public void danmakuShown(BaseDanmaku danmaku) {
+
+                }
+
+                @Override
+                public void drawingFinished() {
+
+                }
+            });
+
+            //弹幕解析器，如不想使用使用xml格式的可以以自己定义或默认
+//            mParser = new BaseDanmakuParser() {
+//                @Override
+//                protected IDanmakus parse() {
+//                    return new Danmakus();
+//                }
+//            };
+
+            //mParser = createParser(this.getResources().openRawResource(R.raw.comments));
+            mParser = createParser(null);
+            mDanmakuView.showFPS(false);//显示fps
+            mDanmakuView.enableDanmakuDrawingCache(true);//显示弹幕绘制缓冲
+            mDanmakuView.prepare(mParser, mDanmakuContext);
+
+            mEtDanmaku.addTextChangedListener(mTextWatcher);
+            mEtDanmaku.setSelection(mEtDanmaku.length());
+            setLeftCount();
+            mBtnSend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String trim = mEtDanmaku.getText().toString().trim();
+                    if (TextUtils.isEmpty(trim))
+                        return;
+                    addDanmaku(false,trim,true);
+                    mEtDanmaku.setText("");
+                }
+            });
+            mEtDanmaku.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
+
         }
     }
 
@@ -226,9 +284,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         public void onCompletion() {
             Log.i(TAG, "Play Completed !");
             Utils.showToastTips(PLVideoViewActivity.this, "Play Completed !");
-            if (!mIsLiveStreaming) {
-                mMediaController.refreshProgress();
-            }
             //finish();
         }
     };
@@ -311,8 +366,181 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mStatInfoTextView.setText(stat);
+                //mStatInfoTextView.setText(stat);
             }
         });
     }
+
+    //创建解析器对象，解析输入流
+    private BaseDanmakuParser createParser(InputStream stream) {
+
+        if (stream == null) {
+            return new BaseDanmakuParser() {
+
+                @Override
+                protected Danmakus parse() {
+                    return new Danmakus();
+                }
+            };
+        }
+
+        //DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI) xml解析
+        //DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_ACFUN) json文件格式解析
+
+        ILoader loader = DanmakuLoaderFactory.create(DanmakuLoaderFactory.TAG_BILI);
+
+        try {
+            loader.load(stream);
+        } catch (IllegalDataException e) {
+            e.printStackTrace();
+        }
+        BaseDanmakuParser parser = new BiliDanmukuParser();
+        IDataSource<?> dataSource = loader.getDataSource();
+        parser.load(dataSource);
+        return parser;
+
+    }
+
+    /**
+     * 添加弹幕
+     */
+    public void addDanmaku(boolean islive, String msg, boolean isUs) {
+        BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
+        if (danmaku == null || mDanmakuView == null) {
+            return;
+        }
+        danmaku.text = msg;//弹幕内容
+        danmaku.padding = 5;
+        danmaku.priority = 1;//0 表示可能会被各种过滤器过滤并隐藏显示 1 表示一定会显示, 一般用于本机发送的弹幕
+        danmaku.isLive = islive; //是否是直播弹幕
+        danmaku.setTime(mDanmakuView.getCurrentTime() + 1200); //显示时间
+        danmaku.textSize = 18f * (mParser.getDisplayer().getDensity() - 0.6f); //字体大小
+        danmaku.textColor = Color.WHITE;
+        danmaku.textShadowColor = Color.parseColor("#333333");// 阴影颜色，可防止白色字体在白色背景下不可见
+        if (isUs)
+            danmaku.borderColor = Color.YELLOW; //对于自己发送的弹幕可以加框显示,0表示无边框
+        mDanmakuView.addDanmaku(danmaku);
+
+
+        info = msg;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                sendEvent(reactContext, "addDanmaku", info );
+
+            }
+        }).start();
+
+    }
+
+    //自定义textwatcher 限制输入字符数
+    private TextWatcher mTextWatcher = new TextWatcher() {
+        private int editStart;
+        private int editEnd;
+
+        public void afterTextChanged(Editable s) {
+            editStart = mEtDanmaku.getSelectionStart();
+            editEnd = mEtDanmaku.getSelectionEnd();
+            mEtDanmaku.removeTextChangedListener(mTextWatcher);
+            while (calculateLength(s.toString()) > MAX_COUNT) { // 当输入字符个数超过限制的大小时，进行截断操作
+                s.delete(editStart - 1, editEnd);
+                editStart--;
+                editEnd--;
+            }
+            mEtDanmaku.addTextChangedListener(mTextWatcher);
+            setLeftCount();
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+        }
+    };
+
+    //计算输入长度
+    private long calculateLength(CharSequence c) {
+        double len = 0;
+        for (int i = 0; i < c.length(); i++) {
+            int tmp = (int) c.charAt(i);
+            if (tmp > 0 && tmp < 127) {
+                len += 0.5;
+            } else {
+                len++;
+            }
+        }
+        return Math.round(len);
+    }
+
+    //设置显示长度
+    private void setLeftCount() {
+        long l = MAX_COUNT - getInputCount();
+        if (l <= 0) {
+            tv_count.setTextColor(Color.RED);
+            tv_count.setText(String.valueOf((MAX_COUNT - getInputCount())));
+        } else {
+            tv_count.setText(String.valueOf((MAX_COUNT - getInputCount())));
+        }
+    }
+
+    //获取输入长度
+    private long getInputCount() {
+        return calculateLength(mEtDanmaku.getText().toString());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mVideoView.start();
+        if (mDanmakuView != null && mDanmakuView.isPrepared() && mDanmakuView.isPaused()) {
+            mDanmakuView.resume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mMediaController.getWindow().dismiss();
+        mVideoView.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mVideoView.stopPlayback();
+        if (mDanmakuView != null) {
+            // 释放资源
+            mDanmakuView.release();
+            mDanmakuView = null;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mDanmakuView != null) {
+            // 释放资源
+            mDanmakuView.release();
+            mDanmakuView = null;
+        }
+    }
+
+    public void sendEvent(ReactContext reactContext, String eventName, String msg) {
+        System.out.println("reactContext=" + reactContext);
+
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, msg);
+    }
+
 }

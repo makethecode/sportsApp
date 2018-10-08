@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
 //export default connect(mapStateToProps)(BadmintonCourse);
 
 module.exports = connect(state=>({
-    userType: state.user.usertype.perTypeCode,
+    userType: state.user.user.usertype,
     creatorId:state.user.personInfo.personId,
     courses:state.course.courses
     })

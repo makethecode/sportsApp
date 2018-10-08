@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        userType: state.user.usertype.perTypeCode,
+    userType: state.user.user.usertype,
         groupContents:state.course.groupContents,
         groupContentsOnFresh:state.course.groupContentsOnFresh,
         creatorId:state.user.personInfo.personId

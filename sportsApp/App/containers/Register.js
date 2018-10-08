@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 
 import {connect} from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {
@@ -36,17 +35,23 @@ import {
     updatePerBirthday,
     onPerBirthdayUpdate,
     fetchClubList,
+    doGetType,
+    getAccessToken,
+    wechatregisterUser,
+    wechatGetOpenid,
+    wechatGetUserInfo,
 } from '../action/UserActions';
-var ImagePicker = require('react-native-image-picker');
 import TextInputWrapper from '../../App/encrypt/TextInputWrapper';
-
 import ActionSheet from 'react-native-actionsheet'
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import DatePicker from 'react-native-datepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+var {height, width} = Dimensions.get('window');
+var ImagePicker = require('react-native-image-picker');
+var wechat=require('react-native-wechat');
 /**
- * userType:0为用户 1为教练
+ * userType:0为教练 1为俱乐部管理员 M为超级管理员
  */
 
 class Register extends Component {
@@ -83,7 +88,6 @@ class Register extends Component {
         });
     }
 
-
     pictureStore(path) {
         var data = new FormData();
         data.append('file', {uri: path, name: 'portrait.jpg', type: 'multipart/form-data'});
@@ -112,7 +116,8 @@ class Register extends Component {
 
     register() {
         var {info} = this.state;
-        this.props.dispatch(registerUser(info)).then((json) => {
+        var wechat = this.props.wechat.wechat;
+        this.props.dispatch(registerUser(info,wechat)).then((json) => {
             if (json.re == 1) {
 
                 PreferenceStore.put('username', info.username);
@@ -126,16 +131,6 @@ class Register extends Component {
                     ]
                 )
             } else {
-
-                if (json.re == 2) {
-                    Alert.alert(
-                        '信息',
-                        '注册失败,该用户名已存在',
-                        [
-                            {text: 'OK', onPress: () => console.log('注册失败，该用户名已存在')},
-                        ]
-                    )
-                }
                 Alert.alert(
                     '注册失败',
                     '用户名重复'
@@ -197,23 +192,23 @@ class Register extends Component {
     }
 
     constructor(props) {
+        //wechat:{openid,nickname,sex,province,city,country,headimgurl,unionid}
         super(props);
         this.state = {
             info: {
                 userType: 1,
                 //基本信息
                 mobilePhone: '',
-                username: '',
+                username: this.props.wechat.wechat.nickname,
                 password: '1',
                 name:'',
-                sexType:null,
-                sexTypeCode:null,
+                sexType:this.props.wechat.wechat.sex==1?'男':'女',
+                sexTypeCode:this.props.wechat.wechat.sex,
                 birthday:null,
                 idCard:null,
                 address:null,
                 QQ:null,
                 email:null,
-                wechat:null,
                 //教练信息
                 clubType:null,
                 clubId:null,
@@ -228,12 +223,17 @@ class Register extends Component {
             sportLevelButtons:['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员'],
             coachLevelButtons:['取消', '一星级教练', '二星级教练', '三星级教练', '四星级教练', '五星级教练'],
             selectBirthday:false,
-            portrait: null,
+            portrait: this.props.wechat.headimgurl,
             fadeCancel: new Animated.Value(0),
             fadeNickNameCancel: new Animated.Value(0),
             fadePasswordCancel: new Animated.Value(0),
             fadeSportsLevel: new Animated.Value(0),
             doingFetch:false,
+            isInstalled:false,
+
+            //微信开放平台接口
+            appid : 'wx895244865870f27c',
+            secret : 'a8faf3f6099786969428899fbb43a1f1',
         }
     }
 
@@ -242,7 +242,6 @@ class Register extends Component {
     }
 
     render() {
-
 
         var options = ['取消', '无', '体育本科', '国家一级运动员', '国家二级运动员', '国家三级运动员']
         const CANCEL_INDEX = 0
@@ -788,13 +787,17 @@ class Register extends Component {
                                       onPress={() => {
                                           this.register();
                                       }}>
-                        <Text style={{color: '#fff', fontSize: 15}}>完成</Text>
+                        <Text style={{color: '#fff', fontSize: 15}}>确认注册</Text>
                     </TouchableOpacity>
                     <View style={{marginTop:20}}/>
                 </KeyboardAwareScrollView>
                 </View>
             </View>
         );
+    }
+
+    componentWillMount(){
+
     }
 
 }
@@ -860,27 +863,7 @@ const mapStateToProps = (state, ownProps) => {
 
     const props = {
         userType: 1,
-        //基本信息
-        mobilePhone:state.mobilePhone,
-        username:state.username,
-        password:state.password,
-        name:state.name,
-        sexType:state.sexType,
-        birthday:state.birthday,
-        idCard:state.idCard,
-        address:state.address,
-        QQ:state.QQ,
-        email:state.email,
-        wechat:state.wechat,
-        //教练信息
-        clubType:state.clubType,
-        clubId:state.clubId,
-        sportLevel: state.sportLevel,
-        coachLevel:state.coachLevel,
-        venue:state.venue,
-        heightweight:state.heightweight,
-        workcity:state.workcity,
-        graduate:state.graduate,
+        wechat:state.user.wechat,
     }
     return props
 }

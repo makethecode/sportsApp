@@ -86,7 +86,7 @@ export let fetchNewsInfo=()=>{
             var state=getState();
 
             Proxy.postes({
-                url: Config.server + '/func/allow/getNewsList',
+                url: Config.server + '/func/allow/getHomeNewsList',
                 headers: {
                     'Content-Type': 'application/json',
                 },

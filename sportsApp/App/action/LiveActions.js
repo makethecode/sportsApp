@@ -120,3 +120,30 @@ export let closeLiveHome = (id) => {
     }
 }
 
+//创建弹幕
+export let adddanmaku = (liveId,text) => {
+    return (dispatch, getState) => {
+
+        return new Promise((resolve, reject) => {
+
+            var state = getState();
+            var accessToken = state.user.accessToken;
+
+            Proxy.postes({
+                url: Config.server + '/func/allow/addDanMaKu',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    liveId:liveId,
+                    text:text,
+                }
+            }).then((json) => {
+                resolve(json.data)
+            }).catch((e) => {
+                reject(e)
+            })
+        })
+    }
+}
+

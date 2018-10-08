@@ -892,7 +892,7 @@ const mapStateToProps = (state, ownProps) => {
         wechat:personInfo.wechat,
         perIdCard:personInfo.perIdCard,
         selfLevel:personInfoAuxiliary.selfLevel,
-        userType:parseInt(state.user.usertype),
+        userType:parseInt(state.user.user.usertype),
         checkedMobile:personInfoAuxiliary.checkedMobile,
         genderCode:personInfo.genderCode,
         perBirthday:tt1,
