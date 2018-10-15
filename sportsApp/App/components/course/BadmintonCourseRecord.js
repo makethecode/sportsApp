@@ -816,7 +816,7 @@ class BadmintonCourseRecord extends Component {
                     </View>
 
                     {<View style={{flex:5,backgroundColor:'#eee'}}>
-                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-100,paddingTop:5,paddingBottom:5,}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
                             <ScrollView
                                 refreshControl={
                                     <RefreshControl

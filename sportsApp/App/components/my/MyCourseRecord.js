@@ -12,7 +12,9 @@ import {
     Animated,
     Easing,
     TextInput,
-    InteractionManager
+    InteractionManager,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -50,6 +52,7 @@ class MyCourseRecord extends Component {
 
             courses:null,
             allcourses:null,
+            showProgress:false,
         };
     }
 
@@ -171,6 +174,29 @@ class MyCourseRecord extends Component {
 
                     </ScrollView>
 
+                    {/*loading模态框*/}
+                    <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
+                        <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
+                                          onPress={()=>{
+                                              //TODO:cancel this behaviour
+
+                                          }}>
+                            <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
+                                justifyContent:'center',alignItems:'center',borderRadius:6}}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={{marginTop:10,height: 40,position:'absolute',transform: [{scale: 1.6}]}}
+                                    size="large"
+                                />
+                                <View style={{flexDirection:'row',justifyContent:'center',marginTop:45}}>
+                                    <Text style={{color:'#666',fontSize:13}}>
+                                        加载中...
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
                 </Toolbar>
             </View>
         )
@@ -206,11 +232,12 @@ class MyCourseRecord extends Component {
     componentDidMount()
     {
         InteractionManager.runAfterInteractions(() => {
+            this.setState({showProgress:true});
             this.props.dispatch(fetchCoursesByCreatorId(this.props.creatorId)).then((json)=>{
                 if(json.re==1)
                 {
                     var courses = json.data;
-                    this.setState({courses:courses,allcourses:courses});
+                    this.setState({courses:courses,allcourses:courses,showProgress:false});
                 }
                 else {
                     if(json.re=-100){
@@ -229,6 +256,14 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 
 });

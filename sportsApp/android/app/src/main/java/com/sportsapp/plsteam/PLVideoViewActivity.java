@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -31,10 +34,23 @@ import com.pili.pldroid.player.PLOnVideoFrameListener;
 import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.sportsapp.R;
+import com.sportsapp.http.HttpUtilsHttpClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.controller.IDanmakuView;
@@ -71,11 +87,18 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private TextView tv_count;
     private Button mBtnSend;
 
-    //播放地址
+    //前端js传递数据
     private String videoPath;
+    private Integer liveId;
+    private Integer personId;
+
     //用于与js端交互
     public static ReactApplicationContext reactContext;
     public static String info;
+
+    //用来处理每3秒传来数据的Handler
+    private Handler mHandler;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +108,8 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
         //获取直播配置的值
         videoPath = getIntent().getStringExtra("videoPath");
+        personId = getIntent().getIntExtra("personId",3);
+        liveId = getIntent().getIntExtra("liveId",1);
 
         //初始化直播
         mVideoView = (PLVideoView)findViewById(R.id.VideoView);
@@ -98,6 +123,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         tv_count = (TextView) findViewById(R.id.tv_waring);
         mBtnSend = (Button) findViewById(R.id.btn_send_danmaku);
         initDanmakuView();
+
+        //每隔3秒访问danmaku数据库，显示3秒前到目前为止的弹幕
+        updateDamakuPerTime();
     }
 
     public void initPLVideoView(){
@@ -196,6 +224,85 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             imm.toggleSoftInput(1000, InputMethodManager.HIDE_NOT_ALWAYS);
 
         }
+    }
+
+    public void updateDamakuPerTime(){
+
+        //使用handler处理接收到的消息
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                if(msg.what == 0){
+                    /**
+                     * 在这里写我们需要一直重复执行的代码
+                     **/
+                    getDanmaku();
+//                    Log.e(TAG, "handleMessage: 3秒一次");
+                }
+            }
+        };
+
+        //每隔3秒访问弹幕数据库，返回更新的弹幕list（返回更新的弹幕List=3秒之内的弹幕）
+        timer=new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // (1) 使用handler发送消息
+                Message message=new Message();
+                message.what=0;
+                mHandler.sendMessage(message);
+            }
+        },0,3000);
+
+    }
+
+    void getDanmaku(){
+
+        //测试安卓原生访问服务端
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url= HttpUtilsHttpClient.BASE_URL+"/func/allow/getNewDanmaku";
+                //请求，返回json
+                Map<String ,String > params = new HashMap<String, String>();
+                params.put("name","Chenhaiyun");
+                params.put("password","123");
+                String result = HttpUtilsHttpClient.postRequest(url, params);
+                Message msg = new Message();
+                Bundle data=new Bundle();
+                data.putString("result",result);
+                msg.setData(data);
+                hander.sendMessage(msg);
+            }
+
+            Handler hander = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+
+                    Bundle data = msg.getData();
+                    String key = data.getString("result");//得到json返回的json数据(json格式)
+//                    Toast.makeText(PLVideoViewActivity.this,key,Toast.LENGTH_LONG).show();
+                    try {
+                        JSONObject js= new JSONObject(key);
+                        JSONArray array = js.getJSONArray("result");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject json = array.getJSONObject(i);
+                            int id = json.getInt("id");
+                            String text = json.getString("text");
+                            String createTime = json.getString("createTime");
+                            int liveId = json.getInt("liveId");
+                            int personId = json.getInt("personId");
+
+                            addDanmaku(true,text,false);
+                        }
+
+                    } catch (JSONException e) {
+                        Log.e("err", "handleMessage: "+e.getMessage());
+                    }
+                }
+            };
+        }).start();
+
     }
 
     private PLOnInfoListener mOnInfoListener = new PLOnInfoListener() {
@@ -421,24 +528,81 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             danmaku.borderColor = Color.YELLOW; //对于自己发送的弹幕可以加框显示,0表示无边框
         mDanmakuView.addDanmaku(danmaku);
 
+        if(isUs)
+        sendDamaku(msg);
+
+    }
+
+    public void sendDamaku(String msg){
 
         info = msg;
 
+        //法1：间接从js中访问数据库
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                sendEvent(reactContext, "addDanmaku", info );
+//
+//            }
+//        }).start();
+
+        //法2：直接通过android访问数据库
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                sendEvent(reactContext, "addDanmaku", info );
-
+                String url= HttpUtilsHttpClient.BASE_URL+"/func/allow/addDanMaKu";
+                Map<String ,String > params = new HashMap<String, String>();
+                params.put("text",info);
+                params.put("personId",personId.toString());
+                params.put("liveId",liveId.toString());
+                //请求，返回json
+                String result = HttpUtilsHttpClient.postRequest(url, params);
+                Message msg = new Message();
+                Bundle data=new Bundle();
+                data.putString("result",result);
+                msg.setData(data);
+                hander.sendMessage(msg);
             }
-        }).start();
 
+            Handler hander = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+
+                    Bundle data = msg.getData();
+                    String key = data.getString("result");//得到json返回的json数据
+//                    Toast.makeText(PLVideoViewActivity.this,key,Toast.LENGTH_LONG).show();
+                    try {
+                        JSONObject json= new JSONObject(key);
+                        String result = (String) json.get("result");
+
+                        if ("success".equals(result)){
+                            Toast.makeText(PLVideoViewActivity.this,"弹幕发送成功",Toast.LENGTH_LONG).show();
+                        }else if("error".equals(result)){
+                            Toast.makeText(PLVideoViewActivity.this,"弹幕发送失败",Toast.LENGTH_LONG).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+        }).start();
+    }
+
+    private static String getParams(HashMap<String, Object> paramsMap) {
+        String result = "";
+        for (HashMap.Entry<String, Object> entity : paramsMap.entrySet()) {
+            result += "&" + entity.getKey() + "=" + entity.getValue();
+        }
+        return result.substring(1);
     }
 
     //自定义textwatcher 限制输入字符数
@@ -523,6 +687,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             mDanmakuView.release();
             mDanmakuView = null;
         }
+        timer.cancel();
     }
 
     @Override

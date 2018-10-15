@@ -154,10 +154,10 @@ class HomePage extends Component{
 
                 </Toolbar>
             </View>
-        )
+        );
     }
 
-    renderRow(rowData)
+    renderRow(rowData,rowId)
     {
 
         //{brief=单纯测试, longbrief=单纯测试1111, snapShotUrl=http://live-snapshot/sportshot/EEvvee.jpg,
@@ -167,8 +167,10 @@ class HomePage extends Component{
         <TouchableOpacity style={{height:150,width:width/2-10,}}
                           onPress={()=>{
                               //播放source1的直播
-                              var playUrl = 'rtmp://pili-live-rtmp.sportshot.cn/sportshot/source1'
-                              Bridge.playVideo(playUrl)
+                              var playUrl = rowData.playUrl
+                              var liveId = rowData.id
+                              var personId = this.props.personId
+                              Bridge.playVideo(playUrl,liveId,personId)
                           }}
         >
             <Image style={{height:150,width:width/2-10,padding:5,}} source={require('../../../img/zhibologo.jpeg')} resizeMode={'stretch'}>

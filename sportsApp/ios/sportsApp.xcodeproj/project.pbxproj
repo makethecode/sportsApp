@@ -175,6 +175,7 @@
 		ADB0722921128FA200E1ED62 /* idl-license.face-ios in Resources */ = {isa = PBXBuildFile; fileRef = ADB0722621128FA200E1ED62 /* idl-license.face-ios */; };
 		ADB0722A21128FA200E1ED62 /* com.baidu.idl.face.faceSDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = ADB0722721128FA200E1ED62 /* com.baidu.idl.face.faceSDK.bundle */; };
 		ADD261A42113F032005BB1F2 /* HappyDNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD261A32113F032005BB1F2 /* HappyDNS.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		ADDD7BB5216B8D31007D46B9 /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADDD7BB1216B8CDF007D46B9 /* libRNOverlay.a */; };
 		B633305B885442F085C60483 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0441A7778AF843EFB369DB6D /* Zocial.ttf */; };
 		BAD27E4E42094C498BA7E716 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D9E1B78DFBB4D20B0C96214 /* libresolv.tbd */; };
 		BBE3B162A04446E1912DB626 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01069E0054A6427892A33026 /* Foundation.ttf */; };
@@ -532,6 +533,13 @@
 			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
 			remoteInfo = RCTCamera;
 		};
+		ADDD7BB0216B8CDF007D46B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ADDD7B84216B8CDF007D46B9 /* RNOverlay.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNOverlay;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -836,6 +844,7 @@
 		ADB0722721128FA200E1ED62 /* com.baidu.idl.face.faceSDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = com.baidu.idl.face.faceSDK.bundle; sourceTree = "<group>"; };
 		ADD261A12113F004005BB1F2 /* HappyDNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HappyDNS.framework; sourceTree = "<group>"; };
 		ADD261A32113F032005BB1F2 /* HappyDNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HappyDNS.framework; sourceTree = "<group>"; };
+		ADDD7B84216B8CDF007D46B9 /* RNOverlay.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNOverlay.xcodeproj; path = "../node_modules/react-native-overlay/RNOverlay.xcodeproj"; sourceTree = "<group>"; };
 		AFA9045B53ED4691B133E53A /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B27BB71D43E445B297582F79 /* CoreFoundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		B34FD1B1A5BA48C9AC878C5C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
@@ -864,6 +873,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADDD7BB5216B8D31007D46B9 /* libRNOverlay.a in Frameworks */,
 				AD7DB9CA210C1276003650C4 /* XCTest.framework in Frameworks */,
 				CF15D394EFB44F6685CC9CCF /* UIKit.framework in Frameworks */,
 				4A3E81E820205E4A0021E882 /* MediaPlayer.framework in Frameworks */,
@@ -1650,6 +1660,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				ADDD7B84216B8CDF007D46B9 /* RNOverlay.xcodeproj */,
 				2ACC622F1F13664D00C91231 /* RCTWeChat.xcodeproj */,
 				2AED38371F0F13FC00FD55DE /* RCTBaiduMap.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
@@ -1774,6 +1785,14 @@
 			isa = PBXGroup;
 			children = (
 				ADD0CCAB2136759600180865 /* libRCTCamera.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ADDD7B85216B8CDF007D46B9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ADDD7BB1216B8CDF007D46B9 /* libRNOverlay.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1985,6 +2004,10 @@
 				{
 					ProductGroup = 2A70A2331EE4E35200995DD3 /* Products */;
 					ProjectRef = 14C51D9C90D543EA8B44B863 /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = ADDD7B85216B8CDF007D46B9 /* Products */;
+					ProjectRef = ADDD7B84216B8CDF007D46B9 /* RNOverlay.xcodeproj */;
 				},
 				{
 					ProductGroup = 2A8F70991EE14546006CBA78 /* Products */;
@@ -2323,6 +2346,13 @@
 			fileType = archive.ar;
 			path = libRCTCamera.a;
 			remoteRef = ADD0CCAA2136759600180865 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ADDD7BB1216B8CDF007D46B9 /* libRNOverlay.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNOverlay.a;
+			remoteRef = ADDD7BB0216B8CDF007D46B9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

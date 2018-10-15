@@ -13,7 +13,8 @@ import {
     Animated,
     Easing,
     TextInput,
-    Alert
+    Alert,
+    Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import DatePicker from 'react-native-datepicker';
@@ -67,15 +68,56 @@ class MemberInformation extends Component{
 
                             <View style={{width:width,height:180,backgroundColor:'#66CDAA',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                             {/*头像*/}
+                                {
+                                    //Android头像无法与边框同步形成圆角
+                                Platform.OS === 'ios'?
+                                <View style={{alignItems:'center',justifyContent:'center',height:100,width:width,marginTop:120}}>
+                                    {this.state.member.avatar && this.state.member.avatar != '' ?
+                                        <Image resizeMode="stretch" style={{
+                                            height: 70,
+                                            width: 70,
+                                            borderRadius: 35,
+                                            borderColor: '#fff',
+                                            borderWidth: 2,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                               source={{uri: this.state.member.avatar}}/> :
+                                        <Image resizeMode="stretch" style={{
+                                            height: 70,
+                                            width: 70,
+                                            borderRadius: 35,
+                                            borderColor: '#fff',
+                                            borderWidth: 2,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                               source={require('../../../img/portrait.jpg')}/>
+                                    }
+                                </View>
+                                :
                                 <View style={{alignItems:'center',justifyContent:'center',height:100,width:width,marginTop:120}}>
                                     {
-                                        this.state.member.avatar&&this.state.member.avatar!=''?
-                                            <Image resizeMode="stretch" style={{height: 70, width: 70, borderRadius: 35,borderColor:'#fff',borderWidth:2,alignItems:'center',justifyContent:'center'}}
-                                                   source={{uri: this.state.member.avatar}}/>:
-                                            <Image resizeMode="stretch" style={{height: 70, width: 70, borderRadius: 35,borderColor:'#fff',borderWidth:2,alignItems:'center',justifyContent:'center'}}
+                                        this.state.member.avatar && this.state.member.avatar != '' ?
+                                            <Image resizeMode="stretch" style={{
+                                                height: 70,
+                                                width: 70,
+                                                borderRadius: 35,
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                                   source={{uri: this.state.member.avatar}}/> :
+                                            <Image resizeMode="stretch" style={{
+                                                height: 70,
+                                                width: 70,
+                                                borderRadius: 35,
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
                                                    source={require('../../../img/portrait.jpg')}/>
                                     }
                                 </View>
+                                }
 
                         {/*用户名*/}
                         <View style={{marginTop:3,justifyContent:'center'}}>
@@ -273,7 +315,7 @@ const styles = StyleSheet.create({
 
 module.exports = connect(state=>({
         userType: state.user.user.usertype,
-        creatorId:state.user.personInfo.personId
+        creatorId:state.user.personInfo.personId,
     })
 )(MemberInformation);
 

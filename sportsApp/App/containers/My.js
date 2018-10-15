@@ -12,7 +12,7 @@ import {
     TouchableOpacity,
     RefreshControl,
     Animated,
-    Easing
+    Easing,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -224,15 +224,25 @@ class My extends Component{
                         <View style={{marginTop:30,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
 
                             {
-                                avatar!==undefined && avatar!==null?
-
-                                <View style={{height:60,width:60}}>
-                                    <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={{uri:avatar}}/>
-                                </View> :
+                                //Android头像无法与边框同步形成圆角
+                                Platform.OS === 'ios'?
                                     <View style={{height:60,width:60}}>
-                                        <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={require('../../img/portrait.jpg')}/>
+                                        {
+                                            avatar && avatar != '' ?
+                                                 <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={{uri:avatar}}/>
+                                                : <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30,borderColor:'#fff',borderWidth:2}} source={require('../../img/portrait.jpg')}/>
+                                        }
+                                    </View>
+                                    :
+                                    <View style={{height:60,width:60}}>
+                                        {
+                                            avatar && avatar != '' ?
+                                                <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30}} source={{uri:avatar}}/>
+                                                : <Image resizeMode="stretch" style={{height:60,width:60,borderRadius:30}} source={require('../../img/portrait.jpg')}/>
+                                        }
                                     </View>
                             }
+
                         </View>
                         <View style={{width:width,justifyContent:'center',alignItems:'center'}}>
                         <View style={{alignItems:'center',justifyContent:'center',marginTop:15,width:80,backgroundColor:'#fff',opacity:0.7,borderRadius:5}}>

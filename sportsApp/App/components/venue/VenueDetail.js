@@ -81,7 +81,7 @@ class VenueDetail extends Component{
                          onPress={(i)=>{
                              this.navigate2VenueMap(venueDetail)
                          }}>
-                    <View style={{width:width,height:180}}>
+                    <View style={{width:width,height:160}}>
                         <ViewPager
                             style={this.props.style}
                             dataSource={this.state.dataSource}
@@ -91,7 +91,7 @@ class VenueDetail extends Component{
                         />
                     </View>
 
-                    <View style={{width:width,height:320,padding:10,marginTop:10,backgroundColor:'#fff'}}>
+                    <View style={{width:width,height:340,padding:10,backgroundColor:'#fff'}}>
 
                         {/*场馆名称*/}
                         <View style={{flex:1,padding:12,paddingHorizontal:10,paddingTop:4,flexDirection:'row'}}>

@@ -11,7 +11,9 @@ import {
     TouchableOpacity,
     RefreshControl,
     Animated,
-    Easing
+    Easing,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
@@ -207,9 +209,10 @@ class MyGroup extends Component{
     }
 
     fetchData() {
+
         this.props.dispatch(fetchMyGroupList()).then((json) => {
             if (json.re == 1) {
-                this.setState({myGroupList: json.data})
+                this.setState({myGroupList: json.data,showProgress:false})
             }
         });
     }
@@ -217,7 +220,8 @@ class MyGroup extends Component{
     constructor(props) {
         super(props);
         this.state={
-            myGroupList:null
+            myGroupList:null,
+            showProgress:false,
         }
     }
 
@@ -293,12 +297,38 @@ class MyGroup extends Component{
                     </TouchableOpacity>
 
                 </Popover>
+
+                    {/*loading模态框*/}
+                    <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
+                        <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
+                                          onPress={()=>{
+                                              //TODO:cancel this behaviour
+
+                                          }}>
+                            <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
+                                justifyContent:'center',alignItems:'center',borderRadius:6}}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={{marginTop:10,height: 40,position:'absolute',transform: [{scale: 1.6}]}}
+                                    size="large"
+                                />
+                                <View style={{flexDirection:'row',justifyContent:'center',marginTop:45}}>
+                                    <Text style={{color:'#666',fontSize:13}}>
+                                        加载中...
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+
                 </Toolbar>
             </View>
         );
     }
 
     componentDidMount(){
+        this.setState({showProgress:true})
         this.fetchData();
     }
 
@@ -313,6 +343,15 @@ var styles = StyleSheet.create({
     },
     popoverText:{
         color:'#444',
+    },
+
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 
 });

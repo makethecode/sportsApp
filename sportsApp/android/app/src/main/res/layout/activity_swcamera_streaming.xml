@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sportsapp.plsteam.SWCameraStreamingActivity"
-    android:background="@color/background_floating_material_dark"
-    android:id="@+id/content">
+    android:background="@color/background_floating_material_dark">
 
     <com.qiniu.pili.droid.streaming.widget.AspectFrameLayout
         android:id="@+id/cameraPreview_afl"
@@ -21,6 +16,12 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
+        <master.flame.danmaku.ui.widget.DanmakuView
+            android:id="@+id/danmaku_view_stream"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false" />
+
         <ImageView
             android:id="@+id/playBtn"
             android:layout_width="64dp"
@@ -29,7 +30,6 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="50dp"
              />
-
     </com.qiniu.pili.droid.streaming.widget.AspectFrameLayout>
 
-</RelativeLayout>
+</FrameLayout>

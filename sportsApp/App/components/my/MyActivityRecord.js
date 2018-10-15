@@ -12,7 +12,9 @@ import {
     Animated,
     Easing,
     TextInput,
-    InteractionManager
+    InteractionManager,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -45,6 +47,7 @@ class MyActivityRecord extends Component {
 
             activities:null,
             allActivities:null,
+            showProgress:false,
         };
     }
 
@@ -265,6 +268,7 @@ class MyActivityRecord extends Component {
 
     componentDidMount()
     {
+        this.setState({showProgress:true})
         InteractionManager.runAfterInteractions(() => {
             this.props.dispatch(fetchActivityList()).then((json)=> {
 
@@ -280,7 +284,7 @@ class MyActivityRecord extends Component {
                         }
                     });
 
-                    this.setState({allActivities:myActivity,activities:myActivity})
+                    this.setState({allActivities:myActivity,activities:myActivity,showProgress:false})
                 }
 
             }).catch((e)=>{
@@ -315,6 +319,14 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 
 });

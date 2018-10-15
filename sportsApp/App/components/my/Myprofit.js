@@ -55,6 +55,7 @@ import {
 const {height, width} = Dimensions.get('window');
 const dropdownWidth = width/3-20;
 var Popover = require('react-native-popover');
+var Overlay = require('react-native-overlay')
 
 class Myprofit extends Component {
 
@@ -187,8 +188,9 @@ class Myprofit extends Component {
             isRefreshing:false,
             fadeAnim:new Animated.Value(1),
 
-            startDate: new Date(2018,7,10),
-            endDate: new Date(2018,8,1),
+            nowDate:new Date().getTime(),
+            startDate: new Date(new Date().getTime() - 7*24*3600*1000),
+            endDate: new Date(),
             currentDate:'本月',
 
             clubName:'俱乐部',
@@ -388,9 +390,11 @@ class Myprofit extends Component {
 
         return (
             <View style={styles.container}>
+
                 <Toolbar ref="menu" width={width} title="我的收益" navigator={this.props.navigator} actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
+                                 if(Platform.OS=='ios')
                                  this.showPopover('menu');
                              }
                          }}>
@@ -533,7 +537,7 @@ class Myprofit extends Component {
                     </View>
 
                     {<View style={{flex:5,backgroundColor:'#fff'}}>
-                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-200,paddingTop:5,paddingBottom:5,}}>
                             <ScrollView
                                 refreshControl={
                                     <RefreshControl
@@ -620,6 +624,7 @@ class Myprofit extends Component {
 
             }
         })
+
     }
 
     dropdown_renderRow(rowData, rowID, highlighted){

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sportsapp.plsteam.HttpTestActivity"
+    android:id="@+id/content">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="访问服务端"
+        android:id="@+id/http_btn"/>
+
+    <TextView
+        android:id="@+id/re_data"
+        android:layout_below="@id/http_btn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:textSize="16dp"
+        android:text="服务器返回的值"/>
+
+</RelativeLayout>

@@ -45,7 +45,7 @@ export let getRTMPPushUrl = () => {
                 }
             }).then((json) => {
                 //dispatch(updateRtmpUrl({ url:json.data }));
-                resolve(json.data)
+                resolve(json)
             }).catch((e) => {
                 reject(e)
             })
@@ -86,7 +86,7 @@ export let createLiveHome = (personId,title,brief,longbrief,rtmppushurl,rtmpplay
                     snapshot:snapshot,
                 }
             }).then((json) => {
-               resolve(json.data)
+               resolve(json)
             }).catch((e) => {
                 reject(e)
             })

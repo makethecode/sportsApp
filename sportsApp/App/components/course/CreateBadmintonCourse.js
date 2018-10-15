@@ -260,10 +260,10 @@ class CreateBadmintonCourse extends Component{
                             borderRadius:10}}>
                             <TextInput
                                 placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入课程名称"
                                 value={this.state.course.className}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{courseName:value})})
@@ -314,10 +314,10 @@ class CreateBadmintonCourse extends Component{
                             borderRadius:10}}>
                             <TextInput
                                 placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入课程目标"
                                 value={this.state.course.detail}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{detail:value})})
@@ -332,7 +332,7 @@ class CreateBadmintonCourse extends Component{
                             <Text style={{color:'#343434'}}>课程安排</Text>
                         </View>
                         <TextInput
-                            style={{height:80,width:width,fontSize:14,marginTop:5,borderRadius:5,backgroundColor:'#fff'}}
+                            style={{height:80,width:width,fontSize:14,marginTop:5,borderRadius:5,backgroundColor:'#fff',padding:0}}
                             onChangeText={(text) =>
                             {
                                 this.setState({course:Object.assign(this.state.course,{scheduleDes:text})});
@@ -340,7 +340,7 @@ class CreateBadmintonCourse extends Component{
                             value={this.state.course.scheduleDes}
                             placeholder='请描述课程时间安排'
                             placeholderTextColor="#888"
-                            underlineColorAndroid="transparent"
+                            underlineColorAndroid={'transparent'}
                             multiline={true}
                         />
                     </View>
@@ -358,10 +358,10 @@ class CreateBadmintonCourse extends Component{
                             borderRadius:10}}>
                             <TextInput
                                 placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入课程容量"
                                 value={this.state.course.maxNumber}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{maxNumber:parseInt(value)})})
@@ -380,10 +380,10 @@ class CreateBadmintonCourse extends Component{
                             borderRadius:10}}>
                             <TextInput
                                 placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入授课课次"
                                 value={this.state.course.classCount}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{classCount:parseInt(value)})})
@@ -501,10 +501,10 @@ class CreateBadmintonCourse extends Component{
                             borderRadius:10}}>
                             <TextInput
                                 placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入支付费用"
                                 value={this.state.course.cost}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({course:Object.assign(this.state.course,{cost:parseInt(value)})})
@@ -520,7 +520,7 @@ class CreateBadmintonCourse extends Component{
                         </Text>
                     </View>
                 </View>
-                    <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width,backgroundColor:'#fff',marginBottom:10}}>
+                    <View style={{flexDirection:'row',height:50,justifyContent:'center',alignItems:'center',width:width,backgroundColor:'#fff',marginBottom:20}}>
                         <TouchableOpacity style={{width:width*1/3,backgroundColor:'#fc6254',padding:10,flexDirection:'row',
                             justifyContent:'center'}}
                                           onPress={()=>{

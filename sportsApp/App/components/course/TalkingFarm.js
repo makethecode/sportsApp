@@ -1,6 +1,3 @@
-/**
- * Created by dingyiming on 2017/8/1.
- */
 import React, {Component} from 'react';
 import {
     Dimensions,
@@ -219,7 +216,7 @@ class TalkingFarm extends Component {
                         </View>
 
                         {rowData.headimgurl === null ?
-                            <TouchableOpacity style={{width:40,padding: 10, marginRight: 10}}
+                            <TouchableOpacity style={{width:40,height:40,padding: 10, marginRight: 10}}
                                               onPress={()=>{
                                                   this.navigate2MemberInformation(rowData.pernum)
                                               }}>
@@ -231,11 +228,10 @@ class TalkingFarm extends Component {
                                     }}
                                     resizeMode={'contain'}
                                     source={require('../../../img/portrait.jpg')}
-                                >
-                                </Image>
+                                />
                             </TouchableOpacity>
                             :
-                            <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                            <TouchableOpacity style={{width:40,height:40,padding:10,marginRight:10}}
                                   onPress={()=>{
                                       this.navigate2MemberInformation(rowData.pernum)
                                   }}>
@@ -261,7 +257,7 @@ class TalkingFarm extends Component {
                 alignItems:'center',
             }}>
                 {rowData.headimgurl === null ?
-                    <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                    <TouchableOpacity style={{width:40,height:40,padding:10,marginRight:10}}
                           onPress={()=>{
                               this.navigate2MemberInformation(rowData.pernum)
                           }}>
@@ -277,7 +273,7 @@ class TalkingFarm extends Component {
                         </Image>
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity style={{width:40,padding:10,marginRight:10}}
+                    <TouchableOpacity style={{width:40,height:40,padding:10,marginRight:10}}
                           onPress={()=>{
                               this.navigate2MemberInformation(rowData.pernum)
                           }}>
@@ -375,7 +371,7 @@ class TalkingFarm extends Component {
                         }} onPress={() => {
                             this.addTalkingFarm()
                         }}>
-                            <View style={{padding: 10}}>
+                            <View style={{padding: 3}}>
                                 <Text style={{color: '#fff', fontSize: 14}}>发送</Text>
                             </View>
                         </TouchableOpacity>
@@ -401,8 +397,9 @@ const styles = StyleSheet.create({
     },
     textinput: {
         height: 30,
-        flex: 6,
+        flex: 5,
         fontSize:14,
+        padding:0,
     }
 
 });

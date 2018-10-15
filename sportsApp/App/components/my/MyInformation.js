@@ -241,7 +241,7 @@ class MyInformation extends Component{
                             {/*头像*/}
                             <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         头像
                                     </Text>
                                 </View>
@@ -257,59 +257,61 @@ class MyInformation extends Component{
                             </View>
 
                         {/*用户名*/}
-                        <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                        <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                <Text style={{color:'#555',fontSize:14}}>
                                     用户名
                                 </Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                 <TextInput
                                     placeholderTextColor='#888'
-                                    style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                    style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                     placeholder={this.props.username}
                                     value={this.state.member.perNum}
                                     onChangeText={
                                         (value)=>{
                                             this.setState({member:Object.assign(this.state.member,{perNum:value})})
                                         }}
+                                    underlineColorAndroid={'transparent'}
                                 />
                             </View>
                         </View>
 
                         {/*真实姓名*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         真实姓名
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={this.props.perName}
                                         value={this.state.member.perName}
                                         onChangeText={
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{perName:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
 
                         {/*性别*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         性别
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:1,padding:0}}
                                         placeholder={
                                             this.props.genderCode==1?'男':'女'
                                         }
@@ -318,17 +320,16 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{sex:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
 
                         {/*出生日期*/}
-                        <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
-
-                        >
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                <Text style={{color:'#555',fontSize:14}}>
                                     出生日期
                                 </Text>
                             </View>
@@ -336,9 +337,9 @@ class MyInformation extends Component{
                              <Text style={{color:'#444',fontSize:15}}>{this.state.member.birthday}</Text>
                             </View>
 
-                            <View style={{height:25,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                            <View style={{height:40,marginRight:0,flexDirection:'row',alignItems:'center'}}>
                                 <DatePicker
-                                    style={{width:25,marginLeft:0,borderWidth:0}}
+                                    style={{width:40,marginLeft:0,borderWidth:0,justifyContent:'center',alignItems:'center'}}
                                     customStyles={{
                                         placeholderText:{color:'transparent',fontSize:12},
                                         dateInput:{height:30,borderWidth:0},
@@ -351,7 +352,10 @@ class MyInformation extends Component{
                                     confirmBtnText="确认"
                                     cancelBtnText="取消"
                                     showIcon={true}
-                                        iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
+                                    iconComponent={
+                                        <View style={{height:40,width:40,justifyContent:'center',alignItems:'center'}}>
+                                            <Icon name={'calendar'} size={20} color="#888"/>
+                                        </View>}
                                     onDateChange={(date) => {
                                         this.setState({member:Object.assign(this.state.member,{birthday:date})})
                                     }}
@@ -360,16 +364,16 @@ class MyInformation extends Component{
                         </View>
 
                             {/*身高体重*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         身高体重
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={
                                             this.props.heightweight
                                         }
@@ -378,21 +382,22 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{heightweight:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
                             {/*身份证*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         身份证
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={
                                             this.props.perIdCard
                                         }
@@ -401,6 +406,7 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{perIdCard:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
@@ -410,43 +416,45 @@ class MyInformation extends Component{
                             </View>
 
                             {/*微信号*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         微信号
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={this.props.wechat}
                                         value={this.state.member.wechat}
                                         onChangeText={
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{wechat:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
                             {/*手机号*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         手机号
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={this.props.mobilePhone}
                                         value={this.state.member.mobilePhone}
                                         onChangeText={
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{mobilePhone:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
@@ -462,7 +470,7 @@ class MyInformation extends Component{
                                               }}
                         >
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                <Text style={{color:'#555',fontSize:14}}>
                                     教练星级
                                 </Text>
                             </View>
@@ -490,7 +498,7 @@ class MyInformation extends Component{
                                               }}
                             >
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         运动水平
                                     </Text>
                                 </View>
@@ -512,16 +520,16 @@ class MyInformation extends Component{
                             </TouchableOpacity>
 
                             {/*服务城市*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         服务城市
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={
                                             this.props.workcity
                                         }
@@ -530,21 +538,22 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{workcity:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
                             {/*毕业院校*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         毕业院校
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={
                                             this.props.university
                                         }
@@ -553,21 +562,22 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{university:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
 
                         {/*教练简介*/}
-                            <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
+                            <View style={{flexDirection:'row',height:40,width:width,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         教练简介
                                     </Text>
                                 </View>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
                                     <TextInput
                                         placeholderTextColor='#888'
-                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3}}
+                                        style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',flex:3,padding:0}}
                                         placeholder={
                                             this.props.coachBrief
                                         }
@@ -576,6 +586,7 @@ class MyInformation extends Component{
                                             (value)=>{
                                                 this.setState({member:Object.assign(this.state.member,{coachBrief:value})})
                                             }}
+                                        underlineColorAndroid={'transparent'}
                                     />
                                 </View>
                             </View>
@@ -584,7 +595,7 @@ class MyInformation extends Component{
                             <View style={{flexDirection:'column'}}>
                             <View style={{flexDirection:'row',padding:12,paddingHorizontal:10,borderColor:'#eee'}}>
                                 <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                    <Text style={{color:'#555',fontSize:14}}>
                                         上传教练图片
                                     </Text>
                                     <Icon />

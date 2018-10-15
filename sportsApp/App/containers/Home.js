@@ -14,7 +14,8 @@ import {
     Easing,
     Alert,
     InteractionManager,
-    Linking
+    Linking,
+    DeviceEventEmitter,
 } from 'react-native';
 import {connect} from 'react-redux';
 import ViewPager from 'react-native-viewpager';
@@ -211,48 +212,16 @@ class Home extends Component {
 
     renderRow(rowData,sectionId,rowId){
 
-        if(Platform.OS=== 'ios'){
-        return(
-            <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',padding:5}}
-                onPress={()=>{
-                   // Linking.openURL("http://114.215.99.2:8880/news/"+rowData.newsNum+"/index.html").catch(err => console.error('An error occurred', err));
-               this.navigate2NewsDetail(rowData.docid)
-                }}
-            >
-                <View style={{flexDirection:'column',width:100,justifyContent:'center',alignItems:'center'}}>
-                    <Image  resizeMode="stretch" style={{width:100,height:75}}
-                            source={{uri:rowData.imgsrc}}
-                    />
-                </View>
-
-                <View style={{flex:1,flexDirection:'column',alignItems:'flex-start'}}>
-                    <View style={{padding:4,paddingHorizontal:12}}>
-                        <Text style={{color:'#666',fontSize:16}}>
-                            {rowData.title}
-                        </Text>
-                    </View>
-
-                    <View style={{paddingTop:12,paddingBottom:4,flexDirection:'row',alignItems:'center'}}>
-
-                        <View style={{padding:4,paddingHorizontal:12,}}>
-                            <Text style={{color:'#888',fontSize:11}}>
-                                {rowData.ptime}
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-
-            </TouchableOpacity>)}
-            else{
             return (
                 <TouchableOpacity style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#ddd',padding:5}}
                                   onPress={()=>{
                                       //Linking.openURL("http://114.215.99.2:8880/news/"+rowData.newsNum+"/index.html").catch(err => console.error('An error occurred', err));
+                                      this.navigate2NewsDetail(rowData.docid)
                                   }}
                 >
                     <View style={{flexDirection:'column',width:100,justifyContent:'center',alignItems:'center'}}>
                         <Image  resizeMode="stretch" style={{width:100,height:75}}
-                                source={require('../../img/zhibo2.jpeg')}
+                                source={{uri:rowData.imgsrc}}
                         />
                     </View>
 
@@ -267,7 +236,7 @@ class Home extends Component {
 
                             <View style={{padding:4,paddingHorizontal:12,}}>
                                 <Text style={{color:'#888',fontSize:11}}>
-                                    {rowData.createTime}
+                                    {rowData.ptime}
                                 </Text>
                             </View>
                         </View>
@@ -276,7 +245,6 @@ class Home extends Component {
                 </TouchableOpacity>
             );
         }
-    }
 
     constructor(props) {
         super(props);
@@ -590,16 +558,29 @@ class Home extends Component {
                 })}
                 else
                 {
-                    //安卓用数据库
-                    this.props.dispatch(fetchNewsInfo()).then((json)=>{
-                        this.setState({
-                            news:json.data
-                        })
-                    })
+                    // //安卓用数据库
+                    // this.props.dispatch(fetchNewsInfo()).then((json)=>{
+                    //     this.setState({
+                    //         news:json.data
+                    //     })
+                    // })
+                    Bridge.getNews();
+
                 }
 
         });
+
+        this.Listener = DeviceEventEmitter.addListener('news',(data)=>{
+            var newsList = data.result;
+            this.setState({news:newsList});
+        })
+
     }
+
+    componentWillUnmount(){
+        this.Listener.remove();
+    }
+
 }
 
 var styles = StyleSheet.create({

@@ -98,7 +98,7 @@ class CreateLiveHome extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请输入直播名称"
                                 value={this.state.title}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({title:value})
@@ -119,7 +119,7 @@ class CreateLiveHome extends Component{
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3}}
                                 placeholder="请用一句话介绍你的直播"
                                 value={this.state.brief}
-                                underlineColorAndroid={false}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
                                         this.setState({brief:value})
@@ -174,13 +174,20 @@ class CreateLiveHome extends Component{
 
                                               this.props.dispatch(createLiveHome(personId,title,brief,longbrief,rtmppushurl,rtmpplayurl,snapshot)).
                                               then((json)=>{
+
+                                                  if(json.re==1) {
                                                       //创建房间成功，开始直播
                                                       //用Promise进行原生模块与rn模块的交互(可用then接受返回值)
-                                                      Bridge.raisePLStream(rtmppushurl).then(msg=>{
+                                                      Bridge.raisePLStream(rtmppushurl).then(msg => {
                                                           //alert(msg);
-                                                      }).catch(e=>{alert(e)});
+                                                      }).catch(e => {
+                                                          alert(e)
+                                                      });
 
-                                                      this.setState({liveInfo:json[0],isPlay:true})
+                                                      this.setState({liveInfo: json.data[0], isPlay: true})
+                                                  }else{
+                                                      alert("直播间创建失败！")
+                                                  }
 
                                               });
 
@@ -198,13 +205,12 @@ class CreateLiveHome extends Component{
 
     componentWillMount()
     {
-        this.Listener = DeviceEventEmitter.addListener('EventName', (msg)=>{
+        this.Listener = DeviceEventEmitter.addListener('closeLiveHome', (msg)=>{
             //alert(msg);
             //直播结束后处理
             //关闭直播间
             this.props.dispatch(closeLiveHome(this.state.liveInfo.id)).
             then((json)=>{
-
             this.goBack()
             });
 
