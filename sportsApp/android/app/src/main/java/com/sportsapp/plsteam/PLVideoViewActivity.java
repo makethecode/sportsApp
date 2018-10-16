@@ -267,6 +267,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 Map<String ,String > params = new HashMap<String, String>();
                 params.put("name","Chenhaiyun");
                 params.put("password","123");
+                params.put("liveId",liveId+"");
                 String result = HttpUtilsHttpClient.postRequest(url, params);
                 Message msg = new Message();
                 Bundle data=new Bundle();

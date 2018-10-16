@@ -59,6 +59,8 @@ public class SWCameraStreamingActivity extends Activity implements  StreamingSta
 
     private static final String TAG = SWCameraStreamingActivity.class.getSimpleName();
 
+    private Integer liveId;
+
     //主播UI
     private JSONObject mJSONObject;
     private MediaStreamingManager mMediaStreamingManager;
@@ -91,6 +93,7 @@ public class SWCameraStreamingActivity extends Activity implements  StreamingSta
         url= getIntent().getStringExtra("url");
         if(url==null||url.equals(""))
             finish();
+        liveId = getIntent().getIntExtra("liveId",1);
 
         //初始化主播界面
         playBtn = (ImageView) findViewById(R.id.playBtn);
@@ -251,6 +254,7 @@ public class SWCameraStreamingActivity extends Activity implements  StreamingSta
                 Map<String ,String > params = new HashMap<String, String>();
                 params.put("name","Chenhaiyun");
                 params.put("password","123");
+                params.put("liveId",liveId+"");
                 String result = HttpUtilsHttpClient.postRequest(url, params);
                 Message msg = new Message();
                 Bundle data=new Bundle();

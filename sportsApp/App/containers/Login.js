@@ -31,9 +31,6 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import TextInputWrapper from 'react-native-text-input-wrapper'
-import Config from "../../config";
-import EmojiFilter from '../utils/EmojiFilter'
-
 var wechat=require('react-native-wechat');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../utils/Proxy');

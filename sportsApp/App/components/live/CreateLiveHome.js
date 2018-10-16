@@ -64,10 +64,10 @@ class CreateLiveHome extends Component{
             // {rtmppushurl=rtmp://pili-publish.sportshot.cn/sportshot/source1?e=1538381806&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:vCqaZpqIQG4Gp0SmO1Hi69sPBZE=,
             // rtmpplayurl=rtmp://pili-live-rtmp.sportshot.cn/sportshot/source1,
             // snapshot=http://live-snapshot.sportshot.cn/sportshot/source1.jpg}
-            urls:this.props.urls,
-            rtmppushurl:this.props.urls.rtmppushurl,
-            rtmpplayurl:this.props.urls.rtmpplayurl,
-            snapshot:this.props.urls.snapshot,
+            // urls:this.props.urls,
+            // rtmppushurl:this.props.urls.rtmppushurl,
+            // rtmpplayurl:this.props.urls.rtmpplayurl,
+            // snapshot:this.props.urls.snapshot,
 
             liveInfo:null,
             isPlay:true,
@@ -165,20 +165,21 @@ class CreateLiveHome extends Component{
                                               var title = this.state.title;
                                               var brief = this.state.brief;
                                               var longbrief = this.state.longbrief;
-                                              var rtmppushurl = this.state.rtmppushurl;
-                                              var rtmpplayurl = this.state.rtmpplayurl;
-                                              var snapshot = this.state.snapshot;
+                                              //var rtmppushurl = this.state.rtmppushurl;
+                                              //var rtmpplayurl = this.state.rtmpplayurl;
+                                              //var snapshot = this.state.snapshot;
 
                                                   //生成推流地址交给原生安卓处理
                                               //Bridge.raisePLStream(pushUrl);
 
-                                              this.props.dispatch(createLiveHome(personId,title,brief,longbrief,rtmppushurl,rtmpplayurl,snapshot)).
+                                              //创建直播间/已有直播间则使用原来的直播间
+                                              this.props.dispatch(createLiveHome(personId,title,brief,longbrief)).
                                               then((json)=>{
-
                                                   if(json.re==1) {
-                                                      //创建房间成功，开始直播
+                                                      //创建房间成功
+                                                      //返回值为直播间信息
                                                       //用Promise进行原生模块与rn模块的交互(可用then接受返回值)
-                                                      Bridge.raisePLStream(rtmppushurl).then(msg => {
+                                                      Bridge.raisePLStream(json.data[0].pushurl,json.data[0].id).then(msg => {
                                                           //alert(msg);
                                                       }).catch(e => {
                                                           alert(e)

@@ -43,6 +43,7 @@ const initialState = {
     club:null,
     wechat:null,
     portrait:null,
+    clubId:null,
 };
 
 let user = (state = initialState, action) => {

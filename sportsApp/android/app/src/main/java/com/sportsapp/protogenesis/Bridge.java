@@ -106,7 +106,7 @@ public class Bridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void raisePLStream(String url,Promise promise)
+    public void raisePLStream(String url,Integer liveId,Promise promise)
     {
         //原生模块与rn的交互
 //        WritableMap map = Arguments.createMap();
@@ -123,6 +123,7 @@ public class Bridge extends ReactContextBaseJavaModule {
         Intent intent=new Intent();
         intent.setClass(getCurrentActivity(), SWCameraStreamingActivity.class);
         intent.putExtra("url",url);
+        intent.putExtra("liveId",liveId);
         getCurrentActivity().startActivityForResult(intent,1);
 
     }

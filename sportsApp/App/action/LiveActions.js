@@ -54,7 +54,7 @@ export let getRTMPPushUrl = () => {
 }
 
 //创建直播间
-export let createLiveHome = (personId,title,brief,longbrief,rtmppushurl,rtmpplayurl,snapshot) => {
+export let createLiveHome = (personId,title,brief,longbrief) => {
     return (dispatch, getState) => {
 
         return new Promise((resolve, reject) => {
@@ -70,20 +70,13 @@ export let createLiveHome = (personId,title,brief,longbrief,rtmppushurl,rtmpplay
                 body: {
 
                     personId:personId,
-
                     time:120,
-                    source:"source1",
-                    hubName:"sportshot",
+                    hubId:1,//直播空间Id
+                    hubName:"sportshot",//直播空间名
                     type:"RTMP",
-                    hubType:1,
-                    streamName:"test",
-
                     title:title,
                     brief:brief,
-                    longbrief:longbrief,
-                    rtmppushurl:rtmppushurl,
-                    rtmpplayurl:rtmpplayurl,
-                    snapshot:snapshot,
+                    longbrief:longbrief
                 }
             }).then((json) => {
                resolve(json)

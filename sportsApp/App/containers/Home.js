@@ -23,7 +23,7 @@ import BadmintonCourse from '../components/course/BadmintonCourseRecord';
 import MyProfit from '../components/my/Myprofit'
 import Mall from './mall/FirstPage';
 import Activity from '../components/groupActivity/Activity';
-import Competition from '../components/competition/CompetitionList';
+import Competition from '../components/competition/CompetitionPage';
 import Statistics from '../components/statistics/MainStatistics';
 import SexModal from '../components/groupActivity/SexModal';
 import CoachMessage from '../components/my/MyInformation'
@@ -45,7 +45,7 @@ import {
     fetchClubList,
     getAccessToken,
 } from '../action/UserActions';
-
+import EmptyFilter from '../utils/EmptyFilter'
 import  {
     getRTMPPushUrl
 } from '../action/LiveActions';
@@ -219,12 +219,17 @@ class Home extends Component {
                                       this.navigate2NewsDetail(rowData.docid)
                                   }}
                 >
-                    <View style={{flexDirection:'column',width:100,justifyContent:'center',alignItems:'center'}}>
-                        <Image  resizeMode="stretch" style={{width:100,height:75}}
-                                source={{uri:rowData.imgsrc}}
-                        />
-                    </View>
 
+                        <View style={{
+                            flexDirection: 'column',
+                            width: 100,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <Image resizeMode="stretch" style={{width: 100, height: 75}}
+                                   source={{uri: rowData.imgsrc}}
+                            />
+                        </View>
                     <View style={{flex:1,flexDirection:'column',alignItems:'flex-start'}}>
                         <View style={{padding:4,paddingHorizontal:12}}>
                             <Text style={{color:'#666',fontSize:16}}>
@@ -338,7 +343,7 @@ class Home extends Component {
                                         {/*<CommIcon name="tag-plus" size={32} color="#0adc5e" style={{backgroundColor:'transparent'}}/>*/}
                                         <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>课程制定</Text>
+                                            <Text style={{fontSize:13,color:'#646464'}}>课程</Text>
                                         </View>
                                     </TouchableOpacity>
 
@@ -354,31 +359,12 @@ class Home extends Component {
 
                                     <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                                       onPress={ ()=>{
-                                                          // Bridge.raisePLStream("rtmp://pili-publish.sportshot.cn/sportshot/EEvvee?e=1517628206&token=2M63A85U1GpU37_hxw6zmCYt7ia0YPIEpOjLeJt5:y2fLXXG5llHsrwJlOmVzl_2h0OM=")
-
-                                                          this.props.dispatch(getRTMPPushUrl()).then((json)=>{
-                                                              var urlsList=null;
-                                                              var pushUrl=null;
-                                                              if(json==null){
-
-                                                              }
-                                                              if(json.re==1){
-                                                                  urlsList=json.json;
-                                                                  pushUrl=urlsList.rtmppushurl;
-                                                                  Bridge.raisePLStream(pushUrl);
-                                                              }else{
-
-                                                                  alert('申请地址失败');
-                                                                  //TODO:微信分享邀请好友
-
-                                                              }
-                                                          });
-                                                            this.navigate2LiveHome()
+                                                         this.navigate2Competition()
                                        }}>
                                         {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
                                         <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
+                                            <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
                                         </View>
                                     </TouchableOpacity>
 
@@ -489,12 +475,12 @@ class Home extends Component {
                                         <TouchableOpacity
                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                             onPress={ ()=>{
-                                                this.navigate2LiveHome()
+                                                this.navigate2Competition()
                                             }}>
                                             {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
                                             <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>直播间</Text>
+                                                <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
                                             </View>
                                         </TouchableOpacity>
 
