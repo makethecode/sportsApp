@@ -38,7 +38,6 @@ class Found extends Component{
         }
     }
 
-
     navigate2Venue(){
         const { navigator } = this.props;
         if(navigator) {
@@ -51,7 +50,6 @@ class Found extends Component{
             })
         }
     }
-
 
     constructor(props) {
         super(props);

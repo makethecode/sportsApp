@@ -1,7 +1,3 @@
-/**
- * Created by dingyiming on 2017/8/16.
- */
-
 import React, { Component } from 'react';
 import {
     Dimensions,
@@ -18,16 +14,19 @@ import {
     TextInput,
     InteractionManager
 } from 'react-native';
-
 import { connect } from 'react-redux';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
-var { height, width } = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
     fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh
 } from '../../action/CompetitionActions';
 import {getAccessToken} from '../../action/UserActions';
-import CompetitionSignUp from './CompetitionSignUp';
+import CompetitionProjectList from './CompetitionProjectList';
+import Calendar from 'react-native-calendar-select';
+import CreateCompetition from './CreateCompetition'
+
+var { height, width } = Dimensions.get('window');
+
 class CompetitionList extends Component {
 
     goBack() {
@@ -53,133 +52,114 @@ class CompetitionList extends Component {
                 },           // Configuration
             ).start();
         }.bind(this), 500);
-        this.props.dispatch(enableCompetitionOnFresh());
+
+        //刷新比赛列表
+        //this.props.dispatch(enableCompetitionOnFresh());
 
     }
 
-
-    navigateCompetitionSignUp(rowData)
+    navigateCreateCompetition()
     {
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'CompetitionSignUp',
-                component: CompetitionSignUp,
+                name: 'CreateCompetition',
+                component: CreateCompetition,
                 params: {
-                    rowData:rowData,
+                }
+            })
+        }
+    }
+
+    navigateCompetitionProjectList()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'CompetitionProjectList',
+                component: CompetitionProjectList,
+                params: {
                 }
             })
         }
     }
 
     renderRow(rowData,sectionId,rowId){
-        var time1=new Date(rowData.startTime);
-        var time2=new Date(rowData.endTime);
-        var year1=time1.getFullYear();
-        var month1=time1.getMonth()+1;
-        var day1=time1.getDate();
-        var year2=time2.getFullYear();
-        var month2=time2.getMonth()+1;
-        var day2=time2.getDate();
-        var startTime=year1+'-'+month1+'-'+day1;
-        var endTime=year2+'-'+month2+'-'+day2;
-        var row=(
-            <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,borderBottomWidth:1,borderBottomColor:'#aaa'}}>
-                <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={require('../../../img/portrait.jpg')}/>
+
+        //{'name':'山大实验室友谊赛','brief':'促进实验室融洽相处','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+        //    'host':'软件实验室','perNum':'lxq','unitName':'山东大学齐鲁软件学院','startTime':'2018-10-10 08:22:10','endTime':'2018-10-10 08:22:10'},
+
+        if(rowData.brief==null)rowData.brief='暂无简介'
+
+        return (
+            <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ccc', marginTop: 4 ,backgroundColor:'#fff'}}
+                              onPress={()=>{
+                                  this.navigateCompetitionProjectList();
+                              }}>
+                <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:5}}>
+                    <View style={{ padding: 6, paddingHorizontal: 10 ,flexDirection:'row',}}>
+                        <View style={{padding:4,flex:1,alignItems:'center',flexDirection:'row'}}>
+                            <Text style={{ color: '#222', fontSize: 19 }}>
+                                {rowData.name}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ padding:6, paddingHorizontal: 12,flexDirection:'column'}}>
+                        <Text style={{ color: '#666', fontSize: 13}}>
+                            {rowData.brief}
+                        </Text>
+                    </View>
+
+                    <View style={{ padding: 3,flexDirection:'row',marginTop:3}}>
+                        {rowData.headImgUrl==null?
+                            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                       source={require('../../../img/portrait.jpg')}/>
+                            </View>:
+                            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                       source={{uri:rowData.headImgUrl}}/>
+                            </View>
+                        }
+                        <View style={{flex:2,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
+                            <Text style={{ color: '#222', fontSize: 16,marginBottom:5}}>{rowData.host}</Text>
+                            <Text style={{ color: '#666', fontSize: 13}}>{rowData.perNum}</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'column',alignItems:'flex-end',justifyContent:'center',marginRight:10}}>
+                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                                <View style={{backgroundColor: '#efb66a', borderRadius:6, padding:4,marginRight:4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 13 }}>
+                                        起
+                                    </Text>
+                                </View>
+                                <Text style={{ color: '#555', fontSize: 14, marginBottom:2}}>{rowData.startTime}</Text>
+                            </View>
+
+                            <View style={{flex:1,flexDirection:'row',marginTop:3,alignItems:'center',justifyContent:'center'}}>
+                                <View style={{backgroundColor: '#efb66a', borderRadius:6, padding:4,marginRight:4 }}>
+                                    <Text style={{ color: '#fff', fontSize: 13 }}>
+                                        终
+                                    </Text>
+                                </View>
+                                <Text style={{ color: '#555', fontSize: 14, marginBottom:2}}>{rowData.endTime}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{ paddingTop: 6, paddingBottom: 4, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center',marginBottom:5}}>
+                        {/*场地*/}
+                        <View style={{backgroundColor: '#fc3c3f', borderRadius: 6, padding: 4, paddingHorizontal: 6, }}>
+                            <Text style={{ color: '#fff', fontSize: 13 }}>
+                                {rowData.unitName}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
+            </TouchableOpacity>
+        )
 
-                    <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
-                                      onPress={()=>{
-                                          this.navigateCompetitionSignUp(rowData,'公开活动');
-                                      }}>
-                        <Text style={{marginRight:5,color:'#66CDAA'}}>报名</Text>
-                        <Icon name={'angle-right'} size={25
-                        } color="#66CDAA"/>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{flex:3,padding:10}}>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                           <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'比赛简介：'+rowData.breif}
-                        </Text>
-                    </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'比赛名称：'+rowData.competitionName}；
-                        </Text>
-                    </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'主办方：'+rowData.hostUnit}；
-                        </Text>
-                    </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                       <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                          <Icon name={'circle'} size={10} color="#aaa"/>
-                       </View>
-                       <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                        {'主办方地点：'+rowData.unitName}；
-                       </Text>
-                   </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'开始时间：'+startTime}；
-                        </Text>
-                    </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
-                        </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'结束时间：'+endTime}；
-                        </Text>
-                    </View>
-
-                </View>
-
-            </View>
-        );
-        return row;
     }
-
-    fetchData(){
-        this.state.doingFetch=true;
-        this.state.isRefreshing=true;
-        this.props.dispatch(fetchGames()).then((json)=> {
-            if(json.re==-100){
-                this.props.dispatch(getAccessToken(false));
-            }
-            this.props.dispatch(disableCompetitionOnFresh());
-            this.setState({doingFetch:false,isRefreshing:false})
-        }).catch((e)=>{
-            this.props.dispatch(disableCompetitionOnFresh());
-            this.setState({doingFetch:false,isRefreshing:false});
-            alert(e)
-        });
-    }
-
 
     constructor(props) {
         super(props);
@@ -187,24 +167,50 @@ class CompetitionList extends Component {
             doingFetch:false,
             isRefreshing:false,
             fadeAnim:new Animated.Value(1),
-            //competitionList:[{name:'男单',host:'山东大学'},{name:'女单',host:'山体'}]
+            competitionList:[
+                {'name':'山大实验室友谊赛','brief':'促进实验室融洽相处','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+                'host':'软件实验室','perNum':'lxq','unitName':'山东大学齐鲁软件学院','startTime':'2018-10-10 08:22:10','endTime':'2018-10-10 08:22:10'},
+                {'name':'山体第一次比赛','brief':'第一次组织比赛','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
+                    'host':'山体联盟','perNum':'wbh','unitName':'山东体育学院羽毛球馆','startTime':'2018-06-10 08:00:00','endTime':'2018-06-10 10:00:00'},
+            ],
 
+            currentDate:'全部',
+            nowDate:new Date().getTime(),
+            startDate: new Date(new Date().getTime() - 7*24*3600*1000),
+            endDate: new Date(),
         };
+
+        this.confirmDate = this.confirmDate.bind(this);
+        this.openCalendar = this.openCalendar.bind(this);
     }
 
     showScaleAnimationDialog() {
         this.scaleAnimationDialog.show();
     }
 
+    openCalendar() {
+        this.calendar && this.calendar.open();
+    }
+
+    confirmDate({startDate, endDate, startMoment, endMoment}) {
+        this.setState({
+            startDate,
+            endDate
+        });
+
+        var startTime = startDate.getMonth()+1+'月'+startDate.getDate()+'日';
+        var endTime = endDate.getMonth()+1+'月'+endDate.getDate()+'日';
+        var currentTime = startTime+'~'+endTime;
+
+        var resList=[];
+
+    }
+
     render() {
+
         var competitionListView=null;
-        var {competitionList,competitionFresh}=this.props;
-        //var competitionList=this.state.competitionList;
-        if(competitionFresh==true)
-        {
-            if(this.state.doingFetch==false)
-                this.fetchData();
-        }else{
+        var competitionList = this.state.competitionList;
+
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (competitionList !== undefined && competitionList !== null && competitionList.length > 0)
             {
@@ -216,12 +222,59 @@ class CompetitionList extends Component {
                     />
                 );
             }
-        }
+
+        let customI18n = {
+            'w': ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            'weekday': ['', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期天'],
+            'text': {
+                'start': '起始日期',
+                'end': '结束日期',
+                'date': '日期',
+                'save': '确认',
+                'clear': '重置'
+            },
+            'date': 'DD / MM'  // date format
+        };
+        // optional property, too.
+        let color = {
+            subColor: '#f0f0f0'
+        };
 
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="比赛列表" actions={[]} navigator={this.props.navigator}>
+                <Toolbar width={width} title="比赛列表" navigator={this.props.navigator}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0){
+                                 //添加比赛
+                                 this.navigateCreateCompetition()
+                             }
+                         }}>
+                    <View
+                        style={[styles.viewWrapper, {zIndex: 1},{borderBottomWidth: StyleSheet.hairlineWidth}]}>
+                        <View style={styles.viewCell}>
+                            <Text style={{marginRight:5,fontSize:14,color:'#333'}}>{this.state.currentDate}</Text>
+                        </View>
+                        <TouchableOpacity style={{width: 22, height: 22, alignItems:'flex-end'}} onPress={this.openCalendar}>
+                            <Image
+                                style={{width: 22, height: 22, alignItems:'flex-end'}}
+                                source={require('../../../img/canlendar.png')}
+                            />
+                        </TouchableOpacity>
+                        <Calendar
+                            i18n="en"
+                            ref={(calendar) => {this.calendar = calendar;}}
+                            customI18n={customI18n}
+                            color={color}
+                            format="YYYYMMDD"
+                            minDate="20180101"
+                            maxDate="20190101"
+                            startDate={this.state.startDate}
+                            endDate={this.state.endDate}
+                            onConfirm={this.confirmDate}
+                        />
+                    </View>
 
                     {<View style={{flex:5,backgroundColor:'#eee'}}>
                         <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>
@@ -251,9 +304,6 @@ class CompetitionList extends Component {
 
                         </Animated.View>
                     </View>}
-
-
-
                 </Toolbar>
 
             </View>
@@ -281,7 +331,22 @@ const styles = StyleSheet.create({
     popoverText: {
         color: '#ccc',
         fontSize: 14
-    }
+    },
+    viewWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        backgroundColor: '#f5f5f5',
+        height: 40,
+        borderBottomColor: '#cdcdcd',
+    },
+    viewCell: {
+        height: 40,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent:'center'
+    },
 });
 
 const mapStateToProps = (state, ownProps) => {

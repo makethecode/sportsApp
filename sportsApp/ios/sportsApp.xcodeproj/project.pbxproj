@@ -120,7 +120,6 @@
 		502CAA3320B2A176000EDC49 /* QNDnspodFree.m in Sources */ = {isa = PBXBuildFile; fileRef = 502CA9F720B2A175000EDC49 /* QNDnspodFree.m */; };
 		502CAA3420B2A176000EDC49 /* QNDnspodEnterprise.m in Sources */ = {isa = PBXBuildFile; fileRef = 502CA9FA20B2A175000EDC49 /* QNDnspodEnterprise.m */; };
 		502CAA3520B2A176000EDC49 /* QNRefresher.m in Sources */ = {isa = PBXBuildFile; fileRef = 502CA9FB20B2A175000EDC49 /* QNRefresher.m */; };
-		502CAA4220B2A176000EDC49 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 502CAA0920B2A175000EDC49 /* Info.plist */; };
 		502CAA4420B2A176000EDC49 /* HappyDNS.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 502CAA0B20B2A175000EDC49 /* HappyDNS.podspec */; };
 		502CAA4520B2A176000EDC49 /* .travis.yml in Resources */ = {isa = PBXBuildFile; fileRef = 502CAA0C20B2A175000EDC49 /* .travis.yml */; };
 		502CAA4620B2A176000EDC49 /* format.sh in Resources */ = {isa = PBXBuildFile; fileRef = 502CAA0D20B2A175000EDC49 /* format.sh */; };
@@ -735,19 +734,6 @@
 		502CA9FA20B2A175000EDC49 /* QNDnspodEnterprise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QNDnspodEnterprise.m; sourceTree = "<group>"; };
 		502CA9FB20B2A175000EDC49 /* QNRefresher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QNRefresher.m; sourceTree = "<group>"; };
 		502CA9FC20B2A175000EDC49 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
-		502CA9FE20B2A175000EDC49 /* IPTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IPTest.m; sourceTree = "<group>"; };
-		502CA9FF20B2A175000EDC49 /* DnspodFreeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DnspodFreeTest.m; sourceTree = "<group>"; };
-		502CAA0020B2A175000EDC49 /* HexTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HexTest.m; sourceTree = "<group>"; };
-		502CAA0120B2A175000EDC49 /* DesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DesTest.m; sourceTree = "<group>"; };
-		502CAA0220B2A175000EDC49 /* TxtResolverTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TxtResolverTest.m; sourceTree = "<group>"; };
-		502CAA0320B2A175000EDC49 /* DnsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DnsTest.m; sourceTree = "<group>"; };
-		502CAA0420B2A175000EDC49 /* DnspodEnterpriseTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DnspodEnterpriseTest.m; sourceTree = "<group>"; };
-		502CAA0520B2A175000EDC49 /* HostsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HostsTest.m; sourceTree = "<group>"; };
-		502CAA0620B2A175000EDC49 /* NetworkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkTest.m; sourceTree = "<group>"; };
-		502CAA0720B2A175000EDC49 /* LruCacheTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LruCacheTest.m; sourceTree = "<group>"; };
-		502CAA0820B2A175000EDC49 /* ResolverTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResolverTest.m; sourceTree = "<group>"; };
-		502CAA0920B2A175000EDC49 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		502CAA0A20B2A175000EDC49 /* GetAddrInfoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetAddrInfoTest.m; sourceTree = "<group>"; };
 		502CAA0B20B2A175000EDC49 /* HappyDNS.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HappyDNS.podspec; sourceTree = "<group>"; };
 		502CAA0C20B2A175000EDC49 /* .travis.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		502CAA0D20B2A175000EDC49 /* format.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = format.sh; sourceTree = "<group>"; };
@@ -1410,7 +1396,6 @@
 				502CA9CB20B2A175000EDC49 /* HappyDNS.xcodeproj */,
 				502CA9CE20B2A175000EDC49 /* HappyDNS */,
 				502CA9FC20B2A175000EDC49 /* Podfile */,
-				502CA9FD20B2A175000EDC49 /* HappyDNSTests */,
 				502CAA0B20B2A175000EDC49 /* HappyDNS.podspec */,
 				502CAA0C20B2A175000EDC49 /* .travis.yml */,
 				502CAA0D20B2A175000EDC49 /* format.sh */,
@@ -1514,26 +1499,6 @@
 				502CA9FA20B2A175000EDC49 /* QNDnspodEnterprise.m */,
 			);
 			path = Http;
-			sourceTree = "<group>";
-		};
-		502CA9FD20B2A175000EDC49 /* HappyDNSTests */ = {
-			isa = PBXGroup;
-			children = (
-				502CA9FE20B2A175000EDC49 /* IPTest.m */,
-				502CA9FF20B2A175000EDC49 /* DnspodFreeTest.m */,
-				502CAA0020B2A175000EDC49 /* HexTest.m */,
-				502CAA0120B2A175000EDC49 /* DesTest.m */,
-				502CAA0220B2A175000EDC49 /* TxtResolverTest.m */,
-				502CAA0320B2A175000EDC49 /* DnsTest.m */,
-				502CAA0420B2A175000EDC49 /* DnspodEnterpriseTest.m */,
-				502CAA0520B2A175000EDC49 /* HostsTest.m */,
-				502CAA0620B2A175000EDC49 /* NetworkTest.m */,
-				502CAA0720B2A175000EDC49 /* LruCacheTest.m */,
-				502CAA0820B2A175000EDC49 /* ResolverTest.m */,
-				502CAA0920B2A175000EDC49 /* Info.plist */,
-				502CAA0A20B2A175000EDC49 /* GetAddrInfoTest.m */,
-			);
-			path = HappyDNSTests;
 			sourceTree = "<group>";
 		};
 		508FA38020B9079100C47AA9 /* AFNetworking */ = {
@@ -2382,7 +2347,6 @@
 				0BB8186EB7E24F4D9A15152D /* EvilIcons.ttf in Resources */,
 				ADA30D102111CB5500B08613 /* Face in Resources */,
 				0F79082F39814CFEAC1BD304 /* FontAwesome.ttf in Resources */,
-				502CAA4220B2A176000EDC49 /* Info.plist in Resources */,
 				AD35C9441ED959D500FCD913 /* Fonts in Resources */,
 				BBE3B162A04446E1912DB626 /* Foundation.ttf in Resources */,
 				508FA3CF20B9079100C47AA9 /* LICENSE in Resources */,
