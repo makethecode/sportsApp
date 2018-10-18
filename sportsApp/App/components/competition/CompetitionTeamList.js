@@ -23,6 +23,9 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-
 import ModalDropdown from 'react-native-modal-dropdown';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CompetitionTeamPerson from './CompetitionTeamPersonList'
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchTeamList
+} from '../../action/CompetitionActions';
 
 var WeChat=require('react-native-wechat');
 var {height, width} = Dimensions.get('window');
@@ -59,7 +62,7 @@ class CompetitionTeamList extends Component {
         // this.props.dispatch(enableActivityOnFresh());
     }
 
-    navigate2CompetitionTeamPerson()
+    navigate2CompetitionTeamPerson(teamId)
     {
         const {navigator} =this.props;
 
@@ -68,6 +71,7 @@ class CompetitionTeamList extends Component {
                 name: 'CompetitionTeamPerson',
                 component: CompetitionTeamPerson,
                 params: {
+                    teamId:teamId
                 }
             })
         }
@@ -165,7 +169,7 @@ class CompetitionTeamList extends Component {
 
                         <View style={{flex:4,backgroundColor:'#fff',justifyContent:'flex-start',marginBottom:3}}>
                             <TouchableOpacity onPress={()=>{
-                                this.navigate2CompetitionTeamPerson()
+                                this.navigate2CompetitionTeamPerson(rowData.teamId)
                             }}>
                         {avatarList}
                             </TouchableOpacity>
@@ -184,22 +188,7 @@ class CompetitionTeamList extends Component {
             doingFetch: false,
             isRefreshing: false,
             fadeAnim: new Animated.Value(1),
-            teamList: [
-                {'teamId': 1, 'teamName': '热爱羽毛球小分队','teamNum': '20181010','personId':3,'personNum':'wbh','maxNum':10,'nowNum':3,
-                'avatar': 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-                'avatarList':
-                    [   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-                        'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
-                        'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132']
-                },
-                {'teamId': 2, 'teamName': '热爱羽毛球小分队','teamNum': '20181010','personId':3,'personNum':'wbh','maxNum':10,'nowNum':3,
-                    'avatar': 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-                    'avatarList':
-                        [   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-                            'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
-                            'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132']
-                },
-            ]
+            teams: []
         }
 
     }
@@ -207,7 +196,7 @@ class CompetitionTeamList extends Component {
     render() {
 
         var teamListView = null;
-        var teamList = this.state.teamList;
+        var teamList = this.state.teams;
 
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (teamList !== undefined && teamList !== null && teamList.length > 0) {
@@ -265,6 +254,28 @@ class CompetitionTeamList extends Component {
     }
 
     componentDidMount(){
+
+        //获取参与项目队伍列表
+        // {'teamId': 1, 'teamName': '热爱羽毛球小分队','teamNum': '20181010','personId':3,'personNum':'wbh','maxNum':10,'nowNum':3,
+        // 'avatar': 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+        //     'avatarList':
+        //     [   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+        //         'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
+        //         'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132']
+        // }
+
+        this.props.dispatch(fetchTeamList(this.props.projectId)).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({teams:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
+
     }
 
 }

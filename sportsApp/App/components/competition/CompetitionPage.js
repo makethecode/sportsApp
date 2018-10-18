@@ -26,6 +26,10 @@ import ViewPager from 'react-native-viewpager';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import proxy from "../../utils/Proxy";
 import CompetitionList from './CompetitionList'
+import HomePage from '../../components/live/HomePage'
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList,fetchAllGamesList
+} from '../../action/CompetitionActions';
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
@@ -64,6 +68,19 @@ class CompetitionPage extends Component{
             navigator.push({
                 name: 'CompetitionList',
                 component: CompetitionList,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2LiveHome()
+    {
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'HomePage',
+                component: HomePage,
                 params: {
                 }
             })
@@ -160,7 +177,7 @@ class CompetitionPage extends Component{
                                   case 1:break;//赛事安排
                                   case 2:break;//比赛队伍
                                   case 3:break;//战绩查询
-                                  case 4:break;//直播间
+                                  case 4:this.navigate2LiveHome();break;//直播间
                                   case 5:break;//排行榜
                               }
                           }}
@@ -178,15 +195,43 @@ class CompetitionPage extends Component{
 
     renderNoticeRow(rowData,rowId)
     {
+        var gameClass = '';
+        switch (rowData.gameClass){
+            case '1':gameClass='小组赛';break;
+            case '2':gameClass='32进16';break;
+            case '3':gameClass='16进8';break;
+            case '4':gameClass='8进4';break;
+            case '5':gameClass='半决赛';break;
+            case '6':gameClass='冠亚军决赛';break;
+            case '7':gameClass='34名决赛';break;
+            case '8':gameClass='56名决赛';break;
+            case '9':gameClass='78名决赛';break;
+        }
+
         return(
                 <View style={{flex:1,padding:10,justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
-                    <Text style={{flex:2,color:'#333',fontSize:13}}>{rowData.text}</Text>
+                    <Text style={{flex:2,color:'#333',fontSize:13}}>{rowData.teamA} vs {rowData.teamB} {gameClass}</Text>
                     <Text style={{flex:1,color:'#ccc',fontSize:11}}>{rowData.time}</Text>
                 </View>
         );
     }
 
     componentWillMount(){
+
+        //获取比赛列表
+        // {'teamA':'陈海云','teamB':'李学庆','gameClass':1,'time':'2018-01-01 10:10'}
+
+        this.props.dispatch(fetchAllGamesList()).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({notice:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
 
     }
 

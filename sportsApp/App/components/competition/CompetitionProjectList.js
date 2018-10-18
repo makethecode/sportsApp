@@ -24,6 +24,9 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-
 import CompetitionTeamList from './CompetitionTeamList'
 import CompetitionGameList from './CompetitionGameList'
 import CreateProject from './CreateProject'
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects
+} from '../../action/CompetitionActions';
 
 var { height, width } = Dimensions.get('window');
 
@@ -46,7 +49,7 @@ class CompetitionProjectList extends Component {
         };
     }
 
-    navigate2CompetitionTeamList()
+    navigate2CompetitionTeamList(projectId)
     {
         const {navigator} =this.props;
 
@@ -55,12 +58,13 @@ class CompetitionProjectList extends Component {
                 name: 'CompetitionTeamList',
                 component: CompetitionTeamList,
                 params: {
+                    projectId:projectId
                 }
             })
         }
     }
 
-    navigate2CompetitionGameList()
+    navigate2CompetitionGameList(projectId)
     {
         const {navigator} =this.props;
 
@@ -69,6 +73,7 @@ class CompetitionProjectList extends Component {
                 name: 'CompetitionGameList',
                 component: CompetitionGameList,
                 params: {
+                    projectId:projectId
                 }
             })
         }
@@ -90,7 +95,7 @@ class CompetitionProjectList extends Component {
 
     render()
     {
-    //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10},
+        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'num':'20170101',type:1},
         var projectList = [];
         var {projects}=this.state;
 
@@ -101,12 +106,12 @@ class CompetitionProjectList extends Component {
                 var projectType='';
 
                 switch (project.type){
-                    case 1:projectType='男单';break;
-                    case 2:projectType='女单';break;
-                    case 3:projectType='男双';break;
-                    case 4:projectType='女双';break;
-                    case 5:projectType='混双';break;
-                    case 6:projectType='团体';break;
+                    case '1':projectType='男单';break;
+                    case '2':projectType='女单';break;
+                    case '3':projectType='男双';break;
+                    case '4':projectType='女双';break;
+                    case '5':projectType='混双';break;
+                    case '6':projectType='团体';break;
                 }
 
                 projectList.push(
@@ -164,14 +169,14 @@ class CompetitionProjectList extends Component {
                         <View style={{ padding:10,flexDirection:'row'}}>
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#efb66a',borderRadius:5,padding:5,marginHorizontal:20}}
                                               onPress={()=>{
-                                                  this.navigate2CompetitionTeamList();
+                                                  this.navigate2CompetitionTeamList(project.id);
                                               }}>
                                 <Text style={{color:'#fff'}}>参赛队伍</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#fc6254',borderRadius:5,padding:5,marginHorizontal:20}}
                                               onPress={()=>{
-                                                  this.navigate2CompetitionGameList()
+                                                  this.navigate2CompetitionGameList(project.id)
                                               }}>
                                 <Text style={{color:'#ffffff'}}>比赛场次</Text>
                             </TouchableOpacity>
@@ -208,7 +213,22 @@ class CompetitionProjectList extends Component {
     }
 
     componentWillMount()
-    {}
+    {
+        //获取所有项目列表
+        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'num':'20170101',type:1},
+
+        this.props.dispatch(fetchProjects(this.props.competitionId)).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({projects:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
+    }
 
 }
 

@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
-    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions
 } from '../../action/CompetitionActions';
 import {getAccessToken} from '../../action/UserActions';
 import CompetitionProjectList from './CompetitionProjectList';
@@ -66,12 +66,13 @@ class CompetitionList extends Component {
                 name: 'CreateCompetition',
                 component: CreateCompetition,
                 params: {
+
                 }
             })
         }
     }
 
-    navigateCompetitionProjectList()
+    navigateCompetitionProjectList(competitionId)
     {
         const { navigator } = this.props;
         if(navigator) {
@@ -79,6 +80,7 @@ class CompetitionList extends Component {
                 name: 'CompetitionProjectList',
                 component: CompetitionProjectList,
                 params: {
+                    competitionId:competitionId
                 }
             })
         }
@@ -86,15 +88,15 @@ class CompetitionList extends Component {
 
     renderRow(rowData,sectionId,rowId){
 
-        //{'name':'山大实验室友谊赛','brief':'促进实验室融洽相处','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-        //    'host':'软件实验室','perNum':'lxq','unitName':'山东大学齐鲁软件学院','startTime':'2018-10-10 08:22:10','endTime':'2018-10-10 08:22:10'},
+        //{brief=鼓励学生学习, unitName=山东体育学院羽毛球馆, headImgUrl=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+        // name=山大实验室友谊赛, host=软件实验室, unitId=1, personId=3, perNum=wbh, startTime=2018-02-01 09:00, id=1, endTime=2018-03-01 18:00}
 
         if(rowData.brief==null)rowData.brief='暂无简介'
 
         return (
             <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ccc', marginTop: 4 ,backgroundColor:'#fff'}}
                               onPress={()=>{
-                                  this.navigateCompetitionProjectList();
+                                  this.navigateCompetitionProjectList(rowData.id);
                               }}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:5}}>
                     <View style={{ padding: 6, paddingHorizontal: 10 ,flexDirection:'row',}}>
@@ -112,15 +114,16 @@ class CompetitionList extends Component {
                     </View>
 
                     <View style={{ padding: 3,flexDirection:'row',marginTop:3}}>
-                        {rowData.headImgUrl==null?
-                            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
-                                       source={require('../../../img/portrait.jpg')}/>
-                            </View>:
+                        {
+                            rowData.headImgUrl!="" && rowData.headImgUrl!=null?
                             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                                 <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
                                        source={{uri:rowData.headImgUrl}}/>
-                            </View>
+                            </View>:
+                                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                    <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                           source={require('../../../img/portrait.jpg')}/>
+                                </View>
                         }
                         <View style={{flex:2,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
                             <Text style={{ color: '#222', fontSize: 16,marginBottom:5}}>{rowData.host}</Text>
@@ -167,12 +170,7 @@ class CompetitionList extends Component {
             doingFetch:false,
             isRefreshing:false,
             fadeAnim:new Animated.Value(1),
-            competitionList:[
-                {'name':'山大实验室友谊赛','brief':'促进实验室融洽相处','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-                'host':'软件实验室','perNum':'lxq','unitName':'山东大学齐鲁软件学院','startTime':'2018-10-10 08:22:10','endTime':'2018-10-10 08:22:10'},
-                {'name':'山体第一次比赛','brief':'第一次组织比赛','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
-                    'host':'山体联盟','perNum':'wbh','unitName':'山东体育学院羽毛球馆','startTime':'2018-06-10 08:00:00','endTime':'2018-06-10 10:00:00'},
-            ],
+            competition:[],
 
             currentDate:'全部',
             nowDate:new Date().getTime(),
@@ -209,15 +207,15 @@ class CompetitionList extends Component {
     render() {
 
         var competitionListView=null;
-        var competitionList = this.state.competitionList;
+        var competition = this.state.competition;
 
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            if (competitionList !== undefined && competitionList !== null && competitionList.length > 0)
+            if (competition !== undefined && competition !== null && competition.length > 0)
             {
                 competitionListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(competitionList)}
+                        dataSource={ds.cloneWithRows(competition)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
@@ -312,7 +310,21 @@ class CompetitionList extends Component {
 
     componentDidMount()
     {
+        //获取所有比赛信息
+        //{brief=鼓励学生学习, unitName=山东体育学院羽毛球馆, headImgUrl=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+        // name=山大实验室友谊赛, host=软件实验室, unitId=1, personId=3, perNum=wbh, startTime=2018-02-01 09:00, id=1, endTime=2018-03-01 18:00}
 
+        this.props.dispatch(fetchCompetitions()).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({competition:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
     }
 
 }

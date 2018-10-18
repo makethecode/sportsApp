@@ -2,30 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="44734b84-8bf0-45a1-aabd-08d90048c186" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/img/project_icon.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CreateProject.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/DesTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/DnsTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/DnspodEnterpriseTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/DnspodFreeTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/GetAddrInfoTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/HexTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/HostsTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/IPTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/Info.plist" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/LruCacheTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/NetworkTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/ResolverTest.m" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNSTests/TxtResolverTest.m" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitonGameModal.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/action/CompetitionActions.js" afterPath="$PROJECT_DIR$/sportsApp/App/action/CompetitionActions.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionList.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionList.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/containers/Found.js" afterPath="$PROJECT_DIR$/sportsApp/App/containers/Found.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNS.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/sportsApp/ios/happy-dns-objc/HappyDNS.xcodeproj/project.pbxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/ios/sportsApp.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/sportsApp/ios/sportsApp.xcodeproj/project.pbxproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js" afterPath="$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -47,7 +33,20 @@
     </favorites_list>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="CompetitionGameList.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="82" column="45" lean-forward="true" selection-start-line="82" selection-start-column="45" selection-end-line="82" selection-end-column="45" />
+              <folding>
+                <element signature="e#46#85#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -58,36 +57,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gridview</find>
-      <find>onfresh</find>
-      <find>fresh</find>
-      <find>component</find>
-      <find>CompetitionList</find>
-      <find>CompetitionPage</find>
-      <find>我要报名</find>
-      <find>opencalendar</find>
-      <find>calendar</find>
-      <find>_onRefresh</find>
-      <find>renderrow</find>
-      <find>比赛</find>
-      <find>TouchableOpacity</find>
-      <find>touchaa</find>
-      <find>CompetitionSignUp</find>
-      <find>list</find>
-      <find>Competition</find>
-      <find>GridView</find>
-      <find>size</find>
-      <find>onpress</find>
-      <find>setCoursePlace</find>
-      <find>dayMap</find>
-      <find>dayStr</find>
-      <find>render</find>
-      <find>tool</find>
+      <find>fetch</find>
       <find>DatePicker</find>
-      <find>course</find>
-      <find>CreateCompetition</find>
-      <find>icon</find>
-      <find>competition</find>
+      <find>navigateCreateCompetition</find>
+      <find>navigateCompetitionProjectList</find>
+      <find>project</find>
+      <find>fetchcompe</find>
+      <find>_handlePress</find>
+      <find>showScaleAnimationDialog</find>
+      <find>gameClassButtons</find>
+      <find>options</find>
+      <find>renderrow</find>
+      <find>gamelisy</find>
+      <find>Ionicons</find>
+      <find>render</find>
+      <find>gameslist</find>
+      <find>gamelist</find>
+      <find>gameClass</find>
+      <find>fetchGamesList</find>
+      <find>modalVisible</find>
+      <find>member</find>
+      <find>navigate2CompetitionGameList</find>
+      <find>GAMElIST</find>
+      <find>teams</find>
+      <find>fetchProjects</find>
+      <find>teamPerson</find>
+      <find>navigate2CompetitionTeamPerson</find>
+      <find>HomePage</find>
+      <find>games</find>
+      <find>notices</find>
+      <find>notice</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/sportsApp/App/store</dir>
@@ -101,8 +100,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/sportsApp/App/containers/mall/FirstPage.js" />
-        <option value="$PROJECT_DIR$/sportsApp/node_modules/react-native-toolbar-wrapper/index.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/reducers/PageStateReducer.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/constants/UserConstants.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/utils/EmojiFilter.js" />
@@ -143,15 +140,17 @@
         <option value="$PROJECT_DIR$/sportsApp/App/utils/EmptyFilter.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/containers/Found.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/containers/Home.js" />
-        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/components/course/CoachList.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CreateProject.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionList.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitonGameModal.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js" />
         <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js" />
-        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionList.js" />
-        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js" />
-        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js" />
-        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CreateProject.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/action/CompetitionActions.js" />
+        <option value="$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js" />
       </list>
     </option>
   </component>
@@ -171,6 +170,7 @@
     <handled-path value="$PROJECT_DIR$/sportsApp/node_modules" />
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="90" />
     <option name="y" value="23" />
     <option name="width" value="1440" />
     <option name="height" value="824" />
@@ -253,28 +253,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="containers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sportsApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sportsApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sportsApp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="App" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="components" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -321,15 +299,15 @@
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/sportsApp/img" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/sportsApp/App/components/competition" />
       <recent name="$PROJECT_DIR$/sportsApp/App/utils" />
       <recent name="$PROJECT_DIR$/sportsApp/App/components/live" />
       <recent name="$PROJECT_DIR$/sportsApp/App/components/groupActivity" />
       <recent name="$PROJECT_DIR$/sportsApp/App/components/news" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sportsApp/img" />
     </key>
   </component>
   <component name="RunManager" selected="Node.js.Home.js">
@@ -579,12 +557,12 @@
       <workItem from="1539731699295" duration="2235000" />
       <workItem from="1539744176366" duration="547000" />
       <workItem from="1539756050899" duration="16328000" />
-      <workItem from="1539819019331" duration="2255000" />
+      <workItem from="1539819019331" duration="29865000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1282451000" />
+    <option name="totallyTimeSpent" value="1310061000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -596,13 +574,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="824" extended-state="0" />
-    <editor active="false" />
+    <frame x="90" y="23" width="1440" height="824" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18322763" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.09623431" sideWeight="0.51937985" order="6" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28005466" sideWeight="0.4947146" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28005466" sideWeight="0.4947146" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24860336" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23709902" sideWeight="0.45102185" order="8" side_tool="false" content_ui="tabs" />
@@ -643,39 +621,11 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="39" />
+      <option name="time" value="40" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/My.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="255" column="29" lean-forward="false" selection-start-line="255" selection-start-column="28" selection-end-line="255" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-datepicker/style.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="12" column="2" lean-forward="false" selection-start-line="12" selection-start-column="2" selection-end-line="12" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-datepicker/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="310" column="14" lean-forward="false" selection-start-line="310" selection-start-column="14" selection-end-line="310" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-vector-icons/lib/create-icon-set.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="59" column="38" lean-forward="false" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sportsApp/node_modules/react-native-vector-icons/FontAwesome.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -715,13 +665,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="107">
           <caret line="218" column="71" lean-forward="false" selection-start-line="218" selection-start-column="71" selection-end-line="218" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/MapActions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -838,13 +781,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/CompetitionActions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="240" column="46" lean-forward="false" selection-start-line="240" selection-start-column="46" selection-end-line="240" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/InviteFriend.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4780">
@@ -868,13 +804,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="143">
           <caret line="740" column="55" lean-forward="false" selection-start-line="740" selection-start-column="55" selection-end-line="740" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/BadmintonCourseRecord.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="375" column="63" lean-forward="false" selection-start-line="375" selection-start-column="57" selection-end-line="375" selection-end-column="63" />
         </state>
       </provider>
     </entry>
@@ -906,83 +835,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Home.js">
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/ActivityMember.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="133" column="0" lean-forward="false" selection-start-line="133" selection-start-column="0" selection-end-line="145" selection-end-column="5" />
+        <state relative-caret-position="660">
+          <caret line="223" column="40" lean-forward="true" selection-start-line="223" selection-start-column="40" selection-end-line="223" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js">
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/MapActions.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="702">
-          <caret line="114" column="25" lean-forward="true" selection-start-line="114" selection-start-column="25" selection-end-line="114" selection-end-column="25" />
+        <state relative-caret-position="135">
+          <caret line="89" column="31" lean-forward="false" selection-start-line="89" selection-start-column="11" selection-end-line="89" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/venue/SelectVenue.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="210" column="0" lean-forward="false" selection-start-line="210" selection-start-column="0" selection-end-line="226" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/CoachList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
+        <state relative-caret-position="977">
           <caret line="153" column="39" lean-forward="true" selection-start-line="110" selection-start-column="19" selection-end-line="153" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/Activity.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="27" column="37" lean-forward="true" selection-start-line="27" selection-start-column="37" selection-end-line="27" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/ActivityMember.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="223" column="40" lean-forward="true" selection-start-line="223" selection-start-column="40" selection-end-line="223" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="96" column="40" lean-forward="false" selection-start-line="96" selection-start-column="40" selection-end-line="96" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="49" column="62" lean-forward="true" selection-start-line="49" selection-start-column="62" selection-end-line="49" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/CreateBadmintonCourse.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="221" column="0" lean-forward="false" selection-start-line="221" selection-start-column="0" selection-end-line="222" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-660">
-          <caret line="81" column="0" lean-forward="true" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Register.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3375">
-          <caret line="250" column="65" lean-forward="false" selection-start-line="250" selection-start-column="65" selection-end-line="250" selection-end-column="65" />
+        <state relative-caret-position="212">
+          <caret line="102" column="97" lean-forward="true" selection-start-line="102" selection-start-column="97" selection-end-line="102" selection-end-column="97" />
           <folding>
             <element signature="e#0#41#0" expanded="false" />
           </folding>
@@ -991,27 +883,145 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CreateProject.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1022">
+        <state relative-caret-position="2985">
           <caret line="207" column="95" lean-forward="false" selection-start-line="207" selection-start-column="95" selection-end-line="207" selection-end-column="95" />
+          <folding>
+            <element signature="e#0#38#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="343" column="80" lean-forward="true" selection-start-line="343" selection-start-column="80" selection-end-line="343" selection-end-column="80" />
+          <folding>
+            <element signature="e#0#38#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/BadmintonCourseRecord.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="1064" column="24" lean-forward="false" selection-start-line="1064" selection-start-column="23" selection-end-line="1064" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/course/CreateBadmintonCourse.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="22" column="56" lean-forward="false" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/Activity.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="600" column="46" lean-forward="true" selection-start-line="600" selection-start-column="32" selection-end-line="600" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#39#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Register.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-998">
+          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/GroupMemberModal.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-268">
+          <caret line="32" column="31" lean-forward="false" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/groupActivity/CreateGroup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="298" column="32" lean-forward="false" selection-start-line="298" selection-start-column="26" selection-end-line="298" selection-end-column="32" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js">
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitonGameModal.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="48" column="24" lean-forward="false" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="24" />
+        <state relative-caret-position="30">
+          <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CreateCompetition.js">
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionProjectList.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="70" column="31" lean-forward="false" selection-start-line="70" selection-start-column="31" selection-end-line="70" selection-end-column="31" />
+        <state relative-caret-position="2130">
+          <caret line="169" column="55" lean-forward="false" selection-start-line="169" selection-start-column="55" selection-end-line="169" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamPersonList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="91" column="36" lean-forward="true" selection-start-line="91" selection-start-column="36" selection-end-line="91" selection-end-column="36" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionTeamList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="27" selection-end-column="41" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/containers/Home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/action/CompetitionActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="491" column="29" lean-forward="true" selection-start-line="491" selection-start-column="29" selection-end-line="491" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="208" column="9" lean-forward="true" selection-start-line="208" selection-start-column="9" selection-end-line="208" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sportsApp/App/components/competition/CompetitionGameList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="82" column="45" lean-forward="true" selection-start-line="82" selection-start-column="45" selection-end-line="82" selection-end-column="45" />
+          <folding>
+            <element signature="e#46#85#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

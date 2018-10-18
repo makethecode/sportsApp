@@ -28,6 +28,9 @@ import {
     getAccessToken,
 } from '../../action/UserActions';
 import { SearchBar } from 'react-native-elements'
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchTeamList,fetchTeamPersonList
+} from '../../action/CompetitionActions';
 
 var { height, width } = Dimensions.get('window');
 
@@ -147,6 +150,18 @@ class CompetitionTeamPersonList extends Component {
 
     componentWillMount()
     {
+        //{'personId':3,'perNum':'wbh','mobilePhone':'13899303012','avatar':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0'},
+        this.props.dispatch(fetchTeamPersonList(this.props.teamId)).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({teamPerson:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
     }
 
 

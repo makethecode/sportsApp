@@ -29,6 +29,12 @@ import InputScrollView from 'react-native-input-scroll-view'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {getAccessToken,} from '../../action/UserActions';
 import DatePicker from 'react-native-datepicker';
+import {
+    fetchMaintainedVenue
+} from '../../action/MapActions';
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,AddCompetition
+} from '../../action/CompetitionActions';
 
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -52,7 +58,16 @@ class CreateCompetition extends Component{
             var venueIdx = index;
             this.setState({competition:Object.assign(this.state.competition,{unitName:venueStr})});
         }
+    }
 
+    //选类型
+    _handlePress1(index) {
+
+        if(index!==0){
+            var typeStr = this.state.typeButtons[index];
+            var typeIdx = index;
+            this.setState({competition:Object.assign(this.state.competition,{type:typeStr,typeIdx:typeIdx})});
+        }
     }
 
     show(actionSheet) {
@@ -63,12 +78,12 @@ class CreateCompetition extends Component{
         super(props);
         this.state={
 
-        // {'name':'山大实验室友谊赛','brief':'促进实验室融洽相处','headImgUrl':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-        //     'host':'软件实验室','perNum':'lxq','unitName':'山东大学齐鲁软件学院','startTime':'2018-10-10 08:22:10','endTime':'2018-10-10 08:22:10'},
+            //{brief=鼓励学生学习, unitName=山东体育学院羽毛球馆, headImgUrl=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+            // name=山大实验室友谊赛, host=软件实验室, unitId=1, personId=3, perNum=wbh, startTime=2018-02-01 09:00, id=1, endTime=2018-03-01 18:00}
 
-            competition:{id:null,name:null,brief:null,host:null,unitId:null,unitName:null,startTime:null,endTime:null},
-            venue:null,
-            venueButtons:['取消','山东体育学院羽毛球馆','山东大学东区新校-羽毛球馆','山东大学软件学院羽毛球场','奥体中心东荷体育馆北区','济南联通羽毛球馆']
+            competition:{name:null,brief:null,host:null,unitName:null,startTime:null,endTime:null,type:null,typeIdx:null},
+            venueButtons:['取消','山东体育学院羽毛球馆','济南联通羽毛球馆','平阴县青少年学生校外活动中心','历城文博中心','莱芜全民健身中心'],
+            typeButtons:['取消','平台','委托'],
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     }
@@ -135,6 +150,39 @@ class CreateCompetition extends Component{
                         </View>
                     </View>
 
+                    {/*比赛类型*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,padding:5}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>比赛类型</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet1'); }}>
+                            {
+                                this.state.competition.type==null?
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择比赛类型 ></Text>
+                                    </View> :
+                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.competition.type}</Text>
+                                    </View>
+
+                            }
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet1 =p;
+                                }}
+                                title="请选择比赛类型"
+                                options={this.state.typeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress1(data); }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
                     {/*承办地点*/}
                     <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,padding:5}}>
                         <View style={{flex:1}}>
@@ -194,10 +242,10 @@ class CreateCompetition extends Component{
                                         dateInput:{height:30,borderWidth:0},
                                         dateTouchBody:{marginRight:0,height:25,borderWidth:0},
                                     }}
-                                    mode="date"
                                     placeholder="选择"
-                                    format="YYYY-MM-DD"
-                                    minDate={"1957-00-00"}
+                                    mode="datetime"
+                                    format="YYYY-MM-DD HH:mm"
+                                    minDate={"2018-01-01 00:00"}
                                     confirmBtnText="确认"
                                     cancelBtnText="取消"
                                     showIcon={true}
@@ -236,10 +284,10 @@ class CreateCompetition extends Component{
                                         dateInput:{height:30,borderWidth:0},
                                         dateTouchBody:{marginRight:0,height:25,borderWidth:0},
                                     }}
-                                    mode="date"
                                     placeholder="选择"
-                                    format="YYYY-MM-DD"
-                                    minDate={"1957-00-00"}
+                                    mode="datetime"
+                                    format="YYYY-MM-DD HH:mm"
+                                    minDate={"2018-01-01 00:00"}
                                     confirmBtnText="确认"
                                     cancelBtnText="取消"
                                     showIcon={true}
@@ -284,6 +332,23 @@ class CreateCompetition extends Component{
                             justifyContent:'center'}}
                                           onPress={()=>{
                                               //发布比赛
+
+                                              this.props.dispatch(AddCompetition(this.state.competition)).then((json)=>{
+                                                  if(json.re==1)
+                                                  {
+                                                      Alert.alert('成功','比赛发布成功')
+                                                      this.goBack()
+                                                  }
+                                                  else {
+
+                                                      Alert.alert('失败','比赛发布失败')
+
+                                                      if(json.re=-100){
+                                                          this.props.dispatch(getAccessToken(false))
+                                                      }
+                                                  }
+                                              })
+
                                           }}>
                             <Text style={{color:'#fff',fontSize:15}}>发布</Text>
                         </TouchableOpacity>
@@ -295,8 +360,29 @@ class CreateCompetition extends Component{
             </View>
         );
     }
+
     componentDidMount()
     {
+        //查询所有地点
+        // this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
+        //     if(json.re==1)
+        //     {
+        //         var venues = json.data;
+        //         var venueList = ['取消'];
+        //
+        //         venues.map((venue)=>{
+        //             venueList.add(venue.name)
+        //         })
+        //
+        //         this.setState({venueButtons:venueList});
+        //     }
+        //     else {
+        //         if(json.re=-100){
+        //             this.props.dispatch(getAccessToken(false))
+        //         }
+        //
+        //     }
+        // })
     }
 
     componentWillUnmount()
