@@ -22,6 +22,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper';
 import CompetitionTeamList from './CompetitionTeamList'
+import CompetitionGamesList from './CompetitionGamesList'
 import CompetitionGameList from './CompetitionGameList'
 import CreateProject from './CreateProject'
 import {
@@ -43,8 +44,8 @@ class CompetitionProjectList extends Component {
         super(props);
         this.state={
             projects:[
-                {'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'type':1},
-                {'id':2,'name':'混合团体','num':'20170101','maxNum':10,'nowNum':7,'personNum':8,'gameNum':3,'type':2},
+                {'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'type':1},
+                {'id':2,'name':'混合团体','num':'20170101','maxNum':10,'nowNum':7,'personNum':8,'gamesNum':3,'type':2},
             ],
         };
     }
@@ -64,14 +65,14 @@ class CompetitionProjectList extends Component {
         }
     }
 
-    navigate2CompetitionGameList(projectId)
+    navigate2CompetitionGamesList(projectId)
     {
         const {navigator} =this.props;
 
         if(navigator) {
             navigator.push({
-                name: 'CompetitionGameList',
-                component: CompetitionGameList,
+                name: 'CompetitionGamesList',
+                component: CompetitionGamesList,
                 params: {
                     projectId:projectId
                 }
@@ -79,7 +80,24 @@ class CompetitionProjectList extends Component {
         }
     }
 
-    navigate2CreateProject()
+    navigate2CompetitionGameList(projectId)
+    {
+        //单项赛（令this.props.gamesId=0）
+        const {navigator} =this.props;
+
+        if(navigator) {
+            navigator.push({
+                name: 'CompetitionGameList',
+                component: CompetitionGameList,
+                params: {
+                    gamesId:0,
+                    projectId:projectId,
+                }
+            })
+        }
+    }
+
+    navigate2CreateProject(competitionId)
     {
         const {navigator} =this.props;
 
@@ -88,6 +106,7 @@ class CompetitionProjectList extends Component {
                 name: 'CreateProject',
                 component: CreateProject,
                 params: {
+                    competitionId:competitionId
                 }
             })
         }
@@ -95,7 +114,7 @@ class CompetitionProjectList extends Component {
 
     render()
     {
-        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'num':'20170101',type:1},
+        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'num':'20170101',type:1},
         var projectList = [];
         var {projects}=this.state;
 
@@ -143,7 +162,7 @@ class CompetitionProjectList extends Component {
                                     <Text style={{color:'#66CDAA'}}>比赛场次</Text>
                                 </View>
                                 <View style={{flex:1,padding:5,marginLeft:5}}>
-                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{project.gameNum}</Text>
+                                    <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{project.gamesNum}</Text>
                                 </View>
                             </View>
 
@@ -176,7 +195,10 @@ class CompetitionProjectList extends Component {
 
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#fc6254',borderRadius:5,padding:5,marginHorizontal:20}}
                                               onPress={()=>{
-                                                  this.navigate2CompetitionGameList(project.id)
+                                                  if(project.type==6)
+                                                      this.navigate2CompetitionGamesList(project.id)//团体赛
+                                                  else
+                                                      this.navigate2CompetitionGameList(project.id)//单项赛
                                               }}>
                                 <Text style={{color:'#ffffff'}}>比赛场次</Text>
                             </TouchableOpacity>
@@ -196,7 +218,7 @@ class CompetitionProjectList extends Component {
                          onPress={(i)=>{
                              if(i==0){
                                  //添加项目
-                                 this.navigate2CreateProject()
+                                 this.navigate2CreateProject(this.props.competitionId)
                              }
                          }}>
                     <ScrollView style={{ flex: 1, width: width, backgroundColor: '#eee' }}>
@@ -215,7 +237,7 @@ class CompetitionProjectList extends Component {
     componentWillMount()
     {
         //获取所有项目列表
-        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'num':'20170101',type:1},
+        //{'id':1,'name':'男双','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'num':'20170101',type:1},
 
         this.props.dispatch(fetchProjects(this.props.competitionId)).then((json)=>{
             if(json.re==1)

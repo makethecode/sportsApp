@@ -29,6 +29,9 @@ import InputScrollView from 'react-native-input-scroll-view'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {getAccessToken,} from '../../action/UserActions';
 import DatePicker from 'react-native-datepicker';
+import {
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList,createProject
+} from '../../action/CompetitionActions';
 
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -50,7 +53,7 @@ class CreateProject extends Component{
         if(index!==0){
             var typeStr = this.state.typeButtons[index];
             var typeIdx = index;
-            this.setState({project:Object.assign(this.state.project,{type:typeStr}),typeIdx:typeIdx});
+            this.setState({project:Object.assign(this.state.project,{typeStr:typeStr,typeIdx:typeIdx})});
         }
 
     }
@@ -63,10 +66,9 @@ class CreateProject extends Component{
         super(props);
         this.state={
 
-        //{'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gameNum':10,'type':1},
+        //{'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'typeStr':'男单',typeIdx:1},
 
-            project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gameNum:null,type:null},
-            typeIdx:null,
+            project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gamesNum:null,typeStr:null,typeIdx:null},
             typeButtons:['取消','男单','女单','男双','女双','混双','团体']
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
@@ -82,7 +84,7 @@ class CreateProject extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
-        // project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gameNum:null,type:null},
+        // project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gamesNum:null,typeStr:null,typeIdx:null},
 
         return (
             <View style={{flex:1,backgroundColor:'#eee'}}>
@@ -124,12 +126,12 @@ class CreateProject extends Component{
                             borderRadius:10}}
                                           onPress={()=>{ this.show('actionSheet'); }}>
                             {
-                                this.state.project.type==null?
+                                this.state.project.typeStr==null?
                                     <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
                                         <Text style={{color:'#888',fontSize:14}}>请选择项目类型 ></Text>
                                     </View> :
                                     <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:14}}>{this.state.project.type}</Text>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.project.typeStr}</Text>
                                     </View>
 
                             }
@@ -201,11 +203,11 @@ class CreateProject extends Component{
                                 placeholderTextColor='#888'
                                 style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
                                 placeholder="请输入比赛场次"
-                                value={this.state.project.gameNum}
+                                value={this.state.project.gamesNum}
                                 underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
-                                        this.setState({project:Object.assign(this.state.project,{gameNum:value})})
+                                        this.setState({project:Object.assign(this.state.project,{gamesNum:value})})
                                     }}
                             />
                         </View>
@@ -222,6 +224,21 @@ class CreateProject extends Component{
                             justifyContent:'center'}}
                                           onPress={()=>{
                                               //发布比赛
+                                              this.props.dispatch(createProject(this.state.project,this.props.competitionId)).then((json)=>{
+                                                  if(json.re==1)
+                                                  {
+                                                      Alert.alert('成功','项目创建成功')
+                                                      this.goBack()
+                                                  }
+                                                  else {
+
+                                                      Alert.alert('失败','项目创建失败')
+
+                                                      if(json.re=-100){
+                                                          this.props.dispatch(getAccessToken(false))
+                                                      }
+                                                  }
+                                              })
                                           }}>
                             <Text style={{color:'#fff',fontSize:15}}>发布</Text>
                         </TouchableOpacity>

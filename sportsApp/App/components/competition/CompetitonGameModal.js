@@ -35,24 +35,19 @@ class CompetitonGameModal extends Component{
     {
         super(props);
         this.state={
-            gameList:this.props.gameList
+            matchList:this.props.matchList
         }
     }
 
     renderRow(rowData,sectionId,rowId){
 
-        //'gameList':[{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
+        //'matchList':[{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
 
         var row=(
-            <View style={{flex:3,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
-                borderColor:'#eee',borderRadius:8}}>
-                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>{rowData.personA}</Text></View>
-                {
-                    rowData.state==1?
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>{rowData.scoreA} - {rowData.scoreB}</Text></View>:
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>未开始</Text></View>
-                }
-                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>{rowData.personB}</Text></View>
+            <View style={{flex:3,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,borderColor:'#eee',borderRadius:8}}>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>{rowData.scoreA}</Text></View>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}/>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}><Text style={{fontSize:13,color:'#666'}}>{rowData.scoreB}</Text></View>
             </View>
         );
 
@@ -61,15 +56,15 @@ class CompetitonGameModal extends Component{
 
     render(){
 
-        var gameListView = null;
-        var gameList = this.state.gameList;
+        var matchListView = null;
+        var matchList = this.state.matchList;
 
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (gameList !== undefined && gameList !== null && gameList.length > 0) {
-            gameListView = (
+        if (matchList !== undefined && matchList !== null && matchList.length > 0) {
+            matchListView = (
                 <ListView
                     automaticallyAdjustContentInsets={false}
-                    dataSource={ds.cloneWithRows(gameList)}
+                    dataSource={ds.cloneWithRows(matchList)}
                     renderRow={this.renderRow.bind(this)}
                 />
             );
@@ -88,7 +83,7 @@ class CompetitonGameModal extends Component{
                         backgroundColor: '#fff'
                     }}>
                         <View style={{flex:2,justifyContent:'center',alignItems:'center',padding:5}}>
-                            <Text style={{flex:3,fontSize:16}}>对阵成绩</Text>
+                            <Text style={{flex:3,fontSize:16}}>对局记录</Text>
                             <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',textAlign:'center',padding:10}}>
                                 <Text style={{flex:1,fontSize:13,textAlign:'center'}}>{this.props.teamA}</Text>
                                 <View style={{flex:1}}/>
@@ -105,7 +100,7 @@ class CompetitonGameModal extends Component{
                             borderBottomWidth: 1,
                             borderColor: '#eee',
                         }}>
-                            {gameListView}
+                            {matchListView}
                         </View>
                         <View style={{
                             flex: 1,

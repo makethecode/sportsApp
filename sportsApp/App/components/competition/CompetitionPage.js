@@ -19,7 +19,7 @@ import {
 import {connect} from 'react-redux';
 import Bridge from '../../native/Bridge'
 import GridView from 'react-native-super-grid'
-import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_VEDIO} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_VEDIO,ACTION_BARCODE} from 'react-native-toolbar-wrapper'
 import Config from "../../../config";
 import Proxy from "../../utils/Proxy";
 import ViewPager from 'react-native-viewpager';
@@ -28,7 +28,7 @@ import proxy from "../../utils/Proxy";
 import CompetitionList from './CompetitionList'
 import HomePage from '../../components/live/HomePage'
 import {
-    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList,fetchAllGamesList
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGameList,fetchAllGameList
 } from '../../action/CompetitionActions';
 
 var {height, width,scale} = Dimensions.get('window');
@@ -100,13 +100,7 @@ class CompetitionPage extends Component{
                 {'title':'战绩查询','icon':require('../../../img/com_record.png')},
                 {'title':'直播间','icon':require('../../../img/com_live.png')},
                 {'title':'排行榜','icon':require('../../../img/com_more.png')}],
-            notice:[
-                {'text':'小吴 vs 邹鹏 羽毛球赛开始','time':'2018-10-10 14:08:22'},
-                {'text':'陈海云 vs 邓养吾 啦啦操开始','time':'2018-10-11 08:00:00'},
-                {'text':'陈海云 vs 李学庆 足球赛开始','time':'2018-10-11 08:00:00'},
-                {'text':'陈海云 vs 陈 蓝球赛开始','time':'2018-10-11 08:00:00'},
-                {'text':'陈海云 vs 陈海 乒乓球赛开始','time':'2018-10-11 08:00:00'},
-            ]
+            notice:[]
         };
     }
 
@@ -127,7 +121,13 @@ class CompetitionPage extends Component{
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="比赛" actions={[]} navigator={this.props.navigator}>
+                <Toolbar width={width} title="比赛" navigator={this.props.navigator}
+                         actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             if(i==0)
+                             {//扫码报名
+                             }
+                         }}>
 
                     <ScrollView style={{flex:1,height:height-100,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
@@ -203,9 +203,6 @@ class CompetitionPage extends Component{
             case '4':gameClass='8进4';break;
             case '5':gameClass='半决赛';break;
             case '6':gameClass='冠亚军决赛';break;
-            case '7':gameClass='34名决赛';break;
-            case '8':gameClass='56名决赛';break;
-            case '9':gameClass='78名决赛';break;
         }
 
         return(
@@ -221,7 +218,7 @@ class CompetitionPage extends Component{
         //获取比赛列表
         // {'teamA':'陈海云','teamB':'李学庆','gameClass':1,'time':'2018-01-01 10:10'}
 
-        this.props.dispatch(fetchAllGamesList()).then((json)=>{
+        this.props.dispatch(fetchAllGameList()).then((json)=>{
             if(json.re==1)
             {
                 this.setState({notice:json.data});

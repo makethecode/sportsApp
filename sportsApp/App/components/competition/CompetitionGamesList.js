@@ -28,17 +28,34 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-
 import ActionSheet from 'react-native-actionsheet';
 import CompetitionGameModal from './CompetitonGameModal'
 import {
-    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList,fetchGameList
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList
 } from '../../action/CompetitionActions';
+import CompetitionGameList from './CompetitionGameList'
 
 var { height, width } = Dimensions.get('window');
 
-class CompetitionGameList extends Component {
+class CompetitionGamesList extends Component {
 
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
+        }
+    }
+
+    navigate2CompetitionGameList(gamesId)
+    {
+        //团体赛
+        const {navigator} =this.props;
+
+        if(navigator) {
+            navigator.push({
+                name: 'CompetitionGameList',
+                component: CompetitionGameList,
+                params: {
+                    gamesId:gamesId
+                }
+            })
         }
     }
 
@@ -53,8 +70,6 @@ class CompetitionGameList extends Component {
             game:[],
             teamA:null,
             teamB:null,
-
-            matchList:[],
         };
     }
 
@@ -102,11 +117,10 @@ class CompetitionGameList extends Component {
     renderGamesRow(rowData,sectionId,rowId){
 
         // {'id':33,'teamA':'陈海云','teamB':'李学庆','scoreA':0,'scoreB':10,'startTime':'2018-12-10 08:00','endTime':'2018-12-11 10:00',state:0,
-        //     'teamAimgList':['https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0'],
-        //     'teamBimgList':['https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132'],
-        //     'gameClass':1,'isSingle':1,'gameType':1,
-        //     'matchList':[{'teamA':'陈海云、邓养吾','teamB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'teamA':'陈海云、邓养吾','teamB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
-
+        //     'teamAimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+        //     'teamBimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132',
+        //     'gameClass':1,
+        //     'gameList':[{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
 
         var gameClass = '';
         switch (rowData.gameClass){
@@ -121,7 +135,9 @@ class CompetitionGameList extends Component {
         return (
             <TouchableOpacity style={{backgroundColor:'#fff',marginTop:4}}
                               onPress={()=>{
-                                  this.setState({matchList:rowData.matchList,teamA:rowData.teamA,teamB:rowData.teamB,modalVisible:true});
+                                  //this.setState({game:rowData.gameList,teamA:rowData.teamA,teamB:rowData.teamB,modalVisible:true});
+                                  //团体赛转单项赛
+                                  this.navigate2CompetitionGameList(rowData.id)
                               }}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:1}}>
 
@@ -129,15 +145,11 @@ class CompetitionGameList extends Component {
 
                         <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
                             {
-                                rowData.isSingle == '1'?
-                                <View>
-                                    <Image style={{height: 45, width: 45, borderRadius: 23}} source={{uri: rowData.teamAimgList[0]}}/>
-                                </View>
-                                    :
-                                <View style={{flexDirection:'row'}}>
-                                    <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamAimgList[0]}}/>
-                                    <Image style={{height: 30, width: 30, borderRadius: 15,marginLeft:3}} source={{uri: rowData.teamAimgList[1]}}/>
-                                </View>
+                                rowData.teamAimg!=null && rowData.teamAimg!=''?
+                                <View><Image style={{height: 45, width: 45, borderRadius: 23}}
+                                             source={{uri: rowData.teamAimg}}/></View>:
+                                    <View><Image style={{height: 45, width: 45, borderRadius: 23}}
+                                                 source={require('../../../img/portrait.jpg')}/></View>
                             }
                         <Text style={{marginTop:8,fontSize:12,color:'#666'}}>{rowData.teamA}</Text>
                     </View>
@@ -159,15 +171,11 @@ class CompetitionGameList extends Component {
 
                     <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
                         {
-                            rowData.isSingle=='1'?
-                                <View>
-                                    <Image style={{height: 45, width: 45, borderRadius: 23}} source={{uri: rowData.teamBimgList[0]}}/>
-                                </View>
-                                :
-                                <View style={{flexDirection:'row'}}>
-                                    <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamBimgList[0]}}/>
-                                    <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamBimgList[1]}}/>
-                                </View>
+                            rowData.teamBimg!=null && rowData.teamBimg!=''?
+                                <View><Image style={{height: 45, width: 45, borderRadius: 23}}
+                                             source={{uri: rowData.teamBimg}}/></View>:
+                                <View><Image style={{height: 45, width: 45, borderRadius: 23}}
+                                             source={require('../../../img/portrait.jpg')}/></View>
                         }
                         <Text style={{marginTop:8,fontSize:12,color:'#666'}}>{rowData.teamB}</Text>
                     </View>
@@ -251,21 +259,6 @@ class CompetitionGameList extends Component {
 
                             </ScrollView>
                     </View>}
-                    {/* Add CompetitionGame Modal*/}
-                    <Modal
-                        animationType={"slide"}
-                        transparent={true}
-                        visible={this.state.modalVisible}
-                    >
-                        <CompetitionGameModal
-                            onClose={()=>{
-                                this.setState({modalVisible:false});
-                            }}
-                            matchList={this.state.matchList}
-                            teamA={this.state.teamA}
-                            teamB={this.state.teamB}
-                        />
-                    </Modal>
                 </Toolbar>
             </View>
         )
@@ -275,24 +268,21 @@ class CompetitionGameList extends Component {
     {
         //获取所有比赛列表
         // {'id':33,'teamA':'陈海云','teamB':'李学庆','scoreA':0,'scoreB':10,'startTime':'2018-12-10 08:00','endTime':'2018-12-11 10:00',state:0,
-        //     'teamAimgList':['https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0'],
-        //     'teamBimgList':['https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132'],
-        //     'gameClass':1,'isSingle':1,'gameType':1,
-        //     'matchList':[{'teamA':'陈海云、邓养吾','teamB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'teamA':'陈海云、邓养吾','teamB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
+        //     'teamAimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
+        //     'teamBimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132',
+        //     'gameClass':1,
 
-        // 团体赛gamesId=0单项赛gamesId=this.props.gamesId
-        // alert(this.props.gamesId);
-
-            this.props.dispatch(fetchGameList(this.props.projectId,this.props.gamesId)).then((json) => {
-                if (json.re == 1) {
-                    this.setState({games: json.data, allgames: json.data});
+        this.props.dispatch(fetchGamesList(this.props.projectId)).then((json)=>{
+            if(json.re==1)
+            {
+                this.setState({games:json.data,allgames:json.data});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
                 }
-                else {
-                    if (json.re = -100) {
-                        this.props.dispatch(getAccessToken(false))
-                    }
-                }
-            })
+            }
+        })
     }
 
 }
@@ -310,7 +300,7 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
     })
-)(CompetitionGameList);
+)(CompetitionGamesList);
 
 
 

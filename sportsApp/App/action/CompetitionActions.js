@@ -474,7 +474,7 @@ export let fetchTeamPersonList=(teamId)=>{
 }
 
 //获取所有比赛（前五）
-export let fetchAllGamesList=()=>{
+export let fetchAllGameList=()=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
 
@@ -483,7 +483,7 @@ export let fetchAllGamesList=()=>{
             var sessionId = state.user.sessionId;
 
             Proxy.postes({
-                url: Config.server + '/func/competition/fetchAllGamesList',
+                url: Config.server + '/func/competition/fetchAllGameList',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -491,9 +491,84 @@ export let fetchAllGamesList=()=>{
                 }
             }).then((json)=>{
                 if(json.re==1){
-                    var games = json.data;
+                    var game = json.data;
                 }
-                resolve({re:1,data:games})
+                resolve({re:1,data:game})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//创建项目
+export let createProject=(project,competitionId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            //{'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'typeStr':'男单',typeIdx:1},
+
+            var state=getState();
+            var username = state.user.user.username;
+            var sessionId = state.user.sessionId;
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/createProject',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    name:project.name,
+                    maxNum:parseInt(project.maxNum),
+                    nowNum:parseInt(project.nowNum),
+                    personNum:parseInt(project.personNum),
+                    gamesNum:parseInt(project.gamesNum),
+                    type:parseInt(project.typeIdx),
+                    competitionId:parseInt(competitionId)
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    resolve({re:1})
+                }
+                else{
+                    resolve({re:-1})
+                }
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取比赛
+export let fetchGameList=(projectId,gamesId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            var username = state.user.user.username;
+            var sessionId = state.user.sessionId;
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchGameList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gamesId:gamesId,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var game = json.data;
+                }
+                resolve({re:1,data:game})
 
             }).catch((e)=>{
                 alert(e);
