@@ -35,68 +35,18 @@ import Camera from 'react-native-camera';
 import Config from '../../../config';
 import ProductPay from './ProductPay'
 import ScannerList from './ScannerList'
+import { SearchBar } from 'react-native-elements'
+import Proxy from '../../utils/Proxy'
 
-var IMGS = [
-    require('../../../img/banner1.jpeg'),
-    require('../../../img/banner2.jpeg'),
-    require('../../../img/banner3.jpeg'),
-    require('../../../img/banner4.jpeg'),
-];
 var {height, width} = Dimensions.get('window');
 var flag = true;
 
 class Home extends Component{
 
-    closeCamera() {
-        this.setState({cameraModalVisible: false});
-    }
-
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
-        }
-    }
-
-    navigate2ProductsList(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'products_list',
-                component: ProductsList,
-                params: {
-
-                }
-            })
-        }
-    }
-
-    navigate2ShopCart(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'shop_cart',
-                component: ShopCart,
-                params: {
-
-                }
-            })
-        }
-    }
-
-    navigate2ProductPay(goods,money)
-    {
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'ProductPay',
-                component: ProductPay,
-                params: {
-                    //暂时实现一次扫描
-                    goods:goods,
-                    money:money,
-                }
-            })
         }
     }
 
@@ -113,68 +63,58 @@ class Home extends Component{
         }
     }
 
-    _renderPage(data,pageID){
-        return (
-            <View style={{width:width}}>
-                <Image
-                    source={data}
-                    style={{width:width,flex:3}}
-                    resizeMode={"stretch"}
-                />
-            </View>
-        );
-    }
-
     constructor(props) {
         super(props);
-        var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
-            dataSource:ds.cloneWithPages(IMGS),
-            goodName:null,
-            cameraModalVisible: false,
-            camera: {
-                aspect: Camera.constants.Aspect.fill,
-                captureTarget: Camera.constants.CaptureTarget.disk,
-                type: Camera.constants.Type.back,
-                orientation: Camera.constants.Orientation.auto,
-                flashMode: Camera.constants.FlashMode.auto,
-                barcodeScannerEnabled:true,
-            },
-            code:null,
-            //实现多次扫描
+            isRefreshing:true,
+            fadeAnim: new Animated.Value(1),
+
             goods:[],
-            money:0,
+            allgoods:[],
         }
-    }
-
-    queryGoodsCode(code) {
-
-        proxy.postes({
-            url: Config.server + '/func/allow/getGoodInfoByCode',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: {
-                code:code,
-            }
-        }).then((json) => {
-
-                var goods = this.state.goods;
-                goods.push(json.data);
-                var money = this.state.money + json.data[0].salePrice;
-                this.setState({goods: goods, money: money});
-
-        }).catch((err) => {
-            alert(err);
-        });
     }
 
     render() {
 
+        var goodList = [];
+        var {goods}=this.state;
+        var lineStyle={flex:1,flexDirection:'row',padding:10,paddingLeft:0,paddingRight:0,borderBottomWidth:1,
+            borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'transparent',};
+
+        if(goods&&goods.length>0)
+        {
+            goods.map((good,i)=>{
+                goodList.push(
+                    <TouchableOpacity style={lineStyle}>
+                        <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
+                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:good.imgUrl}} />
+                        </View>
+                        <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
+                            <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
+                                <Text  style={{fontSize:14,color:'#343434'}}>{good.brief}</Text>
+                            </View>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
+                                <View style={{backgroundColor: '#efefef',justifyContent:'center',alignItems:'center',padding:2}}>
+                                    <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>{good.size}</Text>
+                                </View>
+                            </View>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
+                                <Text style={{flex:4,fontSize:13,color:'#666'}}>库存 {good.inventoryNumber}</Text>
+                            </View>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
+                                <Text style={{flex:4,fontSize:13,color:'red'}}>￥{good.salePrice}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                )
+            })
+
+        }
+
         return (
             <View style={{flex:1,backgroundColor:'#fff'}}>
 
-                <Toolbar width={width} title="商城" navigator={this.props.navigator}
+                <Toolbar width={width} title="商品" navigator={this.props.navigator}
                          actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0)
@@ -184,169 +124,65 @@ class Home extends Component{
                              }
                          }}>
 
-                <ScrollView style={{width:width,height:height,backgroundColor:'#fff'}}>
-                    <View style={{width:width,height:height*0.3}}>
-                        <ViewPager
-                            style={this.props.style}
-                            dataSource={this.state.dataSource}
-                            renderPage={this._renderPage}
-                            isLoop={true}
-                            autoPlay={true}
-                        />
-                    </View>
-
-                    {/*//搜索框*/}
-                    <View style={{position:'absolute',top:30*height/736,width:width,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-
-                        <View style={{flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#rgba(255, 255, 255, 0.6)',borderRadius:50,}}>
-                            <View style={{backgroundColor:'transparent',marginLeft:10,padding:4}}>
-                                <Icon name={'search'} size={20} color="#fff"/>
-                            </View>
-                            <TextInput
-                                style={{height:35*height/736,width:width*0.7,paddingLeft:10,paddingRight:10,paddingTop:5,paddingBottom:2,fontSize:14}}
-                                onChangeText={(goodName) => {
-                                      this.state.goodName=goodName;
-                                      this.setState({goodName:this.state.goodName});
-                                    }}
-                                value={this.state.goodName}
-                                placeholder=' 搜索商品'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                                autoCapitalize="characters"
-                            />
-                        </View>
-                    </View>
-
-                    <View style={{flex:5,flexDirection:'row',backgroundColor:'#fff',paddingBottom:10}}>
-
-                            <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                              onPress={ ()=>{
-                                         this.navigate2ProductsList();
-                                         console.log('找教练');
-                                       }}>
-                                <Icon name="shopping-basket" size={25} color="#66CD00" />
-                                <View style={{marginTop:0,paddingTop:10}}>
-                                    <Text style={{fontSize:13,color:'#343434'}}>运动数码</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                              onPress={ ()=>{
-
-                                          console.log('健康商城');
-                                      }}>
-
-                                <Icon name="shopping-cart" size={25} color="#EEAD0E" />
-                                <View style={{marginTop:0,paddingTop:10}}>
-                                    <Text style={{fontSize:13,color:'#343434'}}>健身装备</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                              onPress={ ()=>{
-                                         this.setState({tab:2});
-                                         console.log('运动馆');
-                                      }}>
-                                <Icon name="medkit" size={25} color="#EE6363" />
-                                <View style={{marginTop:0,paddingTop:10}}>
-                                    <Text style={{fontSize:13,color:'#343434'}}>器械球类</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                              onPress={ ()=>{
-                                         this.setState({tab:3});
-                                         console.log('健康定制');
-                                      }}>
-                                <Icon name="plane" size={25} color="#66CDAA" />
-                                <View style={{marginTop:0,paddingTop:10}}>
-                                    <Text style={{fontSize:13,color:'#343434'}}>营养保健</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                    </View>
-
-                    <View style={{flex:3,marginTop:10,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#ddd'}}>---------</Text>
-                        <Icon name="bookmark-o" size={18} color="#EEAD0E" />
-                        <Text style={{color:'#343434',fontSize:13,paddingLeft:5}}>精选活动</Text>
-                        <Text style={{color:'#ddd'}}>---------</Text>
-                    </View>
-
-                    <View style={{flex:3,backgroundColor:'#fff',marginTop:10,marginBottom:10,justifyContent:'center',alignItems: 'center',}}>
-                        <Image resizeMode="stretch" style={{ width:width,height:120}} source={require('../../../img/good1.jpg')} />
-                    </View>
-
-                    <View style={{flex:3,backgroundColor:'#fff',paddingBottom:10,justifyContent:'center',alignItems: 'center',}}>
-                        <Image resizeMode="stretch" style={{ width:width,height:120}} source={require('../../../img/good3.jpg')} />
-                    </View>
-                </ScrollView>
-                </Toolbar>
-
-                {/*camera part*/}
-                <Modal
-                    animationType={"slide"}
-                    transparent={false}
-                    visible={this.state.cameraModalVisible}
-                    onRequestClose={() => {
-                        this.setState({cameraModalVisible: false})
-                    }}
-                >
-                    <Camera
-                        ref={(cam) => {
-                            this.camera = cam;
-                        }}
-                        style={styles.preview}
-                        aspect={this.state.camera.aspect}
-                        captureTarget={this.state.camera.captureTarget}
-                        type={this.state.camera.type}
-                        flashMode={this.state.camera.flashMode}
-                        defaultTouchToFocus
-                        mirrorImage={false}
-                        barcodeScannerEnabled={this.state.camera.barcodeScannerEnabled}
-                        onBarCodeRead={(barcode) => {
-                            var {data, type} = barcode;
-
-                            if (data !== undefined && data !== null) {
-
-                                this.setState({code: data})
-                                this.queryGoodsCode(this.state.code)
-                                this.closeCamera()
+                    <SearchBar
+                        lightTheme
+                        onChangeText={
+                            //模糊查询
+                            (text)=>{
+                                this.searchByText(text)
                             }
-                        }}
-                    />
-
-                    <View style={[styles.box]}>
-
+                        }
+                        placeholder='商品名称' />
+                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#888',fontSize:13}}>商品列表</Text>
                     </View>
-                    <View style={{
-                        position: 'absolute',
-                        right: 1 / 2 * width - 100,
-                        top: 1 / 2 * height,
-                        height: 100,
-                        width: 200,
-                        borderTopWidth: 1,
-                        borderColor: '#e42112',
-                        backgroundColor: 'transparent'
-                    }}>
+                    <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
 
-                    </View>
+                        <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff' }}>
+                            {goodList}
+                        </Animated.View>
 
-                    <View style={[styles.overlay, styles.bottomOverlay]}>
-
-                        <TouchableOpacity
-                            style={styles.captureButton}
-                            onPress={() => {
-                                this.closeCamera()
-                            }}
-                        >
-                            <Icon name="times-circle" size={50} color="#343434"/>
-                        </TouchableOpacity>
-                    </View>
-                </Modal>
-
+                    </ScrollView>
+                </Toolbar>
             </View>
         );
+    }
+
+    searchByText(text){
+
+        //前端实现模糊查询
+        if(text==null || text=='')
+        {
+            var goods = this.state.allgoods
+            this.setState({goods:goods})
+        }
+        else {
+            var goods = this.state.allgoods
+            var goodsList = [];
+
+            if (goods && goods.length > 0) {
+                goods.map((good, i) => {
+                        if (good.name.indexOf(text) != -1)
+                            goodsList.push(good)
+                })
+            }
+
+            this.setState({goods: goodsList})
+        }
+    }
+
+    componentWillMount()
+    {
+        Proxy.postes({
+            url: Config.server + '/func/node/fetchGoodsList',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+            }
+        }).then((json)=>{
+            this.setState({goods:json.data,allgoods:json.data})
+        }).catch((e)=>{})
     }
 
 }

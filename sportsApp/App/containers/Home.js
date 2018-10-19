@@ -374,7 +374,7 @@ class Home extends Component {
                                       }}>
                                         <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')} />
                                         <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
+                                            <Text style={{fontSize:13,color:'#646464'}}>商品</Text>
                                         </View>
                                     </TouchableOpacity>
 
@@ -459,7 +459,7 @@ class Home extends Component {
                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
                                             <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
+                                                <Text style={{fontSize:13,color:'#646464'}}>商品</Text>
                                             </View>
                                         </TouchableOpacity>
 
