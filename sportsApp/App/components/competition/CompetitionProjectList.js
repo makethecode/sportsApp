@@ -24,6 +24,7 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-
 import CompetitionTeamList from './CompetitionTeamList'
 import CompetitionGamesList from './CompetitionGamesList'
 import CompetitionGameList from './CompetitionGameList'
+import CompetitionPage from './CompetitionPage'
 import CreateProject from './CreateProject'
 import {
     fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects
@@ -50,48 +51,20 @@ class CompetitionProjectList extends Component {
         };
     }
 
-    navigate2CompetitionTeamList(projectId)
+    navigate2CompetitionPage(competitionId,projectId,type,startTime,projectType)
     {
         const {navigator} =this.props;
 
         if(navigator) {
             navigator.push({
-                name: 'CompetitionTeamList',
-                component: CompetitionTeamList,
+                name: 'CompetitionPage',
+                component: CompetitionPage,
                 params: {
-                    projectId:projectId
-                }
-            })
-        }
-    }
-
-    navigate2CompetitionGamesList(projectId)
-    {
-        const {navigator} =this.props;
-
-        if(navigator) {
-            navigator.push({
-                name: 'CompetitionGamesList',
-                component: CompetitionGamesList,
-                params: {
-                    projectId:projectId
-                }
-            })
-        }
-    }
-
-    navigate2CompetitionGameList(projectId)
-    {
-        //单项赛（令this.props.gamesId=0）
-        const {navigator} =this.props;
-
-        if(navigator) {
-            navigator.push({
-                name: 'CompetitionGameList',
-                component: CompetitionGameList,
-                params: {
-                    gamesId:0,
+                    competitionId:competitionId,
                     projectId:projectId,
+                    type:type,
+                    startTime:startTime,
+                    projectType:projectType,
                 }
             })
         }
@@ -134,7 +107,10 @@ class CompetitionProjectList extends Component {
                 }
 
                 projectList.push(
-                    <View key={i} style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}>
+                    <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}
+                    onPress={()=>{
+                        this.navigate2CompetitionPage(this.props.competitionId,project.id,project.type,this.props.startTime,projectType)
+                    }}>
 
                         <View style={{ padding: 6,flexDirection:'row',marginTop:3}}>
                             <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
@@ -183,30 +159,9 @@ class CompetitionProjectList extends Component {
                             </View>
                         </View>
 
-                        <View style={{height:0.7,width:width,backgroundColor:'#c2c2c2'}}></View>
-
-                        <View style={{ padding:10,flexDirection:'row'}}>
-                            <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#efb66a',borderRadius:5,padding:5,marginHorizontal:20}}
-                                              onPress={()=>{
-                                                  this.navigate2CompetitionTeamList(project.id);
-                                              }}>
-                                <Text style={{color:'#fff'}}>参赛队伍</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#fc6254',borderRadius:5,padding:5,marginHorizontal:20}}
-                                              onPress={()=>{
-                                                  if(project.type==6)
-                                                      this.navigate2CompetitionGamesList(project.id)//团体赛
-                                                  else
-                                                      this.navigate2CompetitionGameList(project.id)//单项赛
-                                              }}>
-                                <Text style={{color:'#ffffff'}}>比赛场次</Text>
-                            </TouchableOpacity>
-                        </View>
-
                         <View style={{height:0.8,width:width,backgroundColor:'#aaa'}}></View>
 
-                    </View>
+                    </TouchableOpacity>
                 )
             })
         }

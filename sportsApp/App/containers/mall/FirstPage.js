@@ -98,9 +98,29 @@ class Home extends Component{
                                     <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>{good.size}</Text>
                                 </View>
                             </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
-                                <Text style={{flex:4,fontSize:13,color:'#666'}}>库存 {good.inventoryNumber}</Text>
-                            </View>
+                            {
+                                good.inventoryNumber>10?
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginTop: 3
+                                }}>
+                                    <Text
+                                        style={{flex: 4, fontSize: 13, color: '#666'}}>库存 {good.inventoryNumber}</Text>
+                                </View>:
+                                    <View style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginTop: 3
+                                    }}>
+                                        <Text style={{fontSize: 13, color: 'red'}}>库存 {good.inventoryNumber} </Text>
+                                        <View style={{backgroundColor:'red',padding:2}}><Text style={{fontSize:12,color:'#fff'}}>紧张</Text></View>
+                                    </View>
+                            }
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
                                 <Text style={{flex:4,fontSize:13,color:'red'}}>￥{good.salePrice}</Text>
                             </View>
@@ -123,7 +143,6 @@ class Home extends Component{
                                  this.navigate2ScannerList();
                              }
                          }}>
-
                     <SearchBar
                         lightTheme
                         onChangeText={

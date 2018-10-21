@@ -474,7 +474,7 @@ export let fetchTeamPersonList=(teamId)=>{
 }
 
 //获取所有比赛（前五）
-export let fetchAllGameList=()=>{
+export let fetchAllGameList=(projectId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
 
@@ -488,6 +488,7 @@ export let fetchAllGameList=()=>{
                     'Content-Type': 'application/json',
                 },
                 body: {
+                    projectId:projectId
                 }
             }).then((json)=>{
                 if(json.re==1){
@@ -569,6 +570,97 @@ export let fetchGameList=(projectId,gamesId)=>{
                     var game = json.data;
                 }
                 resolve({re:1,data:game})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取排名
+export let fetchRankList=(projectId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchRankList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var rank = json.data;
+                }
+                resolve({re:1,data:rank})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取分组
+export let fetchGroupList=(projectId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var group = json.data;
+                }
+                resolve({re:1,data:group})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//创建分组
+export let createGroupList=(projectId,gameClass)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/createGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gameClass:gameClass,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var group = json.data;
+                }
+                resolve({re:1,data:group})
 
             }).catch((e)=>{
                 alert(e);

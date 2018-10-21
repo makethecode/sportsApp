@@ -99,24 +99,13 @@ class HomePage extends Component{
 
                     <ScrollView style={{flex:1,height:height-100,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
-                        <View style={{width:width,height:140}}>
-                            <ViewPager
-                                style={this.props.style}
-                                dataSource={this.state.dataSource}
-                                renderPage={this._renderPage}
-                                isLoop={true}
-                                autoPlay={true}
-                            />
-                        </View>
-
                         <View style={{width:width,height:30,justifyContent:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
                             <Text style={{fontSize:13,color:'#666'}}>全部直播</Text>
                         </View>
 
-                        <View style={{flex:1,alignItems:'center',justifyContent:'center',flexDirection:'column',padding:2}}>
+                        <View style={{flex:1,alignItems:'center',justifyContent:'center',flexDirection:'row',padding:2}}>
                             <GridView
-                                itemsPerRow={2}
-                                spacing={3}
+                                itemDimension={width/2-20}
                                 items={this.state.playingList}
                                 style={styles.gridView}
                                 renderItem={this.renderRow.bind(this)}
@@ -137,7 +126,7 @@ class HomePage extends Component{
         // personId=4, perNum=lxq, id=5, title=reTest的直播间, playUrl=rtmp://pili-live-rtmp.sportshot.cn/sportshot/EEvvee}
 
         return(
-        <TouchableOpacity style={{height:150,width:width/2-10,}}
+        <TouchableOpacity style={{height:width/2-20,width:width/2-20,}}
                           onPress={()=>{
                               //播放source1的直播
                               var playUrl = rowData.playUrl
@@ -229,6 +218,7 @@ const styles = StyleSheet.create({
     gridView: {
         flex: 1,
         paddingTop:5,
+
     },
     container:{
         flex:1,

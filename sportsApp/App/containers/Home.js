@@ -23,7 +23,7 @@ import BadmintonCourse from '../components/course/BadmintonCourseRecord';
 import MyProfit from '../components/my/Myprofit'
 import Mall from './mall/FirstPage';
 import Activity from '../components/groupActivity/Activity';
-import Competition from '../components/competition/CompetitionPage';
+import Competition from '../components/competition/CompetitionList';
 import Statistics from '../components/statistics/MainStatistics';
 import SexModal from '../components/groupActivity/SexModal';
 import CoachMessage from '../components/my/MyInformation'
