@@ -611,7 +611,7 @@ export let fetchRankList=(projectId)=>{
 }
 
 //获取分组
-export let fetchGroupList=(projectId)=>{
+export let fetchGroupList=(projectId,gameClass)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
 
@@ -624,6 +624,7 @@ export let fetchGroupList=(projectId)=>{
                 },
                 body: {
                     projectId:projectId,
+                    gameClass:gameClass,
                 }
             }).then((json)=>{
                 if(json.re==1){
@@ -661,6 +662,132 @@ export let createGroupList=(projectId,gameClass)=>{
                     var group = json.data;
                 }
                 resolve({re:1,data:group})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//编辑队伍信息
+export let updateTeamGroupList=(teamGroup)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/updateTeamGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    teamGroupId:parseInt(teamGroup.id),
+                    winCount:parseInt(teamGroup.winCount),
+                    lostCount:parseInt(teamGroup.lostCount),
+                    rank:parseInt(teamGroup.rank),
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    resolve({re:1})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//增加组列表
+export let addGroupList=(team,projectId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
+            // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+            // lostCount=0}
+
+            var state=getState();
+            var username = state.user.user.username;
+            var sessionId = state.user.sessionId;
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/addGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    teamName:team.team,
+                    gameClass:team.gameClass,
+                    groupId:team.groupId,
+                    winCount:team.winCount,
+                    lostCount:team.lostCount,
+                    rank:team.rank,
+                    teamId:team.teamId,
+                    projectId:projectId,
+                }
+            }).then((json)=>{
+                resolve({re:1})
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//删除组列表
+export let deleteGroupList=(team)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            var username = state.user.user.username;
+            var sessionId = state.user.sessionId;
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/deleteGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    id:team.id
+                }
+            }).then((json)=>{
+                resolve({re:1})
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//清空所有分组
+export let deleteAllGroupList=(projectId,gameClass)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/deleteAllGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gameClass:gameClass,
+                }
+            }).then((json)=>{
+                resolve({re:1})
 
             }).catch((e)=>{
                 alert(e);
