@@ -660,8 +660,11 @@ export let createGroupList=(projectId,gameClass)=>{
             }).then((json)=>{
                 if(json.re==1){
                     var group = json.data;
+                    resolve({re:1,data:group})
                 }
-                resolve({re:1,data:group})
+                if(json.re==-1){
+                    resolve(json)
+                }
 
             }).catch((e)=>{
                 alert(e);

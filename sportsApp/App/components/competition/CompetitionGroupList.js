@@ -14,7 +14,8 @@ import {
     Animated,
     Easing,
     ToastAndroid,
-    Modal
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -86,7 +87,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
             onPress={()=>{
                 this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                this.deleteGroupList(rowData)
             }}>
 
                 {/*队伍*/}
@@ -148,7 +148,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
 
                 {/*队伍*/}
@@ -186,7 +185,6 @@ class CompetitionGroupList extends Component {
                                       //this.setState({ListA:List})
                                       ListB.splice(rowId,1);
                                       this.setState({ListB:ListB});
-                                      this.deleteGroupList(rowData);
                                   }
                                   }>
                     <Ionicons name='md-close' size={18} color="#666"/>
@@ -210,7 +208,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -271,7 +268,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -332,7 +328,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -393,7 +388,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -454,7 +448,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -515,7 +508,6 @@ class CompetitionGroupList extends Component {
             <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
                               onPress={()=>{
                                   this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                                  this.deleteGroupList(rowData)
                               }}>
                 {/*队伍*/}
                 <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
@@ -588,6 +580,8 @@ class CompetitionGroupList extends Component {
             editTeamListModalVisible:false,
             chooseListType:'',
             chooseTeamGroup:'',
+
+            showProgress:false,
         }
 
     }
@@ -955,7 +949,7 @@ class CompetitionGroupList extends Component {
                          actions={[{icon:ACTION_BOOK,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0) {
-
+                                 this.navigate2CompetitionRule()
                              }
                          }}>
                     <View style={{width:width,height:40,backgroundColor:'#fff',flexDirection:'row',marginTop:0.7,marginBottom:0.7}}>
@@ -1100,21 +1094,46 @@ class CompetitionGroupList extends Component {
                         />
                     </Modal>
 
+                    {/*loading模态框*/}
+                    <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
+                        <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
+                                          onPress={()=>{
+                                              //TODO:cancel this behaviour
+
+                                          }}>
+                            <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
+                                justifyContent:'center',alignItems:'center',borderRadius:6}}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={{marginTop:10,height: 40,position:'absolute',transform: [{scale: 1.6}]}}
+                                    size="large"
+                                />
+                                <View style={{flexDirection:'row',justifyContent:'center',marginTop:45}}>
+                                    <Text style={{color:'#666',fontSize:13}}>
+                                        加载中...
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+
                 </Toolbar>
             </View>
         );
     }
 
     createGroupList(){
+
+
         this.props.dispatch(createGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
             if(json.re==1)
             {
                 this.fetchGroupList();
             }
             else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
+                //对返回的错误信息进行处理
+                Alert.alert('生成失败',json.data);
             }
         })
     }
@@ -1131,6 +1150,8 @@ class CompetitionGroupList extends Component {
         //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
         // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
         // lostCount=0}
+
+        this.setState({showProgress:true})
 
         this.props.dispatch(fetchGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
             if(json.re==1)
@@ -1180,7 +1201,7 @@ class CompetitionGroupList extends Component {
                     }
                 }
 
-                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH});
+                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,showProgress:false});
             }
             else {
                 if(json.re=-100){
@@ -1356,6 +1377,14 @@ var styles = StyleSheet.create({
         textAlign: 'center',
         color:'#646464',
         justifyContent:'center',
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 });
 

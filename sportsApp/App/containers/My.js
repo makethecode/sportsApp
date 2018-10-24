@@ -354,7 +354,7 @@ class My extends Component{
                                           }}>
                             <View style={{flex:1,flexDirection:'row',margin:5,
                                 justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/com_live.png')}/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/vedio.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
                                 <Text>我的视频</Text>
@@ -367,7 +367,7 @@ class My extends Component{
                                           }}>
                             <View style={{flex:1,flexDirection:'row',margin:5,
                                 justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/appointment.png')}/>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/news.png')}/>
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
                                 <Text>发布新闻</Text>

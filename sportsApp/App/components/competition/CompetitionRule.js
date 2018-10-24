@@ -43,17 +43,23 @@ class CompetitionRule extends Component{
         return (
             <View style={styles.container}>
                 <Toolbar width={width} title="比赛规则" actions={[]} navigator={this.props.navigator}>
-
-                    <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems: 'center'}}>
+<ScrollView>
+                    <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems: 'flex-start',padding:10}}>
                         <Image resizeMode="stretch" style={{height:width,width:width}} source={require('../../../img/rule.png')}/>
-                        <Text style={{fontSize:13,color:'#444',marginTop:10}}>
+                        <Text style={{fontSize:14,color:'#444',marginTop:10}}>
                             1.若参赛队伍>32，则分为8组进行小组赛，每组取前两名进行16进8淘汰赛->8进4淘汰赛->半决赛->冠亚军决赛
+                        </Text>
+                        <Text style={{fontSize:14,color:'#444',marginTop:10}}>
                             2.若32>参赛队伍>16，则分为4组进行小组赛，每组取前两名进行8进4淘汰赛->半决赛->冠亚军决赛
+                        </Text>
+                        <Text style={{fontSize:14,color:'#444',marginTop:10}}>
                             3.若16>参赛队伍>8，则分为2组进行小组赛，每组取前两名进行半决赛->冠亚军决赛
+                        </Text>
+                        <Text style={{fontSize:14,color:'#444',marginTop:10}}>
                             4.若4>参赛队伍，则直接进行小组赛并进行排名
                         </Text>
                     </View>
-
+</ScrollView>
                 </Toolbar>
             </View>
         )
@@ -63,7 +69,7 @@ class CompetitionRule extends Component{
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        backgroundColor:'#fff'
+        backgroundColor:'#fff',
     },
     popoverContent: {
         width: 100,

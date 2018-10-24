@@ -18,6 +18,7 @@ import {
     InteractionManager,
     Alert,
     Modal,
+    ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -325,6 +326,7 @@ class CompetitionGamesList extends Component {
                                 <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
                                     <Text style={{color:'#444',fontSize:14}}>小组赛</Text></View>{ListView1}</View>}
                     </ScrollView>}
+
                 </Toolbar>
             </View>
         )
@@ -379,7 +381,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
+    },
 });
 
 

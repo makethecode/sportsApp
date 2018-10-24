@@ -13,7 +13,9 @@ import {
     RefreshControl,
     Animated,
     Easing,
-    ToastAndroid
+    ToastAndroid,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -188,7 +190,7 @@ class CompetitionTeamList extends Component {
             doingFetch: false,
             isRefreshing: false,
             fadeAnim: new Animated.Value(1),
-            teams: []
+            teams: [],
         }
 
     }
@@ -244,6 +246,7 @@ class CompetitionTeamList extends Component {
                             </ScrollView>
                         </Animated.View>
                     </View>
+
                 </Toolbar>
             </View>
         );
@@ -370,6 +373,14 @@ var styles = StyleSheet.create({
     dropdown_image: {
         width: 20,
         height: 20,
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 });
 

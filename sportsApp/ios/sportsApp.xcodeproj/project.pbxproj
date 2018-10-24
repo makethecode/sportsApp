@@ -819,6 +819,7 @@
 		AD36AEF92109AEE000444CF4 /* RemindView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemindView.m; path = sportsApp/RemindView.m; sourceTree = "<group>"; };
 		AD7DB9C9210C1276003650C4 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		AD7DB9D2210C4AC1003650C4 /* PLPlayerKit for dylib framework */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "PLPlayerKit for dylib framework"; sourceTree = "<group>"; };
+		AD9A17DA2180503800B2080F /* sportsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sportsApp.entitlements; path = sportsApp/sportsApp.entitlements; sourceTree = "<group>"; };
 		ADA30CDB2111C50F00B08613 /* FaceUI */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FaceUI; sourceTree = "<group>"; };
 		ADA30D0D2111CB1300B08613 /* IDLFaceSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDLFaceSDK.framework; path = "../../../../../Downloads/sportsApp-master-1/sportsApp/ios/IDLFaceSDK.framework"; sourceTree = "<group>"; };
 		ADA30D0F2111CB5500B08613 /* Face */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Face; sourceTree = "<group>"; };
@@ -1030,6 +1031,7 @@
 		13B07FAE1A68108700A75B9A /* sportsApp */ = {
 			isa = PBXGroup;
 			children = (
+				AD9A17DA2180503800B2080F /* sportsApp.entitlements */,
 				ADB071FC211287B000E1ED62 /* VideoCaptureDevice.h */,
 				ADB07223211287B100E1ED62 /* VideoCaptureDevice.m */,
 				AD36AEF62109AEE000444CF4 /* ImageUtils.h */,
@@ -1856,6 +1858,14 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = BY3A7B54BR;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplePay = {
+								enabled = 0;
+							};
+							com.apple.Wallet = {
+								enabled = 0;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;

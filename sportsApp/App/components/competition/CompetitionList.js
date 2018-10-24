@@ -12,7 +12,9 @@ import {
     Animated,
     Easing,
     TextInput,
-    InteractionManager
+    InteractionManager,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
@@ -303,6 +305,7 @@ class CompetitionList extends Component {
 
                         </Animated.View>
                     </View>}
+
                 </Toolbar>
 
             </View>
@@ -359,6 +362,14 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent:'center'
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 });
 
