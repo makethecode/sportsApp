@@ -711,7 +711,7 @@ class MyInformation extends Component{
                                         if(json.re==1){
                                             //上传图片并将地址保存到数据库,返回member.photo对应类型的uri
                                             //file/coach4/1.jpg
-                                            alert('上传成功')
+                                            alert(json.data)
                                             this.setState({member:Object.assign(this.state.member,{coachPhoto:json.data}),coachPhotoUrl:val})
                                         }else{
                                             if(json.re==-100){

@@ -52,6 +52,7 @@
     "redux": "^3.6.0",
     "redux-logger": "^2.8.1",
     "redux-thunk": "^2.2.0",
+    "rn-viewpager": "^1.2.9",
     "undefined": "^0.1.0"
   },
   "devDependencies": {

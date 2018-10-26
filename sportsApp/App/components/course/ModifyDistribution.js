@@ -186,7 +186,7 @@ class ModifyBadmintonCourse extends Component{
         this.state={
             dialogShow: false,
             modalVisible:false,
-            course:{courseId:this.props.course.courseId,courseName:this.props.course.courseName,maxNumber:this.props.course.maxNumber+'',coachId:this.props.course.coachId,trainerId:this.props.course.trainerId,
+            course:{courseId:this.props.course.courseId,courseName:this.props.course.courseName,maxNumber:this.props.course.maxNumber,coachId:this.props.course.coachId,trainerId:this.props.course.trainerId,
                 classCount:this.props.course.classCount,cost:this.props.course.cost,courseGrade:this.props.course.courseGrade,unitName:this.props.course.unitName,
                 costType:this.props.course.costType,detail:this.props.course.detail,coursePlace:this.props.course.coursePlace,unitId:this.props.course.unitId,scheduleDes:this.props.course.scheduleDes},
             doingFetch: false,
@@ -194,7 +194,7 @@ class ModifyBadmintonCourse extends Component{
             time:null,
             timeList:[],
             costTypeButtons:['取消','按人支付','按小时支付','按班支付'],
-            venue:this.props.venue
+            venue:this.props.course.venue
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     }

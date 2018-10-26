@@ -95,6 +95,7 @@ export let fetchNewsInfo=()=>{
                 }
             }).then((json)=>{
 
+                dispatch(updateNewsInfo(json.data));
                 resolve(json)
 
             }).catch((e)=>{

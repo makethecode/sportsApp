@@ -30,13 +30,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from 'react-native-viewpager';
 import ProductsList from './ProductsList';
 import ShopCart from './ShopCart';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_QR_SCANNER,ACTION_BARCODE} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_QR_SCANNER,ACTION_BARCODE,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import Camera from 'react-native-camera';
 import Config from '../../../config';
 import ProductPay from './ProductPay'
 import ScannerList from './ScannerList'
 import { SearchBar } from 'react-native-elements'
 import Proxy from '../../utils/Proxy'
+import AddProduct from './AddProduct'
 
 var {height, width} = Dimensions.get('window');
 var flag = true;
@@ -57,6 +58,19 @@ class Home extends Component{
             navigator.push({
                 name: 'ScannerList',
                 component: ScannerList,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2AddProduct()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'AddProduct',
+                component: AddProduct,
                 params: {
                 }
             })
@@ -84,10 +98,15 @@ class Home extends Component{
         if(goods&&goods.length>0)
         {
             goods.map((good,i)=>{
+
+                var imgUrl = ''
+                if(i==3)imgUrl = Config.server+good.imgUrl.substring(27,good.imgUrl.length)
+                else imgUrl = good.imgUrl
+
                 goodList.push(
                     <TouchableOpacity style={lineStyle}>
                         <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:good.imgUrl}} />
+                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:imgUrl}} />
                         </View>
                         <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
                             <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
@@ -135,12 +154,14 @@ class Home extends Component{
             <View style={{flex:1,backgroundColor:'#fff'}}>
 
                 <Toolbar width={width} title="商品" navigator={this.props.navigator}
-                         actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0)
                              {
                                  //商城扫码逻辑不成熟
-                                 this.navigate2ScannerList();
+                                 //this.navigate2ScannerList();
+                                 //上传商品信息
+                                 this.navigate2AddProduct()
                              }
                          }}>
                     <SearchBar

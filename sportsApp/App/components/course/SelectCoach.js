@@ -284,7 +284,7 @@ class SelectCoach extends Component {
                 if(json.re==1)
                 {
                     this.props.dispatch(onCoachUpdate(json.data))
-                    this.setState({coaches:this.props.coaches})
+                    this.setState({coaches:json.data})
                 }
                 else{
                     if(ison.re=-100) {

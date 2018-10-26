@@ -95,7 +95,7 @@ class ProductPay extends Component{
                                 <Text style={{fontSize:20,color:'#fff'}}>打开微信[扫一扫]</Text>
                             </View>
                             <View style={{flex:2}}>
-                                <Text style={{fontSize:13,color:'#fff'}}>山东体育热有限公司</Text>
+                                <Text style={{fontSize:13,color:'#fff'}}>山东运动热体育科技有限公司</Text>
                             </View>
                         </View>
 
