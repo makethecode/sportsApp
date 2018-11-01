@@ -54,7 +54,9 @@ class CompetitionGamesList extends Component {
                 name: 'CompetitionGameList',
                 component: CompetitionGameList,
                 params: {
-                    gamesId:gamesId
+                    gamesId:gamesId,
+                    projectName:this.props.projectName,
+                    projectType:this.props.projectType,
                 }
             })
         }

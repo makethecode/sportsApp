@@ -629,8 +629,11 @@ export let fetchGroupList=(projectId,gameClass)=>{
             }).then((json)=>{
                 if(json.re==1){
                     var group = json.data;
+                    resolve({re:1,data:group})
+                }else{
+                    resolve({re:-1})
                 }
-                resolve({re:1,data:group})
+
 
             }).catch((e)=>{
                 alert(e);
@@ -791,6 +794,162 @@ export let deleteAllGroupList=(projectId,gameClass)=>{
                 }
             }).then((json)=>{
                 resolve({re:1})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//修改所有分组排名
+export let updateAllGroupList=(list)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/updateAllGroupList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    list:list
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    resolve({re:1})
+                }
+                else{
+                    resolve({re:-1})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//完成一局比赛
+export let CompleteMatch=(match,recordA,recordB,game)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/CompleteMatch',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    matchId : parseInt(match.id),
+                    endTime : match.endTime,
+                    score1: parseInt(match.score1),
+                    score2: parseInt(match.score2),
+                    recordAId:parseInt(recordA.id),
+                    recordBId:parseInt(recordB.id),
+                    gameId:parseInt(game.id),
+                    AlostCount1:parseInt(recordA.lostCount1),
+                    AlostCount2:parseInt(recordA.lostCount2),
+                    AlostCount3:parseInt(recordA.lostCount3),
+                    AlostCount4:parseInt(recordA.lostCount4),
+                    AlostCount5:parseInt(recordA.lostCount5),
+                    AlostCount6:parseInt(recordA.lostCount6),
+                    AlostCount7:parseInt(recordA.lostCount7),
+                    AscoreCount1:parseInt(recordA.scoreCount1),
+                    AscoreCount2:parseInt(recordA.scoreCount2),
+                    AscoreCount3:parseInt(recordA.scoreCount3),
+                    AscoreCount4:parseInt(recordA.scoreCount4),
+                    AscoreCount5:parseInt(recordA.scoreCount5),
+                    BlostCount1:parseInt(recordB.lostCount1),
+                    BlostCount2:parseInt(recordB.lostCount2),
+                    BlostCount3:parseInt(recordB.lostCount3),
+                    BlostCount4:parseInt(recordB.lostCount4),
+                    BlostCount5:parseInt(recordB.lostCount5),
+                    BlostCount6:parseInt(recordB.lostCount6),
+                    BlostCount7:parseInt(recordB.lostCount7),
+                    BscoreCount1:parseInt(recordB.scoreCount1),
+                    BscoreCount2:parseInt(recordB.scoreCount2),
+                    BscoreCount3:parseInt(recordB.scoreCount3),
+                    BscoreCount4:parseInt(recordB.scoreCount4),
+                    BscoreCount5:parseInt(recordB.scoreCount5),
+
+                }
+            }).then((json)=>{
+
+                if(json.re==1)
+                resolve({re:1})
+                else resolve({re:-1})
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//创建比赛
+export let createCompetitonGame=(projectId,gamesId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/createAllCompetitonGames',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    // team1Id:parseInt(team1Id),
+                    // team2Id:parseInt(team2Id),
+                    // gameClass: parseInt(game.gameClassId),
+                    // group: parseInt(game.groupId)-1,
+                    // field: game.field,
+                    // referee: game.referee,
+                    projectId:parseInt(projectId),
+                    gamesId:parseInt(gamesId),
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                resolve({re:1})
+                else resolve({re:-1})
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//创建比赛
+export let getMatchAndRecordInOneGame=(gameId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/getMatchAndRecordInOneGame',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    gameId:gameId
+                }
+            }).then((json)=>{
+                resolve(json)
 
             }).catch((e)=>{
                 alert(e);

@@ -55,6 +55,45 @@ class CompetitionPage extends Component{
         }
     }
 
+    _onRefresh() {
+        this.setState({isRefreshing: true, fadeAnim: new Animated.Value(0)});
+
+        setTimeout(function () {
+            this.setState({
+                isRefreshing: false,
+            });
+            Animated.timing(          // Uses easing functions
+                this.state.fadeAnim,    // The value to drive
+                {
+                    toValue: 1,
+                    duration: 600,
+                    easing: Easing.bounce
+                },           // Configuration
+            ).start();
+        }.bind(this), 3000);
+
+        this.setState({noticeFresh:true})
+    }
+
+    fetchAllGameList(){
+
+        this.state.doingFetch=true;
+        this.state.isRefreshing=true;
+
+        this.props.dispatch(fetchAllGameList(this.props.projectId)).then((json)=>{
+            this.setState({doingFetch:false,isRefreshing:false,noticeFresh:false})
+            if(json.re==1)
+            {
+                this.setState({notice:json.data,isRefreshing:false});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+            }
+        })
+    }
+
     _renderPage(data,pageID){
         return (
             <View style={{width:width}}>
@@ -105,7 +144,9 @@ class CompetitionPage extends Component{
                 name: 'CompetitionGamesList',
                 component: CompetitionGamesList,
                 params: {
-                    projectId:projectId
+                    projectId:projectId,
+                    projectName:this.props.projectName,
+                    projectType:this.props.projectType,
                 }
             })
         }
@@ -124,6 +165,8 @@ class CompetitionPage extends Component{
                 params: {
                     gamesId:0,
                     projectId:projectId,
+                    projectName:this.props.projectName,
+                    projectType:this.props.projectType,
                 }
             })
         }
@@ -150,7 +193,6 @@ class CompetitionPage extends Component{
         super(props);
         var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
-            isRefreshing:false,
             dataSource:ds.cloneWithPages(IMGS),
             itemList:[
                 {'title':'比赛场次','icon':require('../../../img/com_on.png')},
@@ -162,25 +204,42 @@ class CompetitionPage extends Component{
             competitionId:this.props.competitionId,
             projectId:this.props.projectId,
             type:this.props.type,
+
+            isRefreshing: false,
+            fadeAnim: new Animated.Value(1),
+            noticeFresh:true,
+            doingFetch:false,
         };
     }
 
     render(){
 
+        //RefreshControl:当ScrollView处于竖直方向的起点位置（scrollY: 0），此时下拉会触发一个onRefresh事件。
+
+
         var noticeList=null
         //"2018-02-01T09:00:00+00:00"
         var endTime = this.props.startTime.substring(0,10)+'T'+this.props.startTime.substring(11,16)+':00+00:00';
 
-        if(this.state.notice&&this.state.notice.length>0)
+        var noticeList=null;
+        var notice = this.state.notice;
+        //var competitionList=this.state.competitionList;
+        if(this.state.noticeFresh==true)
         {
+            if(this.state.doingFetch==false)
+                this.fetchAllGameList();
+        }else{
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            noticeList=(
+            if (notice !== undefined && notice !== null && notice.length > 0)
+            {
+                noticeList = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(this.state.notice)}
+                        dataSource={ds.cloneWithRows(notice)}
                         renderRow={this.renderNoticeRow.bind(this)}
                     />
-            );
+                );
+            }
         }
 
         return (
@@ -193,9 +252,9 @@ class CompetitionPage extends Component{
                              }
                          }}>
 
-                    <ScrollView style={{flex:1,height:height-100,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
+                    <View style={{flex:1,height:height,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
-                        <View style={{width:width,height:140}}>
+                        <View style={{width:width,height:120}}>
                             <ViewPager
                                 style={this.props.style}
                                 dataSource={this.state.dataSource}
@@ -237,11 +296,27 @@ class CompetitionPage extends Component{
                             <Text style={{fontSize:15,color:'#444'}}>最新赛讯</Text>
                         </View>
 
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                        <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                            <Animated.View style={{opacity: this.state.fadeAnim,flex:1,paddingTop:5,paddingBottom:5,}}>
+                                <ScrollView
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.isRefreshing}
+                                            onRefresh={this._onRefresh.bind(this)}
+                                            tintColor="#9c0c13"
+                                            title="刷新..."
+                                            titleColor="#9c0c13"
+                                            colors={['#ff0000', '#00ff00', '#0000ff']}
+                                            progressBackgroundColor="#ffff00"
+                                        />
+                                    }
+                                >
                             {noticeList}
+                                </ScrollView>
+                            </Animated.View>
                         </View>
 
-                    </ScrollView>
+                    </View>
                 </Toolbar>
             </View>
         );
@@ -344,20 +419,9 @@ class CompetitionPage extends Component{
     }
 
     componentWillMount(){
-
-        this.props.dispatch(fetchAllGameList(this.props.projectId)).then((json)=>{
-            if(json.re==1)
-            {
-                this.setState({notice:json.data});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-            }
-        })
-
+        this.fetchAllGameList()
     }
+
 
     componentWillUnmount(){
     }

@@ -64,9 +64,9 @@ class CompetitionProjectList extends Component {
                 params: {
                     competitionId:competitionId,
                     projectId:projectId,
-                    type:type,
+                    projectType:type,
                     startTime:startTime,
-                    projectType:projectType,
+                    projectName:projectType,
                 }
             })
         }

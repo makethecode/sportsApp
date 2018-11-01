@@ -27,11 +27,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import CompetitionTeamPerson from './CompetitionTeamPersonList'
 import ActionSheet from 'react-native-actionsheet';
 import {
-    updateTeamGroupList,fetchGroupList,createGroupList,addGroupList,deleteGroupList,deleteAllGroupList
+    updateTeamGroupList,fetchGroupList,createGroupList,addGroupList,deleteGroupList,deleteAllGroupList,updateAllGroupList
 } from '../../action/CompetitionActions';
 import AddListTeamModal from './AddListTeamModal'
 import EditListTeamModal from './EditListTeamModal'
-import CompetitionRule from './CompetitionRule'
 
 var {height, width} = Dimensions.get('window');
 
@@ -41,21 +40,6 @@ class CompetitionGroupList extends Component {
         const {navigator} = this.props;
         if (navigator) {
             navigator.pop();
-        }
-    }
-
-    navigate2CompetitionRule()
-    {
-        //比赛规则
-        const {navigator} =this.props;
-
-        if(navigator) {
-            navigator.push({
-                name: 'CompetitionRule',
-                component: CompetitionRule,
-                params: {
-                }
-            })
         }
     }
 
@@ -562,9 +546,9 @@ class CompetitionGroupList extends Component {
             fadeAnim: new Animated.Value(1),
             teams:[],
             //初始
-            gameClass:6,
+            gameClass:1,
             gameClassStr:'小组赛',
-            gameClassButtons:['取消','冠亚军决赛','半决赛','8进4','16进8','32进16','小组赛'],
+            gameClassButtons:['取消','小组赛','32进16','16进8','8进4','半决赛','冠亚军决赛'],
 
             //分组
             ListA:[],
@@ -590,6 +574,17 @@ class CompetitionGroupList extends Component {
 
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
+
+        var projectType = '';
+
+        switch (this.props.projectType){
+            case '1':projectType='男单';break;
+            case '2':projectType='女单';break;
+            case '3':projectType='男双';break;
+            case '4':projectType='女双';break;
+            case '5':projectType='混双';break;
+            case '6':projectType='团体';break;
+        }
 
         //A组
         var ListAView = null;
@@ -720,11 +715,11 @@ class CompetitionGroupList extends Component {
             </View>
             {/*得分*/}
             <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                <Text style={{color:'#5c5c5c'}}>得分</Text>
+                <Text style={{color:'#5c5c5c'}}>胜</Text>
             </View>
             {/*失分*/}
             <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                <Text style={{color:'#5c5c5c'}}>失分</Text>
+                <Text style={{color:'#5c5c5c'}}>负</Text>
             </View>
             {/*排名*/}
             <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -749,11 +744,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -778,11 +773,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -807,11 +802,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -836,11 +831,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -865,11 +860,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -894,11 +889,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -923,11 +918,11 @@ class CompetitionGroupList extends Component {
                 </View>
                 {/*得分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>得分</Text>
+                    <Text style={{color:'#5c5c5c'}}>胜</Text>
                 </View>
                 {/*失分*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>失分</Text>
+                    <Text style={{color:'#5c5c5c'}}>负</Text>
                 </View>
                 {/*排名*/}
                 <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
@@ -949,7 +944,7 @@ class CompetitionGroupList extends Component {
                          actions={[{icon:ACTION_BOOK,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0) {
-                                 this.navigate2CompetitionRule()
+                                // this.deleteAllGroupList();
                              }
                          }}>
                     <View style={{width:width,height:40,backgroundColor:'#fff',flexDirection:'row',marginTop:0.7,marginBottom:0.7}}>
@@ -986,16 +981,16 @@ class CompetitionGroupList extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA',marginLeft:0.7}}
                                           onPress={()=>{
-                                              this.deleteAllGroupList();
+                                              this.createRankList();
                                           }}>
-                           <Text style={{color:'#fff',fontSize:14}}>清空名单</Text>
+                           <Text style={{color:'#fff',fontSize:14}}>生成排名</Text>
                         </TouchableOpacity>
                     </View>
                     {<ScrollView style={{backgroundColor:'#eee'}}>
                         {//A组
                             (ListA==null || ListA.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center',flexDirection:'column'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} A组</Text></View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} A组</Text></View>
                                     {headA}
                                     {ListAView}
                                     </View>
@@ -1003,37 +998,37 @@ class CompetitionGroupList extends Component {
                         {//B组
                             (ListB==null || ListB.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} B组</Text></View>{headB}{ListBView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} B组</Text></View>{headB}{ListBView}</View>
                         }
                         {//C组
                             (ListC==null || ListC.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} C组</Text></View>{headC}{ListCView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} C组</Text></View>{headC}{ListCView}</View>
                         }
                         {//D组
                             (ListD==null || ListD.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} D组</Text></View>{headD}{ListDView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} D组</Text></View>{headD}{ListDView}</View>
                         }
                         {//E组
                             (ListE==null || ListE.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} E组</Text></View>{headE}{ListEView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} E组</Text></View>{headE}{ListEView}</View>
                         }
                         {//F组
                             (ListF==null || ListF.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} F组</Text></View>{headF}{ListFView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} F组</Text></View>{headF}{ListFView}</View>
                         }
                         {//G组
                             (ListG==null || ListG.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} G组</Text></View>{headG}{ListGView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} G组</Text></View>{headG}{ListGView}</View>
                         }
                         {//H组
                             (ListH==null || ListH.length==0)?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{this.props.projectType} H组</Text></View>{headH}{ListHView}</View>
+                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} H组</Text></View>{headH}{ListHView}</View>
                         }
                     </ScrollView>
                     }
@@ -1145,6 +1140,174 @@ class CompetitionGroupList extends Component {
     this.fetchGroupList();
     }
 
+    createRankList(){
+        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
+        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
+        // lostCount=0}
+
+        var listA = this.state.ListA;var listB = this.state.ListB;var listC = this.state.ListC;var listD = this.state.ListD;
+        var listE = this.state.ListE;var listF = this.state.ListF;var listG = this.state.ListG;var listH = this.state.ListH;
+
+        var resList = [];
+
+        //先按照负=输的次数少则靠前=按负的次数升序（次元）
+        //再按照胜=胜的次数多则靠前=按胜的次数降序（主元）
+        if(listA!=null && listA.length>0) {
+            listA.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listA.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listA.length;i++){
+                listA[i].rank=i+1;
+            }
+
+            this.setState({ListA:listA})
+
+            resList.push(listA)
+        }
+
+        if(listB!=null && listB.length>0) {
+            listB.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listB.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listB.length;i++){
+                listB[i].rank=i+1;
+            }
+
+            this.setState({ListB:listB})
+
+            resList.push(listB)
+        }
+
+        if(listC!=null && listC.length>0) {
+            listC.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listC.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listC.length;i++){
+                listC[i].rank=i+1;
+            }
+
+            this.setState({ListC:listC})
+
+            resList.push(listC)
+        }
+
+        if(listD!=null && listD.length>0) {
+            listD.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listD.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listD.length;i++){
+                listD[i].rank=i+1;
+            }
+
+            this.setState({ListD:listD})
+
+            resList.push(listD)
+        }
+
+        if(listE!=null && listE.length>0) {
+            listE.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listE.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listE.length;i++){
+                listE[i].rank=i+1;
+            }
+
+            this.setState({ListE:listE})
+
+            resList.push(listE)
+        }
+
+        if(listF!=null && listF.length>0) {
+            listF.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listF.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listF.length;i++){
+                listF[i].rank=i+1;
+            }
+
+            this.setState({ListF:listF})
+
+            resList.push(listF)
+        }
+
+        if(listG!=null && listG.length>0) {
+            listG.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listG.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listG.length;i++){
+                listG[i].rank=i+1;
+            }
+
+            this.setState({ListG:listG})
+
+            resList.push(listG)
+        }
+
+        if(listH!=null && listH.length>0) {
+            listH.sort(function (a, b) {
+                return a.lostCount - b.lostCount
+            });
+
+            listH.sort(function (a, b) {
+                return b.winCount - a.winCount
+            });
+
+            for(var i=0;i<listA.length;i++){
+                listH[i].rank=i+1;
+            }
+
+            this.setState({ListH:listH})
+
+            resList.push(listH)
+        }
+
+        this.props.dispatch(updateAllGroupList(resList)).then((json)=>{
+            if(json.re==1)
+            {
+                Alert.alert('成功','排名成功')
+            }
+            else{
+                Alert.alert('失败','排名失败,请手动排名')
+            }
+        })
+
+    }
+
     fetchGroupList(){
 
         //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
@@ -1154,8 +1317,6 @@ class CompetitionGroupList extends Component {
         this.setState({showProgress:true})
 
         this.props.dispatch(fetchGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
-            if(json.re==1)
-            {
                 var listA = [];
                 var listB = [];
                 var listC = [];
@@ -1202,12 +1363,7 @@ class CompetitionGroupList extends Component {
                 }
 
                 this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,showProgress:false});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-            }
+
         })
 
     }

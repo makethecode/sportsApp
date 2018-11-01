@@ -20,7 +20,6 @@ import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyGroup from '../components/groupActivity/MyGroup';
 import MyCourses from '../components/course/MyCourses';
 import MyVideo from '../components/my/MyVideo';
-import AddNews from '../components/my/AddNews';
 import NewsList from '../components/my/NewsList'
 import MyInformation from '../components/my/MyInformation';
 import Setting from '../components/my/Setting';

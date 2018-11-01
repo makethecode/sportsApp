@@ -46,13 +46,8 @@ class Notice extends Component{
             ).start();
         }.bind(this), 500);
         this.props.dispatch(enableNoticeOnFresh());
-
+        //noticeFresh:true
     }
-
-
-
-
-
 
     navigateNoticeDetail(rowData)
     {
@@ -128,6 +123,7 @@ class Notice extends Component{
                 this.props.dispatch(getAccessToken(false));
             }
             this.props.dispatch(disableNoticeOnFresh());
+            // noticeFresh:false
             this.setState({doingFetch:false,isRefreshing:false})
         }).catch((e)=>{
             this.props.dispatch(disableNoticeOnFresh());
