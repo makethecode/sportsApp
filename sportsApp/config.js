@@ -9,6 +9,7 @@ module.exports={
     //server:'http://211.87.225.196:8080/badmintonhot',
     //server:'http://211.87.225.202:8080/badmintonhot',
     server:'http://192.168.1.138:8080/badmintonhot',
+    // server:'http://127.0.0.1:8080/badmintonhot',
    //  server:'http://192.168.1.114:8080/badmintonhot',
    //  server:'http://192.168.1.103:8080/supnuevo_statistics',
    //  debug:false
