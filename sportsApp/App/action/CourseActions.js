@@ -1466,3 +1466,194 @@ export let onCourseGroupUpdate=(courseGroup)=>{
 
 }
 
+//获取试课学员名单
+export let fetchAllTrialClassMember=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/fetchAllTrialClassMember',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取试课学员试课名单
+export let fetchTrailClassByStudent=(memberId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/fetchTrailClassByStudent',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    memberId:memberId
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取最近一周的试课列表
+export let getWeekTrailClass=(personId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/getWeekTrailClass',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    personId:personId
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//更换试课学员类型
+export let updateTrailClassMemberType=(memberId,type)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/updateTrailClassMemberType',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    memberId:memberId,
+                    type:type,
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//报名试课
+export let signTrialClass=(memberId,classId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/signTrialClass',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    memberId:memberId,
+                    classId:classId,
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//取消报名
+export let cancelTrialClass=(memberId,classId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/cancelTrialClass',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    memberId:memberId,
+                    classId:classId,
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取课堂列表
+export let fetchClassList=(courseId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/course/fetchClassList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    courseId:courseId
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

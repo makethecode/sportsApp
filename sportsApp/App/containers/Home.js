@@ -49,9 +49,11 @@ import EmptyFilter from '../utils/EmptyFilter'
 import  {
     getRTMPPushUrl
 } from '../action/LiveActions';
-
 import HomePage from '../components/live/HomePage'
 import NewsDetail from '../components/news/NewsDetail'
+import NewsList from '../components/my/NewsList'
+import MyVideo from '../components/my/MyVideo';
+import TrailStudent from '../components/trailClass/TrailStudentList'
 
 var {height, width} = Dimensions.get('window');
 var IMGS = [
@@ -182,6 +184,47 @@ class Home extends Component {
                 component: NewsDetail,
                 params: {
                     docid:docid
+                }
+            })
+        }
+    }
+
+    //新闻
+    navigate2NewsList(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'NewsList',
+                component: NewsList,
+                params: {
+
+                }
+            })
+        }
+    }
+
+    //视频
+    navigate2MyVideo(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'MyVideo',
+                component: MyVideo,
+                params: {
+
+                }
+            })
+        }
+    }
+
+    //试课
+    navigate2TrailStudent(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'TrailStudent',
+                component: TrailStudent,
+                params: {
                 }
             })
         }
@@ -380,10 +423,55 @@ class Home extends Component {
 
                                 </View>
 
+                                < View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+
+                                    <TouchableOpacity
+                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                        onPress={ ()=>{
+                                            this.navigate2NewsList()
+                                        }}>
+                                        {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
+                                        <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
+                                        <View style={{marginTop:0,paddingTop:15}}>
+                                            <Text style={{fontSize:13,color:'#646464'}}>新闻</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                        onPress={ ()=>{
+                                            this.navigate2MyVideo()
+                                        }}>
+
+                                        {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
+                                        <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
+                                        <View style={{marginTop:0,paddingTop:15}}>
+                                            <Text style={{fontSize:13,color:'#646464'}}>视频</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                        onPress={ ()=>{
+                                            this.navigate2TrailStudent()
+                                        }}>
+                                        <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')}/>
+                                        <View style={{marginTop:0,paddingTop:15}}>
+                                            <Text style={{fontSize:13,color:'#646464'}}>试课</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                </View>
+
                             </View>
 
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                                 {newsList}
                             </View>
 
@@ -510,10 +598,55 @@ class Home extends Component {
                                 </TouchableOpacity>
 
                                     </View>
-                              </View>
 
+                                     < View style={{
+                                         flex: 1,
+                                         flexDirection: 'row',
+                                         justifyContent: 'center',
+                                         alignItems: 'center',
+                                     }}>
+
+                                         <TouchableOpacity
+                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                             onPress={ ()=>{
+                                                 this.navigate2NewsList()
+                                             }}>
+                                             {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
+                                             <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
+                                             <View style={{marginTop:0,paddingTop:15}}>
+                                                 <Text style={{fontSize:13,color:'#646464'}}>新闻</Text>
+                                             </View>
+                                         </TouchableOpacity>
+
+                                         <TouchableOpacity
+                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                             onPress={ ()=>{
+                                                 this.navigate2MyVideo()
+                                             }}>
+
+                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
+                                             <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
+                                             <View style={{marginTop:0,paddingTop:15}}>
+                                                 <Text style={{fontSize:13,color:'#646464'}}>视频</Text>
+                                             </View>
+                                         </TouchableOpacity>
+
+                                         <TouchableOpacity
+                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
+                                             onPress={ ()=>{
+                                                 this.navigate2TrailStudent()
+                                             }}>
+                                             <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')}/>
+                                             <View style={{marginTop:0,paddingTop:15}}>
+                                                 <Text style={{fontSize:13,color:'#646464'}}>试课</Text>
+                                             </View>
+                                         </TouchableOpacity>
+
+                                     </View>
+
+                              </View>
                             </View>
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                                 {newsList}
                             </View>
 

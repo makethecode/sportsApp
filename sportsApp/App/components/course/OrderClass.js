@@ -353,7 +353,7 @@ export default connect(mapStateToProps)(MyDistribution);
 */
 
 module.exports = connect(state=>({
-        userType: state.user.usertype.perTypeCode,
+        userType: state.user.user.usertype,
         OrderMember:state.course.OrderMember,
         OrderMemberOnFresh:state.course.OrderMemberOnFresh,
         creatorId:state.user.personInfo.personId

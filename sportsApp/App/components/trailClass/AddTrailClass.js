@@ -14,6 +14,7 @@ import {
     TextInput,
     Alert,
     Platform,
+    DeviceEventEmitter,
 } from 'react-native';
 import {connect} from 'react-redux';
 import DatePicker from 'react-native-datepicker';
@@ -26,6 +27,7 @@ import TextInputWrapper from 'react-native-text-input-wrapper';
 import ActionSheet from 'react-native-actionsheet';
 import{getAccessToken
 } from '../../action/UserActions';
+import{getWeekTrailClass,signTrialClass,cancelTrialClass} from '../../action/CourseActions';
 import {ButtonGroup} from 'react-native-elements';
 import { IndicatorViewPager,PagerTitleIndicator } from 'rn-viewpager';
 
@@ -56,32 +58,7 @@ class AddTrailClass extends Component{
             classWeekButtons:[],
 
             //试课列表
-            trailClassList:[
-                {
-                    name:'培训课',
-                    content:'加强学生羽毛球水平',
-                    unitId:'',
-                    unitName:'山东省奥体中心羽毛球馆',
-                    time:'',
-                    timeStr:'10-10 8:00-10:00 周四',
-                    week:4,
-                    coachId:0,
-                    coachName:'邹鹏教练',
-                    isSign:1,
-                },
-                {
-                    name:'周末课',
-                    content:'提高实力，为比赛准备',
-                    unitId:'',
-                    unitName:'山东省奥体中心羽毛球馆',
-                    time:'',
-                    timeStr:'11-11 14:00-17:00 周一',
-                    week:1,
-                    coachId:0,
-                    coachName:'小吴教练',
-                    isSign:0,
-                },
-            ],
+            trailClassList:[],
 
             ClassList1:[],
             ClassList2:[],
@@ -97,15 +74,19 @@ class AddTrailClass extends Component{
     }
 
     renderRow(rowData,sectionId,rowId){
+
+        // {name:'培训课',content:'加强学生羽毛球水平',unitId:'',unitName:'山东省奥体中心羽毛球馆',time:'',classId:1,
+        //     timeStr:'10-10 8:00-10:00 周四',week:4,coachId:0,coachName:'邹鹏教练',isSign:1,},
+
         var row=(
             <View style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}>
 
                 <View style={{ paddingVertical:5,flexDirection:'row',marginTop:3}}>
-                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
+                    <View style={{flex:2,justifyContent:'center',alignItems: 'flex-start',paddingLeft:10}}>
                         <Text style={{ color: '#222', fontSize: 18}}>{rowData.name}</Text>
                     </View>
 
-                    <View style={{flex:3,flexDirection:'row',alignItems:'center',justifyContent:'flex-end',marginRight:10}}>
+                    <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end',marginRight:10}}>
                         <Ionicons name='md-person' size={10} color="#fc3c3f"/>
                         <Text style={{ color: '#666', fontSize: 13,marginLeft:3}}>{rowData.coachName}</Text>
                     </View>
@@ -145,13 +126,19 @@ class AddTrailClass extends Component{
                         </View>
                     {
                         rowData.isSign==0?
-                            <View style={{flex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderWidth: 1, borderColor: '#666', margin: 5, marginHorizontal:5
-                            }}>
-                            <Text style={{color: '#666', justifyContent: 'center', alignItems: 'center', fontSize: 13,padding:5}}>已取消报名</Text></View>
+                            <TouchableOpacity
+                                style={{flex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderWidth: 1, borderColor: '#66CDAA', margin: 5, marginHorizontal:5}}
+                                onPress={()=>{
+                                    this.signTrialClass(this.props.memberId,rowData.classId)
+                                }
+                                }
+                            >
+                            <Text style={{color: '#66CDAA', justifyContent: 'center', alignItems: 'center', fontSize: 13,padding:5}}>报名</Text></TouchableOpacity>
                             :
                             <TouchableOpacity
                                 style={{flex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderWidth: 1, borderColor: '#fc3c3f', margin: 5, marginHorizontal:5}}
                                 onPress={()=>{
+                                    this.cancelTrialClass(this.props.memberId,rowData.classId)
                                 }
                                 }>
                             <Text style={{color: '#fc3c3f', justifyContent: 'center', alignItems: 'center', fontSize: 13,padding:5}}>取消报名</Text></TouchableOpacity>
@@ -367,10 +354,12 @@ class AddTrailClass extends Component{
         if (position < 0 || position > 1) return
     }
 
-    componentDidMount()
+    componentWillMount()
     {
+
+        this.getWeekTrailClass(this.props.personId);
+
         var classWeekButtons = this.state.classWeekButtons;
-        var days = [];
 
         var today = new Date();
         var year = today.getFullYear();
@@ -391,8 +380,6 @@ class AddTrailClass extends Component{
                 case 6:day= '星期六';break;
             }
 
-            days.push(dayNum%7)//days存储星期几,days的序号i-1表示第i个列表
-
             let string = day+' '+(month+1)+'月'+date+'日';
             classWeekButtons.push(string);
             dayNum = dayNum+1;
@@ -407,27 +394,96 @@ class AddTrailClass extends Component{
             }
         }
 
-        var list1=[];var list2=[];var list3=[];var list4=[];var list5=[];var list6=[];var list7=[];
+        this.setState({classWeekButtons:classWeekButtons})
+    }
 
-        var trailClassList = this.state.trailClassList;
-        for(var i=0;i<trailClassList.length;i++){
-            var trailClass = trailClassList[i];
-            for(var j=0;j<days.length;j++){
-                if(trailClass.week==days[j]+1)
+    getWeekTrailClass(personId){
+
+        this.props.dispatch(getWeekTrailClass(personId)).then((json)=> {
+            if(json.re==1){
+
+                //{coachName=C000NaN, week=6, unitName=莱芜全民健身中心, name=莱芜-青训班第一期下午班, unitId=9,
+                // timeStr=11-10 14:03-23:59 周六, id=62, time=2018-11-10 14:03:44.0, coachId=35, content=每日小课, isSign=0}
+
+                var days = [];
+                var today = new Date();
+                var dayNum = today.getDay();//周日-周六返回0-6
+
+                for (let i=0; i<7; i++)
                 {
-                    switch (j){
-                        case 0:list1.push(trailClass);break;
-                        case 1:list2.push(trailClass);break;
-                        case 2:list3.push(trailClass);break;
-                        case 3:list4.push(trailClass);break;
-                        case 4:list5.push(trailClass);break;
-                        case 5:list6.push(trailClass);break;
-                        case 6:list7.push(trailClass);break;
+                    switch(dayNum%7){
+                        case 0:days.push(7);break;//周日
+                        case 1:days.push(1);break;//周一
+                        case 2:days.push(2);break;//周二
+                        case 3:days.push(3);break;//周三
+                        case 4:days.push(4);break;//周四
+                        case 5:days.push(5);break;//周五
+                        case 6:days.push(6);break;//周六
+                    }
+                    dayNum = dayNum+1;
+                }
+
+                var list1=[];var list2=[];var list3=[];var list4=[];var list5=[];var list6=[];var list7=[];
+
+                var trailClassList = json.data;
+                for(var i=0;i<trailClassList.length;i++){
+                    var trailClass = trailClassList[i];
+                    for(var j=0;j<days.length;j++){
+                        if(trailClass.week==days[j])
+                        {
+                            switch (j){
+                                case 0:list1.push(trailClass);break;
+                                case 1:list2.push(trailClass);break;
+                                case 2:list3.push(trailClass);break;
+                                case 3:list4.push(trailClass);break;
+                                case 4:list5.push(trailClass);break;
+                                case 5:list6.push(trailClass);break;
+                                case 6:list7.push(trailClass);break;
+                            }
+                        }
                     }
                 }
+
+                this.setState({ClassList1:list1,ClassList2:list2,ClassList3:list3,ClassList4:list4,ClassList5:list5,ClassList6:list6,ClassList7:list7})
+
             }
-        }
-        this.setState({classWeekButtons:classWeekButtons,ClassList1:list1,ClassList2:list2,ClassList3:list3,ClassList4:list4,ClassList5:list5,ClassList6:list6,ClassList7:list7})
+        }).catch((e)=>{
+            alert(e)
+        });
+
+    }
+
+    signTrialClass(memberId,classId){
+        this.props.dispatch(signTrialClass(memberId,classId)).then((json)=> {
+            if(json.re==1){
+                Alert.alert('成功','报名成功')
+                this.getWeekTrailClass(this.props.personId)
+
+                DeviceEventEmitter.emit('on_trial_class_confirm',1)
+            }
+            else {
+                Alert.alert('失败','报名失败')
+            }
+        }).catch((e)=>{
+            alert(e)
+        });
+    }
+
+    cancelTrialClass(memberId,classId){
+        this.props.dispatch(cancelTrialClass(memberId,classId)).then((json)=> {
+            if(json.re==1){
+                Alert.alert('成功','取消成功')
+                this.getWeekTrailClass(this.props.personId)
+
+
+                DeviceEventEmitter.emit('on_trial_class_confirm',1)
+            }
+            else {
+                Alert.alert('失败','取消失败')
+            }
+        }).catch((e)=>{
+            alert(e)
+        });
     }
 
 }

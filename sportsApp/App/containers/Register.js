@@ -232,8 +232,10 @@ class Register extends Component {
             isInstalled:false,
 
             //微信开放平台接口
-            appid : 'wx895244865870f27c',
-            secret : 'a8faf3f6099786969428899fbb43a1f1',
+            // appid : 'wx895244865870f27c',
+            // secret : 'a8faf3f6099786969428899fbb43a1f1',
+            appid : 'wx2e9c81ff91dbf1b4',
+            secret : '66d38ccfcebe508a945548ef279ca291',
         }
     }
 

@@ -19,11 +19,8 @@ import {connect} from 'react-redux';
 import TextInputWrapper from 'react-native-text-input-wrapper';
 import QRCode from 'react-native-qrcode'
 import {
-    wechatPay,
+    wechatPay2,
 } from '../../action/UserActions';
-import {
-    fetchActivityList,disableActivityOnFresh,enableActivityOnFresh,signUpActivity,fetchEventMemberList,exitActivity,exitFieldTimeActivity,signUpFieldTimeActivity
-} from '../../action/ActivityActions';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import {getAccessToken,} from '../../action/UserActions';
@@ -31,7 +28,7 @@ import {getAccessToken,} from '../../action/UserActions';
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
 
-class ActivityPay extends Component{
+class BadmintonCoursePay extends Component{
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
@@ -39,11 +36,11 @@ class ActivityPay extends Component{
         }
     }
 
-    wechatPay(pay,activityId){
+    wechatPay(pay,courseId,isChild){
 
-        this.props.dispatch(wechatPay(pay,activityId)).then((json)=>{
+        this.props.dispatch(wechatPay2(pay,courseId,isChild)).then((json)=>{
             if(json.re==1){
-                this.setState({code_url:json.data.codeUrl});
+                this.setState({code_url:json.data.data.codeUrl});
                  // this.rnwechatpay(json.data)
             }else{
                 if(json.re==-100){
@@ -78,16 +75,21 @@ class ActivityPay extends Component{
         super(props);
         this.state={
             isRefreshing:false,
-            activity:this.props.activity,
-            pay:{payment:this.props.activity.cost+"",payType:'2'},
+            course:this.props.course,
+            pay:{payment:this.props.course.cost+"",payType:'2'},
             code_url:null,
             // code_url:'weixin://wxpay/bizpayurl?pr=LU5EYra',
         };
     }
 
     render(){
-        activity = this.props.activity;
+        var course = this.props.course;
        // this.setState({pay:Object.assign(this.state.pay,{payment:activity.cost})})
+
+        // course:{classCount: 100,clubName: "山体",coachId: "小吴,邹鹏,",coachLevel: "五星级教练",cost: 150,costType: "1",courseClub: 1,
+        // courseGrade: 1,courseId: 29, courseName: "健身场地暖冬畅玩",courseNum: "20180021",createTime: 1521944116000,
+        // creatorId: 3,creatorLoginName: "wbh",creatorName: "小吴",creatorPhone: "18254888887",detail: "每小时150",indexNum: 0,
+        // isOwner: 1,maxNumber: 100,scheduleDes: "每小时150",signNumber: 0,status: 0,trainerId: "1,35,",unitId: 1,unitName: "山东体育学院羽毛球馆"}
 
         return (
             <View style={styles.container}>
@@ -97,7 +99,7 @@ class ActivityPay extends Component{
 
                         <View style={{flex:1,padding:10,margin:5,alignItems:'center',justifyContent:'center'}}>
                             <View style={{flex:1}}>
-                                <Text style={{fontSize:20,color:'#fff',fontWeight:'bold'}}>{activity.name}</Text>
+                                <Text style={{fontSize:20,color:'#fff',fontWeight:'bold'}}>{course.courseName}</Text>
                             </View>
                         </View>
 
@@ -135,7 +137,8 @@ class ActivityPay extends Component{
     }
 
     componentDidMount(){
-        this.wechatPay(this.state.pay,activity.activityId);
+
+        this.wechatPay(this.state.pay,this.props.course.courseId,this.props.isChild);
     }
 }
 
@@ -171,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
 
 
 
-export default connect(mapStateToProps)(ActivityPay);
+export default connect(mapStateToProps)(BadmintonCoursePay);
 
 
 

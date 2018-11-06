@@ -111,21 +111,6 @@ class Found extends Component{
 
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                          onPress={()=>{
-                                              this.navigate2TrailStudent()
-                                          }}
-                        >
-                            <View style={{flex:1,flexDirection:'row',margin:5,
-                                justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:30,width:30}} source={require('../../img/trailclass.png')}/>
-                            </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
-                                <Text>试课列表</Text>
-                            </View>
-
-                        </TouchableOpacity>
-
                     </View>
 
                     <View style={{flex:1,backgroundColor:'#eee'}}>

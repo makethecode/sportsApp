@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import {
     Dimensions,
@@ -13,7 +12,8 @@ import {
     Animated,
     Easing,
     TextInput,
-    InteractionManager
+    InteractionManager,
+    Modal,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -27,7 +27,7 @@ import ModifyDistribution from './ModifyDistribution';
 import StudentsCourseRecord from './StudentsCourseRecord';
 import StudentPayInformation from './StudentPayInformation';
 import AddStudent from './AddStudent';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD,ACTION_BARCODE} from 'react-native-toolbar-wrapper'
 import ScrollableTabView, { DefaultTabBar, ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import { SearchBar } from 'react-native-elements'
 import {
@@ -39,6 +39,9 @@ import {
 import {getAccessToken,} from '../../action/UserActions';
 import BadmintonCourseSignUp from './BadmintonCourseSignUp';
 import MemberInformation from './MemberInformation';
+import BadmintonCoursePay from './BadmintonCoursePay'
+import CoursePayModal from './CoursePayModal'
+import { IndicatorViewPager,PagerTitleIndicator } from 'rn-viewpager'
 
 var { height, width } = Dimensions.get('window');
 
@@ -142,6 +145,20 @@ class StudentInformation extends Component {
         }
     }
 
+    navigate2BadmintonCoursePay(course,isChild){
+        const { navigator } = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'BadmintonCoursePay',
+                component: BadmintonCoursePay,
+                params: {
+                    course:course,
+                    isChild:isChild,//0为自己报名,1为孩子报名(isChild=0/1)
+                }
+            })
+        }
+    }
+
     navigate2StudentPayInformation(courseId,memberId){
         const { navigator } = this.props;
         if (navigator) {
@@ -210,7 +227,7 @@ class StudentInformation extends Component {
 
         return (
 
-        <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4}}
+        <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}
                           onPress={()=>{
                               //this.navigate2StudentsCourseRecord(rowData.courseId,rowData.memberId);
                               //查看学生详细信息
@@ -230,36 +247,32 @@ class StudentInformation extends Component {
                     <Text style={{ color: '#222', fontSize: 14,marginBottom:5}}>{rowData.perNum}</Text>
                     <Text style={{ color: '#666', fontSize: 13}}>{rowData.mobilePhone}</Text>
                 </View>
-                {/*结业/报名*/}
-                {/*<View style={{alignItems:'center',justifyContent:'flex-end',padding:10,borderRadius:5,borderWidth:1,borderColor:'#fc6254'}}>*/}
-                    {/*<Text style={{fontSize:14,color:'#fc6254'}}>{condition}</Text>*/}
-                {/*</View>*/}
+
+                {
+                    rowData.isChild==1?
+                    <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+                        <Text style={{fontSize: 14, color: '#fc6254'}}>家长</Text>
+                        <Text style={{fontSize: 13, color: '#666', marginLeft: 5,}}>{rowData.parentName}</Text>
+                    </View>:
+                        <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}/>
+                }
             </View>
 
-            <View style={{flex:3,padding:10,flexDirection:'column'}}>
-                <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
-                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
+            <View style={{flex:3,padding:10,flexDirection:'row'}}>
+                <View style={{flex:2,flexDirection:'row',marginBottom:3}}>
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
                         <Text style={{color:'#66CDAA'}}>身高体重</Text>
                     </View>
-                    <View style={{flex:3.5,padding:5,marginLeft:5}}>
+                    <View style={{flex:2,padding:5,marginLeft:5}}>
                         <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.heightweight}</Text>
                     </View>
                 </View>
 
-                <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
-                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
-                        <Text style={{color:'#fff'}}>报名时间</Text>
-                    </View>
-                    <View style={{flex:3.5,padding:5,marginLeft:5}}>
-                        <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{joinTime}</Text>
-                    </View>
-                </View>
-
-                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
+                    <View style={{flex:2,flexDirection:'row',marginBottom:3}}>
+                        <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',borderRadius:5,padding:5}}>
                             <Text style={{color:'#66CDAA'}}>已上课次</Text>
                         </View>
-                        <View style={{flex:3.5,padding:5,marginLeft:5}}>
+                        <View style={{flex:2,padding:5,marginLeft:5}}>
                             <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.hasCount}/{rowData.buyCount}</Text>
                         </View>
                     </View>
@@ -272,10 +285,14 @@ class StudentInformation extends Component {
 
     fetchStudents(courseId){
         this.props.dispatch(fetchStudents(courseId)).then((json)=> {
-          if(json.re==-100){
-                this.props.dispatch(getAccessToken(false));
+            var students = json.data;
+            var childStudentsList = [];
+            var selfStudentsList = [];
+            for(var i=0;i<students.length;i++){
+                if(students[i].isChild==1)childStudentsList.push(students[i])
+                else selfStudentsList.push(students[i])
             }
-            this.setState({students:json.data,allStudents:json.data})
+            this.setState({students:json.data,allStudents:json.data,childStudents:childStudentsList,selfStudents:selfStudentsList})
         }).catch((e)=>{
             alert(e)
         });
@@ -287,8 +304,14 @@ class StudentInformation extends Component {
             doingFetch:false,
             isRefreshing:false,
             fadeAnim:new Animated.Value(1),
+            bgColor: new Animated.Value(0),
+
             allStudents:null,
             students:null,
+            childStudents:[],
+            selfStudents:[],
+
+            modalVisible:false,
         };
     }
 
@@ -321,55 +344,114 @@ class StudentInformation extends Component {
     }
 
     render() {
-        var studentsListView=null;
-        var students = this.state.students;
+        var childStudentsListView=null;
+        var childStudents = this.state.childStudents;
 
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            if (students !== undefined && students !== null && students.length > 0)
+            var ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            if (childStudents !== undefined && childStudents !== null && childStudents.length > 0)
             {
-                studentsListView = (
+                childStudentsListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(students)}
+                        dataSource={ds1.cloneWithRows(childStudents)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 );
             }
 
+        var selfStudentsListView=null;
+        var selfStudents = this.state.selfStudents;
+
+        var ds2 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (selfStudents !== undefined && selfStudents !== null && selfStudents.length > 0)
+        {
+            selfStudentsListView = (
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds2.cloneWithRows(selfStudents)}
+                    renderRow={this.renderRow.bind(this)}
+                />
+            );
+        }
+
         return (
-            <View style={styles.container}>
-                <Toolbar width={width} title="学生列表" navigator={this.props.navigator} actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+
+            // course:{classCount: 100,clubName: "山体",coachId: "小吴,邹鹏,",coachLevel: "五星级教练",cost: 150,costType: "1",courseClub: 1,
+            // courseGrade: 1,courseId: 29, courseName: "健身场地暖冬畅玩",courseNum: "20180021",createTime: 1521944116000,
+            // creatorId: 3,creatorLoginName: "wbh",creatorName: "小吴",creatorPhone: "18254888887",detail: "每小时150",indexNum: 0,
+            // isOwner: 1,maxNumber: 100,scheduleDes: "每小时150",signNumber: 0,status: 0,trainerId: "1,35,",unitId: 1,unitName: "山东体育学院羽毛球馆"}
+
+
+        <View style={styles.container}>
+                <Toolbar width={width} title="学生列表" navigator={this.props.navigator} actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
                          onPress={(i)=>{
-                             if(i==0){
-                                 this.navigate2AddStudent(this.props.courseId)}
-                         }}>
-                    <SearchBar
-                        lightTheme
-                        onChangeText={
-                            //模糊查询
-                            (text)=>{
-                                this.searchByText(text,this.state.allStudents)
-                            }
-                        }
-                        placeholder='姓名\电话' />
-                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#888',fontSize:13}}>学生名单</Text>
-                    </View>
+                             if(i==0) {
+                                 //扫码报名
+                                 this.setState({modalVisible:true})
+                             }
+                         }} >
+
                     {<View style={{flex:1,backgroundColor:'#eee'}}>
-                        <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff'}}>
-                            <ScrollView>
-                                {studentsListView}
-                            </ScrollView>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingBottom:5,}}>
+                            <IndicatorViewPager
+                                style={{flex:1,flexDirection: 'column-reverse'}}
+                                indicator={this._renderTitleIndicator()}
+                                onPageScroll={this._onPageScroll.bind(this)}
+                            >
+                                {selfStudentsListView}
+                                {childStudentsListView}
+                            </IndicatorViewPager>
                         </Animated.View>
                     </View>}
+
+                    {/* Add CoursePay Modal*/}
+                    <Modal
+                        animationType={"slide"}
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            console.log("Modal has been closed.");
+                        }}
+                    >
+                        <CoursePayModal
+                            onClose={()=>{
+                                this.setState({modalVisible:false});
+                            }}
+                            navi2CoursePay={(isChild)=>{
+                                this.navigate2BadmintonCoursePay(this.props.course,isChild)
+                            }}
+                        />
+
+                    </Modal>
+
                 </Toolbar>
             </View>
         )
     }
 
+    _renderTitleIndicator () {
+        return (
+            <PagerTitleIndicator
+                style={styles.indicatorContainer}
+                trackScroll={true}
+                itemTextStyle={styles.indicatorText}
+                itemStyle={{width:width/2}}
+                selectedItemStyle={{width:width/2}}
+                selectedItemTextStyle={styles.indicatorSelectedText}
+                selectedBorderStyle={styles.selectedBorderStyle}
+                titles={['个人学员', '孩子学员']}
+            />
+        )
+    }
+
+    _onPageScroll (scrollData) {
+        let {offset, position} = scrollData
+        if (position < 0 || position > 1) return
+    }
+
     componentDidMount()
     {
-        this.fetchStudents(this.props.courseId)
+        this.fetchStudents(this.props.course.courseId)
     }
 
     componentWillUnmount(){
@@ -392,6 +474,42 @@ const styles = StyleSheet.create({
     popoverText: {
         color: '#ccc',
         fontSize: 14
+    },
+    indicatorContainer: {
+        backgroundColor: '#66CDAA',
+        height: 48
+    },
+    indicatorText: {
+        fontSize: 14,
+        color: 0xFFFFFF99
+    },
+    indicatorSelectedText: {
+        fontSize: 14,
+        color: 0xFFFFFFFF
+    },
+    selectedBorderStyle: {
+        height: 3,
+        backgroundColor: 'white'
+    },
+    statusBar: {
+        height: 24,
+        backgroundColor: 0x00000044
+    },
+    toolbarContainer: {
+        height: 56,
+        backgroundColor: 0x00000020,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16
+    },
+    backImg: {
+        width: 16,
+        height: 17
+    },
+    titleTxt: {
+        marginLeft: 36,
+        color: 'white',
+        fontSize: 20
     }
 });
 

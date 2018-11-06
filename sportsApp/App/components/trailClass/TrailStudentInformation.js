@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import {
     Dimensions,
@@ -15,6 +14,7 @@ import {
     TextInput,
     Alert,
     Platform,
+    DeviceEventEmitter,
 } from 'react-native';
 import {connect} from 'react-redux';
 import DatePicker from 'react-native-datepicker';
@@ -28,6 +28,7 @@ import ActionSheet from 'react-native-actionsheet';
 import{
     fetchMemberInformation,getAccessToken
 } from '../../action/UserActions';
+import{fetchTrailClassByStudent,updateTrailClassMemberType,cancelTrialClass} from '../../action/CourseActions';
 import {ButtonGroup} from 'react-native-elements';
 import AddTrailClass from './AddTrailClass';
 
@@ -46,16 +47,39 @@ class TrailStudentInformation extends Component{
         }
     }
 
-    navigate2AddTrailClass(){
+    navigate2AddTrailClass(personId,memberId){
         const { navigator } = this.props;
         if (navigator) {
             navigator.push({
                 name: 'AddTrailClass',
                 component: AddTrailClass,
                 params: {
+                    personId:personId,
+                    memberId:memberId,
                 }
             })
         }
+    }
+
+    //选学员类型
+    _handlePress(index) {
+        if(index!==0){
+            var typeStr = this.state.typeButtons[index];
+            var typeIdx = index-1;
+
+            this.props.dispatch(updateTrailClassMemberType(this.state.member.id,typeIdx)).then((json)=> {
+                if(json.re==1) {
+                    this.setState({typeIdx: typeIdx});
+                    DeviceEventEmitter.emit('on_trial_class_member_type_confirm',typeIdx)
+                }
+            }).catch((e)=>{
+                alert(e)
+            });
+        }
+    }
+
+    show(actionSheet) {
+        this[actionSheet].show();
     }
 
    getDate(tm){
@@ -63,51 +87,29 @@ class TrailStudentInformation extends Component{
        return tt;
     }
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state={
 
             selectedIndex: 0,
 
             //学员信息
-            member:{
-                avatar:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eomLddoUqCUnzajsMFr0ibDxXksGFH1HIeg6ksyWr4fLFxianqOpLVVyE6ia0XUFODVXJQL432uBNqVg/132',
-                perNum:'云糯糯',
-                mobilePhone:'13305607453',
-                perName:'陈海云',
-                sex:'女',
-                birthday:'1996-10-29',
-                joinTime:'2018-10-10',
-                type:0,
-            },
+            // {'id':1,personId:2,
+            //     'avatar':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eomLddoUqCUnzajsMFr0ibDxXksGFH1HIeg6ksyWr4fLFxianqOpLVVyE6ia0XUFODVXJQL432uBNqVg/132',
+            //     'perNum':'陈海云',
+            //     'mobilePhone':'13305607453',
+            //     'type':0,
+            //     'courseType':'山体课程',
+            //     'courseTypeIdx':0,
+            //     'joinTime':'2018-10-10','sexStr':'女',birthday:'1996-10-29'},
+            member:this.props.student,
+
+            typeIdx:this.props.student.type,
+            typeButtons:['取消','试课学员','转正学员','流失学员'],
 
             //试课列表
-            trailClassList:[
-                {
-                    name:'培训课',
-                    content:'加强学生羽毛球水平',
-                    unitId:'',
-                    unitName:'山东省奥体中心羽毛球馆',
-                    time:'',
-                    timeStr:'10-10 8:00-10:00 周四',
-                    week:4,
-                    coachId:0,
-                    coachName:'邹鹏教练',
-                    isSign:1,
-                },
-                {
-                    name:'周末课',
-                    content:'提高实力，为比赛准备',
-                    unitId:'',
-                    unitName:'山东省奥体中心羽毛球馆',
-                    time:'',
-                    timeStr:'11-11 14:00-17:00 周一',
-                    week:1,
-                    coachId:0,
-                    coachName:'小吴教练',
-                    isSign:0,
-                },
-            ]
+            trailClassList:[],
+
         }
     }
 
@@ -116,16 +118,20 @@ class TrailStudentInformation extends Component{
     }
 
     renderRow(rowData,sectionId,rowId){
+
+        // {classId:1,name:'培训课',content:'加强学生羽毛球水平',unitId:'',unitName:'山东省奥体中心羽毛球馆',time:'',
+        //     timeStr:'10-10 8:00-10:00 周四',week:4,coachId:0,coachName:'邹鹏教练'}
+
         var row=(
             <View style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}>
 
                 <View style={{ paddingVertical:5,flexDirection:'row',marginTop:3}}>
-                    <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
+                    <View style={{flex:2,justifyContent:'center',alignItems: 'flex-start',paddingLeft:10}}>
                         <Text style={{ color: '#222', fontSize: 18}}>{rowData.name}</Text>
                     </View>
 
-                    <View style={{flex:3,flexDirection:'row',alignItems:'center',justifyContent:'flex-end',marginRight:10}}>
-                        <Ionicons name='md-person' size={10} color="#fc3c3f"/>
+                    <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end',marginRight:10}}>
+                        <Ionicons name='md-person' size={15} color="#fc3c3f"/>
                         <Text style={{ color: '#666', fontSize: 13,marginLeft:3}}>{rowData.coachName}</Text>
                     </View>
                 </View>
@@ -162,19 +168,13 @@ class TrailStudentInformation extends Component{
                         <View style={{flex:4,padding:5,marginLeft:5}}>
                             <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.timeStr}</Text>
                         </View>
-                    {
-                        rowData.isSign==0?
-                            <View style={{flex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderWidth: 1, borderColor: '#666', margin: 5, marginHorizontal:5
-                            }}>
-                            <Text style={{color: '#666', justifyContent: 'center', alignItems: 'center', fontSize: 13,padding:5}}>已取消报名</Text></View>
-                            :
                             <TouchableOpacity
                                 style={{flex: 2, justifyContent: 'center', alignItems: 'center', borderRadius: 5, borderWidth: 1, borderColor: '#fc3c3f', margin: 5, marginHorizontal:5}}
                                 onPress={()=>{
+                                    this.cancelTrialClass(this.state.member.id,rowData.classId)
                                 }
                                 }>
                             <Text style={{color: '#fc3c3f', justifyContent: 'center', alignItems: 'center', fontSize: 13,padding:5}}>取消报名</Text></TouchableOpacity>
-                    }
                     </View>
 
                 </View>
@@ -191,12 +191,15 @@ class TrailStudentInformation extends Component{
         const buttons = ['试课', '资料']
         const { selectedIndex } = this.state
 
-       var type='';
-       switch (this.state.member.type){
+       var type='试课学员';
+       switch (this.state.typeIdx){
            case 0:type='试课学员';break;
            case 1:type='转正学员';break;
            case 2:type='流失学员';break;
        }
+
+        const CANCEL_INDEX = 0;
+        const DESTRUCTIVE_INDEX = 1;
 
         var trailClassListView=null;
         var trailClassList = this.state.trailClassList;
@@ -220,7 +223,7 @@ class TrailStudentInformation extends Component{
                          onPress={(i)=>{
                              if(i==0){
                                  //添加试课
-                                 this.navigate2AddTrailClass()
+                                 this.navigate2AddTrailClass(this.state.member.personId,this.state.member.id)
                              }
                          }}>
                     <View style={{flexDirection:'column'}}>
@@ -292,9 +295,24 @@ class TrailStudentInformation extends Component{
 
                                 {/*学员类型*/}
                                 <View style={{paddingHorizontal:10,marginTop:10,justifyContent:'center',marginBottom:20}}>
-                                    <View style={{flexDirection:'row',justifyContent:'center',backgroundColor:'#efb66a',padding:5}}>
+                                    <TouchableOpacity style={{justifyContent:'center',backgroundColor:'#efb66a',padding:5}}
+                                    onPress={()=>{
+                                        this.show('actionSheet');
+                                    }}>
                                     <Text style={{color:'#fff',fontSize:13}}>{type}</Text>
-                                    </View>
+                                        <ActionSheet
+                                            ref={(p) => {
+                                                this.actionSheet =p;
+                                            }}
+                                            title="请选择学员类型"
+                                            options={this.state.typeButtons}
+                                            cancelButtonIndex={CANCEL_INDEX}
+                                            destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                            onPress={
+                                                (data)=>{ this._handlePress(data); }
+                                            }
+                                        />
+                                    </TouchableOpacity>
                                 </View>
 
                                 {/*功能按钮*/}
@@ -320,15 +338,23 @@ class TrailStudentInformation extends Component{
                         {
                             selectedIndex==0?
                                 <View style={{
-                                    height:height-200,
+                                    height:height-330,
                                     width:width,
                                     backgroundColor: '#eee',
                                     flexDirection: 'column'
                                 }}>
                                     <ScrollView style={{flex:1}}>
                                         {trailClassListView}
+                                        {
+                                            trailClassListView==null || trailClassList.length==0 ?
+                                                <View style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#eee',padding:10}}>
+                                                    <Text style={{color:'#343434',fontSize:13,alignItems: 'center',justifyContent:'center'}}>已经全部加载完毕</Text>
+                                                </View>:null
+                                        }
                                     </ScrollView>
+
                                 </View>
+
                                 :
                             <View style={{
                                 height:height-200,
@@ -429,20 +455,46 @@ class TrailStudentInformation extends Component{
         )
     }
 
-    componentWillMount()
+    componentWillUnmount()
     {
-        this.fetchMemberInformation(this.props.personId)
+        if(this.Listener)
+            this.Listener.remove();
     }
 
-    fetchMemberInformation(personId){
-        // this.props.dispatch(fetchMemberInformation(personId)).then((json)=> {
-        //     if(json.re==-100){
-        //         this.props.dispatch(getAccessToken(false));
-        //     }
-        //     this.setState({member:json.data})
-        // }).catch((e)=>{
-        //     alert(e)
-        // });
+    componentWillMount()
+    {
+        this.fetchTrailClassByStudent(this.props.student.id)
+
+        this.Listener=DeviceEventEmitter.addListener('on_trial_class_confirm', (data)=>{
+            if(data)
+                this.fetchTrailClassByStudent(this.props.student.id)
+        });
+
+    }
+
+    fetchTrailClassByStudent(memberId){
+        this.props.dispatch(fetchTrailClassByStudent(memberId)).then((json)=> {
+            if(json.re==-100){
+                this.props.dispatch(getAccessToken(false));
+            }
+            this.setState({trailClassList:json.data})
+        }).catch((e)=>{
+            alert(e)
+        });
+    }
+
+    cancelTrialClass(memberId,classId){
+        this.props.dispatch(cancelTrialClass(memberId,classId)).then((json)=> {
+            if(json.re==1){
+                Alert.alert('成功','取消成功')
+                this.fetchTrailClassByStudent(this.props.student.id)
+            }
+            else {
+                Alert.alert('失败','取消失败')
+            }
+        }).catch((e)=>{
+            alert(e)
+        });
     }
 }
 

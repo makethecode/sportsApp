@@ -15,11 +15,10 @@ import {
     Easing,
     Modal,
     DeviceEventEmitter,
-    Alert
+    Alert,
+    KeyboardAvoidingView,
 } from 'react-native';
-
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -29,17 +28,21 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
 import ActionSheet from 'react-native-actionsheet';
 import SelectVenue from '../../components/venue/SelectVenue';
-import DateFilter from '../../utils/DateFilter';
+import SelectCoach from './SelectCoach';
+import InputScrollView from 'react-native-input-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import{
+    distributeCourse,
+    enableCoursesOfCoachOnFresh
+} from '../../action/CourseActions';
+import {getAccessToken,} from '../../action/UserActions';
+
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
-import{
-    addClass
-} from '../../action/CourseActions';
-import DatePicker from 'react-native-datepicker';
-import {getAccessToken,} from '../../action/UserActions';
+var {height, width} = Dimensions.get('window');
 
-class AddClass extends Component{
+class CreateBadmintonCourse extends Component{
 
     goBack(){
         const { navigator } = this.props;
@@ -58,9 +61,24 @@ class AddClass extends Component{
         }
 
     }
+    //选等级
+    _handlePress1(index) {
+
+        if(index!==0){
+            var classTypeStr = this.state.classTypeButtons[index];
+            var classType = index;
+            this.setState({course:Object.assign(this.state.course,{classType:parseInt(classType).toString(),classTypeStr:classTypeStr})});
+        }
+
+    }
 
     show(actionSheet) {
         this[actionSheet].show();
+    }
+
+
+    show1(actionSheet1) {
+        this[actionSheet1].show();
     }
 
 
@@ -73,18 +91,15 @@ class AddClass extends Component{
 
     }
 
-    setScheduleTime(time){
-        var class1 = this.state.class;
-        class1.startTime= time;
-        this.setState({class:class1});
+    setCourseCoach(field,coachId)
+    {
+        var field = field;
+        //place.unitId = parseInt(coursePlace.unitId);
+
+        this.setState({coached:field});
+        this.setState({coachId:coachId});
+
     }
-
-/*    setScheduleTime2(time){
-        var class1 = this.state.class;
-        class1.endTimes= time;
-        this.setState({class:class1});
-
-    }*/
 
     navigate2VenueInspect()
     {
@@ -100,20 +115,19 @@ class AddClass extends Component{
         }
     }
 
-   /* navigate2ClassSchedule()
+    navigate2SelectCoach()
     {
-        const { navigator} =this.props;
-        if(navigator){
+        const { navigator } = this.props;
+        if(navigator) {
             navigator.push({
-                name:'course_schedule',
-                component:SelectTime,
+                name: 'SelectCoach',
+                component: SelectCoach,
                 params: {
-                    setScheduleTime: this.setScheduleTime.bind(this),
-                   // setScheduleTime2: this.setScheduleTime2.bind(this)
+                    setCoach:this.setCourseCoach.bind(this)
                 }
             })
         }
-    }*/
+    }
 
     searchMember(info){
         this.props.dispatch(searchMember(info)).then((json)=>{
@@ -143,64 +157,6 @@ class AddClass extends Component{
             this.setState({timeList:timeList});
         }
     }
-    verifyTime(date){
-
-        var endhour = date.substring(0,2);
-        var inthour=parseInt(endhour);
-        var hourminutes=inthour*60;
-        var min=date.substring(3,5);
-        var intmin=parseInt(min);
-        var endmintotal=hourminutes+intmin;
-
-        var startTime= this.state.startTimeView;
-        var starthour=startTime.substring(0,2);
-        var inthour1=parseInt(starthour);
-        var hourminutes1=inthour1*60;
-        var min1=startTime.substring(3,5);
-        var intmin1=parseInt(min1);
-        var startinttotal=hourminutes1+intmin1;
-
-        if((endmintotal-startinttotal)<60){
-            alert("结束时间必须在开始时间之后至少一小时");
-        }else{
-            if(this.state.selectEndTime==false)
-            {
-                this.state.selectEndTime=true;
-                var endTime = date+':00';
-                var day = new Date();
-                var today = DateFilter.filter(day, 'yyyy-mm-dd');
-                var endTimeStr = today+' '+endTime;
-                this.setState({endTime:endTimeStr,selectEndTime:false,endTimeView:date})
-            }
-        }
-    }
-
-    _handlePress(index) {
-        if(index!==0){
-
-            var today = new Date();
-            var dayNum = today.getDay();//周日-周六返回0-6
-            if(dayNum==0)
-                dayNum=7;
-
-            var classWeekNum =null;
-
-            switch(index){
-                case 1:classWeekNum = dayNum%7; break;
-                case 2:classWeekNum = (dayNum+1)%7; break;
-                case 3:classWeekNum = (dayNum+2)%7; break;
-                case 4:classWeekNum = (dayNum+3)%7; break;
-                case 5:classWeekNum = (dayNum+4)%7; break;
-                case 6:classWeekNum = (dayNum+5)%7; break;
-                case 7:classWeekNum = (dayNum+6)%7; break;
-
-            }
-            if(classWeekNum==0)
-                classWeekNum=7;
-            var classWeek = this.state.classWeekButtons[index];
-            this.setState({classWeek:classWeek,classWeekNum:classWeekNum});
-        }
-    }
 
     renderRow(rowData,sectionId,rowId){
 
@@ -209,7 +165,7 @@ class AddClass extends Component{
 
         var row=(
             <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
-                borderColor:'#eee',borderRadius:8,margin:5}}>
+            borderColor:'#eee',borderRadius:8,margin:5}}>
 
                 <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
                     <View style={{flex:1}}>
@@ -228,8 +184,8 @@ class AddClass extends Component{
 
                 <TouchableOpacity style={{flex:1}}
                                   onPress={()=>{
-                                      this.removeMember(this.state.timeList,rowData);
-                                  }}>
+                                        this.removeMember(this.state.timeList,rowData);
+                }}>
                     <Icon name={'minus-circle'} size={20} color="#FF4040"/>
                 </TouchableOpacity>
             </View>
@@ -240,25 +196,20 @@ class AddClass extends Component{
     constructor(props) {
         super(props);
         this.state={
-            selectStartTime:false,
-            selectEndTime:false,
             dialogShow: false,
             modalVisible:false,
-            //class:{content:null,unitId:null,yard:null,startTime:null,endTime:null,joinCount:null,remark:null},
-            yard:null,
-            doingFetch: false,
+            course:{courseName:null,maxNumber:null,classCount:null,cost:null,costType:null,classType:null,detail:null,coursePlace:null,unitId:null,scheduleDes:''},
+            docouingFetch: false,
             isRefreshing: false,
             time:null,
             timeList:[],
-            classWeek:null,
-            startTime:null,
-            endTime:null,
-            startTimeView:null,
-            endTimeView:null,
-            classWeekButtons:['取消',],
-            content:null
+            costTypeButtons:['取消','按人支付','按小时支付','按班支付'],
+            classTypeButtons:['取消','初级班','中级班','高级班'],
+            venue:null,
+            coached:null,
+            coachId:null
         }
-        //this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
+        this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     }
 
     showScaleAnimationDialog() {
@@ -271,7 +222,11 @@ class AddClass extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
+        const CANCEL_INDEX1 = 0;
+        const DESTRUCTIVE_INDEX1 = 1;
+
         const costTypeButtons=['取消','按人支付','按小时支付','按班支付'];
+        const classTypeButtons=['取消','初级班','中级班','高级班'];
 
         var timeList = this.state.timeList;
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -286,296 +241,277 @@ class AddClass extends Component{
             );
         }
 
-
         return (
-            <View style={{flex:1}}>
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                    backgroundColor:'#66CDAA',borderBottomWidth:1,borderColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}>创建课程</Text>
+            <View style={{flex:1,backgroundColor:'#eee'}}>
+                <Toolbar width={width} title="创建课程" actions={[]} navigator={this.props.navigator}>
+                <KeyboardAwareScrollView style={{height:height-180,width:width,padding:5}}>
+                <View style={{flex:5,backgroundColor:'#eee'}}>
+
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>课程基本信息</Text>
                     </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',}}>
 
-                    </View>
-                </View>
-
-                <View style={{flex:5,backgroundColor:'#fff'}}>
-
-
-
-
-
-                   {/* 课程场馆
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
+                    {/*课程名称*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>课程场馆：</Text>
+                            <Text style={{color:'#343434'}}>课程名称</Text>
                         </View>
-
-                        {
-                            this.state.venue==null?
-                                <TouchableOpacity style={{flex:3,height:28,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                    borderRadius:10}}
-                                                  onPress={()=>{
-                                                      this.navigate2VenueInspect();
-                                                  }}>
-                                    <Text style={{marginLeft:20,fontSize:13,color:'#888'}}>
-                                        请选择课程场馆
-                                    </Text>
-                                </TouchableOpacity>:
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
-                                    borderRadius:10}}
-                                                  onPress={()=>{
-                                                      this.navigate2VenueInspect();
-                                                  }}>
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#222',fontSize:13}}>{this.state.venue.name}</Text>
-                                    </View>
-
-                                    <TouchableOpacity style={{width:60,justifyContent:'center',alignItems: 'center',flexDirection:'row',marginLeft:20,padding:5}}
-                                                      onPress={()=>{
-                                                          var venue = null;
-                                                          this.setState({venue:venue});
-                                                      }}>
-                                        <Ionicons name={'md-close-circle'} size={20} color={'red'}/>
-                                    </TouchableOpacity>
-
-                                </TouchableOpacity>
-
-                        }
-
-                    </View>*/}
-
-                    {/*场地*/}
-                    <View style={{height:30,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:10,marginTop:5,marginBottom:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>场地：</Text>
-                        </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#eee',
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
                             borderRadius:10}}>
-                            <TextInputWrapper
+                            <TextInput
                                 placeholderTextColor='#888'
-                                textInputStyle={{marginLeft:20,fontSize:13,color:'#222'}}
-                                placeholder="请输入场地"
-                                val={this.state.yard}
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
+                                placeholder="请输入课程名称"
+                                value={this.state.course.className}
+                                underlineColorAndroid={'transparent'}
                                 onChangeText={
                                     (value)=>{
-                                        this.setState({yard:value})
+                                        this.setState({course:Object.assign(this.state.course,{courseName:value})})
                                     }}
-                                onCancel={
-                                    ()=>{this.setState({yard:null })
-                                }}
                             />
                         </View>
                     </View>
 
-                    {/*上课日期*/}
-                 {   <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
+                    {/*课程类型*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
-                            <Text>上课日期：</Text>
+                            <Text style={{color:'#343434'}}>课程等级</Text>
                         </View>
-                        <TouchableOpacity style={{flex:3,height:30,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',
-                            backgroundColor:'#eee',borderRadius:10}}
-                                          onPress ={()=>{this.show('actionSheet')}}>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet1'); }}>
                             {
-                                this.state.classWeek==null?
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择活动日期：</Text>
+                                this.state.course.classTypeStr==null?
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择课程等级 ></Text>
                                     </View> :
-                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.classWeek}</Text>
+                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.course.classTypeStr}</Text>
                                     </View>
-                            }
 
+                            }
                             <ActionSheet
-                                ref={(p)=>{this.actionSheet=p;}}
-                                title="请选择活动日期"
-                                options={this.state.classWeekButtons}
-                                cancelButtonIndex={CANCEL_INDEX}
-                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                ref={(p) => {
+                                    this.actionSheet1 =p;
+                                }}
+                                title="请选择课程类型"
+                                options={classTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX1}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX1}
                                 onPress={
-                                    (data)=>{ this._handlePress(data); }
+                                    (data)=>{ this._handlePress1(data); }
                                 }
-                            >
-
-                            </ActionSheet>
+                            />
                         </TouchableOpacity>
-                    </View>}
+                    </View>
 
-                    {/*开始时间*/}
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
-                        <View style={{flex:1,}}>
-                            <Text style={{color:'#343434'}}>开始时间:</Text>
+                    {/*课程目标*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>课程目标</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',
-                            backgroundColor:'#eee',borderRadius:10,margin:5}}>
-                            {
-                                this.state.startTime==null?
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择：</Text>
-                                    </View> :
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.startTimeView}</Text>
-                                    </View>
-                            }
-                            <View  style={{height:30,marginLeft:20,flexDirection:'row',alignItems: 'center',}}>
-                                <DatePicker
-                                    style={{width:50,marginLeft:0,borderWidth:0}}
-                                    customStyles={{
-                                        placeholderText:{color:'transparent',fontSize:12},
-                                        dateInput:{height:30,borderWidth:0},
-                                        dateTouchBody:{marginRight:25,height:22,borderWidth:0},
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
+                                placeholder="请输入课程目标"
+                                value={this.state.course.detail}
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{detail:value})})
                                     }}
-                                    mode="time"
-                                    placeholder="选择"
-                                    format="HH:mm"
-                                    confirmBtnText="确认"
-                                    cancelBtnText="取消"
-                                    showIcon={true}
-                                    iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
-                                    onDateChange={(date) => {
-                                        if(this.state.selectStartTime==false)
-                                        {
-                                            this.state.selectStartTime=true;
-                                            var startTime = date+':00';
-                                            var day = new Date();
-                                            var today = DateFilter.filter(day, 'yyyy-mm-dd');
-                                            var startTimeStr = today+' '+startTime;
-                                            this.setState({startTime:startTimeStr,selectStartTime:false,startTimeView:date})
-                                        }else{
-                                        }
-
-                                    }}
-                                />
-                            </View>
+                            />
                         </View>
                     </View>
 
-                    {/*结束时间*/}
-
-                  {this.state.isSchedule == 1 ?
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
-                        <View style={{flex:1,}}>
-                            <Text style={{color:'#343434'}}>结束时间:</Text>
+                    {/*上课时间描述*/}
+                    <View style={{height:120,width:width,flexDirection:'column',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{height:40,width:width,justifyContent:'center',textAlign:'left'}}>
+                            <Text style={{color:'#343434'}}>课程安排</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',
-                            backgroundColor:'#eee',borderRadius:10,margin:5}}>
-                            {
-                                this.state.endTime==null?
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择：</Text>
-                                    </View> :
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.endTimeView}</Text>
-                                    </View>
-                            }
-                            <View  style={{height:30,marginLeft:20,flexDirection:'row',alignItems: 'center',}}>
-                                <DatePicker
-                                    style={{width:50,marginLeft:0,borderWidth:0}}
-                                    customStyles={{
-                                        placeholderText:{color:'transparent',fontSize:12},
-                                        dateInput:{height:30,borderWidth:0},
-                                        dateTouchBody:{marginRight:25,height:22,borderWidth:0},
-                                    }}
-                                    mode="time"
-                                    placeholder="选择"
-                                    format="HH:mm"
-                                    confirmBtnText="确认"
-                                    cancelBtnText="取消"
-                                    showIcon={true}
-                                    iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
-                                    onDateChange={(date) => {
-
-                                        this.verifyTime(date);
-
-
-                                        if(this.state.selectEndTime==false)
-                                        {
-                                        this.state.selectEndTime=true;
-                                        var endTime = date+':00';
-                                        var day = new Date();
-                                        var today = DateFilter.filter(day, 'yyyy-mm-dd');
-                                        var endTimeStr = today+' '+endTime;
-
-                                        this.setState({endTime:endTimeStr,selectEndTime:false,endTimeView:date})
-                                        }else{
-                                        }
-
-                                    }}
-                                />
-                            </View>
-                        </View>
-                    </View>:
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',margin:5}}>
-                        <View style={{flex:1,}}>
-                            <Text style={{color:'#343434'}}>结束时间:</Text>
-                        </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',
-                            backgroundColor:'#eee',borderRadius:10,margin:5}}>
-                            {
-                                this.state.endTime==null?
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:13}}>请选择：</Text>
-                                    </View> :
-                                    <View style={{flex:5,marginLeft:10,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:13}}>{this.state.endTimeView}</Text>
-                                    </View>
-                            }
-                            <View  style={{height:30,marginLeft:20,flexDirection:'row',alignItems: 'center',}}>
-                                <DatePicker
-                                    style={{width:50,marginLeft:0,borderWidth:0}}
-                                    customStyles={{
-                                        placeholderText:{color:'transparent',fontSize:12},
-                                        dateInput:{height:30,borderWidth:0},
-                                        dateTouchBody:{marginRight:25,height:22,borderWidth:0},
-                                    }}
-                                    mode="time"
-                                    placeholder="选择"
-                                    format="HH:mm"
-                                    confirmBtnText="确认"
-                                    cancelBtnText="取消"
-                                    showIcon={true}
-                                    iconComponent={<Icon name={'calendar'} size={20} color="#888"/>}
-                                    onDateChange={(date) => {
-
-                                        this.verifyTime(date);
-                                        if(this.state.selectEndTime==false)
-                                        {
-                                        this.state.selectEndTime=true;
-                                        var endTime = date+':00';
-                                        var day = new Date();
-                                        var today = DateFilter.filter(day, 'yyyy-mm-dd');
-                                        var endTimeStr = today+' '+endTime;
-
-
-                                        this.setState({endTime:endTimeStr,selectEndTime:false,endTimeView:date})
-                                        }else{
-                                        }
-
-                                    }}
-                                />
-                            </View>
-                        </View>
-                    </View>}
-
-                    {/*授课内容*/}
-                    <View style={{flex:3,margin:10,marginTop:5,marginBottom:5}}>
-                        <Text>授课内容:</Text>
                         <TextInput
-                            style={{height:height*120/736,padding:8,fontSize:13,marginTop:5,borderRadius:5,backgroundColor:'#eee'}}
+                            style={{height:80,width:width,fontSize:14,marginTop:5,borderRadius:5,backgroundColor:'#fff',padding:0}}
                             onChangeText={(text) =>
                             {
-                                this.setState({content:text});
+                                this.setState({course:Object.assign(this.state.course,{scheduleDes:text})});
                             }}
-                            value={this.state.content}
-                            placeholder='请描述授课内容...'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
+                            value={this.state.course.scheduleDes}
+                            placeholder='请描述课程时间安排'
+                            placeholderTextColor="#888"
+                            underlineColorAndroid={'transparent'}
                             multiline={true}
                         />
+                    </View>
+
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>授课信息</Text>
+                    </View>
+
+                    {/*课程人数*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>课程容量</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
+                                placeholder="请输入课程容量"
+                                value={this.state.course.maxNumber}
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{maxNumber:parseInt(value)})})
+                                    }}
+                                keyboardType='numeric'
+                            />
+                        </View>
+                    </View>
+
+                    {/*课次*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>授课课次</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
+                                placeholder="请输入授课课次"
+                                value={this.state.course.classCount}
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{classCount:parseInt(value)})})
+                                    }}
+                                keyboardType='numeric'
+                            />
+                        </View>
+                    </View>
+
+                    {/*课程场馆*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>授课场地</Text>
+                        </View>
+
+                        {
+                            this.state.venue==null?
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2VenueInspect();
+                                                  }}>
+                                    <Text style={{fontSize:14,color:'#888'}}>
+                                        请选择授课场地 >
+                                    </Text>
+                                </TouchableOpacity>:
+
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2VenueInspect();
+                                                  }}>
+                                    <View style={{flex:3,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row',textAlign:'right'}}>
+                                        <Text style={{color:'#222',fontSize:14}}>{this.state.venue.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                        }
+
+                    </View>
+
+                    {/*课程教练*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>授课教练</Text>
+                        </View>
+
+                        {
+                            this.state.coached==null?
+                                <TouchableOpacity style={{flex:3,height:28,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',textAlign:'right',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2SelectCoach();
+                                                  }}>
+                                    <Text style={{fontSize:14,color:'#888'}}>
+                                        请选择授课教练 >
+                                    </Text>
+                                </TouchableOpacity>:
+
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',textAlign:'right',
+                                    borderRadius:10}}
+                                                  onPress={()=>{
+                                                      this.navigate2SelectCoach();
+                                                  }}>
+                                    <View style={{flex:3,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row',textAlign:'right'}}>
+                                        <Text style={{color:'#222',fontSize:14}}>{this.state.coached}</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                        }
+                    </View>
+
+                    <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
+                        <Text style={{color:'#666',fontSize:13}}>收费信息</Text>
+                    </View>
+
+                    {/*支付方式*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text>支付方式</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet'); }}>
+                            {
+                                this.state.course.costTypeStr==null?
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择支付方式 ></Text>
+                                    </View> :
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.course.costTypeStr}</Text>
+                                    </View>
+
+                            }
+                            <ActionSheet
+                                ref={(p) => {
+                                        this.actionSheet =p;
+                                    }}
+                                title="请选择支付方式"
+                                options={costTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                        (data)=>{ this._handlePress(data); }
+                                    }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/*课程花费*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>支付费用</Text>
+                        </View>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}>
+                            <TextInput
+                                placeholderTextColor='#888'
+                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
+                                placeholder="请输入支付费用"
+                                value={this.state.course.cost}
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={
+                                    (value)=>{
+                                        this.setState({course:Object.assign(this.state.course,{cost:parseInt(value)})})
+                                    }}
+                                keyboardType='numeric'
+                            />
+                        </View>
                     </View>
 
                     <View style={{backgroundColor:'#fff',padding:10}}>
@@ -584,46 +520,46 @@ class AddClass extends Component{
                         </Text>
                     </View>
                 </View>
-
-                <View style={{flexDirection:'row',height:60,justifyContent:'center',alignItems:'center',width:width}}>
-                    <TouchableOpacity style={{width:width*2/3,backgroundColor:'#66CDAA',borderRadius:10,padding:10,flexDirection:'row',
-                        justifyContent:'center'}}
-                                      onPress={()=>{
-
-                                              this.props.dispatch(addClass(this.props.course.courseId,this.state.yard,this.props.course.unitId,this.state.classWeek,this.state.startTime,this.state.endTime,this.state.content))
-                                                  .then((json)=>{
-                                                      if(json.re==1){
-                                                          Alert.alert('信息','添加成功',[{text:'确认',onPress:()=>{
-                                                              this.goBack();
-                                                              //this.props.setClassRecord(this.props.course.courseId);
-                                                          }}]);
-                                                      }else{
-                                                          if(json.re==-100){
-                                                              this.props.dispatch(getAccessToken(false));
+                    <View style={{flexDirection:'row',height:50,justifyContent:'center',alignItems:'center',width:width,backgroundColor:'#fff',marginBottom:20}}>
+                        <TouchableOpacity style={{width:width*1/3,backgroundColor:'#fc6254',padding:10,flexDirection:'row',
+                            justifyContent:'center'}}
+                                          onPress={()=>{
+                                              if(this.props.memberId!==null&&this.props.memberId!==undefined){
+                                                  this.props.dispatch(distributeCourse(this.state.course,this.state.venue,parseInt(this.props.memberId),this.state.coachId))
+                                                      .then((json)=>{
+                                                          if(json.re==1){
+                                                              Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
+                                                                  this.goBack();
+                                                                  this.props.setMyCourseList();
+                                                              }}]);
+                                                          }else{
+                                                              if(json.re==-100){
+                                                                  this.props.dispatch(getAccessToken(false));
+                                                              }
                                                           }
-                                                      }
-                                                  })
-                                        /*  else{
-                                              this.props.dispatch(addClass(this.state.course,this.state.venue,null))
-                                                  .then((json)=>{
-                                                      if(json.re==1){
-                                                          Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
-                                                              this.goBack();
-                                                              this.props.setMyCourseList();
-                                                          }}]);
-                                                      }else{
-                                                          if(json.re==-100){
-                                                              this.props.dispatch(getAccessToken(false));
+                                                      })
+                                              }else{
+                                                  this.props.dispatch(distributeCourse(this.state.course,this.state.venue,null,this.state.coachId))
+                                                      .then((json)=>{
+                                                          if(json.re==1){
+                                                              Alert.alert('信息','课程已发布成功',[{text:'确认',onPress:()=>{
+                                                                  this.goBack();
+                                                                  //this.props.setMyCourseList();
+                                                              }}]);
+                                                          }else{
+                                                              if(json.re==-100){
+                                                                  this.props.dispatch(getAccessToken(false));
+                                                              }
                                                           }
-                                                      }
-                                                  })
-                                          }*/
+                                                      })
+                                              }
 
-                                      }}>
-                        <Text style={{color:'#fff',fontSize:15}}>确定添加</Text>
-                    </TouchableOpacity>
-                </View>
+                                          }}>
+                            <Text style={{color:'#fff',fontSize:15}}>发布</Text>
+                        </TouchableOpacity>
 
+                    </View>
+                </KeyboardAwareScrollView>
 
                 {/* Add CourseTime Modal*/}
                 <Modal
@@ -664,71 +600,38 @@ class AddClass extends Component{
                         <CourseTimeModal
                             onClose={()=>{
                                 this.scaleAnimationDialog.dismiss();
-                                // this.setState({modalVisible:false});
-                            }}
+                           // this.setState({modalVisible:false});
+                        }}
                             accessToken={this.props.accessToken}
                             setTime={(time)=>{
-                                if(this.state.timeList!==null&&this.state.timeList!==undefined){
-                                    var timeList = this.state.timeList;
-                                    timeList.push(time);
-                                    this.setState({timeList:timeList});
-                                    this.scaleAnimationDialog.dismiss();
-                                }
-                            }}
+                            if(this.state.timeList!==null&&this.state.timeList!==undefined){
+                                var timeList = this.state.timeList;
+                                timeList.push(time);
+                                this.setState({timeList:timeList});
+                                this.scaleAnimationDialog.dismiss();
+                            }
+                        }}
                             timeListLength={(this.state.timeList!==null&&this.state.timeList!==undefined)?this.state.timeList.length:0}
 
                         />
                     </View>
                 </PopupDialog>
-
+                </Toolbar>
             </View>
         );
     }
     componentDidMount()
     {
-        var classWeekButtons = this.state.classWeekButtons;
-
-        var today = new Date();
-        var year = today.getFullYear();
-        var month = today.getMonth();//月份，一月--十二月返回0-11
-        var date = today.getDate();//月份中的一天1-31
-        var dayNum = today.getDay();//周日-周六返回0-6
-        var day = null;
-
-        for (let i=0; i<8; i++)
-        {
-            switch(dayNum%7){
-                case 0:day= '星期天';break;
-                case 1:day= '星期一';break;
-                case 2:day= '星期二';break;
-                case 3:day= '星期三';break;
-                case 4:day= '星期四';break;
-                case 5:day= '星期五';break;
-                case 6:day= '星期六';break;
-
-            }
-            let string = day+'  '+(month+1)+'月'+date+'日';
-            classWeekButtons.push(string);
-            dayNum = dayNum+1;
-            date = date+1;
-
-            var d = new Date(year, month, 0);
-            var dayCounts = d.getDate();
-
-            if(date>dayCounts){
-                month = month+1;
-                date = date%dayCounts
-            }
-        }
-        this.setState({classWeekButtons:classWeekButtons})
+        this.venueListener=DeviceEventEmitter.addListener('on_venue_confirm', (data)=>{
+            if(data)
+                this.setState({venue:data})
+        });
     }
 
     componentWillUnmount()
     {
-
-
-
-
+        if(this.venueListener)
+            this.venueListener.remove();
     }
 
 }
@@ -747,8 +650,8 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
         myGroupList:state.activity.myGroupList,
-        groupOnFresh:state.activity.groupOnFresh
+        groupOnFresh:state.activity.groupOnFresh,
     })
-)(AddClass);
+)(CreateBadmintonCourse);
 
 

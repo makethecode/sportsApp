@@ -1406,7 +1406,7 @@ export let wechatPay=(pay,activityId)=>{
 }
 
 //课程支付
-export let wechatPay2=(pay,courseId)=>{
+export let wechatPay2=(pay,courseId,isChild)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
@@ -1418,7 +1418,8 @@ export let wechatPay2=(pay,courseId)=>{
                 },
                 body: {
                     pay:pay,
-                    courseId:parseInt(courseId)
+                    courseId:parseInt(courseId),
+                    isChild:parseInt(isChild),
                 }
             }).then((json)=>{
                 if(json.re==1){
@@ -1434,33 +1435,24 @@ export let wechatPay2=(pay,courseId)=>{
                         },
                         body: {
                             info:{
-                                app_id:'wx9068ac0e88c09e7a',//应用ID
-                                mch_id:'1485755962',//商户号
                                 nonce_str:nonce_str,//随机字符串
-                                notify_url:Config.server +'/func/allow/minirepay',
                                 out_trade_no:out_trade_no,
                                 total_fee:total_fee,
                                 attach:'山东体育热科技有限公司',
                                 body:'课程费用',
-
+                                product_id:courseId+'',
                             }
-
                         }
                     }).then((json)=>{
                         resolve(json)
-
                     }).catch((e)=>{
                         alert(e);
                         reject(e);
                     })
-
                 }
                 else{
-                    console.log('添加支付订单信息不完整');
-
+                    alert('课程人数已满')
                 }
-
-
             }).catch((e)=>{
                 alert(e);
                 reject(e);

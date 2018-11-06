@@ -66,7 +66,10 @@ import{
     fetchCoaches,
     onCoachUpdate,
 } from '../../action/CoachActions';
+import ClassList from './ClassList'
+
 var FaceViewManager = NativeModules.FaceViewManager;
+
 const NativeModule = new NativeEventEmitter(FaceViewManager);
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -256,27 +259,27 @@ class BadmintonCourseRecord extends Component {
         }
     }
 
-    navigate2AddClass1(rowData){
+    navigate2ClassList(course){
         const { navigator } = this.props;
         if (navigator) {
             navigator.push({
-                name: 'AddClass',
-                component: AddClass,
+                name: 'ClassList',
+                component: ClassList,
                 params: {
-                    course:rowData,
+                    course:course
                 }
             })
         }
     }
 
-    navigate2StudentInformation(courseId){
+    navigate2StudentInformation(course){
     const { navigator } = this.props;
         if (navigator) {
         navigator.push({
         name: 'StudentInformation',
         component: StudentInformation,
         params: {
-                 courseId:courseId
+                 course:course
               }
          })
       }
@@ -415,7 +418,7 @@ class BadmintonCourseRecord extends Component {
                         var typeId = -1;
 
                         this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
-                        this.navigate2StudentInformation(rowData.courseId);}
+                        this.navigate2StudentInformation(rowData);}
                     }>
                         <Text style={{color: '#66CDAA', fontSize: 14}}>学员信息</Text>
                     </TouchableOpacity>:null
@@ -438,7 +441,7 @@ class BadmintonCourseRecord extends Component {
                         var coachId = -1;
                         var typeId = -1;
 
-                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类',course:rowData})
                         this.props.dispatch(establishEveryDayClass(rowData)).then((json)=>{
                         //人脸识别
                         this.sharetoSomeone.show();
@@ -514,17 +517,10 @@ class BadmintonCourseRecord extends Component {
                             marginLeft: 30
                         }}
                                           onPress={() => {
-                                              //清空筛选记录
-                                              var clubId = -1;
-                                              var venueId = -1;
-                                              var coachId = -1;
-                                              var typeId = -1;
-
-                                              this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
-                                              this.navigate2AddClass1(rowData);
+                                              this.navigate2ClassList(rowData)
                                           }
                                           }>
-                            <Text style={{color: '#66CDAA', fontSize: 14}}>添加小课</Text>
+                            <Text style={{color: '#66CDAA', fontSize: 14}}>课堂安排</Text>
                         </TouchableOpacity>:null
                     }
                 </View>

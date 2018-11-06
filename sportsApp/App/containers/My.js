@@ -348,44 +348,6 @@ class My extends Component{
                              </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                          onPress={()=>{
-                                              this.navigate2MyVideo();
-                                          }}>
-                            <View style={{flex:1,flexDirection:'row',margin:5,
-                                justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/vedio.png')}/>
-                            </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>我的视频</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                          onPress={()=>{
-                                              this.navigate2NewsList();
-                                          }}>
-                            <View style={{flex:1,flexDirection:'row',margin:5,
-                                justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/news.png')}/>
-                            </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>新闻发布</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                          onPress={()=>{
-                                          }}>
-                            <View style={{flex:1,flexDirection:'row',margin:5,
-                                justifyContent:'center',alignItems: 'center'}}>
-                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/news.png')}/>
-                            </View>
-                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                <Text>试课</Text>
-                            </View>
-                        </TouchableOpacity>
-
                     </View>
 
                     <View style={{flex:1,backgroundColor:'#eee'}}>

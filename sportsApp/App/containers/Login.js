@@ -299,7 +299,30 @@ var Login =React.createClass({
                                             <Text style={{color:'#66CDAA',fontSize:16,fontWeight:'bold'}}>登录</Text>
                                         </View>
                                 </View>
+
                             </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{width:width,justifyContent:'center',alignItems:'center'}}
+                                          onPress={()=>{
+                                              this.setState({showProgress: true});
+                                              this.props.dispatch(doLogin('zp1','123'))
+                                                  .then((json)=>{
+                                                      this.setState({showProgress: false,user:{}});
+                                                      if(json.re==-1){
+                                                          setTimeout(()=>{
+                                                              alert(json.data);
+                                                          },900)
+                                                      }
+                                                      if(json.re==-100){
+                                                          this.setState({showProgress: false,user:{}});
+                                                      }
+                                                  })
+                                                  .catch((e)=>{
+                                                      alert(e);
+                                                  })
+                                          }}>
+                            <Text style={{color:'#eee',fontSize:13,marginTop:3}}>游客登录</Text>
                         </TouchableOpacity>
 
                     </View>
