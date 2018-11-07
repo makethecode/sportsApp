@@ -21,7 +21,7 @@ import {connect} from 'react-redux';
 import ViewPager from 'react-native-viewpager';
 import BadmintonCourse from '../components/course/BadmintonCourseRecord';
 import MyProfit from '../components/my/Myprofit'
-import Mall from './mall/FirstPage';
+import Mall from './mall/MallPage';
 import Activity from '../components/groupActivity/Activity';
 import Competition from '../components/competition/CompetitionList';
 import Statistics from '../components/statistics/MainStatistics';
@@ -547,7 +547,7 @@ class Home extends Component {
                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
                                             <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>商品</Text>
+                                                <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
                                             </View>
                                         </TouchableOpacity>
 

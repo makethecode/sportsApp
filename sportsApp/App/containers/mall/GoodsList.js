@@ -42,25 +42,12 @@ import AddProduct from './AddProduct'
 var {height, width} = Dimensions.get('window');
 var flag = true;
 
-class Home extends Component{
+class GoodsList extends Component{
 
     goBack(){
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
-        }
-    }
-
-    navigate2ScannerList()
-    {
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'ScannerList',
-                component: ScannerList,
-                params: {
-                }
-            })
         }
     }
 
@@ -99,26 +86,44 @@ class Home extends Component{
         {
             goods.map((good,i)=>{
 
-                var imgUrl = ''
-                if(i==3)imgUrl = Config.server+good.imgUrl.substring(27,good.imgUrl.length)
-                else imgUrl = good.imgUrl
+                // var imgUrl = ''
+                // if(i==3)imgUrl = Config.server+good.imgUrl.substring(27,good.imgUrl.length)
+                // else imgUrl = good.imgUrl
+
+                //name,type,typefilter,reservenum,brief,discount,thumburl,price
+
+                var type = '';
+                switch(good.type){
+                    //{"racket","fittings","shoes","clothes","VIP","healthproducts"}
+                    case 'racket':type='球拍';break;
+                    case 'fittings':type='配件';break;
+                    case 'shoes':type='球鞋';break;
+                    case 'clothes':type='衣服';break;
+                    case 'VIP':type='会员卡';break;
+                    case 'healthproducts':type='保健品';break;
+                }
 
                 goodList.push(
                     <TouchableOpacity style={lineStyle}>
                         <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:imgUrl}} />
+                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:good.thumburl}} />
                         </View>
                         <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
                             <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
-                                <Text  style={{fontSize:14,color:'#343434'}}>{good.brief}</Text>
+                                <Text  style={{fontSize:14,color:'#343434'}}>{good.name}</Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
-                                <View style={{backgroundColor: '#efefef',justifyContent:'center',alignItems:'center',padding:2}}>
-                                    <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>{good.size}</Text>
+
+                                <View style={{backgroundColor: '#fca482',justifyContent:'center',alignItems:'center',padding:2}}>
+                                    <Text style={{flex: 1, fontSize: 12, color: '#fff'}}>{type}</Text>
+                                </View>
+
+                                <View style={{backgroundColor: '#efefef',justifyContent:'center',alignItems:'center',padding:2,marginLeft:5}}>
+                                    <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>容量 500ml</Text>
                                 </View>
                             </View>
                             {
-                                good.inventoryNumber>10?
+                                good.reservenum>10?
                                 <View style={{
                                     flex: 1,
                                     flexDirection: 'row',
@@ -127,7 +132,7 @@ class Home extends Component{
                                     marginTop: 3
                                 }}>
                                     <Text
-                                        style={{flex: 4, fontSize: 13, color: '#666'}}>库存 {good.inventoryNumber}</Text>
+                                        style={{flex: 4, fontSize: 13, color: '#666'}}>库存 {good.reservenum}</Text>
                                 </View>:
                                     <View style={{
                                         flex: 1,
@@ -136,12 +141,12 @@ class Home extends Component{
                                         alignItems: 'center',
                                         marginTop: 3
                                     }}>
-                                        <Text style={{fontSize: 13, color: 'red'}}>库存 {good.inventoryNumber} </Text>
+                                        <Text style={{fontSize: 13, color: 'red'}}>库存 {good.reservenum} </Text>
                                         <View style={{backgroundColor:'red',padding:2}}><Text style={{fontSize:12,color:'#fff'}}>紧张</Text></View>
                                     </View>
                             }
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
-                                <Text style={{flex:4,fontSize:13,color:'red'}}>￥{good.salePrice}</Text>
+                                <Text style={{flex:4,fontSize:13,color:'red'}}>￥{good.price}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>
@@ -153,13 +158,11 @@ class Home extends Component{
         return (
             <View style={{flex:1,backgroundColor:'#fff'}}>
 
-                <Toolbar width={width} title="商品" navigator={this.props.navigator}
+                <Toolbar width={width} title="库存" navigator={this.props.navigator}
                          actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0)
                              {
-                                 //商城扫码逻辑不成熟
-                                 //this.navigate2ScannerList();
                                  //上传商品信息
                                  this.navigate2AddProduct()
                              }
@@ -174,7 +177,7 @@ class Home extends Component{
                         }
                         placeholder='商品名称' />
                     <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#888',fontSize:13}}>商品列表</Text>
+                        <Text style={{color:'#888',fontSize:13}}>库存列表</Text>
                     </View>
                     <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
 
@@ -317,5 +320,5 @@ const mapStateToProps = (state, ownProps) => {
     return props
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(GoodsList);
 
