@@ -29,6 +29,10 @@ import Echarts from 'native-echarts';
 import DatePicker from 'react-native-datepicker';
 import GoodsList from './GoodsList'
 import ScannerList from './ScannerList'
+import OrderList from './OrderList'
+import ProfitList from './ProfitList'
+import {fetchGoodsProfitByDate} from '../../action/UserActions'
+
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
@@ -62,6 +66,32 @@ class MallPage extends Component{
             navigator.push({
                 name: 'ScannerList',
                 component: ScannerList,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2OrderList()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'OrderList',
+                component: OrderList,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2ProfitList()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'ProfitList',
+                component: ProfitList,
                 params: {
                 }
             })
@@ -208,6 +238,7 @@ class MallPage extends Component{
                                             showIcon={true}
                                             iconComponent={<Ionicons name='md-time' size={20} color="#666"/>}
                                             onDateChange={(date) => {
+                                                this.getDetailPayment(date)
                                             }}
                                         />
                                     </View>
@@ -229,7 +260,7 @@ class MallPage extends Component{
                             </View>
 
                             {/*消息列表*/}
-                            <View style={{width:width,justifyContent:'center',alignItems:'center',}}>
+                            <View style={{width:width,justifyContent:'center',alignItems:'center',marginBottom:10}}>
                                 <View style={{width:width,backgroundColor:'#fff',justifyContent:'center',alignItems:'center',padding:10}}>
                                     {NoticesListView}
                                 </View>
@@ -248,8 +279,8 @@ class MallPage extends Component{
                               onPress={()=>{
                                   switch(rowId){
                                       case 0:this.navigate2goodsList();break;//库存
-                                      case 1:break;//订单
-                                      case 2:break;//收益
+                                      case 1:this.navigate2OrderList();break;//订单
+                                      case 2:this.navigate2ProfitList();break;//收益
                                       case 3:this.navigate2ScannerList();break;//收银台
                                   }
                               }}
@@ -273,10 +304,10 @@ class MallPage extends Component{
                         <View style={{flex:1,justifyContent: 'center', flexDirection: 'row'}}>
                             <View style={{alignItems: 'center',justifyContent: 'center',flexDirection:'row'}}>
                             <Text style={{color: '#343434', fontSize: 14}} numberOfLines={1}>
-                                {rowData.personName} 购买 {rowData.goodName} 共支出
+                                {rowData.personName} 在 {rowData.clubName} 共支出
                             </Text>
                             <Text style={{color: 'red', fontSize: 14}} numberOfLines={1}>
-                                {rowData.payment}
+                                {rowData.payment/100}
                             </Text>
                             <Text style={{color: '#343434', fontSize: 14}} numberOfLines={1}>
                                 元
@@ -293,8 +324,59 @@ class MallPage extends Component{
 
     componentWillMount(){
 
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + '年' + month + '月' + strDate + '日'
+
+        this.setState({currentDate:currentdate})
+
+        //获取今日截至目前的收益情况（动态）
+        this.getDetailPayment(currentdate);
+
     }
 
+    getDetailPayment(currentDate){
+
+        this.props.dispatch(fetchGoodsProfitByDate(currentDate)).then((json)=>{
+            if(json.re==1)
+            {
+                var list = json.data
+                var goodsList = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+                var goodsPay = 0
+
+                //降序排列
+                list.sort(function(a,b){
+                    if(b.detailTime>a.detailTime)return 1;
+                    else return -1;});
+
+                for(var i=0;i<list.length;i++)
+                {
+                    var idx = 0;
+                    var time = list[i].time;
+                    if(time>=8)idx = time-7;
+
+                    goodsList[idx]+=list[i].payment/100;
+                    goodsPay+=list[i].payment/100
+                }
+
+                this.setState({goodsList:goodsList,notices:list,currentDate:currentDate})
+
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+
+            }
+        })
+    }
 
     componentWillUnmount(){
     }

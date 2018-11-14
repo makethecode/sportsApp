@@ -338,20 +338,25 @@ class BadmintonCourseRecord extends Component {
                                 {rowData.courseName}
                             </Text>
                         </View>
-
-                        {
-                            rowData.status==1?
-                            <View style={{padding: 4, marginLeft: 10, flexDirection: 'row', alignItems: 'center',backgroundColor:'#fc3c3f',borderRadius: 6}}>
-                                <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 13, paddingTop: -2}}>
-                                已完成
+                            <TouchableOpacity style={{padding: 4, marginLeft: 10, flexDirection: 'row', alignItems: 'center',borderWidth:1,borderColor:'#fc3c3f',borderRadius: 6}}
+                            onPress={()=>{
+                                Proxy.postes({
+                                    url: Config.server + '/func/node/createActivity',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body:params
+                                }).then((json)=>{
+                                    resolve(json)
+                                }).catch((e)=>{
+                                    alert("群活动填写不完整！");
+                                    reject(e);
+                                })
+                            }}>
+                                <Text style={{color: '#fc3c3f', fontSize: 13, paddingTop: -2}}>
+                                推广
                                 </Text>
-                            </View>:
-                                <View style={{padding: 4, marginLeft: 10, flexDirection: 'row', alignItems: 'center',backgroundColor:'#80ccba',borderRadius: 6}}>
-                                    <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 13, paddingTop: -2}}>
-                                        已发布
-                                    </Text>
-                                </View>
-                        }
+                            </TouchableOpacity>
                     </View>
 
                     <View style={{ padding:6, paddingHorizontal: 12,flexDirection:'column'}}>

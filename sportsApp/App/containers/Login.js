@@ -61,12 +61,7 @@ var Login =React.createClass({
         });
     },
 
-    WXregister:function(unionid,nickname){
-        var url= "https://open.weixin.qq.com/connect/qrconnect?" +
-            "appid=wx9068ac0e88c09e7a&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-    },
-
-    WXLogin(){
+    WXregister(){
         //微信获取用户信息：1.unionid2.headimgurl3.appopenid（必得）
 
         //（授权作用域）获取用户信息
@@ -156,6 +151,88 @@ var Login =React.createClass({
             })
     },
 
+    WXLogin(){
+        let scope = 'snsapi_userinfo';
+        let state = '12361231267312';
+        //判断微信是否安装
+        wechat.isWXAppInstalled()
+            .then((isInstalled) => {
+                if (isInstalled) {
+                    //发送授权请求
+                    wechat.sendAuthRequest(scope,state)
+                        .then(responseCode => {
+                            //返回code码，通过code获取access_token
+                            appid=responseCode.appid;
+                            secret="3ea1d52ac88a6861472f279bd4010fc3";
+                            //this.props.dispatch(getAccessToken(true));
+                            var access_token=null;
+                            var openid=null;
+                            var unionid=null;
+                            var nickname=null;
+                            var url="https://api.weixin.qq.com/sns/oauth2/access_token?appid="+appid+"&secret="+secret+"&code="+responseCode.code+"&grant_type=authorization_code";
+                            this.props.dispatch(wechatGetOpenid(url))
+                                .then((json)=>{
+                                    access_token=json.access_token;
+                                    openid=json.openid;
+                                    var url1="https://api.weixin.qq.com/sns/userinfo?access_token="+access_token+"&openid="+openid;
+                                    this.props.dispatch(wechatGetUserInfo(url1))
+                                        .then((json)=>{
+                                            unionid=json.unionid;
+                                            nickname="wx"+json.nickname;
+                                            this.props.dispatch((wechatregisterUser(unionid,nickname)))
+                                                .then((json)=>{
+                                                    var nickname=json.data.nickName;
+                                                    var password=json.data.password;
+                                                    this.setState({showProgress: true});
+                                                    this.props.dispatch(doLogin(nickname,password))
+                                                        .then((json)=>{
+                                                            this.setState({showProgress: false,user:{}});
+                                                            if(json.re==-1){
+                                                                setTimeout(()=>{
+                                                                    alert(json.data);
+                                                                },900)
+
+                                                            }
+                                                            if(json.re==-100){
+                                                                this.setState({showProgress: false,user:{}});
+                                                            }
+                                                        })
+                                                        .catch((e)=>{
+                                                            alert(e);
+                                                        })
+
+                                                }).catch((e)=>{
+                                                alert(e);
+                                            })
+                                        })
+                                        .catch((e)=>{
+                                            alert(e);
+                                        })
+
+                                })
+                                .catch((e)=>{
+                                    alert(e);
+                                })
+
+                        })
+                        .catch(err => {
+                            Alert.alert('登录授权发生错误：', err.message, [
+                                {text: '确定'}
+                            ]);
+                        })
+                } else {
+                    Platform.OS == 'ios' ?
+                        Alert.alert('没有安装微信', '是否安装微信？', [
+                            {text: '取消'},
+                            {text: '确定'}
+                        ]) :
+                        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+                            {text: '确定'}
+                        ])
+                }
+            })
+    },
+
     render:function () {
 
         return (
@@ -163,11 +240,11 @@ var Login =React.createClass({
 
                 <Image resizeMode="stretch" source={require('../../img/beijing@2x.png')} style={{width:width,height:height}}>
 
-                    <View style={{backgroundColor:'transparent',flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <View style={{backgroundColor:'transparent',flex:2,justifyContent:'center',alignItems:'center'}}>
                         <Image resizeMode="contain" source={require('../../img/loginlogo.png')} style={{justifyContent:'center',alignItems:'center',width:400,height:200,marginLeft:150,marginTop:50}}/>
                     </View>
 
-                    <View style={{paddingVertical:2,paddingHorizontal:25,backgroundColor:'transparent',flex:1,alignItems:'center'}} >
+                    <View style={{paddingVertical:2,paddingHorizontal:25,backgroundColor:'transparent',flex:2,alignItems:'center'}} >
 
                         {/*输入用户名*/}
                         <View style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'rgba(255,255,255,0.2)',margin:10,padding:3,borderRadius:5}}>
@@ -303,27 +380,13 @@ var Login =React.createClass({
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{width:width,justifyContent:'center',alignItems:'center'}}
-                                          onPress={()=>{
-                                              this.setState({showProgress: true});
-                                              this.props.dispatch(doLogin('zp1','123'))
-                                                  .then((json)=>{
-                                                      this.setState({showProgress: false,user:{}});
-                                                      if(json.re==-1){
-                                                          setTimeout(()=>{
-                                                              alert(json.data);
-                                                          },900)
-                                                      }
-                                                      if(json.re==-100){
-                                                          this.setState({showProgress: false,user:{}});
-                                                      }
-                                                  })
-                                                  .catch((e)=>{
-                                                      alert(e);
-                                                  })
-                                          }}>
-                            <Text style={{color:'#eee',fontSize:13,marginTop:3}}>游客登录</Text>
-                        </TouchableOpacity>
+
+                            <TouchableOpacity style={{width: width, justifyContent: 'center', alignItems: 'center'}}
+                                              onPress={() => {
+                                                  this.WXLogin();
+                                              }}>
+                                <Text style={{color: '#eee', fontSize: 13, marginTop: 3}}>微信登录</Text>
+                            </TouchableOpacity>
 
                     </View>
 
@@ -344,7 +407,7 @@ var Login =React.createClass({
                         <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,
                         borderWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
-                                              this.WXLogin();
+                                              this.WXregister();
                                           }}>
                             <View style={{flex:1}}>
                                 <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>

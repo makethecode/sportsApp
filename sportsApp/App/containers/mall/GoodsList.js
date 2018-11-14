@@ -1,4 +1,3 @@
-
 import React,{Component} from 'react';
 import {
     Dimensions,
@@ -38,6 +37,9 @@ import ScannerList from './ScannerList'
 import { SearchBar } from 'react-native-elements'
 import Proxy from '../../utils/Proxy'
 import AddProduct from './AddProduct'
+import { IndicatorViewPager,PagerTitleIndicator } from 'rn-viewpager'
+import ProductDetail from './ProductDetail'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 var {height, width} = Dimensions.get('window');
 var flag = true;
@@ -64,96 +66,281 @@ class GoodsList extends Component{
         }
     }
 
+    navigate2ProductDetail(productId)
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'ProductDetail',
+                component: ProductDetail,
+                params: {
+                    productId:productId
+                }
+            })
+        }
+    }
+
     constructor(props) {
         super(props);
         this.state={
             isRefreshing:true,
             fadeAnim: new Animated.Value(1),
+            doingFetch:false,
+            bgColor: new Animated.Value(0),
 
             goods:[],
             allgoods:[],
+
+            racket:[],
+            fittings:[],
+            shoes:[],
+            clothes:[],
+            VIP:[],
+            healthproducts:[],
+
+            showProgress:false,
         }
     }
 
+    showScaleAnimationDialog() {
+        this.scaleAnimationDialog.show();
+    }
+
+    renderRow(rowData, sectionId, rowId) {
+
+        var lineStyle={flex:1,flexDirection:'row',padding:10,paddingLeft:0,paddingRight:0,borderBottomWidth:1,
+            borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff',};
+
+        var type = '';
+        switch(rowData.type){
+            //{"racket","fittings","shoes","clothes","VIP","healthproducts"}
+            case 'racket':type='球拍';break;
+            case 'fittings':type='配件';break;
+            case 'shoes':type='球鞋';break;
+            case 'clothes':type='衣服';break;
+            case 'VIP':type='会员卡';break;
+            case 'healthproducts':type='保健品';break;
+        }
+
+        return (
+            <TouchableOpacity style={lineStyle}
+                              onPress={()=>{
+                                  this.navigate2ProductDetail(rowData.id)
+                              }}>
+                <View style={{flex:3,justifyContent:'flex-start',alignItems:'center'}}>
+                    <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:rowData.thumburl}} />
+                </View>
+                <View style={{flex:5,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
+                    <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
+                        <Text  style={{fontSize:14,color:'#343434'}}>{rowData.name}</Text>
+                    </View>
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
+
+                        <View style={{backgroundColor: '#fca482',justifyContent:'center',alignItems:'center',padding:2}}>
+                            <Text style={{flex: 1, fontSize: 12, color: '#fff'}}>{type}</Text>
+                        </View>
+
+                        <View style={{backgroundColor: '#fc6254',justifyContent:'center',alignItems:'center',padding:2,marginLeft:8}}>
+                            <Text style={{flex: 1, fontSize: 12, color: '#fff'}}>{rowData.creatorName} 上传</Text>
+                        </View>
+                    </View>
+                    {
+                        rowData.reservenum>10?
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: 3
+                            }}>
+                                <Text
+                                    style={{flex: 4, fontSize: 13, color: '#666'}}>库存 {rowData.reservenum}</Text>
+                            </View>:
+                            <View style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginTop: 3
+                            }}>
+                                <Text style={{fontSize: 13, color: 'red'}}>库存 {rowData.reservenum} </Text>
+                                <View style={{backgroundColor:'red',padding:2}}><Text style={{fontSize:12,color:'#fff'}}>紧张</Text></View>
+                            </View>
+                    }
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
+                        <Text style={{flex:4,fontSize:13,color:'red'}}>￥{rowData.realprice/100}</Text>
+                    </View>
+                </View>
+                <View style={{flex:1,justifyContent:'flex-start',alignItems:'flex-end',marginRight:5}}>
+                    <TouchableOpacity
+                        onPress={()=>{
+                            Alert.alert(
+                                '删除',
+                                '是否删除本条商品记录？',
+                                [
+                                    {text: '确定', onPress: () =>
+                                    {
+                                        Proxy.postes({
+                                            url: Config.server + '/func/node/deleteGoods',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: {
+                                                goodsId:rowData.id
+                                            }
+                                        }).then((json)=>{
+                                            if(json.re==1){
+                                                Alert.alert('成功','删除成功')
+                                                this.fetchGoodsList();
+                                            }else{
+                                                Alert.alert('失败','存在该商品订单，不能删除')
+                                            }
+                                        }).catch((e)=>{
+                                        })
+                                    }},
+                                    {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                ],
+                            )
+                        }}>
+                        <Ionicons name='md-close' size={20} color="#aaa"/>
+                    </TouchableOpacity></View>
+            </TouchableOpacity>
+        )}
+
     render() {
 
-        var goodList = [];
-        var {goods}=this.state;
-        var lineStyle={flex:1,flexDirection:'row',padding:10,paddingLeft:0,paddingRight:0,borderBottomWidth:1,
-            borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'transparent',};
+        var racketList=null;
+        var racket = this.state.racket;
 
-        if(goods&&goods.length>0)
+        var ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (racket !== undefined && racket !== null && racket.length > 0)
         {
-            goods.map((good,i)=>{
-
-                // var imgUrl = ''
-                // if(i==3)imgUrl = Config.server+good.imgUrl.substring(27,good.imgUrl.length)
-                // else imgUrl = good.imgUrl
-
-                //name,type,typefilter,reservenum,brief,discount,thumburl,price
-
-                var type = '';
-                switch(good.type){
-                    //{"racket","fittings","shoes","clothes","VIP","healthproducts"}
-                    case 'racket':type='球拍';break;
-                    case 'fittings':type='配件';break;
-                    case 'shoes':type='球鞋';break;
-                    case 'clothes':type='衣服';break;
-                    case 'VIP':type='会员卡';break;
-                    case 'healthproducts':type='保健品';break;
-                }
-
-                goodList.push(
-                    <TouchableOpacity style={lineStyle}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                            <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:good.thumburl}} />
-                        </View>
-                        <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
-                            <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
-                                <Text  style={{fontSize:14,color:'#343434'}}>{good.name}</Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
-
-                                <View style={{backgroundColor: '#fca482',justifyContent:'center',alignItems:'center',padding:2}}>
-                                    <Text style={{flex: 1, fontSize: 12, color: '#fff'}}>{type}</Text>
-                                </View>
-
-                                <View style={{backgroundColor: '#efefef',justifyContent:'center',alignItems:'center',padding:2,marginLeft:5}}>
-                                    <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>容量 500ml</Text>
-                                </View>
-                            </View>
-                            {
-                                good.reservenum>10?
-                                <View style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginTop: 3
-                                }}>
-                                    <Text
-                                        style={{flex: 4, fontSize: 13, color: '#666'}}>库存 {good.reservenum}</Text>
-                                </View>:
-                                    <View style={{
-                                        flex: 1,
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        marginTop: 3
-                                    }}>
-                                        <Text style={{fontSize: 13, color: 'red'}}>库存 {good.reservenum} </Text>
-                                        <View style={{backgroundColor:'red',padding:2}}><Text style={{fontSize:12,color:'#fff'}}>紧张</Text></View>
-                                    </View>
-                            }
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
-                                <Text style={{flex:4,fontSize:13,color:'red'}}>￥{good.price}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                )
-            })
-
+            racketList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds1.cloneWithRows(racket)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            racketList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
         }
+
+        var fittingsList=null;
+        var fittings = this.state.fittings;
+
+        var ds2 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (fittings !== undefined && fittings !== null && fittings.length > 0)
+        {
+            fittingsList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds2.cloneWithRows(fittings)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            fittingsList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
+        }
+
+        var shoesList=null;
+        var shoes = this.state.shoes;
+
+        var ds3 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (shoes !== undefined && shoes !== null && shoes.length > 0)
+        {
+            shoesList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds3.cloneWithRows(shoes)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            shoesList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
+        }
+
+        var clothesList=null;
+        var clothes = this.state.clothes;
+
+        var ds4 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (clothes !== undefined && clothes !== null && clothes.length > 0)
+        {
+            clothesList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds4.cloneWithRows(clothes)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            clothesList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
+        }
+
+        var VIPList=null;
+        var VIP = this.state.VIP;
+
+        var ds5 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (VIP !== undefined && VIP !== null && VIP.length > 0)
+        {
+            VIPList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds5.cloneWithRows(VIP)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            VIPList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
+        }
+
+        var healthproductsList=null;
+        var healthproducts = this.state.healthproducts;
+
+        var ds6 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (healthproducts !== undefined && healthproducts !== null && healthproducts.length > 0)
+        {
+            healthproductsList = (
+                <View><ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds6.cloneWithRows(healthproducts)}
+                    renderRow={this.renderRow.bind(this)}
+                    removeClippedSubviews={false}
+                /></View>
+            );
+        }else{
+            healthproductsList=(
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>已加载完全部</Text>
+                </View>
+            )
+        }
+
 
         return (
             <View style={{flex:1,backgroundColor:'#fff'}}>
@@ -167,55 +354,92 @@ class GoodsList extends Component{
                                  this.navigate2AddProduct()
                              }
                          }}>
-                    <SearchBar
-                        lightTheme
-                        onChangeText={
-                            //模糊查询
-                            (text)=>{
-                                this.searchByText(text)
-                            }
-                        }
-                        placeholder='商品名称' />
-                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#888',fontSize:13}}>库存列表</Text>
-                    </View>
-                    <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
-
-                        <Animated.View style={{flex: 1, padding: 4,paddingTop:10,opacity: this.state.fadeAnim,backgroundColor:'#fff' }}>
-                            {goodList}
+                    {<View style={{flex:1,backgroundColor:'#eee'}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingBottom:5,}}>
+                            <IndicatorViewPager
+                                style={{flex:1,flexDirection: 'column-reverse'}}
+                                indicator={this._renderTitleIndicator()}
+                                onPageScroll={this._onPageScroll.bind(this)}
+                            >
+                                {racketList}
+                                {fittingsList}
+                                {shoesList}
+                                {clothesList}
+                                {VIPList}
+                                {healthproductsList}
+                            </IndicatorViewPager>
                         </Animated.View>
+                    </View>}
 
-                    </ScrollView>
+                    {/*loading模态框*/}
+                    <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
+                        <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
+                                          onPress={()=>{
+                                              //TODO:cancel this behaviour
+
+                                          }}>
+                            <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
+                                justifyContent:'center',alignItems:'center',borderRadius:6}}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={{marginTop:10,height: 40,position:'absolute',transform: [{scale: 1.6}]}}
+                                    size="large"
+                                />
+                                <View style={{flexDirection:'row',justifyContent:'center',marginTop:45}}>
+                                    <Text style={{color:'#666',fontSize:13}}>
+                                        加载中...
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
                 </Toolbar>
             </View>
         );
     }
 
-    searchByText(text){
+    _renderTitleIndicator () {
+        return (
+            <PagerTitleIndicator
+                style={styles.indicatorContainer}
+                trackScroll={true}
+                itemTextStyle={styles.indicatorText}
+                itemStyle={{width:width/4}}
+                selectedItemStyle={{width:width/4}}
+                selectedItemTextStyle={styles.indicatorSelectedText}
+                selectedBorderStyle={styles.selectedBorderStyle}
+                //
+                titles={['球拍', '配件','球鞋','衣服','会员卡','保健品']}
+            />
+        )
+    }
 
-        //前端实现模糊查询
-        if(text==null || text=='')
-        {
-            var goods = this.state.allgoods
-            this.setState({goods:goods})
-        }
-        else {
-            var goods = this.state.allgoods
-            var goodsList = [];
-
-            if (goods && goods.length > 0) {
-                goods.map((good, i) => {
-                        if (good.name.indexOf(text) != -1)
-                            goodsList.push(good)
-                })
-            }
-
-            this.setState({goods: goodsList})
-        }
+    _onPageScroll (scrollData) {
+        let {offset, position} = scrollData
+        if (position < 0 || position > 1) return
     }
 
     componentWillMount()
     {
+        this.fetchGoodsList()
+
+        this.goodsListListener=DeviceEventEmitter.addListener('goodlist_fresh', (data)=>{
+            if(data)
+                this.fetchGoodsList()
+        });
+    }
+
+    componentWillUnmount()
+    {
+        if(this.goodsListListener)
+            this.goodsListListener.remove();
+    }
+
+    fetchGoodsList(){
+
+        //this.setState({showProgress:true})
+
         Proxy.postes({
             url: Config.server + '/func/node/fetchGoodsList',
             headers: {
@@ -224,8 +448,31 @@ class GoodsList extends Component{
             body: {
             }
         }).then((json)=>{
-            this.setState({goods:json.data,allgoods:json.data})
-        }).catch((e)=>{})
+
+            this.setState({showProgress:false})
+
+            var goods = [];
+            if(json.data!=null)goods = json.data;
+
+            var racket=[];var fittings=[];var shoes=[];
+            var clothes=[];var VIP=[];var healthproducts=[];
+
+            for(var i=0;i<goods.length;i++){
+                var good = goods[i];
+                switch(good.type){
+                    //{"racket","fittings","shoes","clothes","VIP","healthproducts"}
+                    case 'racket':racket.push(good);break;
+                    case 'fittings':fittings.push(good);break;
+                    case 'shoes':shoes.push(good);break;
+                    case 'clothes':clothes.push(good);break;
+                    case 'VIP':VIP.push(good);break;
+                    case 'healthproducts':healthproducts.push(good);break;
+                }
+
+                this.setState({goods:goods,racket:racket,fittings:fittings,shoes:shoes,clothes:clothes,VIP:VIP,healthproducts:healthproducts})
+            }
+        }).catch((e)=>{
+        })
     }
 
 }
@@ -309,6 +556,60 @@ var styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    popoverContent: {
+        width: 100,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText: {
+        color: '#ccc',
+        fontSize: 14
+    },
+    indicatorContainer: {
+        backgroundColor: '#66CDAA',
+        height: 48
+    },
+    indicatorText: {
+        fontSize: 14,
+        color: 0xFFFFFF99
+    },
+    indicatorSelectedText: {
+        fontSize: 14,
+        color: 0xFFFFFFFF
+    },
+    selectedBorderStyle: {
+        height: 3,
+        backgroundColor: 'white'
+    },
+    statusBar: {
+        height: 24,
+        backgroundColor: 0x00000044
+    },
+    toolbarContainer: {
+        height: 56,
+        backgroundColor: 0x00000020,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16
+    },
+    backImg: {
+        width: 16,
+        height: 17
+    },
+    titleTxt: {
+        marginLeft: 36,
+        color: 'white',
+        fontSize: 20
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'transparent'
     },
 });
 

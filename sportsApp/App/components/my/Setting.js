@@ -24,6 +24,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import PreferenceStore from '../../utils/PreferenceStore';
 import AboutUs from './AboutUs';
+import Manage from './ManagePage';
 import {
     PAGE_LOGIN,
 } from '../../constants/PageStateConstants';
@@ -57,6 +58,19 @@ class Setting extends Component{
         }
     }
 
+    navigate2Manage()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'Manage',
+                component: Manage,
+                params: {
+                }
+            })
+        }
+    }
+
     constructor(props) {
         super(props);
         this.state={
@@ -75,23 +89,35 @@ class Setting extends Component{
                         <Text style={{color:'#444',fontSize:13}}>帐号</Text>
                     </View>
 
-                    <View style={{backgroundColor:'#fff',padding:10}}>
+                    <View style={{backgroundColor:'#fff'}}>
 
                         {/*用户名*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,paddingTop:4,borderBottomWidth:1,borderColor:'#eee'}}
+                        <TouchableOpacity style={{flexDirection:'row',justifyContent:'center',padding:10,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
                                              this.navigate2AboutUs();
                                               }}
                         >
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                <Text style={{color:'#555',fontSize:15}}>
                                     关于我们
                                 </Text>
                             </View>
                         </TouchableOpacity>
 
                         {/*退出*/}
-                        <TouchableOpacity style={{flexDirection:'row',padding:12,paddingHorizontal:10,}}
+                        <TouchableOpacity style={{flexDirection:'row',padding:10,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
+                                          onPress={()=>{
+                                              this.navigate2Manage()
+                                          }}>
+                            <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
+                                <Text style={{color:'#555',fontSize:15}}>
+                                    管理
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        {/*退出*/}
+                        <TouchableOpacity style={{flexDirection:'row',padding:10,paddingHorizontal:10,borderBottomWidth:1,borderColor:'#eee'}}
                                           onPress={()=>{
                                               // BackAndroid.exitApp();
                                               // PreferenceStore.delete('username');
@@ -107,7 +133,7 @@ class Setting extends Component{
 
                                               }}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
-                                <Text style={{color:'#555',fontWeight:'bold',fontSize:15}}>
+                                <Text style={{color:'#555',fontSize:15}}>
                                     切换用户
                                 </Text>
                             </View>

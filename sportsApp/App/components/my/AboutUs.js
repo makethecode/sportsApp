@@ -46,8 +46,8 @@ class AboutUs extends Component{
 
                     <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',
                             borderRadius:10}}>
-                        <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10}} source={require('../../../img/maikexin.png')}/>
-                       <Text style={{marginLeft:10}}>迈可欣羽毛球俱乐部</Text>
+                        <Image resizeMode="stretch" style={{height:50,width:50,borderRadius:10}} source={require('../../../img/logo.png')}/>
+                       <Text style={{marginLeft:10}}>山东运动热体育科技有限公司</Text>
                     </View>
 
                     <View style={{flex:3,justifyContent:'center',alignItems:'center'}}>
@@ -58,7 +58,7 @@ class AboutUs extends Component{
 
                     <View style={{flex:3,justifyContent:'center',alignItems:'center'}}>
                         <Text style={{color:'#aaa',fontSize:13}}>Copyright©2016-2017</Text>
-                        <Text style={{color:'#aaa',fontSize:13}}>迈可欣羽毛球俱乐部</Text>
+                        <Text style={{color:'#aaa',fontSize:13}}>山东运动热体育科技有限公司</Text>
                     </View >
 
 

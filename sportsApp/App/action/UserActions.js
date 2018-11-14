@@ -1801,6 +1801,38 @@ export let uploadImage=(params)=>{
     }
 }
 
+//上传照片
+export let uploadGoodsImage=(params)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            let formData = new FormData();
+
+            //限定为jpg后缀
+            let file = {uri: params.path, type: 'multipart/form-data', name: 'img.jpg'};
+
+            formData.append('images ', file);
+
+            //限定为jpg后缀
+            Proxy.post({
+                url:Config.server+'/func/node/uploadGoodsImg?currentPhotoUrl='+params.currentPhotoUrl+'&oldPhotoUrl='+params.oldPhotoUrl+'&productId='+params.productId+'',
+                headers: {
+                    'Content-Type':'multipart/form-data',
+                },
+                body: formData,
+            }).then((json)=> {
+                resolve(json)
+
+            }).catch((err) =>{
+                //reject(err)
+                alert(err)
+            })
+        })
+
+    }
+}
+
 //上传头像
 export let uploadPortrait=(portrait,personId)=>{
     return (dispatch,getState)=> {
@@ -1827,5 +1859,33 @@ export let uploadPortrait=(portrait,personId)=>{
                 //reject(err)
             });
         });
+    }
+}
+
+//获取具体某一天的商品收益情况
+export let fetchGoodsProfitByDate=(currentDate)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchGoodsProfitByDate',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    currentDate:currentDate
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                {
+                    //{time:8,type:'activity',detailTime:'08:23:49',payment:15}
+                    resolve(json)
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+        })
     }
 }

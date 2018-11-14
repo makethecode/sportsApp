@@ -31,6 +31,8 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_QR_SCANNER} from 'react-native-t
 import Config from '../../../config';
 import Camera from 'react-native-camera';
 import ProductPay from './ProductPay'
+import PreferenceStore from '../../utils/PreferenceStore';
+
 const {height, width} = Dimensions.get('window');
 const defaultImg = require('../../../img/p1.jpeg')
 const nongfushanquan = require('../../../img/nongfushanquan.jpeg')
@@ -103,26 +105,15 @@ class ScannerList extends Component {
             },
             code:null,
             //实现多次扫描
-            goods:[
-                {sortId:'1234567',name:'农夫山泉',brief:'农夫山泉 饮用天然水塑膜量贩装',salePrice:2,
-                    inventortNumber:5,size:'550ml',clubId:1,id:1,type:'nongfushanquan'},
-                {sortId:'678930',name:'脉动',brief:'MIZONE/脉动维生素饮料 青柠味 ',salePrice:4,size:'600ml',clubId:1,id:2,
-                type:'maidong'},
-            ],
-            money:6,
+            goods:[],
+            money:0,
         };
     }
 
     renderRow(rowData, sectionId, rowId) {
 
-        //var url = Config.server + rowData.url
-        var img = defaultImg;
-
-        switch (rowData.type){
-            case 'nongfushanquan':img=nongfushanquan;break;
-            case 'maidong':img=maidong;break;
-            case 'hongniu':img=hongniu;break;
-        }
+        //{"goodsid":1,"name":"物品1","type":"口味:巧克力味","goodsnum":3,"realprice":21360,
+        // "thumburl":"http://www.sportshot.cn/file/goodsPic/2018111101-1.jpg"}]
 
         var lineStyle=null;
         lineStyle={flex:1,flexDirection:'row',padding:10,paddingLeft:0,paddingRight:0,borderBottomWidth:1,
@@ -131,40 +122,41 @@ class ScannerList extends Component {
         var row=(
             <TouchableOpacity style={lineStyle}>
                 <View style={{flex:1,justifyContent:'flex-start',alignItems:'center'}}>
-                    <Image resizeMode="contain" style={{ width:100,height:100}} source={img} />
+                    <Image resizeMode="contain" style={{ width:100,height:100}} source={{uri:rowData.thumburl}} />
                 </View>
-                <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingLeft:5}}>
-                    <View style={{flex:2,justifyContent:'flex-start',alignItems:'center',marginBottom:3}}>
-                        <Text  style={{fontSize:14,color:'#343434'}}>{rowData.brief}</Text>
-                    </View>
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
-                        <View style={{backgroundColor: '#efefef',justifyContent:'center',alignItems:'center',padding:2}}>
-                            <Text style={{flex: 1, fontSize: 12, color: '#8a8a8a'}}>{rowData.size}</Text>
+
+                <View style={{flex:2,justifyContent:'flex-start',alignItems:'flex-start',paddingHorizontal:5}}>
+
+                    <View style={{flex:1,justifyContent:'flex-start',alignItems:'center',flexDirection:'row'}}>
+                        <View style={{flex:4,justifyContent:'flex-start',alignItems: 'flex-start'}}>
+                            <Text  style={{fontSize:14,color:'#343434'}}>{rowData.name}</Text>
                         </View>
-                    </View>
-                        {
-                            //库存量<10时库存紧张
-                            rowData.inventortNumber<10?
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
-                            <View style={{flex: 1, backgroundColor: 'red',justifyContent:'center',alignItems:'center',padding:2}}>
-                                <Text style={{flex: 1, fontSize: 12, color: '#fff'}}>库存紧张</Text>
-                            </View>
-                            < View style={{flex:3,backgroundColor:'red'}}/>
-                            </View>
-                            :
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:5}}></View>
-                        }
-                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
-                        <Text style={{flex:4,fontSize:13,color:'red'}}>￥{rowData.salePrice}</Text>
-                        <TouchableOpacity style={{justifyContent:'center',alignItems: 'center',padding:5,marginLeft:5}}
+
+                        <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'flex-end'}}
                                           onPress={()=>{
                                               var goods = this.state.goods
                                               goods.splice(rowId,1)
-                                              var money = this.state.money-rowData.salePrice
+                                              var money = this.state.money-rowData.realprice*rowData.goodsnum
                                               this.setState({goods:goods,money:money})
                                           }}>
-                            <Image style={{width: 20, height: 20}} source={require('../../../img/delete_icon.png')}></Image>
+                            <Ionicons name='md-close-circle' size={22} color={'#aaa'}/>
                         </TouchableOpacity>
+                    </View>
+
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
+                        <View style={{justifyContent:'center',alignItems:'center',padding:2}}>
+                            <Text style={{flex: 1, fontSize: 12, color: '#666'}}>数量:{rowData.goodsnum}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}>
+                        <View style={{justifyContent:'center',alignItems:'center',padding:2}}>
+                            <Text style={{flex: 1, fontSize: 12, color: '#666'}}>{rowData.type}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:3}}>
+                        <Text style={{flex:4,fontSize:13,color:'red'}}>￥{rowData.realprice/100}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -219,7 +211,7 @@ class ScannerList extends Component {
                     <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',alignItems:'center',padding:5,backgroundColor:'#f4f4f4',paddingBottom:15}}>
                         <View style={{flex:4,flexDirection:'row',padding:10,alignItems: 'center'}}>
                             <Text style={{color:'#8a8a8a',fontSize:15}}>总计：</Text>
-                            <Text style={{color:'red',fontSize:15}}>￥{this.state.money}</Text>
+                            <Text style={{color:'red',fontSize:15}}>￥{this.state.money/100}</Text>
                         </View>
                         <View style={{flex:1}}>
                             <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
@@ -304,6 +296,46 @@ class ScannerList extends Component {
     componentWillUnmount()
     {
         this.setState({goods:[]})
+    }
+
+    componentDidMount(){
+
+        //缓存PreferenceStore中获取购物车数据
+        //PreferenceStore中只能存入String（存入Json数据）
+
+
+        // PreferenceStore.put('wbh',
+        //     '[{"goodsid":1,"name":"物品1","type":"口味:巧克力味","goodsnum":3,"realprice":21360,"thumburl":"http://www.sportshot.cn/file/goodsPic/2018111101-1.jpg"},'
+        //        +'{"goodsid":2,"name":"物品2","type":"颜色:白色增肌粉3磅","goodsnum":1,"realprice":19900,"thumburl":"http://www.sportshot.cn/file/goodsPic/2018111101-2.jpg"}]'
+        // );
+        // PreferenceStore.put('zp1',
+        //     '[{"goodsid":1,"name":"物品1","type":"口味:巧克力味","goodsnum":3,"realprice":21360,"thumburl":"http://www.sportshot.cn/file/goodsPic/2018111101-1.jpg"}]'
+        // );
+
+        // PreferenceStore.getAllItems().then(values => {
+        //     var value = values;
+        // });
+
+        // PreferenceStore.delete('wbh');
+
+
+        PreferenceStore.get('username').then((val)=>{
+            var username = val;
+            return PreferenceStore.get(username);
+        }).then((val)=>{
+            var goodsList = JSON.parse(val);
+            var money = 0;
+
+            if(goodsList!==undefined&&goodsList!==null&&goodsList!='')
+            {
+                for(var i = 0;i<goodsList.length;i++){
+                    money += goodsList[i].realprice * goodsList[i].goodsnum;
+                }
+                //TODO:auto-login
+                this.setState({goods:goodsList,money:money})
+            }
+        })
+
     }
 }
 

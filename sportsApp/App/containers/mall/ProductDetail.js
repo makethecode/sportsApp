@@ -13,24 +13,20 @@ import {
     TouchableOpacity,
     RefreshControl,
     Animated,
-    Easing
+    Easing,
+    DeviceEventEmitter
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var {height, width} = Dimensions.get('window');
-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ViewPager from 'react-native-viewpager';
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_QR_SCANNER,ACTION_BARCODE,ACTION_BOOK} from 'react-native-toolbar-wrapper'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import EditProduct from './EditProduct'
+import Config from '../../../config';
+import Proxy from '../../utils/Proxy';
 
-import ProductsList from './ProductsList';
-import ShopCart from './ShopCart';
-
-var IMGS = [
-    require('../../../img/t1.jpg'),
-    require('../../../img/t2.jpeg'),
-    require('../../../img/t3.jpeg'),
-    require('../../../img/t2.jpeg'),
-];
+var {height, width} = Dimensions.get('window');
 
 class ProductDetail extends Component{
 
@@ -41,27 +37,15 @@ class ProductDetail extends Component{
         }
     }
 
-    navigate2ProductsList(){
+    navigate2EditProduct(product)
+    {
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'products_list',
-                component: ProductsList,
+                name: 'EditProduct',
+                component: EditProduct,
                 params: {
-
-                }
-            })
-        }
-    }
-
-    navigate2ShopCart(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'shop_cart',
-                component: ShopCart,
-                params: {
-
+                    product:product
                 }
             })
         }
@@ -71,9 +55,9 @@ class ProductDetail extends Component{
         return (
             <View style={{width:width}}>
                 <Image
-                    source={data}
+                    source={{uri:data}}
                     style={{width:width,flex:3}}
-                    resizeMode={"contain"}
+                    resizeMode={"stretch"}
                 />
             </View>
         );
@@ -81,161 +65,234 @@ class ProductDetail extends Component{
 
     constructor(props) {
         super(props);
-        var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
-            dataSource:ds.cloneWithPages(IMGS),
-            goodName:null,
-            productInfo:this.props.productInfo,
+            product:{id:0,goodsnum:0,name:'',type:'',typeStr:'',typeList:[],jsonList:[],reservenum:0,brief:'',discount:0,
+                thumburl:'',price:0,realprice:0,creatorId:0,creatorTel:'',creatorName:'',creatorAvatar:'',imgsUrl:'',detailurl:''},
+            imgHeight:height,
+            imgWidth:width,
         }
     }
 
+    renderAllJson(jsonList){
+        var allJsons = [];
+        if(jsonList==null)return null;
+
+        var str = jsonList.substring(1,jsonList.length-1);
+        var strList = str.split(',');
+        var model;
+        for(var i=0;i<strList.length;i++) {
+            model = strList[i];
+            if(this.isNumber(model));
+            else model = model.substring(1,model.length-1)
+            var item = this.getJsonItem(model)
+            allJsons.push(item);
+        }
+        return allJsons;
+    }
+
+    getJsonItem(model){
+
+        return (
+            <View style={{flexDirection:'row',borderColor:'#ddd',padding:3,marginRight:8,borderWidth:1}}>
+                <Text style={{color:'#222',fontSize:12}}>{model}</Text>
+            </View>
+        );
+    }
+
+    isNumber(val) {
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) || regNeg.test(val)) {
+        return true;
+    } else {
+        return false;
+    }
+    }
+
+    renderRow(rowData, sectionId, rowId) {
+
+        var jsonList = this.state.product.jsonList[rowId];
+
+        var jsonListView = (
+            <ScrollView
+                automaticallyAdjustContentInsets={false}
+                bounces ={false}
+                showsHorizontalScrollIndicator  ={false}
+                ref={(scrollView) => { this._scrollView = scrollView; }}
+                horizontal={true}
+            >
+                {this.renderAllJson(jsonList)}
+            </ScrollView>
+        );
+
+        return (
+            <View style={{flexDirection:'row',alignItems:'center',marginTop:3}}>
+                <Text style={{color:'#666',}} adjustsFontSizeToFit={true} allowFontScaling={true}>{rowData} </Text>
+                <View style={{flexDirection:'row',}}>
+                    {jsonListView}
+                </View>
+            </View>
+        )}
+
     render() {
+
+            var imgsView = null;
+            var imgs = this.state.product.imgsurl;
+            if (imgs !== undefined && imgs !== null) {
+                var imgList = imgs.split(';');
+                var ds = new ViewPager.DataSource({pageHasChanged: (p1, p2) => p1 !== p2});
+                var dataSource = ds.cloneWithPages(imgList);
+
+                imgsView=(
+                    <ViewPager
+                        style={this.props.style}
+                        dataSource={dataSource}
+                        renderPage={this._renderPage}
+                        isLoop={true}
+                        autoPlay={true}
+                    />
+                )
+            }
+
+            var oldPrice = this.state.product.price / 100;
+            var discount = this.state.product.discount / 100;
+            var newPrice = this.state.product.realprice / 100;
+
+            var typeListView = null;
+            var typeList = this.state.product.typeList;
+
+            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            if (typeList !== undefined && typeList !== null && typeList.length > 0) {
+                typeListView = (
+                    <View style={{marginTop:1,padding:10,backgroundColor:'#fff'}}>
+                    <ListView
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(typeList)}
+                        renderRow={this.renderRow.bind(this)}
+                    /></View>
+                );
+            }
 
         return (
             <View style={{flex:1,backgroundColor:'#eee'}}>
-                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#66CDAA'}}>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-                        <Icon name={'angle-left'} size={30} color="#fff"/>
-                    </TouchableOpacity>
-                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-                        <Text style={{color:'#fff',fontSize:18}}
-                              numberOfLines={1}
-                        >
-                            {this.state.productInfo.name}
-                        </Text>
-                    </View>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{console.log('分享');}}>
-                        <Text style={{color:'#fff',fontSize:18}}>分享</Text>
-                    </TouchableOpacity>
-                </View>
-
+                <Toolbar width={width} title="商品详情" navigator={this.props.navigator}
+                         actions={[{icon:ACTION_BOOK,show:OPTION_SHOW}]}
+                         onPress={(i)=>{
+                             this.navigate2EditProduct(this.state.product)
+                         }}>
                 <ScrollView style={{width:width,height:height,backgroundColor:'#eee'}}>
 
                     <View style={{width:width,height:height*0.4}}>
-                        <ViewPager
-                            style={this.props.style}
-                            dataSource={this.state.dataSource}
-                            renderPage={this._renderPage}
-                            isLoop={true}
-                            autoPlay={true}
+                        {imgsView}
+                    </View>
+
+                    <View>
+                        {/*商品名称*/}
+                        <View style={{width:width,flexDirection:'column',justifyContent:'center',alignItems:'flex-start',padding:10,backgroundColor:'#fff'}}>
+                        <Text style={{color:'#343434',fontSize:15}}>{this.state.product.name}</Text>
+                        </View>
+                        {/*价格+折扣*/}
+                        <View style={{width:width,flexDirection:'column',justifyContent:'center',alignItems:'flex-start',marginTop:1,backgroundColor:'#fff',padding:10}}>
+                            <Text style={{fontSize:12,color:'#666',textDecorationLine:'line-through'}}>原价 ￥{oldPrice}</Text>
+                            <View style={{flexDirection:'row',marginTop:5}}>
+                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
+                                <Text style={{fontSize:16,color:'red'}}>现价 ￥{newPrice}</Text>
+
+                                <View style={{backgroundColor:'#66CDAA',marginLeft:20,padding:3,textAlign:'center'}}>
+                                    <Text style={{fontSize:12,color:'#fff'}}>折扣 {discount}</Text>
+                                </View>
+                                </View>
+
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
+                                    <Text style={{fontSize:13,color:'#666'}}>库存量 </Text>
+                                <View style={{backgroundColor:'red',marginLeft:5,padding:3}}>
+                                    <Text style={{fontSize:16,color:'#fff'}}>{this.state.product.reservenum}</Text>
+                                </View>
+                                </View>
+
+                            </View>
+                        </View>
+                        {/*简介*/}
+                        <View style={{flexDirection:'row',padding:10,alignItems:'center',backgroundColor:'#fff',marginTop:1}}>
+                            <Text style={{color:'#444',fontSize:13}}>{this.state.product.brief}</Text>
+                        </View>
+
+                    </View>
+
+                    {/*规格*/}
+
+                        {typeListView}
+
+                    {/*上传人*/}
+                    <View style={{marginTop:1,padding:10,backgroundColor:'#fff',flexDirection:'row'}}>
+                        <View style={{flex:1,jusifyContent:'center'}}>
+                            <Image source={{uri:this.state.product.creatorAvatar}} style={{width:35,height:35,borderRadius:17}} resizeMode={"stretch"} />
+                        </View>
+                        <View style={{flex:6,jusifyContent:'center',alignItems:'flex-start',flexDirection:'column'}}>
+                            <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                                <Ionicons name='md-person' size={12} color="#fca482"/>
+                                <Text style={{fontSize:13,color:'#333',marginLeft:5}}>{this.state.product.creatorName}</Text>
+                            </View>
+                            <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                                <Ionicons name='md-call' size={12} color="#fca482"/>
+                                <Text style={{fontSize:13,color:'#333',marginLeft:5}}>{this.state.product.creatorTel}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    {/*详情图片*/}
+                    <View style={{marginTop:2,backgroundColor:'#fff',marginBottom:20}}>
+                        <Image
+                            source={{uri:this.state.product.detailurl}}
+                            style={{width:this.state.imgWidth,height:this.state.imgHeight}}
+                            resizeMode={"stretch"}
                         />
-                    </View>
-
-                    <View style={{backgroundColor:'#fff',padding:10}}>
-                        <Text style={{color:'#343434',fontSize:13,marginBottom:5}}>{this.state.productInfo.name}</Text>
-                        <Text style={{flex:4,fontSize:17,color:'red'}}>￥{this.state.productInfo.price}</Text>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',marginTop:3}}>
-                            <Text style={{fontSize:11,color:'#aaa'}}>返利:</Text>
-                            <Text style={{fontSize:13,color:'red'}}>{this.state.productInfo.discount}</Text>
-
-                        </View>
-                        <View style={{flexDirection:'row',marginTop:5,alignItems:'center'}}>
-                            <View style={{borderWidth:1,borderColor:'red',padding:1,marginRight:5}}>
-                                <Text style={{color:'red',fontSize:11}}>今日秒杀</Text>
-                            </View>
-                            <Text style={{color:'red',fontSize:11,}}>预计31日10：00开始</Text>
-                        </View>
-                    </View>
-
-                    <View style={{marginTop:10,padding:10,backgroundColor:'#fff'}}>
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <Text style={{color:'#aaa',}} adjustsFontSizeToFit={true} allowFontScaling={true}>尺码：</Text>
-                            <View style={{flexDirection:'row',}}>
-                                <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                    <Text style={{color:'#343434',fontSize:11}}>M</Text>
-                                </View>
-                                <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                    <Text style={{color:'#343434',fontSize:11}}>L</Text>
-                                </View>
-                                <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                    <Text style={{color:'#343434',fontSize:11}}>XL</Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={{flexDirection:'row',alignItems:'center',marginTop:8}}>
-                            <Text style={{color:'#aaa',fontSize:12}}>颜色：</Text>
-                            <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                <Text style={{color:'#343434',fontSize:11}}>白色</Text>
-                            </View>
-                            <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                <Text style={{color:'#343434',fontSize:11}}>灰色</Text>
-                            </View>
-                            <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',padding:3,marginRight:8}}>
-                                <Text style={{color:'#343434',fontSize:11}}>黑色</Text>
-                            </View>
-                        </View>
-                        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',marginTop:8}}>
-                            <Text style={{flex:1,color:'#aaa',fontSize:12}}>数量：</Text>
-
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',}}>
-                                <View style={{flex:1}}>
-                                    <Icon name={'plus-square-o'} size={20} color="#ddd"/>
-                                </View>
-                                <View style={{flex:1,}}>
-                                    <Text style={{color:'#343434',fontSize:11}}>1</Text>
-                                </View>
-                                <View style={{flex:1}}>
-                                    <Icon name={'minus-square-o'} size={20} color="#ddd"/>
-                                </View>
-                            </View>
-                            <View style={{flex:2,color:'#aaa',fontSize:12}}>
-
-                            </View>
-                        </View>
-
-                        <View style={{marginTop:8}}>
-                            <Text style={{flex:1,color:'#008B00',fontSize:13}}>健康商城</Text>
-
-                            <View style={{flex:2,flexDirection:'row',marginTop:10}}>
-                                <Icon name="bookmark-o" size={16} color="#EEAD0E" />
-                                <Text style={{color:'#aaa',fontSize:11,marginRight:10}}>
-                                   正品保证
-                                </Text>
-                                <Icon name="bookmark-o" size={16} color="#EEAD0E" />
-                                <Text style={{color:'#aaa',fontSize:11,marginRight:10}}>
-                                   超值返利
-                                </Text>
-                                <Icon name="bookmark-o" size={16} color="#EEAD0E" />
-                                <Text style={{color:'#aaa',fontSize:11,marginRight:10}}>
-                                  全场包邮
-                                </Text>
-                            </View>
-
-                        </View>
                     </View>
 
                 </ScrollView>
 
-                <View style={{flexDirection:'row',borderWidth:1,borderColor:'#ddd',position:'absolute',bottom:5}}>
-
-                    <View style={{flexDirection:'row',flex:2,backgroundColor:'#fff'}}>
-
-                        <View style={{marginRight:5,marginLeft:10}}>
-                            <Icon name="star-o" size={23} color="#EEAD0E" />
-                            <Text style={{color:'#343434',fontSize:11}}>收藏</Text>
-                        </View>
-                        <View style={{marginRight:5,marginLeft:10}}>
-                            <Icon name="shopping-cart" size={23} color="#aaa" />
-                            <Text style={{color:'#343434',fontSize:11}}>购物车</Text>
-                            <View style={{backgroundColor:'red',position:'absolute',top:0,right:5,padding:3,borderRadius:10}}>
-                                <Text style={{color:'#fff',fontSize:8}}>2</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#476bec',padding:10,}}
-                    onPress={()=>{this.navigate2ShopCart();}}>
-                        <Text style={{color:'#fff',fontSize:13}}>加入购物车</Text>
-                    </TouchableOpacity>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'red',padding:10,}}>
-                        <Text style={{color:'#fff',fontSize:13}}>立即购买</Text>
-                    </View>
-
-                </View>
-
+                </Toolbar>
             </View>
         );
+    }
+
+    componentWillMount(){
+        this.fetchGoodsDetailInfo(this.props.productId)
+        this.productListener=DeviceEventEmitter.addListener('on_product_edit', (data)=>{
+            if(data)
+                this.fetchGoodsDetailInfo(this.props.productId)
+        });
+    }
+
+    componentWillUnmount()
+    {
+        if(this.productListener)
+            this.productListener.remove();
+    }
+
+    fetchGoodsDetailInfo(productId){
+
+        Proxy.postes({
+            url: Config.server + '/func/node/fetchGoodsDetailInfo',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                productId:productId
+            }
+        }).then((json)=>{
+
+            var product = json.data;
+            this.setState({product:product})
+
+            Image.getSize(this.state.product.detailurl, (imgwidth, imgheight) => {
+                var imgHeight = width * imgheight / imgwidth;
+                this.setState({imgHeight:imgHeight,imgwidth:width});
+            });
+
+        }).catch((e)=>{
+        })
+
     }
 
 }

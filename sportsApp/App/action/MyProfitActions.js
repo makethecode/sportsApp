@@ -330,6 +330,30 @@ export let fetchActivityPayment=()=>{
     }
 }
 
+export let fetchGoodsProfits=()=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/node/fetchGoodsProfits',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                }
+            }).then((json)=>{
+                resolve(json)
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
 
 export let onPaymentUpdate=(payments)=>{
     return (dispatch,getState)=>{

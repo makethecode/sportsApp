@@ -22,6 +22,12 @@ var PreferenceStore={
         });
 
     },
+    getAllItems:function () {
+        return   SInfo.getAllItems({
+            sharedPreferencesName:'shared_preferences',
+            keychainService:'app'
+        });
+    }
 
 
 };

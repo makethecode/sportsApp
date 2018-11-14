@@ -248,7 +248,6 @@ var styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
 
     const props = {
-
     }
     return props
 }

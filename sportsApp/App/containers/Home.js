@@ -575,7 +575,7 @@ class Home extends Component {
                                         <TouchableOpacity
                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
                                             onPress={ ()=>{
-                                                this.navigate2Profit();
+                                                //this.navigate2Profit();
                                             }}>
 
                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
