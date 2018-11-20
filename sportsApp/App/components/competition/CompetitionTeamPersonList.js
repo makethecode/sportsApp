@@ -111,9 +111,16 @@ class CompetitionTeamPersonList extends Component {
                                                source={require('../../../img/portrait.jpg')}/>
                                 }
                             </View>
+
                             <View style={{flex:4,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
-                                <Text style={{ color: '#222', fontSize: 14,marginBottom:5}}>{person.perNum}</Text>
-                                <Text style={{ color: '#666', fontSize: 13}}>{person.mobilePhone}</Text>
+                                <View style={{flexDirection:'row',marginBottom:5,}}><Ionicons name='md-person' size={13} color="#fca482"/><Text style={{ color: '#222', fontSize: 14,marginLeft:3}}>{person.perNum}</Text></View>
+                                <View style={{flexDirection:'row'}}><Ionicons name='md-call' size={13} color="#fca482"/><Text style={{ color: '#666', fontSize: 12,marginLeft:3}}>{person.mobilePhone}</Text></View>
+                            </View>
+
+                            <View style={{flex:1,justifyContent:'center',alignItems: 'flex-end'}}>
+                                <View style={{borderWidth:1,borderColor:'#fc3c3f',padding:3,paddingHorizontal:5,borderRadius:3}}>
+                                    <Text style={{fontSize:13,color:'#fc3c3f'}}>{person.memberTypeStr}</Text>
+                                </View>
                             </View>
                         </View>
 

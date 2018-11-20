@@ -143,7 +143,7 @@ class SelectVenue extends Component {
                 )
             })
 
-        }
+        }else{venueList.push(<View/>)}
 
         return (
             <View style={styles.container}>
@@ -212,6 +212,7 @@ class SelectVenue extends Component {
                 if(json.re==1)
                 {
                     var venues = json.data;
+                    if(venues!=null)
                     venues.map((venue)=>{
                         venue.checked = false;
                     })
@@ -222,6 +223,7 @@ class SelectVenue extends Component {
                     if(json.re=-100){
                         this.props.dispatch(getAccessToken(false))
                     }
+                    this.setState({venues:[],allvenues:[]});
 
                 }
             })

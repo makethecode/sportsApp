@@ -195,10 +195,13 @@ class CompetitionPage extends Component{
         this.state={
             dataSource:ds.cloneWithPages(IMGS),
             itemList:[
-                {'title':'比赛场次','icon':require('../../../img/com_on.png')},
-                {'title':'赛事安排','icon':require('../../../img/com_more.png')},
+                {'title':'比赛管理','icon':require('../../../img/com_on.png')},
+                {'title':'分组名单','icon':require('../../../img/com_more.png')},
+                {'title':'直播间','icon':require('../../../img/com_live.png')},
                 {'title':'参赛队伍','icon':require('../../../img/com_record.png')},
-                {'title':'直播间','icon':require('../../../img/com_live.png')},],
+                {'title':'对阵成绩','icon':require('../../../img/com_sign.png')},
+                {'title':'个人榜','icon':require('../../../img/com_team.png')},
+            ],
             notice:[],
 
             competitionId:this.props.competitionId,
@@ -244,14 +247,7 @@ class CompetitionPage extends Component{
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="比赛" navigator={this.props.navigator}
-                         actions={[{icon:ACTION_BARCODE,show:OPTION_SHOW}]}
-                         onPress={(i)=>{
-                             if(i==0)
-                             {//扫码报名
-                             }
-                         }}>
-
+                <Toolbar width={width} title="比赛" actions={[]} navigator={this.props.navigator}>
                     <View style={{flex:1,height:height,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
                         <View style={{width:width,height:120}}>
@@ -283,9 +279,9 @@ class CompetitionPage extends Component{
                                 />
                         </View>
 
-                        <View style={{flex:1,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                        <View style={{flex:2,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                             <GridView
-                                itemDimension={width/4-20}
+                                itemDimension={width/3-20}
                                 items={this.state.itemList}
                                 style={styles.gridView}
                                 renderItem={this.renderRow.bind(this)}
@@ -296,7 +292,7 @@ class CompetitionPage extends Component{
                             <Text style={{fontSize:15,color:'#444'}}>最新赛讯</Text>
                         </View>
 
-                        <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                             <Animated.View style={{opacity: this.state.fadeAnim,flex:1,paddingTop:5,paddingBottom:5,}}>
                                 <ScrollView
                                     refreshControl={
@@ -325,15 +321,16 @@ class CompetitionPage extends Component{
     renderRow(rowData,rowId)
     {
         return(
-        <TouchableOpacity style={{height:width/4,width:width/4-20,flexDirection:'column'}}
+        <TouchableOpacity style={{height:width/4,width:width/3-20,flexDirection:'column'}}
                           onPress={()=>{
                               switch(rowId){
                                   case 0:
-                                      if(this.props.type==6){this.navigate2CompetitionGamesList(this.props.projectId)}
-                                      else{this.navigate2CompetitionGameList(this.props.projectId)};break;//比赛场次
-                                  case 1:this.navigate2CompetitionGroupList(this.props.projectId,this.props.projectType);break;//参赛队伍
-                                  case 2:this.navigate2CompetitionTeamList(this.props.projectId);break;//排行榜
-                                  case 3:this.navigate2LiveHome();break;//直播间
+                                      if(this.props.projectType==6){this.navigate2CompetitionGamesList(this.props.projectId)}
+                                      else{this.navigate2CompetitionGameList(this.props.projectId)};break;//比赛管理
+
+                                  case 1:this.navigate2CompetitionGroupList(this.props.projectId,this.props.projectType);break;//分组名单
+                                  case 2:this.navigate2LiveHome();break;//直播间
+                                  case 3:this.navigate2CompetitionTeamList(this.props.projectId);break;//参赛队伍
                               }
                           }}
         >
@@ -368,14 +365,32 @@ class CompetitionPage extends Component{
 
                         <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
                             {
-                                rowData.isSingle == '1'?
+                                rowData.isSingle=='1'?
                                     <View>
-                                        <Image style={{height: 45, width: 45, borderRadius: 23}} source={{uri: rowData.teamAimgList[0]}}/>
+                                        {rowData.teamAimgList[0] == ''?
+                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
+                                                   source={{uri: rowData.teamAimgList[0]}}/>
+                                        }
                                     </View>
                                     :
                                     <View style={{flexDirection:'row'}}>
-                                        <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamAimgList[0]}}/>
-                                        <Image style={{height: 30, width: 30, borderRadius: 15,marginLeft:3}} source={{uri: rowData.teamAimgList[1]}}/>
+                                        {rowData.teamAimgList[0] == ''?
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={{uri: rowData.teamAimgList[0]}}/>
+                                        }
+                                        {rowData.teamAimgList[1] == ''?
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={{uri: rowData.teamAimgList[1]}}/>
+                                        }
                                     </View>
                             }
                             <Text style={{marginTop:10,fontSize:12,color:'#666'}}>{rowData.teamA}</Text>
@@ -400,12 +415,30 @@ class CompetitionPage extends Component{
                             {
                                 rowData.isSingle=='1'?
                                     <View>
-                                        <Image style={{height: 45, width: 45, borderRadius: 23}} source={{uri: rowData.teamBimgList[0]}}/>
+                                        {rowData.teamBimgList[0] == ''?
+                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
+                                                   source={{uri: rowData.teamBimgList[0]}}/>
+                                        }
                                     </View>
                                     :
                                     <View style={{flexDirection:'row'}}>
-                                        <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamBimgList[0]}}/>
-                                        <Image style={{height: 30, width: 30, borderRadius: 15}} source={{uri: rowData.teamBimgList[1]}}/>
+                                        {rowData.teamBimgList[0] == ''?
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={{uri: rowData.teamBimgList[0]}}/>
+                                        }
+                                        {rowData.teamBimgList[1] == ''?
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={require('../../../img/portrait.jpg')}/>
+                                            :
+                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
+                                                   source={{uri: rowData.teamBimgList[1]}}/>
+                                        }
                                     </View>
                             }
                             <Text style={{marginTop:10,fontSize:12,color:'#666'}}>{rowData.teamB}</Text>

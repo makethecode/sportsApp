@@ -16,7 +16,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_SORT} from 'react-native-toolbar-wrapper'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CreateGroup from './CreateGroup';
@@ -214,6 +214,8 @@ class MyGroup extends Component{
             if (json.re == 1) {
                 this.setState({myGroupList: json.data,showProgress:false})
             }
+
+            this.setState({showProgress:false})
         });
     }
 
@@ -247,7 +249,7 @@ class MyGroup extends Component{
         return (
             <View style={{flex:1, backgroundColor:'#eee',}}>
 
-                <Toolbar width={width} title="我的群组" navigator={this.props.navigator} actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+                <Toolbar width={width} title="我的群组" navigator={this.props.navigator} actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
                                  this.showPopover();
@@ -303,6 +305,7 @@ class MyGroup extends Component{
                         <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
                                           onPress={()=>{
                                               //TODO:cancel this behaviour
+                                              this.setState({showProgress:false})
 
                                           }}>
                             <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',

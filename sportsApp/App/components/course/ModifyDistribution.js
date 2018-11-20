@@ -35,6 +35,7 @@ import{
 import {getAccessToken,} from '../../action/UserActions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import SelectCoach from './SelectCoach';
+import DatePicker from 'react-native-datepicker';
 
 var {height, width} = Dimensions.get('window');
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
@@ -69,15 +70,19 @@ class ModifyBadmintonCourse extends Component{
 
     }
 
+    //选运动类型
+    _handlePress2(index) {
+
+        if(index!==0){
+            var sportsType = index-1;
+            this.setState({course:Object.assign(this.state.course,{sportsType:parseInt(sportsType)})});
+        }
+
+    }
+
     show(actionSheet) {
         this[actionSheet].show();
     }
-
-
-    show1(actionSheet1) {
-        this[actionSheet1].show();
-    }
-
 
     setCoursePlace(coursePlace)
     {
@@ -117,78 +122,14 @@ class ModifyBadmintonCourse extends Component{
         }
     }
 
-    searchMember(info){
-        this.props.dispatch(searchMember(info)).then((json)=>{
-            if(json.re==1){
-                this.setState({member:json.data});
-            }else{
-                if(json.re==-100){
-                    this.props.dispatch(getAccessToken(false));
-                }else{
-                    alert('该用户未注册，是否邀请');
-                    //TODO:微信分享邀请好友
-                }
-            }
-        });
-    }
-
-    removeMember(timeList,rowData) {
-
-        var index=-1;
-        timeList.map((time, i) => {
-            if(time.id==rowData.id){
-                index = i;
-            }
-        });
-        if(index!==-1){
-            timeList.splice(index, 1);
-            this.setState({timeList:timeList});
-        }
-    }
-
-    renderRow(rowData,sectionId,rowId){
-
-        var dayMap=['周一','周二','周三','周四','周五','周六','周日']
-        var dayStr=dayMap[rowData.day-1]
-
-        var row=(
-            <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
-                borderColor:'#eee',borderRadius:8,margin:5}}>
-
-                <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-                    <View style={{flex:1}}>
-                        <Text style={{color:'#888'}}>{rowData.id}.</Text>
-                    </View>
-                    <View style={{flex:2}}>
-                        <Text style={{color:'#888'}}>{dayStr}</Text>
-                    </View>
-                    <View style={{flex:2,}}>
-                        <Text style={{color:'#aaa'}}>{rowData.startTime}   -</Text>
-                    </View>
-                    <View style={{flex:2,marginLeft:5}}>
-                        <Text style={{color:'#aaa'}}>{rowData.endTime}</Text>
-                    </View>
-                </View>
-
-                <TouchableOpacity style={{flex:1}}
-                                  onPress={()=>{
-                                      this.removeMember(this.state.timeList,rowData);
-                                  }}>
-                    <Icon name={'minus-circle'} size={20} color="#FF4040"/>
-                </TouchableOpacity>
-            </View>
-        );
-        return row;
-    }
-
     constructor(props) {
         super(props);
         this.state={
             dialogShow: false,
-            modalVisible:false,
             course:{courseId:this.props.course.courseId,courseName:this.props.course.courseName,maxNumber:this.props.course.maxNumber,coachId:this.props.course.coachId,trainerId:this.props.course.trainerId,
                 classCount:this.props.course.classCount,cost:this.props.course.cost,courseGrade:this.props.course.courseGrade,unitName:this.props.course.unitName,
-                costType:this.props.course.costType,detail:this.props.course.detail,coursePlace:this.props.course.coursePlace,unitId:this.props.course.unitId,scheduleDes:this.props.course.scheduleDes},
+                costType:this.props.course.costType,detail:this.props.course.detail,coursePlace:this.props.course.coursePlace,unitId:this.props.course.unitId,scheduleDes:this.props.course.scheduleDes,
+                sportsType:this.props.course.sportsType,startDate:this.props.course.startDateStr,endDate:this.props.course.endDateStr},
             doingFetch: false,
             isRefreshing: false,
             time:null,
@@ -209,24 +150,9 @@ class ModifyBadmintonCourse extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
-        const CANCEL_INDEX1 = 0;
-        const DESTRUCTIVE_INDEX1 = 1;
-
         const costTypeButtons=['取消','按人支付','按小时支付','按班支付'];
         const classTypeButtons=['取消','初级班','中级班','高级班'];
-
-        var timeList = this.state.timeList;
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if(timeList!==undefined&&timeList!==null&&timeList.length>0)
-        {
-            timeList=(
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={ds.cloneWithRows(timeList)}
-                    renderRow={this.renderRow.bind(this)}
-                />
-            );
-        }
+        const sportsTypeButtons=['取消','羽毛球','足球','乒乓球','篮球'];//0羽毛球1足球2乒乓球3篮球
 
         var costTypeStr = null;
         switch(this.state.course.costType){
@@ -241,6 +167,14 @@ class ModifyBadmintonCourse extends Component{
             case 1:classTypeStr = '初级班';break;
             case 2:classTypeStr = '中级班';break;
             case 3:classTypeStr = '高级班';break;
+        }
+
+        var sportsTypeStr = null;
+        switch (this.state.course.sportsType){
+            case 0:sportsTypeStr = '羽毛球';break;
+            case 1:sportsTypeStr = '足球';break;
+            case 2:sportsTypeStr = '乒乓球';break;
+            case 3:sportsTypeStr = '篮球';break;
         }
 
 
@@ -297,12 +231,45 @@ class ModifyBadmintonCourse extends Component{
                                         ref={(p) => {
                                             this.actionSheet1 =p;
                                         }}
-                                        title="请选择课程类型"
+                                        title="请选择课程等级"
                                         options={classTypeButtons}
-                                        cancelButtonIndex={CANCEL_INDEX1}
-                                        destructiveButtonIndex={DESTRUCTIVE_INDEX1}
+                                        cancelButtonIndex={CANCEL_INDEX}
+                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                         onPress={
                                             (data)=>{ this._handlePress1(data); }
+                                        }
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+                            {/*运动类型*/}
+                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                                <View style={{flex:1}}>
+                                    <Text style={{color:'#343434'}}>运动类型</Text>
+                                </View>
+                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                                    borderRadius:10}}
+                                                  onPress={()=>{ this.show('actionSheet2'); }}>
+                                    {
+                                        classTypeStr==null?
+                                            <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                                <Text style={{color:'#888',fontSize:14}}>请选择运动类型 ></Text>
+                                            </View> :
+                                            <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                                <Text style={{color:'#444',fontSize:14}}>{sportsTypeStr}</Text>
+                                            </View>
+
+                                    }
+                                    <ActionSheet
+                                        ref={(p) => {
+                                            this.actionSheet2 =p;
+                                        }}
+                                        title="请选择运动类型"
+                                        options={sportsTypeButtons}
+                                        cancelButtonIndex={CANCEL_INDEX}
+                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                        onPress={
+                                            (data)=>{ this._handlePress2(data); }
                                         }
                                     />
                                 </TouchableOpacity>
@@ -349,6 +316,74 @@ class ModifyBadmintonCourse extends Component{
 
                             <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
                                 <Text style={{color:'#666',fontSize:13}}>授课信息</Text>
+                            </View>
+
+                            {/*开始时间*/}
+                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                                <View style={{flex:1}}>
+                                    <Text style={{color:'#343434'}}>开始时间</Text>
+                                </View>
+                                <View style={{flex:2,marginLeft:30,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <Text style={{color:'#444',fontSize:15}}>{this.state.course.startDate}</Text>
+                                </View>
+                                <View style={{height:40,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                                    <DatePicker
+                                        style={{width:40,marginLeft:0,borderWidth:0,justifyContent:'center',alignItems:'center'}}
+                                        customStyles={{
+                                            placeholderText:{color:'transparent',fontSize:12},
+                                            dateInput:{height:30,borderWidth:0},
+                                            dateTouchBody:{marginRight:0,height:25,borderWidth:0},
+                                        }}
+                                        mode="date"
+                                        placeholder="选择"
+                                        format="YYYY-MM-DD"
+                                        minDate={"2018-01-01"}
+                                        confirmBtnText="确认"
+                                        cancelBtnText="取消"
+                                        showIcon={true}
+                                        iconComponent={
+                                            <View style={{height:40,width:40,justifyContent:'center',alignItems:'center'}}>
+                                                <Icon name={'calendar'} size={20} color="#888"/>
+                                            </View>}
+                                        onDateChange={(date) => {
+                                            this.setState({course:Object.assign(this.state.course,{startDate:date})})
+                                        }}
+                                    />
+                                </View>
+                            </View>
+
+                            {/*结束时间*/}
+                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                                <View style={{flex:1}}>
+                                    <Text style={{color:'#343434'}}>结束时间</Text>
+                                </View>
+                                <View style={{flex:2,marginLeft:30,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                                    <Text style={{color:'#444',fontSize:15}}>{this.state.course.endDate}</Text>
+                                </View>
+                                <View style={{height:40,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                                    <DatePicker
+                                        style={{width:40,marginLeft:0,borderWidth:0,justifyContent:'center',alignItems:'center'}}
+                                        customStyles={{
+                                            placeholderText:{color:'transparent',fontSize:12},
+                                            dateInput:{height:30,borderWidth:0},
+                                            dateTouchBody:{marginRight:0,height:25,borderWidth:0},
+                                        }}
+                                        mode="date"
+                                        placeholder="选择"
+                                        format="YYYY-MM-DD"
+                                        minDate={"2018-01-01"}
+                                        confirmBtnText="确认"
+                                        cancelBtnText="取消"
+                                        showIcon={true}
+                                        iconComponent={
+                                            <View style={{height:40,width:40,justifyContent:'center',alignItems:'center'}}>
+                                                <Icon name={'calendar'} size={20} color="#888"/>
+                                            </View>}
+                                        onDateChange={(date) => {
+                                            this.setState({course:Object.assign(this.state.course,{endDate:date})})
+                                        }}
+                                    />
+                                </View>
                             </View>
 
                             {/*课程人数*/}
@@ -556,62 +591,6 @@ class ModifyBadmintonCourse extends Component{
                     </TouchableOpacity>
                 </View>
                     </KeyboardAwareScrollView>
-
-                {/* Add CourseTime Modal*/}
-                <Modal
-                    animationType={"slide"}
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    onRequestClose={() => {
-                        console.log("Modal has been closed.");
-                    }}
-                >
-                    <CourseTimeModal
-                        onClose={()=>{
-                            this.setState({modalVisible:false});
-                        }}
-                        accessToken={this.props.accessToken}
-                        setTime={(time)=>{
-                            if(this.state.timeList!==null&&this.state.timeList!==undefined){
-                                var timeList = this.state.timeList;
-                                timeList.push(time);
-                                this.setState({timeList:timeList});
-                            }
-                        }}
-                        timeListLength={(this.state.timeList!==null&&this.state.timeList!==undefined)?this.state.timeList.length:0}
-
-                    />
-                </Modal>
-
-                <PopupDialog
-                    ref={(popupDialog) => {
-                        this.scaleAnimationDialog = popupDialog;
-                    }}
-                    dialogAnimation={scaleAnimation}
-                    actions={[
-
-                    ]}
-                >
-                    <View style={styles.dialogContentView}>
-                        <CourseTimeModal
-                            onClose={()=>{
-                                this.scaleAnimationDialog.dismiss();
-                                // this.setState({modalVisible:false});
-                            }}
-                            accessToken={this.props.accessToken}
-                            setTime={(time)=>{
-                                if(this.state.timeList!==null&&this.state.timeList!==undefined){
-                                    var timeList = this.state.timeList;
-                                    timeList.push(time);
-                                    this.setState({timeList:timeList});
-                                    this.scaleAnimationDialog.dismiss();
-                                }
-                            }}
-                            timeListLength={(this.state.timeList!==null&&this.state.timeList!==undefined)?this.state.timeList.length:0}
-
-                        />
-                    </View>
-                </PopupDialog>
 
                 </Toolbar>
             </View>

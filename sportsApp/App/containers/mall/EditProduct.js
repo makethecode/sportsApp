@@ -572,10 +572,10 @@ class EditProduct extends Component{
                                           onPress={()=>{
                                               //上传商品信息
 
-                                              var reservenum = parseInt(this.props.product.reservenum);
-                                              var discount = parseFloat(this.props.product.discount)*100;
-                                              var price = parseFloat(this.props.product.price)*100;
-                                              var realprice = parseFloat(this.props.product.realprice)*100;
+                                              var reservenum = parseInt(this.state.product.reservenum);
+                                              var discount = this.state.product.discount*100;
+                                              var price = this.state.product.price*100;
+                                              var realprice = this.state.product.realprice*100;
 
                                               this.setState({product:Object.assign(this.state.product,{reservenum:reservenum,discount:discount,price:price,realprice:realprice})})
 

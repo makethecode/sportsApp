@@ -227,7 +227,7 @@ class StudentInformation extends Component {
 
         return (
 
-        <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}
+        <TouchableOpacity style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}
                           onPress={()=>{
                               //this.navigate2StudentsCourseRecord(rowData.courseId,rowData.memberId);
                               //查看学生详细信息
@@ -398,8 +398,8 @@ class StudentInformation extends Component {
                                 indicator={this._renderTitleIndicator()}
                                 onPageScroll={this._onPageScroll.bind(this)}
                             >
-                                {selfStudentsListView}
-                                {childStudentsListView}
+                                <View>{selfStudentsListView}</View>
+                                <View>{childStudentsListView}</View>
                             </IndicatorViewPager>
                         </Animated.View>
                     </View>}

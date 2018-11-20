@@ -953,7 +953,7 @@ export let wechatregisterUser=(unionid,nickname)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
             var state=getState();
-            dispatch(storeUnionid(unionid));
+            //dispatch(storeUnionid(unionid));
             //var {userType,username,password,genderCode,mobilePhone,nickName}=payload;
             Proxy.postes({
                 url: Config.server + '/func/register/wechatuserRegister',
@@ -962,7 +962,7 @@ export let wechatregisterUser=(unionid,nickname)=>{
                 },
                 body: {
                     nickName: nickname,
-                    password:"1",
+                    password:"9527",
                     phoneNum:' ',
                     Trainer:1,
                     unionid:unionid,
@@ -980,6 +980,32 @@ export let wechatregisterUser=(unionid,nickname)=>{
         });
     }
 }
+
+export let ForgetPwd=(username)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/loginForgetPwd',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    username:username
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+
+        });
+    }
+}
+
 export let wechatGetOpenid=(url)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {

@@ -54,6 +54,9 @@ import NewsDetail from '../components/news/NewsDetail'
 import NewsList from '../components/my/NewsList'
 import MyVideo from '../components/my/MyVideo';
 import TrailStudent from '../components/trailClass/TrailStudentList'
+import Config from "../../config";
+import Proxy from "../utils/Proxy";
+import GridView from 'react-native-super-grid'
 
 var {height, width} = Dimensions.get('window');
 var IMGS = [
@@ -75,19 +78,6 @@ class Home extends Component {
                 name: 'Activity',
                 component: Activity,
                 params: {
-                }
-            })
-        }
-    }
-
-    navigate2CoachMessage(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'CoachMressage',
-                component: CoachMessage,
-                params: {
-
                 }
             })
         }
@@ -247,12 +237,6 @@ class Home extends Component {
         }.bind(this), 2000);
     }
 
-    dateFormat(date)
-    {
-        //object时间转时间格式"yyyy-mm-dd hh:mm:ss"
-        return (new Date(date)).toLocaleDateString() + " " + (new Date(date)).toLocaleTimeString();
-    }
-
     renderRow(rowData,sectionId,rowId){
 
             return (
@@ -301,11 +285,14 @@ class Home extends Component {
             dataSource: ds.cloneWithPages(IMGS),
             isRefreshing:false,
             news:null,
+            appItemList:[],
         }
     }
 
 
     render() {
+
+        var appItemList = this.state.appItemList;
 
         var newsList=null
         if(this.state.news&&this.state.news.length>0)
@@ -341,326 +328,87 @@ class Home extends Component {
         }
 
         return (
-            this.props.userType==1?
-                <View style={{flex:1,backgroundColor:'#fff'}}>
 
+            <View style={{flex:1,backgroundColor:'#fff'}}>
                     <View style={{flex:1}}>
-
+                        {/*顶端*/}
                         <View style={{width:width,flex:2}}>
                             <Image
                                 source={ require('../../img/tt1@2x.png')}
                                 style={{width:width,flex:3}}
                                 resizeMode={"stretch"}
-                            >
-                                <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'transparent',borderBottomWidth:1,borderColor:'transparent',}}>
-                                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                                      onPress={()=>{this.goBack();}}>
-
-                                    </TouchableOpacity>
-                                    <View style={{flex:3,justifyContent:'center',alignItems: 'center',}}>
-
-                                    </View>
-                                    <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                                      onPress={()=>{ _scrollView.scrollToEnd({animated: true});}}>
-
-                                        {/*<Text> 底部</Text>*/}
-                                    </TouchableOpacity>
-                                </View>
-
-                            </Image>
+                            />
                         </View>
-
-                        {/*内容区*/}
-                        <View style={{flex:6,justifyContent:'center',backgroundColor:'#eee'}}>
-
-                            <View style={{flex:2,backgroundColor:'#fff',padding:0,marginBottom:10}}>
-                                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                                      onPress={ ()=>{
-                                             this.navigate2BadmintonCourse();
-                                             //this.navigate2BadmintonCourseForCoach();
-
-                                          }}>
-                                        {/*<CommIcon name="tag-plus" size={32} color="#0adc5e" style={{backgroundColor:'transparent'}}/>*/}
-                                        <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')} />
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>课程</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                                      onPress={ ()=>{
-                                        this.navigate2Activity();
-                                      }}>
-                                        <Image resizeMode="stretch" source={require('../../img/dd@2x.png')} />
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>活动</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                                      onPress={ ()=>{
-                                                         this.navigate2Competition()
-                                       }}>
-                                        {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                        <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')} />
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                                      onPress={ ()=>{
-                                          this.navigate2Mall();
-                                      }}>
-                                        <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')} />
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>商品</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                </View>
-
-                                < View style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}>
-
-                                    <TouchableOpacity
-                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                        onPress={ ()=>{
-                                            this.navigate2NewsList()
-                                        }}>
-                                        {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                        <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>新闻</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                        onPress={ ()=>{
-                                            this.navigate2MyVideo()
-                                        }}>
-
-                                        {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                        <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>视频</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                        onPress={ ()=>{
-                                            this.navigate2TrailStudent()
-                                        }}>
-                                        <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')}/>
-                                        <View style={{marginTop:0,paddingTop:15}}>
-                                            <Text style={{fontSize:13,color:'#646464'}}>试课</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                </View>
-
+                        {/*功能列表*/}
+                        <View style={{flex:6}}>
+                        <View style={{height:200,width:width,justifyContent:'center',backgroundColor:'#fff'}}>
+                            <View style={{flex:1,width:width,alignItems:'flex-start',justifyContent:'flex-start',flexDirection:'row'}}>
+                                <GridView
+                                    itemDimension={width/4-20}
+                                    items={appItemList}
+                                    style={styles.gridView}
+                                    renderItem={this.renderAppRow.bind(this)}
+                                />
                             </View>
-
-
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
+                        </View>
+                        {/*新闻列表*/}
+                            <View style={{height:1,width:width,backgroundColor:'#ddd',justifyContent:'center',alignItems:'flex-start'}}/>
+                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                                 {newsList}
-                            </View>
+                        </View>
+                        </View>
 
                         </View>
                     </View>
-                </View>
-                :
-            <View style={{flex:1,backgroundColor:'#fff'}}>
-                    <View style={{flex:1}}>
-                        <View style={{width:width,flex:2.5}}>
-                            <Image
-                                source={ require('../../img/tt1@2x.png')}
-                                style={{width:width,flex:3}}
-                                resizeMode={"stretch"}
-                            >
-                            <View style={{height:55,width:width,paddingTop:20,flexDirection:'row',justifyContent:'center',alignItems: 'center',
-                backgroundColor:'transparent',borderBottomWidth:1,borderColor:'transparent',}}>
-                                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                      onPress={()=>{this.goBack();}}>
-
-                                </TouchableOpacity>
-
-                                <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
-                                                  onPress={()=>{ _scrollView.scrollToEnd({animated: true});}}>
-
-                                    {/*<Text> 底部</Text>*/}
-                                </TouchableOpacity>
-                            </View>
-
-                            </Image>
-                        </View>
-
-                        {/*内容区*/}
-                        <View style={{flex:8,justifyContent:'center',backgroundColor:'#eee'}}>
-
-                            <View style={{flex:5,backgroundColor:'#fff',padding:0,marginBottom:10}}>
-                                 <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems: 'center',}}>
-                                    <View
-                                        style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',}}>
-
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                             this.navigate2BadmintonCourse();
-                                             //this.navigate2BadmintonCourseForCoach();
-
-                                          }}>
-                                            {/*<CommIcon name="tag-plus" size={32} color="#0adc5e" style={{backgroundColor:'transparent'}}/>*/}
-                                            <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>课程制定</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                        this.navigate2Activity();
-                                        //this.navigate2CoachMessage();
-                                      }}>
-                                            <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>活动</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                                this.navigate2Mall();
-                                            }}>
-
-                                            {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                            <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>商城</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                    < View style={{
-                                flex: 1,
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}>
-
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                                this.navigate2Competition()
-                                            }}>
-                                            {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                            <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>比赛</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                            style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                            onPress={ ()=>{
-                                                //this.navigate2Profit();
-                                            }}>
-
-                                            {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                            <Image resizeMode="stretch" source={require('../../img/shangc-@2x.png')}/>
-                                            <View style={{marginTop:0,paddingTop:15}}>
-                                                <Text style={{fontSize:13,color:'#646464'}}>收益</Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                    onPress={ ()=>{
-                                        this.navigate2Statistics();
-                                        //this.navigate2CoachMessage();
-                                      }}>
-                                    <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
-                                    <View style={{marginTop:0,paddingTop:15}}>
-                                        <Text style={{fontSize:13,color:'#646464'}}>统计</Text>
-                                    </View>
-                                </TouchableOpacity>
-
-                                    </View>
-
-                                     < View style={{
-                                         flex: 1,
-                                         flexDirection: 'row',
-                                         justifyContent: 'center',
-                                         alignItems: 'center',
-                                     }}>
-
-                                         <TouchableOpacity
-                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                             onPress={ ()=>{
-                                                 this.navigate2NewsList()
-                                             }}>
-                                             {/*<Icon name="video-camera" size={30} color="#8968CD" />*/}
-                                             <Image resizeMode="stretch" source={require('../../img/dd@2x.png')}/>
-                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                 <Text style={{fontSize:13,color:'#646464'}}>新闻</Text>
-                                             </View>
-                                         </TouchableOpacity>
-
-                                         <TouchableOpacity
-                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                             onPress={ ()=>{
-                                                 this.navigate2MyVideo()
-                                             }}>
-
-                                             {/*<Icon name="shopping-cart" size={36} color="#EEAD0E" style={{backgroundColor:'transparent'}}/>*/}
-                                             <Image resizeMode="stretch" source={require('../../img/zhibo-@2x.png')}/>
-                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                 <Text style={{fontSize:13,color:'#646464'}}>视频</Text>
-                                             </View>
-                                         </TouchableOpacity>
-
-                                         <TouchableOpacity
-                                             style={{flex:1,justifyContent:'flex-start',alignItems:'center',padding:5}}
-                                             onPress={ ()=>{
-                                                 this.navigate2TrailStudent()
-                                             }}>
-                                             <Image resizeMode="stretch" source={require('../../img/dingzhi@2x.png')}/>
-                                             <View style={{marginTop:0,paddingTop:15}}>
-                                                 <Text style={{fontSize:13,color:'#646464'}}>试课</Text>
-                                             </View>
-                                         </TouchableOpacity>
-
-                                     </View>
-
-                              </View>
-                            </View>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
-                                {newsList}
-                            </View>
-
-                        </View>
-                    </View>
-
-            </View>
-
         );
     }
 
+    renderAppRow(rowData,rowId)
+    {
+
+        // {'name':'活动','id':0,'isShow':false},
+
+        var img = '';
+
+        switch(rowData.id){
+            case 0:img = require('../../img/mini_activity.png');break;//活动
+            case 1:img = require('../../img/mini_course.png');break;//课程
+            case 2:img = require('../../img/mini_competition.png');break;//比赛
+            case 3:img = require('../../img/mini_mall.png');break;//商城
+            case 4:img = require('../../img/mini_video.png');break;//视频
+            case 5:img = require('../../img/mini_news.png');break;//新闻
+            case 6:img = require('../../img/mini_statistic.png');break;//统计
+            case 7:img = require('../../img/mini_trial.png');break;//试课
+        }
+
+        return(
+            <TouchableOpacity style={{flex:1,flexDirection:'column',}}
+            onPress={()=>{
+                switch(rowData.id){
+                    case 0:this.navigate2Activity();break;//活动
+                    case 1:this.navigate2BadmintonCourse();break;//课程
+                    case 2:this.navigate2Competition();break;//比赛
+                    case 3:this.navigate2Mall();break;//商城
+                    case 4:this.navigate2MyVideo();break;//视频
+                    case 5:this.navigate2NewsList();break;//新闻
+                    case 6:this.navigate2Profit();break;//统计
+                    case 7:this.navigate2TrailStudent();break;//试课
+                }
+            }}>
+                <View style={{flex:5,padding:5,justifyContent:'center',alignItems:'center'}}>
+                    <View style={{height:60,width:60,padding:10,justifyContent:'center',alignItems:'center'}}>
+                        <Image style={{height:45,width:45}}
+                               source={img} resizeMode={'stretch'}/>
+                    </View>
+                    <Text style={{flex:2,marginTop:5,color:'#666',fontSize:13,textAlign:'center'}}>{rowData.name}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+
     componentDidMount()
     {
-        InteractionManager.runAfterInteractions(() => {
 
             //只是用于ios不适用于android
             //通过网易新闻的接口获取新闻
@@ -687,17 +435,47 @@ class Home extends Component {
 
                 }
 
-        });
+                this.fetchAppItemList()
 
         this.Listener = DeviceEventEmitter.addListener('news',(data)=>{
             var newsList = data.result;
             this.setState({news:newsList});
         })
 
+        this.itemListener = DeviceEventEmitter.addListener('item',(data)=>{
+            this.fetchAppItemList();
+        })
+
     }
 
     componentWillUnmount(){
-        this.Listener.remove();
+        if(this.Listener)this.Listener.remove();
+        if(this.itemListener)this.itemListener.remove();
+    }
+
+    fetchAppItemList(){
+
+        Proxy.postes({
+            url: Config.server + '/func/node/getAppItemList',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                personId:this.props.personId,
+            }
+        }).then((json)=>{
+
+            var appItemList = [];
+
+            for(var i=0;i<json.data.length;i++){
+                if(json.data[i].isShow)appItemList.push(json.data[i])
+            }
+
+            this.setState({appItemList:appItemList})
+
+        }).catch((e)=>{
+        })
+
     }
 
 }
@@ -706,20 +484,51 @@ var styles = StyleSheet.create({
 
     container: {
         flex: 1,
+        backgroundColor:'#fff'
     },
     flexContainer: {
         flexDirection: 'row',
     },
-});
-
-async function updateEvents() {
-    try {
-        var events=await CalendarManager.testCallbackEventTwo();
-        alert(events)
-    } catch (e) {
-        console.error(e);
+    itemName: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight:'bold'
+    },
+    itemCode: {
+        fontSize: 12,
+        color: '#fff',
+    },
+    itemPlayer: {
+        fontSize: 13,
+        color: '#fff',
+    },
+    itemContainer: {
+        flex:1,
+        justifyContent: 'flex-end',
+    },
+    gridView: {
+        flex: 1
+    },
+    popoverContent: {
+        width: 100,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText: {
+        color: '#ccc',
+        fontSize:14
+    },
+    itemStyle:{
+        height: 150,
+        width:150,
+        padding:5
+    },
+    cardItemTimeRemainTxt:{
+        fontSize:13,
+        color:'#666'
     }
-}
+});
 
 const mapStateToProps = (state, ownProps) => {
 
@@ -729,20 +538,8 @@ const mapStateToProps = (state, ownProps) => {
 
     const props = {
         userType:parseInt(state.user.personInfo.perTypeCode),
+        personId:personInfo.personId,
     }
-
-    // if(trainerInfo)
-    // {
-    //     props.sportLevelValidateFailed=(!(trainerInfo.sportLevel!==undefined&&trainerInfo.sportLevel!==null))//运动水平没验证
-    //     props.perNameValidateFailed=(!(personInfo.perName&&personInfo.perName!=''))//真实姓名没验证
-    //     props.perIdCardValidateFailed=(!(personInfo.perIdCard&&personInfo.perIdCard!=''))//身份证没验证
-    // }
-    //
-    // //手机号没验证
-    // if(mobilePhone&&mobilePhone!=''&&checkedMobile==true)
-    //     props.mobilePhoneValidateFailed=false
-    // else
-    //     props.mobilePhoneValidateFailed=true
 
     return props
 }

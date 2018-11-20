@@ -199,7 +199,7 @@ class Register extends Component {
                 userType: 1,
                 //基本信息
                 mobilePhone: '',
-                username: this.props.wechat.wechat.nickname,
+                username: 'wx'+this.props.wechat.wechat.nickname,
                 password: '1',
                 name:'',
                 sexType:this.props.wechat.wechat.sex==1?'男':'女',

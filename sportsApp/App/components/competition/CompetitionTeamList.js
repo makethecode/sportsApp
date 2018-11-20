@@ -137,25 +137,25 @@ class CompetitionTeamList extends Component {
                     </View>
                     <View style={{flex:4,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
                         <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>队长</Text></View>
-                                <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.personNum}</Text>
+                                <Text style={{color:'#5c5c5c',marginLeft:5,fontSize:13}}>{rowData.personNum}</Text>
                     </View>
                 </View>
-                <View style={{flex:3,padding:10}}>
-                    <View style={{flex:3,flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#66CDAA',borderRadius:5,padding:5}}>
-                            <Text style={{color:'#ffffff'}}>队名</Text>
+                <View style={{flex:3,padding:10,flexDirection:'row'}}>
+                    <View style={{flex:3,flexDirection:'row'}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',borderWidth:1,borderColor:'#66CDAA',borderRadius:5,padding:3}}>
+                            <Text style={{color:'#66CDAA'}}>队名</Text>
                         </View>
-                        <View style={{flex:7,padding:5,marginLeft:5}}>
-                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.teamName}</Text>
+                        <View style={{flex:2,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center',fontSize:13}}>{rowData.teamName}</Text>
                         </View>
                     </View>
 
                     <View style={{flex:3,flexDirection:'row'}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#ffffff',borderRadius:5,padding:5}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',borderWidth:1,borderColor:'#66CDAA',borderRadius:5,padding:3}}>
                             <Text style={{color:'#66CDAA'}}>编号</Text>
                         </View>
-                        <View style={{flex:7,padding:5,marginLeft:5}}>
-                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center'}}>{rowData.teamNum}</Text>
+                        <View style={{flex:2,padding:5,marginLeft:5}}>
+                            <Text style={{color:'#5c5c5c',justifyContent:'flex-start',alignItems: 'center',fontSize:13}}>{rowData.teamNum}</Text>
                         </View>
                     </View>
                 </View>
@@ -163,19 +163,23 @@ class CompetitionTeamList extends Component {
                 <View style={{flex:1,flexDirection:'column',padding:10,borderTopWidth:1,borderColor:'#ddd'}}>
 
                     <View style={{flexDirection:'row',flex:2.5,alignItems:'flex-start'}}>
-                    <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
 
+                        <View style={{flex:2,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row',marginBottom:3}}>
                         <View style={{backgroundColor:'#ffffff',borderRadius:5,padding:5}}><Text style={{color:'#fca482'}}>队员</Text></View>
-                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{rowData.nowNum}/{rowData.maxNum}人</Text>
-                    </View>
-
-                        <View style={{flex:4,backgroundColor:'#fff',justifyContent:'flex-start',marginBottom:3}}>
-                            <TouchableOpacity onPress={()=>{
-                                this.navigate2CompetitionTeamPerson(rowData.teamId)
-                            }}>
-                        {avatarList}
-                            </TouchableOpacity>
+                        <Text style={{color:'#5c5c5c',marginLeft:5,fontSize:13}}>{rowData.nowNum}/{rowData.maxNum}人</Text>
                         </View>
+
+                        <View style={{flex:5,backgroundColor:'#fff',justifyContent:'flex-start',alignItems:'flex-start',marginBottom:3}}>
+                        {avatarList}
+                        </View>
+
+                        <View style={{flex:1,justifyContent:'flex-end',alignItems: 'center',marginRight:3,flexDirection:'row',marginBottom:3}}>
+                            <TouchableOpacity
+                                style={{backgroundColor:'#ffffff',borderWidth:1,borderColor:'#fc3c3f',borderRadius:5,padding:5}}
+                                onPress={()=>{this.navigate2CompetitionTeamPerson(rowData.teamId)}}>
+                                <Text style={{color:'#fc3c3f'}}>查看</Text></TouchableOpacity>
+                        </View>
+
                     </View>
                 </View>
             </View>

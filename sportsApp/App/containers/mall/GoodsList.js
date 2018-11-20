@@ -173,6 +173,7 @@ class GoodsList extends Component{
                 </View>
                 <View style={{flex:1,justifyContent:'flex-start',alignItems:'flex-end',marginRight:5}}>
                     <TouchableOpacity
+                        style={{flex:1,justifyContent:'flex-start',alignItems:'flex-end'}}
                         onPress={()=>{
                             Alert.alert(
                                 '删除',
@@ -203,7 +204,18 @@ class GoodsList extends Component{
                             )
                         }}>
                         <Ionicons name='md-close' size={20} color="#aaa"/>
-                    </TouchableOpacity></View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}
+                        onPress={()=>{
+                            this.pushGoods2Index(rowData.id)
+                        }}>
+                        <View style={{borderWidth:1,borderColor:'red',padding:5}}>
+                            <Text style={{fontSize:12,color:'red'}}>推广</Text></View>
+                    </TouchableOpacity>
+
+                </View>
             </TouchableOpacity>
         )}
 
@@ -471,6 +483,26 @@ class GoodsList extends Component{
 
                 this.setState({goods:goods,racket:racket,fittings:fittings,shoes:shoes,clothes:clothes,VIP:VIP,healthproducts:healthproducts})
             }
+        }).catch((e)=>{
+        })
+    }
+
+    pushGoods2Index(goodsId){
+
+        Proxy.postes({
+            url: Config.server + '/func/allow/pushGoods2Index',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                goodsId:goodsId
+            }
+        }).then((json)=>{
+
+            this.setState({showProgress:false})
+
+            if(json.re==1)Alert.alert('成功','已推广');
+
         }).catch((e)=>{
         })
     }

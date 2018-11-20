@@ -51,9 +51,11 @@ class CreateProject extends Component{
     _handlePress(index) {
 
         if(index!==0){
-            var typeStr = this.state.typeButtons[index];
+            var typeStr = this.state.projectTypeButtons[index];
             var typeIdx = index;
             this.setState({project:Object.assign(this.state.project,{typeStr:typeStr,typeIdx:typeIdx})});
+            if(index==6)this.setState({showGamesList:true})
+            else this.setState({showGamesList:false})
         }
 
     }
@@ -66,10 +68,16 @@ class CreateProject extends Component{
         super(props);
         this.state={
 
-        //{'id':1,'name':'男双','num':'20170101','maxNum':6,'nowNum':3,'personNum':7,'gamesNum':10,'typeStr':'男单',typeIdx:1},
-
             project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gamesNum:null,typeStr:null,typeIdx:null},
-            typeButtons:['取消','男单','女单','男双','女双','混双','团体']
+            projectTypeButtons:['取消','男单','女单','男双','女双','混双','团体'],
+            gameTypeButtons:['取消','男单','女单','男双','女双','混双'],
+
+            gameTypeStrList:[],
+            gameTypeIdList:[],
+
+            typeList:[],
+
+            showGamesList:false,
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     }
@@ -78,11 +86,87 @@ class CreateProject extends Component{
         this.scaleAnimationDialog.show();
     }
 
+    renderRow(rowData, sectionId, rowId) {
+
+        const CANCEL_INDEX = 0;
+        const DESTRUCTIVE_INDEX = 1;
+
+        var gameTypeStr = this.state.gameTypeStrList[rowId];
+        var gameTypeId = this.state.gameTypeIdList[rowId];
+
+        return (
+            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,padding:5}}>
+                <View style={{flex:1}}>
+                    <Text style={{color:'#343434'}}>第{parseInt(rowId)+1}场比赛</Text>
+                </View>
+                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                    borderRadius:10}}
+                                  onPress={()=>{ this.show('actionSheet1'); }}>
+                    {
+                        gameTypeStr==''?
+                            <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                <Text style={{color:'#888',fontSize:14}}>请选择比赛类型 ></Text>
+                            </View> :
+                            <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                <Text style={{color:'#444',fontSize:14}}>{gameTypeStr}</Text>
+                            </View>
+
+                    }
+                    <ActionSheet
+                        ref={(p) => {
+                            this.actionSheet1 =p;
+                        }}
+                        title="请选择比赛类型"
+                        options={this.state.gameTypeButtons}
+                        cancelButtonIndex={CANCEL_INDEX}
+                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                        onPress={
+                            (data)=> {
+                                if (data != 0) {
+                                    var gameTypeStrList = this.state.gameTypeStrList;
+                                    var gameTypeIdList = this.state.gameTypeIdList;
+                                    gameTypeStrList[rowId] = this.state.gameTypeButtons[data];
+                                    gameTypeIdList[rowId] = data;
+
+                                    var typeList = '';
+                                    for (var i = 0; i < gameTypeIdList.length; i++) {
+                                        if (i == 0) typeList = gameTypeIdList[i];
+                                        else typeList += ',' + gameTypeIdList[i];
+                                    }
+
+                                    this.setState({
+                                        gameTypeStrList: gameTypeStrList,
+                                        gameTypeIdList: gameTypeIdList,
+                                        typeList: typeList
+                                    })
+                                }
+                            }
+                        }
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
 
     render() {
 
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
+
+        var gameOfGamesListView=null;
+        var gameOfGamesList = this.state.gameTypeStrList;
+
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (gameOfGamesList !== undefined && gameOfGamesList !== null && gameOfGamesList.length > 0) {
+            gameOfGamesListView = (
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds.cloneWithRows(gameOfGamesList)}
+                    renderRow={this.renderRow.bind(this)}
+                />
+            );
+        }
 
         // project:{id:null,name:null,maxNum:null,nowNum:null,personNum:null,gamesNum:null,typeStr:null,typeIdx:null},
 
@@ -115,39 +199,6 @@ class CreateProject extends Component{
                                     }}
                             />
                         </View>
-                    </View>
-
-                    {/*项目类型*/}
-                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,padding:5}}>
-                        <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>项目类型</Text>
-                        </View>
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
-                            borderRadius:10}}
-                                          onPress={()=>{ this.show('actionSheet'); }}>
-                            {
-                                this.state.project.typeStr==null?
-                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#888',fontSize:14}}>请选择项目类型 ></Text>
-                                    </View> :
-                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                        <Text style={{color:'#444',fontSize:14}}>{this.state.project.typeStr}</Text>
-                                    </View>
-
-                            }
-                            <ActionSheet
-                                ref={(p) => {
-                                    this.actionSheet =p;
-                                }}
-                                title="请选择项目类型"
-                                options={this.state.typeButtons}
-                                cancelButtonIndex={CANCEL_INDEX}
-                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                                onPress={
-                                    (data)=>{ this._handlePress(data); }
-                                }
-                            />
-                        </TouchableOpacity>
                     </View>
 
                     {/*队数上限*/}
@@ -192,26 +243,71 @@ class CreateProject extends Component{
                         </View>
                     </View>
 
-                    {/*比赛场次*/}
+                    {/*项目类型*/}
                     <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,padding:5}}>
                         <View style={{flex:1}}>
-                            <Text style={{color:'#343434'}}>比赛场次</Text>
+                            <Text style={{color:'#343434'}}>项目类型</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
-                            borderRadius:10}}>
-                            <TextInput
-                                placeholderTextColor='#888'
-                                style={{fontSize:14,color:'#222',justifyContent:'flex-end',textAlign:'right',height:40,flex:3,padding:0}}
-                                placeholder="请输入比赛场次"
-                                value={this.state.project.gamesNum}
-                                underlineColorAndroid={'transparent'}
-                                onChangeText={
-                                    (value)=>{
-                                        this.setState({project:Object.assign(this.state.project,{gamesNum:value})})
-                                    }}
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet'); }}>
+                            {
+                                this.state.project.typeStr==null?
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择项目类型 ></Text>
+                                    </View> :
+                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.project.typeStr}</Text>
+                                    </View>
+
+                            }
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet =p;
+                                }}
+                                title="请选择项目类型"
+                                options={this.state.projectTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress(data); }
+                                }
                             />
-                        </View>
+                        </TouchableOpacity>
                     </View>
+
+                    {
+                        this.state.showGamesList?
+                            <View>
+                    <View style={{height:30,width:width,justifyContent:'center',alignItems:'center',textAlign:'left',paddingHorizontal:5,flexDirection:'row',backgroundColor:'#eee'}}>
+                        <Text style={{color:'#666',fontSize:13}}>团体赛类型</Text>
+                        <TouchableOpacity style={{flex:1,alignItems:'flex-end',justifyContent:'center'}}
+                                          onPress={()=>{
+
+                                              var flag = 1;
+
+                                              var gameTypeStrList = this.state.gameTypeStrList;
+                                              var gameTypeIdList = this.state.gameTypeIdList;
+
+                                              for(var i=0;i<gameTypeIdList.length;i++)
+                                                  if(gameTypeIdList[i]=='')flag=0;
+
+                                              if(flag==0){
+                                                  Alert.alert('失败','请输入完整上一场比赛信息')
+                                              }
+                                                  else{
+                                                  gameTypeStrList.push('');
+                                                  gameTypeIdList.push('')
+                                                  this.setState({gameTypeStrList:gameTypeStrList,gameTypeIdList:gameTypeIdList})
+                                              }
+                                          }}>
+                            <Ionicons name='md-add' size={20} color="#888"/>
+                        </TouchableOpacity>
+                    </View>
+
+                                {gameOfGamesListView}</View>
+                            :null
+                    }
 
                     <View style={{backgroundColor:'#fff',padding:10}}>
                         <Text style={{color:'#aaa',fontSize:11}}>
@@ -224,9 +320,23 @@ class CreateProject extends Component{
                             justifyContent:'center'}}
                                           onPress={()=>{
                                               //发布比赛
-                                              this.props.dispatch(createProject(this.state.project,this.props.competitionId)).then((json)=>{
+
+                                              var flag = 1;
+                                              var gameTypeIdList = this.state.gameTypeIdList;
+
+                                              for(var i=0;i<gameTypeIdList.length;i++)
+                                                  if(gameTypeIdList[i]=='')flag=0;
+
+                                              if(flag==0){
+                                                  Alert.alert('失败','请输入完整上一场比赛信息')
+                                              }else{
+
+                                              var typeList = this.state.typeList;
+
+                                              this.props.dispatch(createProject(this.state.project,this.props.competitionId,typeList)).then((json)=>{
                                                   if(json.re==1)
                                                   {
+                                                      DeviceEventEmitter.emit('project_fresh',1)
                                                       Alert.alert('成功','项目创建成功')
                                                       this.goBack()
                                                   }
@@ -239,6 +349,8 @@ class CreateProject extends Component{
                                                       }
                                                   }
                                               })
+
+                                              }
                                           }}>
                             <Text style={{color:'#fff',fontSize:15}}>发布</Text>
                         </TouchableOpacity>

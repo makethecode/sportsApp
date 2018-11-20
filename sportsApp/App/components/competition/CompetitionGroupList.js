@@ -1317,17 +1317,21 @@ class CompetitionGroupList extends Component {
         this.setState({showProgress:true})
 
         this.props.dispatch(fetchGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
-                var listA = [];
-                var listB = [];
-                var listC = [];
-                var listD = [];
-                var listE = [];
-                var listF = [];
-                var listG = [];
-                var listH = [];
+
+            this.setState({showProgress:false})
+
+            var listA = [];
+            var listB = [];
+            var listC = [];
+            var listD = [];
+            var listE = [];
+            var listF = [];
+            var listG = [];
+            var listH = [];
+
+            if(json.re==1){
 
                 if(json.data!=null && json.data.length>0) {
-                    this.setState({teams: json.data});
                     var teams = json.data;
 
                     for (var i = 0; i < teams.length; i++) {
@@ -1362,36 +1366,9 @@ class CompetitionGroupList extends Component {
                     }
                 }
 
-                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,showProgress:false});
-
-        })
-
-    }
-
-    deleteAllGroupList(){
-
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        this.props.dispatch(deleteAllGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
-            if(json.re==1)
-            {
-                var listA = [];
-                var listB = [];
-                var listC = [];
-                var listD = [];
-                var listE = [];
-                var listF = [];
-                var listG = [];
-                var listH = [];
-
-                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
+                this.setState({teams:json.data,ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,});
+            }else{
+                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,});
             }
         })
 

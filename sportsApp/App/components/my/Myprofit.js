@@ -53,7 +53,7 @@ import {
 } from '../../action/MapActions';
 
 const {height, width} = Dimensions.get('window');
-const dropdownWidth = width/3-20;
+const dropdownWidth = width/3;
 var Popover = require('react-native-popover');
 var Overlay = require('react-native-overlay')
 
@@ -193,19 +193,7 @@ class Myprofit extends Component {
             endDate: new Date(),
             currentDate:'本月',
 
-            clubName:'俱乐部',
-            venueName:'场地',
-            typeName:'分类',
-            showClubDropdown:false,
-            showVenueDropdown:false,
-            showTypeDropdown:false,
-            clubList:[],clubs:[],
-            venueList:[],venues:[],
-            typeList:['群活动','课程','商品'],typeSelectName:-1,
-
-            clubId:-1,
-            venueId:-1,
-            typeId:-1,
+            typeId:-1,//1活动2课程3商品
 
             menuVisible:false,
         };
@@ -280,34 +268,29 @@ class Myprofit extends Component {
 
     renderRow(rowData, sectionId, rowId) {
 
-        //rowData{[clubId][clubName][outTradeNo][payment][perId][perName][timeMakesure][type][venueId][venueName]}
-
-        var defaultImg = require('../../../img/portrait.jpg')
-        const courseImg = require('../../../img/course.png')
-        const activityImg = require('../../../img/activity.png')
-        const goodsImg = require('../../../img/goods.png')
+        //perName,name,avatar,outTradeNo,timeMakesure,payment,typeId
 
         var type = ''
 
-        switch(rowData.type){
-            case 'course':defaultImg = courseImg;type='课程';break;
-            case 'activity':defaultImg = activityImg;type='群活动';break;
-            case 'goods':defaultImg = goodsImg;type='商品';break;
+        switch(rowData.typeId){
+            case 1:type='活动';break;
+            case 2:type='课程';break;
+            case 3:type='商品';break;
         }
 
             return (
             <View style={styles.paymentItem}>
                 <Image
                     style={{width: 30, height: 30, marginHorizontal: 15 }}
-                    source={defaultImg}
+                    source={{uri:rowData.avatar}}
                     resizeMode="stretch"
                 />
                 <View style={styles.paymentWrapper}>
                     <View style={{justifyContent: 'center', width: width - 60 - 80,flexDirection:'column'}}>
-                        <Text style={{color: '#2c2c2c', marginBottom: 10,fontSize:15}} numberOfLines={1}>
-                            {rowData.perName} 在 {type} 支出
+                        <Text style={{color: '#2c2c2c', marginBottom: 10,fontSize:14}} numberOfLines={1}>
+                            {rowData.perName} 在 {rowData.name} 支出
                         </Text>
-                        <Text style={{color: '#666',fontSize: 13, marginBottom: 3}}>
+                        <Text style={{color: '#666',fontSize: 12, marginBottom: 3}}>
                             账单号：{rowData.outTradeNo}
                         </Text>
                         {rowData.timeMakesure==null?null:
@@ -317,7 +300,7 @@ class Myprofit extends Component {
                         }
                     </View>
                     <View style={{alignItems:'flex-end',marginRight:10,flexDirection:'row'}}>
-                        <Text style={{fontSize:18,color:'#fc3c3f'}}>{rowData.payment}.00 </Text>
+                        <Text style={{fontSize:18,color:'#fc3c3f'}}>{rowData.payment} </Text>
                         <Text style={{fontSize:18,color:'#2c2c2c'}}>元</Text>
                     </View>
                 </View>
@@ -368,7 +351,7 @@ class Myprofit extends Component {
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (payments !== undefined && payments !== null && payments.length > 0)
             {
-                var paymentsAfterFilter = ProfitAssortFilter.filter(payments,this.state.clubId,this.state.venueId,this.state.typeId)
+                var paymentsAfterFilter = ProfitAssortFilter.filter(payments,this.state.typeId)
                 paymentsListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
@@ -380,18 +363,10 @@ class Myprofit extends Component {
             }
         }
 
-        let clubicon = this.state.showClubDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
-        let venueicon = this.state.showVenueDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
-        let typeicon = this.state.showTypeDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
-
-        var clubName_show = this.lengthFilter(this.state.clubName);
-        var venueName_show = this.lengthFilter(this.state.venueName);
-        var typeName_show = this.lengthFilter(this.state.typeName);
-
         return (
             <View style={styles.container}>
 
-                <Toolbar ref="menu" width={width} title="我的收益" navigator={this.props.navigator} actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
+                <Toolbar ref="menu" width={width} title="收益" navigator={this.props.navigator} actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
                                  if(Platform.OS=='ios')
@@ -399,116 +374,44 @@ class Myprofit extends Component {
                              }
                          }}>
 
+                    <View style={{width:width,height:1,backgroundColor:'#fff'}}/>
                     <View style={styles.flexContainer}>
-                        <ModalDropdown
-                            style={styles.cell}
-                            textStyle={styles.textstyle}
-                            dropdownStyle={styles.dropdownstyle}
-                            options={this.state.clubList}
-                            renderRow={this.dropdown_renderRow.bind(this)}
-                            onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
-                            onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
-                            onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
-                        >
-                            <View style={styles.viewcell}>
-                                <Text style={styles.textstyle}>
-                                    {clubName_show}
-                                </Text>
-                                <Image
-                                    style={styles.dropdown_image}
-                                    source={clubicon}
-                                />
-                            </View>
-                        </ModalDropdown>
-
-                        <ModalDropdown
-                            style={styles.cell}
-                            textStyle={styles.textstyle}
-                            dropdownStyle={styles.dropdownstyle}
-                            options={this.state.venueList}
-                            renderRow={this.dropdown_renderRow.bind(this)}
-                            onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
-                            onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
-                            onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
-                        >
-                            <View style={styles.viewcell}>
-                                <Text style={styles.textstyle}>
-                                    {venueName_show}
-                                </Text>
-                                <Image
-                                    style={styles.dropdown_image}
-                                    source={venueicon}
-                                />
-                            </View>
-                        </ModalDropdown>
-
-                        <ModalDropdown
-                            style={styles.cell}
-                            textStyle={styles.textstyle}
-                            dropdownStyle={styles.dropdownstyle}
-                            options={this.state.typeList}
-                            renderRow={this.dropdown_renderRow.bind(this)}
-                            onSelect={(idx, value) => this.dropdown_3_onSelect(idx, value)}
-                            onDropdownWillShow={this.dropdown_3_willShow.bind(this)}
-                            onDropdownWillHide={this.dropdown_3_willHide.bind(this)}
-                        >
-                            <View style={styles.viewcell}>
-                                <Text style={styles.textstyle}>
-                                    {typeName_show}
-                                </Text>
-                                <Image
-                                    style={styles.dropdown_image}
-                                    source={typeicon}
-                                />
-                            </View>
-                        </ModalDropdown>
-                        {/*搜索*/}
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                             <TouchableOpacity
+                                style={{ width:dropdownWidth-1, backgroundColor:'#66CDAA',alignItems:'center',height:35,justifyContent:'center',flexDirection:'row',}}
                                 onPress={()=>{
-                                    //根据筛选条件进行筛选
-                                    var clubflag = false;
-                                    var venueflag = false;
-                                    var clubId = -1;
-                                    var venueId = -1;
-
-                                    for(var i=0;i<this.state.clubs.length;i++)
-                                        if(this.state.clubs[i].name == this.state.clubName)
-                                        {
-                                            clubId=this.state.clubs[i].id;
-                                            clubflag = true;
-                                        }
-                                    if(clubflag==false)clubId = -1;
-
-                                    for(var i=0;i<this.state.venues.length;i++)
-                                        if(this.state.venues[i].name == this.state.venueName)
-                                        {
-                                            venueId = this.state.venues[i].unitId;
-                                            venueflag = true
-                                        }
-                                    if(venueflag==false)venueId = -1;
-
-                                    this.setState({clubId:clubId,venueId:venueId,typeId:this.state.typeSelectName})
-                                }}
-                            >
-                                <Ionicons name='md-search' size={20} color="#5c5c5c"/>
+                                    this.setState({typeId:1})//活动
+                                }}>
+                                <Text style={{fontSize: 14,textAlign: 'center',color:'#fff',justifyContent:'center',}}>
+                                    活动
+                                </Text>
                             </TouchableOpacity>
-                        </View>
-                        {/*清空*/}
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                            <TouchableOpacity
-                                onPress={()=>{
-                                    var clubId = -1;
-                                    var venueId = -1;
-                                    var typeId = -1;
 
-                                    this.setState({clubId:clubId,venueId:venueId,typeId:typeId,clubName:'俱乐部',venueName:'场地',typeName:'分类'})
-                                }}
-                            >
-                                <Ionicons name='md-refresh' size={20} color="#5c5c5c"/>
-                            </TouchableOpacity>
-                        </View>
+                        <View style={{width:1,backgroundColor:'#fff'}}/>
+
+                        <TouchableOpacity
+                            style={{ width:dropdownWidth-1, backgroundColor:'#66CDAA',alignItems:'center',height:35,justifyContent:'center',flexDirection:'row',}}
+                            onPress={()=>{
+                                this.setState({typeId:2})//活动
+                            }}>
+                            <Text style={{fontSize: 14,textAlign: 'center',color:'#fff',justifyContent:'center',}}>
+                                课程
+                            </Text>
+                        </TouchableOpacity>
+
+                        <View style={{width:1,backgroundColor:'#fff'}}/>
+
+                        <TouchableOpacity
+                            style={{ width:dropdownWidth-1, backgroundColor:'#66CDAA',alignItems:'center',height:35,justifyContent:'center',flexDirection:'row',}}
+                            onPress={()=>{
+                                this.setState({typeId:3})//活动
+                            }}>
+                            <Text style={{fontSize: 14,textAlign: 'center',color:'#fff',justifyContent:'center',}}>
+                                商品
+                            </Text>
+                        </TouchableOpacity>
                     </View>
+
+                    <View style={{width:width,height:1,backgroundColor:'#fff'}}/>
 
                     <View
                         style={[styles.viewWrapper, {zIndex: 1},{borderBottomWidth: StyleSheet.hairlineWidth}]}>
@@ -590,127 +493,9 @@ class Myprofit extends Component {
         this.props.dispatch(enablePaymentsOnFresh());
     }
 
-    componentDidMount(){
-        //获取所有俱乐部
-        this.props.dispatch(fetchClubList()).then((json)=>{
-            if(json.re==1)
-            {
-                var clubDataList = [];
-                for(var i=0;i<json.data.length;i++)
-                    clubDataList.push(json.data[i].name);
-                this.setState({clubList:clubDataList,clubs:json.data});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-
-            }
-        })
-
-        //获取所有场地
-        this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
-            if(json.re==1)
-            {
-                var venueDataList = [];
-                for(var i=0;i<json.data.length;i++)
-                    venueDataList.push(json.data[i].name);
-                this.setState({venueList:venueDataList,venues:json.data});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-
-            }
-        })
+    componentDidMount() {
 
     }
-
-    dropdown_renderRow(rowData, rowID, highlighted){
-        return (
-            <TouchableOpacity >
-                <View style={[styles.dropdown_row]}>
-                    <Text style={[styles.dropdown_row_text, highlighted && {color: 'mediumaquamarine'}]}>
-                        {rowData}
-                    </Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
-    dropdown_1_onSelect(idx, value) {
-        this.setState({
-            clubName:value,
-        });
-    }
-
-    dropdown_2_onSelect(idx, value) {
-        this.setState({
-            venueName:value,
-        });
-    }
-
-    dropdown_3_onSelect(idx, value) {
-        //typeList:['群活动','课程','商品']
-        var select = null
-
-        switch(idx){
-            case '0':select='activity';break;
-            case '1':select='course';break;
-            case '2':select='goods';break;
-        }
-
-        this.setState({
-            typeName:value,
-            typeSelectName:select,
-        });
-    }
-
-    dropdown_1_willShow() {
-        this.setState({
-            showClubDropDown:true,
-        });
-    }
-
-    dropdown_2_willShow() {
-        this.setState({
-            showVenueDropDown:true,
-        });
-    }
-
-    dropdown_3_willShow() {
-        this.setState({
-            showTypeDropDown:true,
-        });
-    }
-
-    dropdown_1_willHide() {
-        this.setState({
-            showClubDropDown:false,
-        });
-    }
-
-    dropdown_2_willHide() {
-        this.setState({
-            showVenueDropDown:false,
-        });
-    }
-
-    dropdown_3_willHide() {
-        this.setState({
-            showTypeDropDown:false,
-        });
-    }
-
-    lengthFilter(data){
-        if(data.length>5){
-            data=data.substring(0,4);
-            data = data+'...'
-        }
-        return data;
-    }
-
 }
 
 const styles = StyleSheet.create({
@@ -762,42 +547,6 @@ const styles = StyleSheet.create({
         borderRightColor:'#cdcdcd',
         borderRightWidth:0.7,
 
-    },
-    viewcell: {
-        width:dropdownWidth-0.7,
-        backgroundColor:'#ffffff',
-        alignItems:'center',
-        height:35,
-        justifyContent:'center',
-        flexDirection:'row',
-    },
-    textstyle: {
-        fontSize: 13,
-        textAlign: 'center',
-        color:'#646464',
-        justifyContent:'center',
-    },
-    dropdownstyle: {
-        height: 100,
-        width:dropdownWidth,
-        borderColor: '#cdcdcd',
-        borderWidth: 0.7,
-    },
-    dropdown_row: {
-        flexDirection: 'row',
-        height: 50,
-        alignItems: 'center',
-    },
-    dropdown_row_text: {
-        fontSize: 13,
-        color: '#646464',
-        textAlignVertical: 'center',
-        justifyContent:'center',
-        marginLeft: 5,
-    },
-    dropdown_image: {
-        width: 20,
-        height: 20,
     },
 });
 

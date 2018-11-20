@@ -506,7 +506,7 @@ export let fetchAllGameList=(projectId)=>{
 }
 
 //创建项目
-export let createProject=(project,competitionId)=>{
+export let createProject=(project,competitionId,typeList)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
 
@@ -528,7 +528,8 @@ export let createProject=(project,competitionId)=>{
                     personNum:parseInt(project.personNum),
                     gamesNum:parseInt(project.gamesNum),
                     type:parseInt(project.typeIdx),
-                    competitionId:parseInt(competitionId)
+                    competitionId:parseInt(competitionId),
+                    typeList:typeList,
                 }
             }).then((json)=>{
                 if(json.re==1){
@@ -548,7 +549,7 @@ export let createProject=(project,competitionId)=>{
 }
 
 //获取比赛
-export let fetchGameList=(projectId,gamesId)=>{
+export let fetchGameList=(projectId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
 
@@ -563,7 +564,7 @@ export let fetchGameList=(projectId,gamesId)=>{
                 },
                 body: {
                     projectId:projectId,
-                    gamesId:gamesId,
+                    //gamesId:gamesId,
                 }
             }).then((json)=>{
                 if(json.re==1){
@@ -630,6 +631,41 @@ export let fetchGroupList=(projectId,gameClass)=>{
                 if(json.re==1){
                     var group = json.data;
                     resolve({re:1,data:group})
+                }else{
+                    resolve({re:-1})
+                }
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取AB队伍
+export let fetchTeamATeamBInfo=(projectId,gamesId,gameClass)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchTeamATeamBInfo',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gameClass:gameClass,
+                    gamesId:gamesId
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var info = json.data;
+                    resolve({re:1,data:info})
                 }else{
                     resolve({re:-1})
                 }
@@ -896,7 +932,7 @@ export let CompleteMatch=(match,recordA,recordB,game)=>{
     }
 }
 
-//创建比赛
+//自动创建单项比赛
 export let createCompetitonGame=(projectId,gamesId)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {
@@ -904,7 +940,7 @@ export let createCompetitonGame=(projectId,gamesId)=>{
             var state=getState();
 
             Proxy.postes({
-                url: Config.server + '/func/competition/createAllCompetitonGames',
+                url: Config.server + '/func/competition/createAllCompetitonGame',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -921,6 +957,78 @@ export let createCompetitonGame=(projectId,gamesId)=>{
             }).then((json)=>{
                 if(json.re==1)
                 resolve({re:1})
+                else resolve({re:-1})
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//自动创建团体比赛
+export let createCompetitonGames=(projectId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/createAllCompetitonGames',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:parseInt(projectId),
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                    resolve({re:1})
+                else resolve({re:-1})
+
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//手动创建团体比赛中单项比赛
+export let createCompetitonGameOfGames=(game,teamA,teamB,projectId,gamesId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/createCompetitonGameOfGames',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:parseInt(projectId),
+                    gamesId:parseInt(gamesId),
+                    gameClass: parseInt(game.gameClass),
+                    gameType:parseInt(game.gameType),
+                    field: game.field,
+                    referee: game.referee,
+                    viceReferee:game.viceReferee,
+                    teamIdA:parseInt(teamA.teamId),
+                    teamIdB:parseInt(teamB.teamId),
+                    personIdA1:parseInt(teamA.personAId),
+                    personIdA2:parseInt(teamA.personBId),
+                    personIdB1:parseInt(teamB.personAId),
+                    personIdB2:parseInt(teamB.personBId),
+                }
+            }).then((json)=>{
+                if(json.re==1)
+                    resolve({re:1})
                 else resolve({re:-1})
 
 
@@ -950,6 +1058,98 @@ export let getMatchAndRecordInOneGame=(gameId)=>{
                 }
             }).then((json)=>{
                 resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取团体赛下的单项赛
+export let fetchGameOfGamesList=(projectId,gamesId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchGameOfGamesList',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gamesId:gamesId,
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//完成团体赛中所有单项赛
+export let compeleteGameOfGames=(gamesId)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/compeleteGameOfGames',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    gamesId:gamesId,
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//保存AB队伍
+export let saveTeamATeamBInfo=(gameId,member1,member2)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/saveTeamATeamBInfo',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    gameId:gameId,
+                    personIdA1:member1.personAId,
+                    personIdA2:member1.personBId,
+                    personIdB1:member2.personAId,
+                    personIdB2:member2.personBId,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var info = json.data;
+                    resolve({re:1,data:info})
+                }else{
+                    resolve({re:-1})
+                }
+
 
             }).catch((e)=>{
                 alert(e);

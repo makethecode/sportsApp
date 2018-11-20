@@ -19,7 +19,7 @@ import {
 import {fetchGames,enableCompetitionItemOnFresh} from '../action/CompetitionActions';
 import { connect } from 'react-redux';
 import {
-    doLogin,doGetType,getAccessToken,wechatregisterUser,wechatGetOpenid,wechatGetUserInfo,setWechatInfo,
+    doLogin,doGetType,getAccessToken,wechatregisterUser,wechatGetOpenid,wechatGetUserInfo,setWechatInfo,ForgetPwd,
 } from '../action/UserActions';
 import PreferenceStore from '../utils/PreferenceStore';
 import {
@@ -151,6 +151,23 @@ var Login =React.createClass({
             })
     },
 
+    ForgetPwd(username){
+
+        this.props.dispatch(ForgetPwd(username))
+            .then((json)=>{
+                if(json.re==1){
+                    this.setState({user: Object.assign(this.state.user, {password: json.data})})
+                }
+                else{
+                    Alert.alert('失败','您输入的用户名不存在！')
+                }
+            })
+            .catch((e)=>{
+                alert(e);
+            })
+
+    },
+
     WXLogin(){
         let scope = 'snsapi_userinfo';
         let state = '12361231267312';
@@ -162,8 +179,8 @@ var Login =React.createClass({
                     wechat.sendAuthRequest(scope,state)
                         .then(responseCode => {
                             //返回code码，通过code获取access_token
-                            appid=responseCode.appid;
-                            secret="3ea1d52ac88a6861472f279bd4010fc3";
+                            var appid=this.state.appid;
+                            var secret=this.state.secret;
                             //this.props.dispatch(getAccessToken(true));
                             var access_token=null;
                             var openid=null;
@@ -181,8 +198,11 @@ var Login =React.createClass({
                                             nickname="wx"+json.nickname;
                                             this.props.dispatch((wechatregisterUser(unionid,nickname)))
                                                 .then((json)=>{
-                                                    var nickname=json.data.nickName;
-                                                    var password=json.data.password;
+
+                                                if(json.re==1) {
+                                                    //存在微信帐号,直接登录
+                                                    var nickname = json.data.nickName;
+                                                    var password = json.data.password;
                                                     this.setState({showProgress: true});
                                                     this.props.dispatch(doLogin(nickname,password))
                                                         .then((json)=>{
@@ -201,6 +221,16 @@ var Login =React.createClass({
                                                             alert(e);
                                                         })
 
+                                                    this.setState({
+                                                        user: Object.assign(this.state.user, {
+                                                            username: nickname,
+                                                            password: password
+                                                        })
+                                                    })
+                                                }else{
+                                                    //不存在微信帐号
+                                                    Alert.alert('失败！','')
+                                                }
                                                 }).catch((e)=>{
                                                 alert(e);
                                             })
@@ -244,7 +274,7 @@ var Login =React.createClass({
                         <Image resizeMode="contain" source={require('../../img/loginlogo.png')} style={{justifyContent:'center',alignItems:'center',width:400,height:200,marginLeft:150,marginTop:50}}/>
                     </View>
 
-                    <View style={{paddingVertical:2,paddingHorizontal:25,backgroundColor:'transparent',flex:2,alignItems:'center'}} >
+                    <View style={{paddingVertical:2,paddingHorizontal:25,backgroundColor:'transparent',flex:3,alignItems:'center'}} >
 
                         {/*输入用户名*/}
                         <View style={{flexDirection:'row',height:45,marginBottom:10,backgroundColor:'rgba(255,255,255,0.2)',margin:10,padding:3,borderRadius:5}}>
@@ -380,28 +410,33 @@ var Login =React.createClass({
                             </View>
                         </TouchableOpacity>
 
+                        {/*微信登录*/}
+                        <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,
+                            borderWidth:1,borderColor:'#eee'}}
+                                          onPress={()=>{
+                                              this.WXLogin();
+                                          }}>
+                            <View style={{flex:1}}>
+                                <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
+                                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                        <Text style={{color:'#eee',fontSize:16,fontWeight:'bold'}}>微信登录</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+
 
                             <TouchableOpacity style={{width: width, justifyContent: 'center', alignItems: 'center'}}
                                               onPress={() => {
-                                                  this.WXLogin();
+                                                  this.ForgetPwd(this.state.user.username);
                                               }}>
-                                <Text style={{color: '#eee', fontSize: 13, marginTop: 3}}>微信登录</Text>
+                                <Text style={{color: '#eee', fontSize: 13, marginTop: 3}}>忘记密码</Text>
                             </TouchableOpacity>
 
                     </View>
 
 
                     <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'column',paddingHorizontal:28}}>
-
-                        <View style={{backgroundColor:'transparent',flexDirection:'row',margin:10,marginTop:10}}>
-                            <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
-                            <View style={{flex:1}}>
-                            <Text style={{textAlign:'center',color:'#eee',fontSize:12}}>
-                                还没有帐号?
-                            </Text>
-                            </View>
-                            <View style={{flex:1,height:0.8,backgroundColor:'#eee',marginTop:5}}/>
-                        </View>
 
                         {/*注册按钮*/}
                         <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,

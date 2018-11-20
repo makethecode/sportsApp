@@ -1,6 +1,3 @@
-/**
- * Created by dingyiming on 2017/8/1.
- */
 import React, {Component} from 'react';
 import {
     Dimensions,
@@ -19,9 +16,11 @@ import {
     Alert,
     Modal,
     ActivityIndicator,
+    DeviceEventEmitter
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ModalDropdown from 'react-native-modal-dropdown';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -29,11 +28,13 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-
 import ActionSheet from 'react-native-actionsheet';
 import CompetitionGameModal from './CompetitonGameModal'
 import {
-    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList
+    fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGamesList,createCompetitonGames
 } from '../../action/CompetitionActions';
-import CompetitionGameList from './CompetitionGameList'
+import CompetitionGameOfGamesList from './CompetitionGameOfGamesList'
+import GameFilter from '../../utils/GameFilter'
 
 var { height, width } = Dimensions.get('window');
+const dropdownWidth = width/2-20;
 
 class CompetitionGamesList extends Component {
 
@@ -44,17 +45,18 @@ class CompetitionGamesList extends Component {
         }
     }
 
-    navigate2CompetitionGameList(gamesId)
+    navigate2CompetitionGameOfGamesList(games)
     {
-        //团体赛
+        //团体赛中的单项赛
         const {navigator} =this.props;
 
         if(navigator) {
             navigator.push({
-                name: 'CompetitionGameList',
-                component: CompetitionGameList,
+                name: 'CompetitionGameOfGamesList',
+                component: CompetitionGameOfGamesList,
                 params: {
-                    gamesId:gamesId,
+                    games:games,
+                    projectId:this.props.projectId,
                     projectName:this.props.projectName,
                     projectType:this.props.projectType,
                 }
@@ -67,8 +69,6 @@ class CompetitionGamesList extends Component {
         this.state={
             games:[],
             allgames:[],
-            gameClassButtons:['取消','小组赛','32进16','16进8','8进4','半决赛','冠亚军决赛'],
-            gameClassStr:null,gameClassIdx:null,
             modalVisible:false,
             game:[],
             teamA:null,
@@ -80,48 +80,19 @@ class CompetitionGamesList extends Component {
             list4:[],//8进4
             list5:[],//半决赛
             list6:[],//冠亚军决赛
+
+            showProgress:false,
+
+            //下拉列表属性
+            gameClassId:-1,
+            groupId:-1,
+            gameClassStr:'赛制',
+            groupStr:'组别',
+            gameClassList:['小组赛','32进16','16进8','8进4','半决赛','冠亚军决赛'],
+            groupList:['A组','B组','C组','D组','E组','F组','G组','H组'],
+            showGameClassDropdown:false,
+            showGroupDropdown:false,
         };
-    }
-
-    //选类型
-    _handlePress(index) {
-        if(index!==0){
-            var gameClassStr = this.state.gameClassButtons[index];
-            var gameClassIdx = index;
-            this.setState({gameClassStr:gameClassStr,gameClassIdx:gameClassIdx});
-            //对game进行筛选
-            this.searchByText(gameClassStr)
-        }
-    }
-
-    searchByText(text){
-        var allgames = this.state.allgames;
-        var gamesList = [];
-
-        if (allgames && allgames.length > 0) {
-            allgames.map((games, i) => {
-
-                var gameClass='';
-                switch (games.gameClass){
-                    case '1':gameClass='小组赛';break;
-                    case '2':gameClass='32进16';break;
-                    case '3':gameClass='16进8';break;
-                    case '4':gameClass='8进4';break;
-                    case '5':gameClass='半决赛';break;
-                    case '6':gameClass='冠亚军决赛';break;
-                }
-
-                    if (gameClass.indexOf(text) != -1)
-                        gamesList.push(games)
-                }
-            )
-        }
-
-        this.setState({games: gamesList})
-    }
-
-    show(actionSheet) {
-        this[actionSheet].show();
     }
 
     renderGamesRow(rowData,sectionId,rowId){
@@ -129,7 +100,7 @@ class CompetitionGamesList extends Component {
         // {'id':33,'teamA':'陈海云','teamB':'李学庆','scoreA':0,'scoreB':10,'startTime':'2018-12-10 08:00','endTime':'2018-12-11 10:00',state:0,
         //     'teamAimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
         //     'teamBimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132',
-        //     'gameClass':1,
+        //     'gameClass':1,'groupId':1,
         //     'gameList':[{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':1,'socreB':0,state:1},{'personA':'陈海云、邓养吾','personB':'邹鹏、小吴','scoreA':0,'socreB':0,state:0}]}
 
         var gameClass = '';
@@ -142,12 +113,24 @@ class CompetitionGamesList extends Component {
             case '6':gameClass='冠亚军决赛';break;
         }
 
+        var group = '';
+        switch (rowData.groupId){
+            case 0:group='A组';break;
+            case 1:group='B组';break;
+            case 2:group='C组';break;
+            case 3:group='D组';break;
+            case 4:group='E组';break;
+            case 5:group='F组';break;
+            case 6:group='G组';break;
+            case 7:group='H组';break;
+        }
+
         return (
             <TouchableOpacity style={{backgroundColor:'#fff',marginTop:4}}
                               onPress={()=>{
                                   //this.setState({game:rowData.gameList,teamA:rowData.teamA,teamB:rowData.teamB,modalVisible:true});
                                   //团体赛转单项赛
-                                  this.navigate2CompetitionGameList(rowData.id)
+                                  this.navigate2CompetitionGameOfGamesList(rowData)
                               }}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:1}}>
 
@@ -167,13 +150,13 @@ class CompetitionGamesList extends Component {
                     {
                         rowData.state == '1'?
                         <View style={{flex: 2, flexDirection: 'row',justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
-                            <Text style={{fontSize:13,flex:1,color:'#333'}}>{gameClass}</Text>
+                            <Text style={{fontSize:13,flex:1,color:'#333'}}>{gameClass} {group}</Text>
                             <Text style={{fontSize:12,flex:1,color:'#333'}}>{rowData.startTime}</Text>
                             <Text style={{fontSize:20,flex:3}}>{rowData.scoreA} - {rowData.scoreB}</Text>
                         </View>
                             :
                             <View style={{flex:2, flexDirection: 'row',justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
-                                <Text style={{fontSize:12,flex:1,color:'#333'}}>{gameClass}</Text>
+                                <Text style={{fontSize:12,flex:1,color:'#333'}}>{gameClass} {group}</Text>
                                 <Text style={{fontSize:12,flex:1,color:'#333'}}>{rowData.startTime}</Text>
                                 <Text style={{fontSize:20,flex:3}}>未开始</Text>
                             </View>
@@ -200,12 +183,12 @@ class CompetitionGamesList extends Component {
 
     render()
     {
-        const CANCEL_INDEX = 0;
-        const DESTRUCTIVE_INDEX = 1;
+        let gameClassIcon = this.state.showGameClassDropdown ? require('../../../img/up_icon.png') : require('../../../img/down_icon.png');
+        let groupIcon = this.state.showGroupDropdown ? require('../../../img/up_icon.png') : require('../../../img/down_icon.png');
 
         //小组赛列表
         var ListView1=null;
-        var List1 = this.state.list1;//小组赛
+        var List1 = GameFilter.filter(this.state.list1,this.state.gameClassId,this.state.groupId);//小组赛
         var ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List1 !== undefined && List1 !== null && List1.length > 0)
         {
@@ -220,7 +203,7 @@ class CompetitionGamesList extends Component {
 
         //32进16列表
         var ListView2=null;
-        var List2 = this.state.list2;//32进16赛
+        var List2 = GameFilter.filter(this.state.list2,this.state.gameClassId,this.state.groupId);//32进16赛
         var ds2 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List2 !== undefined && List2 !== null && List2.length > 0)
         {
@@ -235,7 +218,7 @@ class CompetitionGamesList extends Component {
 
         //16进8列表
         var ListView3=null;
-        var List3 = this.state.list3;//16进8赛
+        var List3 = GameFilter.filter(this.state.list3,this.state.gameClassId,this.state.groupId);//16进8赛
         var ds3 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List3 !== undefined && List3 !== null && List3.length > 0)
         {
@@ -250,7 +233,7 @@ class CompetitionGamesList extends Component {
 
         //8进4列表
         var ListView4=null;
-        var List4 = this.state.list4;//8进4赛
+        var List4 = GameFilter.filter(this.state.list4,this.state.gameClassId,this.state.groupId);//8进4赛
         var ds4 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List4 !== undefined && List4 !== null && List4.length > 0)
         {
@@ -265,7 +248,7 @@ class CompetitionGamesList extends Component {
 
         //半决赛表
         var ListView5=null;
-        var List5 = this.state.list5;//半决赛
+        var List5 = GameFilter.filter(this.state.list5,this.state.gameClassId,this.state.groupId);//半决赛
         var ds5 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List5 !== undefined && List5 !== null && List5.length > 0)
         {
@@ -280,7 +263,7 @@ class CompetitionGamesList extends Component {
 
         //决赛表
         var ListView6=null;
-        var List6 = this.state.list6;//决赛
+        var List6 = GameFilter.filter(this.state.list6,this.state.gameClassId,this.state.groupId);//决赛
         var ds6 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         if (List6 !== undefined && List6 !== null && List6.length > 0)
         {
@@ -295,13 +278,87 @@ class CompetitionGamesList extends Component {
 
         return (
             <View style={styles.container}>
-                <Toolbar width={width} title="比赛场次" navigator={this.props.navigator}
+                <Toolbar width={width} title="团体赛场次" navigator={this.props.navigator}
                          actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
-                                 //添加比赛
+                                 //自动生成比赛
+                                 this.setState({showProgress:true})
+
+                                 if(i==0){
+                                     //this.navigate2CreateCompetitionGame()
+                                     this.props.dispatch(createCompetitonGames(this.props.projectId)).then((json)=>{
+                                         if(json.re==1)
+                                         {
+                                             this.fetchGamesList();
+                                         }
+                                         else {
+                                             this.fetchGamesList();
+                                             Alert.alert('失败','已创建当前分组名单下所有比赛！')
+                                         }
+                                     })
+
+                                 }
+
                              }
                          }}>
+
+                    <View style={styles.flexContainer}>
+                        {/*赛制类型*/}
+                        <ModalDropdown
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.gameClassList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
+                        >
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {this.state.gameClassStr}
+                                </Text>
+                                <Image
+                                    style={styles.dropdown_image}
+                                    source={gameClassIcon}
+                                />
+                            </View>
+                        </ModalDropdown>
+                        {/*组别类型*/}
+                        <ModalDropdown
+                            style={styles.cell}
+                            textStyle={styles.textstyle}
+                            dropdownStyle={styles.dropdownstyle}
+                            options={this.state.groupList}
+                            renderRow={this.dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => this.dropdown_2_onSelect(idx, value)}
+                            onDropdownWillShow={this.dropdown_2_willShow.bind(this)}
+                            onDropdownWillHide={this.dropdown_2_willHide.bind(this)}
+                        >
+                            <View style={styles.viewcell}>
+                                <Text style={styles.textstyle}>
+                                    {this.state.groupStr}
+                                </Text>
+                                <Image
+                                    style={styles.dropdown_image}
+                                    source={groupIcon}
+                                />
+                            </View>
+                        </ModalDropdown>
+
+                        {/*清空*/}
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#66CDAA',borderLeftWidth:1,borderLeftColor:'#fff'}}>
+                            <TouchableOpacity
+                                onPress={()=>{
+                                    this.setState({gameClassId:-1,groupId:-1,gameClassStr:'赛制',groupStr:'组别'})
+                                }}
+                            >
+                                <Ionicons name='md-refresh' size={20} color="#fff"/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
                     {<ScrollView>
                         {//冠亚军决赛
                             ListView6==null?null:
@@ -329,9 +386,84 @@ class CompetitionGamesList extends Component {
                                     <Text style={{color:'#444',fontSize:14}}>小组赛</Text></View>{ListView1}</View>}
                     </ScrollView>}
 
+                    {/*loading模态框*/}
+                    <Modal animationType={"fade"} transparent={true} visible={this.state.showProgress}>
+                        <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
+                                          onPress={()=>{
+                                              //TODO:cancel this behaviour
+                                              this.setState({showProgress:false})
+
+                                          }}>
+                            <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
+                                justifyContent:'center',alignItems:'center',borderRadius:6}}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={{marginTop:10,height: 40,position:'absolute',transform: [{scale: 1.6}]}}
+                                    size="large"
+                                />
+                                <View style={{flexDirection:'row',justifyContent:'center',marginTop:45}}>
+                                    <Text style={{color:'#666',fontSize:13}}>
+                                        加载中...
+                                    </Text>
+
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </Modal>
+
                 </Toolbar>
             </View>
         )
+    }
+
+    dropdown_renderRow(rowData, rowID, highlighted){
+        return (
+            <TouchableOpacity >
+                <View style={[styles.dropdown_row]}>
+                    <Text style={[styles.dropdown_row_text, highlighted && {color: '#fff'}]}>
+                        {rowData}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    dropdown_1_onSelect(idx, value) {
+        this.setState({
+            gameClassStr:value,
+            gameClassId:idx
+        });
+    }
+
+    dropdown_2_onSelect(idx, value) {
+        this.setState({
+            groupStr:value,
+            groupId:idx
+        });
+    }
+
+    dropdown_1_willShow() {
+        this.setState({
+            showGameClassDropDown:true,
+        });
+    }
+
+    dropdown_2_willShow() {
+        this.setState({
+            showGroupDropDown:true,
+        });
+    }
+
+    dropdown_1_willHide() {
+        this.setState({
+            showGameClassDropDown:false,
+        });
+    }
+
+    dropdown_2_willHide() {
+        this.setState({
+            showGroupDropDown:false,
+        });
     }
 
     componentWillMount()
@@ -340,8 +472,21 @@ class CompetitionGamesList extends Component {
         // {'id':33,'teamA':'陈海云','teamB':'李学庆','scoreA':0,'scoreB':10,'startTime':'2018-12-10 08:00','endTime':'2018-12-11 10:00',state:0,
         //     'teamAimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
         //     'teamBimg':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132',
-        //     'gameClass':1,
+        //     'gameClass':1,'groupId':1
+        this.fetchGamesList();
 
+        this.freshListener=DeviceEventEmitter.addListener('fresh', (data)=>{
+            if(data)
+                this.fetchGamesList()
+        });
+    }
+
+    componentWillUnmount(){
+        if(this.freshListener)
+            this.freshListener.remove();
+    }
+
+    fetchGamesList(){
         this.props.dispatch(fetchGamesList(this.props.projectId)).then((json)=>{
             if(json.re==1)
             {
@@ -366,7 +511,7 @@ class CompetitionGamesList extends Component {
                     }
                 }
 
-                this.setState({list1:list1,list2:list2,list3:list3,list4:list4,list5:list5,list6:list6})
+                this.setState({list1:list1,list2:list2,list3:list3,list4:list4,list5:list5,list6:list6,showProgress:false})
             }
             else {
                 if(json.re=-100){
@@ -379,7 +524,6 @@ class CompetitionGamesList extends Component {
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
     },
@@ -390,6 +534,65 @@ const styles = StyleSheet.create({
     },
     modalBackgroundStyle:{
         backgroundColor:'transparent'
+    },
+    viewCell: {
+        height: 50,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+    },
+    flexContainer: {
+        flexDirection: 'row',
+        width:width,
+        height:35,
+        borderColor:'#fff',
+        borderTopWidth:1,
+        borderBottomWidth:1,
+    },
+    cell: {
+        width:dropdownWidth,
+        alignItems:'center',
+        flexDirection:'row',
+        height:35,
+        borderColor:'#fff',
+        borderWidth:1,
+
+    },
+    viewcell: {
+        width:dropdownWidth-1,
+        backgroundColor:'#66CDAA',
+        alignItems:'center',
+        height:35,
+        justifyContent:'center',
+        flexDirection:'row',
+    },
+    textstyle: {
+        fontSize: 13,
+        textAlign: 'center',
+        color:'#ffff',
+        justifyContent:'center',
+    },
+    dropdownstyle: {
+        height: 150,
+        width:dropdownWidth,
+        borderColor: '#fff',
+        borderWidth: 1,
+    },
+    dropdown_row: {
+        flexDirection: 'row',
+        height: 50,
+        alignItems: 'center',
+        backgroundColor:'#66CDAA',
+    },
+    dropdown_row_text: {
+        fontSize: 13,
+        color: '#fff',
+        textAlignVertical: 'center',
+        justifyContent:'center',
+        marginLeft: 5,
+    },
+    dropdown_image: {
+        width: 20,
+        height: 20,
     },
 });
 

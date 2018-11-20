@@ -96,6 +96,16 @@ class CompetitionList extends Component {
 
         if(rowData.brief==null)rowData.brief='暂无简介'
 
+        var state = 'aa';
+
+        switch (rowData.state){
+            case 0:state = '已创建';break;
+            case 1:state = '可报名';break;
+            case 2:state = '进行中';break;
+            case 3:state = '已结束';break;
+            case 4:state = '已取消';break;
+        }
+
         return (
             <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ccc', marginTop: 4 ,backgroundColor:'#fff'}}
                               onPress={()=>{
@@ -103,15 +113,21 @@ class CompetitionList extends Component {
                               }}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:5}}>
                     <View style={{ padding: 6, paddingHorizontal: 10 ,flexDirection:'row',}}>
-                        <View style={{padding:4,flex:1,alignItems:'center',flexDirection:'row'}}>
-                            <Text style={{ color: '#222', fontSize: 19 }}>
+                        <View style={{padding:4,flex:1,alignItems:'flex-start',textAlign:'left'}}>
+                            <Text style={{ color: '#222', fontSize: 16 }}>
                                 {rowData.name}
                             </Text>
+                        </View>
+                        <View style={{paddingVertical:4,flex:1,alignItems:'flex-end',textAlign:'right'}}>
+                            <View style={{borderColor:'#66CDAA',borderWidth:1,padding:2,paddingHorizontal:4,borderRadius:5}}>
+                                <Text style={{ color: '#66CDAA', fontSize: 13 }}>
+                                {state}
+                                </Text></View>
                         </View>
                     </View>
 
                     <View style={{ padding:6, paddingHorizontal: 12,flexDirection:'column'}}>
-                        <Text style={{ color: '#666', fontSize: 13}}>
+                        <Text style={{ color: '#666', fontSize: 12}}>
                             {rowData.brief}
                         </Text>
                     </View>
@@ -129,8 +145,8 @@ class CompetitionList extends Component {
                                 </View>
                         }
                         <View style={{flex:2,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
-                            <Text style={{ color: '#222', fontSize: 16,marginBottom:5}}>{rowData.host}</Text>
-                            <Text style={{ color: '#666', fontSize: 13}}>{rowData.perNum}</Text>
+                            <Text style={{ color: '#222', fontSize: 14,marginBottom:5}}>{rowData.host}</Text>
+                            <Text style={{ color: '#666', fontSize: 12}}>{rowData.perNum}</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'column',alignItems:'flex-end',justifyContent:'center',marginRight:10}}>
                             <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
@@ -240,7 +256,6 @@ class CompetitionList extends Component {
         let color = {
             subColor: '#f0f0f0'
         };
-
 
         return (
             <View style={styles.container}>

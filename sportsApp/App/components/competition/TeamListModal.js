@@ -47,27 +47,16 @@ class GroupMemberModal extends Component{
         this.state={
             team:null,
             teamList:this.props.teamList,
+            team1List:this.props.team1List,
+            team2List:this.props.team2List,
+            teamChoose:this.props.teamChoose,
         }
     }
 
     renderRow(rowData,sectionId,rowId){
 
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        var groupStr='';
-
-        switch (rowData.groupId){
-            case 0:groupStr='A组';break;
-            case 1:groupStr='B组';break;
-            case 2:groupStr='C组';break;
-            case 3:groupStr='D组';break;
-            case 4:groupStr='E组';break;
-            case 5:groupStr='F组';break;
-            case 6:groupStr='G组';break;
-            case 7:groupStr='H组';break;
-        }
+        //{id=1, name='陈海云',
+        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132},
 
         var row=(
             <TouchableOpacity style={{flex:3,flexDirection:'row',backgroundColor:'#fff',marginBottom:5,padding:5,borderBottomWidth:1,
@@ -88,11 +77,11 @@ class GroupMemberModal extends Component{
                 }
                 <View style={{flex:3,margin:10,justifyContent:'center',alignItems: 'center',}}>
                     <View style={{flexDirection:'row'}}>
-                        <Text style={{marginLeft:10,color:'#343434'}}>{rowData.team}</Text>
+                        <Text style={{marginLeft:10,color:'#343434'}}>{rowData.name}</Text>
                     </View>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems: 'center',margin:10,borderWidth:1,borderColor:'#66CDAA',borderRadius:5}}>
-                    <Text style={{color:'#66CDAA',fontSize:12,}}>{groupStr}</Text>
+                    <Text style={{color:'#66CDAA',fontSize:12,}}>{rowData.no}号</Text>
                 </View>
 
             </TouchableOpacity>
@@ -104,15 +93,29 @@ class GroupMemberModal extends Component{
 
     render(){
 
-        var teamListView = null;
-        var teamList = this.props.teamList;
+        var team1ListView = null;
+        var team1List = this.props.team1List;
 
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (teamList !== undefined && teamList !== null && teamList.length > 0) {
-            teamListView = (
+        var ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (team1List !== undefined && team1List !== null && team1List.length > 0) {
+            team1ListView = (
                 <ListView
                     automaticallyAdjustContentInsets={false}
-                    dataSource={ds.cloneWithRows(teamList)}
+                    dataSource={ds1.cloneWithRows(team1List)}
+                    renderRow={this.renderRow.bind(this)}
+                />
+            );
+        }
+
+        var team2ListView = null;
+        var team2List = this.props.team2List;
+
+        var ds2 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        if (team2List !== undefined && team2List !== null && team2List.length > 0) {
+            team2ListView = (
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds1.cloneWithRows(team2List)}
                     renderRow={this.renderRow.bind(this)}
                 />
             );
@@ -130,20 +133,33 @@ class GroupMemberModal extends Component{
                         borderWidth: 1,
                         backgroundColor: '#fff'
                     }}>
-
-                        <View style={{
-                            flex: 6,
-                            flexDirection: 'row',
-                            backgroundColor: '#fff',
-                            marginBottom: 5,
-                            padding: 5,
-                            borderBottomWidth: 1,
-                            borderColor: '#eee',
-                            borderRadius: 8
-                        }}>
-                            {teamListView}
-                        </View>
-
+                        {
+                            this.props.teamChoose==1?
+                            <View style={{
+                                flex: 6,
+                                flexDirection: 'row',
+                                backgroundColor: '#fff',
+                                marginBottom: 5,
+                                padding: 5,
+                                borderBottomWidth: 1,
+                                borderColor: '#eee',
+                                borderRadius: 8
+                            }}>
+                                {team1ListView}
+                            </View>:
+                                <View style={{
+                                    flex: 6,
+                                    flexDirection: 'row',
+                                    backgroundColor: '#fff',
+                                    marginBottom: 5,
+                                    padding: 5,
+                                    borderBottomWidth: 1,
+                                    borderColor: '#eee',
+                                    borderRadius: 8
+                                }}>
+                                    {team2ListView}
+                                </View>
+                        }
                         <View style={{
                             flex: 1,
                             flexDirection: 'row',

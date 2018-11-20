@@ -16,6 +16,7 @@ import {
     BackAndroid,
     Modal,
     Alert,
+    DeviceEventEmitter,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,7 +24,7 @@ import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ActionSheet from 'react-native-actionsheet';
 import TeamListModal from './TeamListModal'
-import {fetchTeamList,fetchGroupList,CompleteMatch,createCompetitonGame} from '../../action/CompetitionActions'
+import {fetchTeamList,fetchGroupList,CompleteMatch,createCompetitonGame,fetchTeamATeamBInfo,createCompetitonGameOfGames} from '../../action/CompetitionActions'
 
 var {height, width} = Dimensions.get('window');
 
@@ -41,43 +42,43 @@ class CreateCompetitionGame extends Component{
 
             modalVisible: false,
             teamChoose: 0,
+            personChoose:0,
 
-            teamList: [],
+            teamList: {},
+            team1List: [],
+            team2List: [],
+            teamAName:this.props.games.teamAName,
+            teamBName:this.props.games.teamBName,
 
             //传值
             projectId:this.props.projectId,
             projectName:this.props.projectName,
             projectType:this.props.projectType,
-            gamesId:this.props.gamesId,
+            games:this.props.games,
 
-            team1: {
-                winCount: 0,
-                groupId: 0,
-                teamId: 0,
-                gameClass: 0,
-                rank: 0,
-                id: 0,
-                team: '队伍1',
-                avatar: '',
-                lostCount: 0
+             member1: {
+                 personAId: 0,
+                 personBId: 0,
+                 personAName: '成员1',
+                 personBName: '成员2',
+                 personAAvatar:'',
+                 personBAvatar:'',
+                 teamId: 1
             },
-            team2: {
-                winCount: 0,
-                groupId: 0,
-                teamId: 0,
-                gameClass: 0,
-                rank: 0,
-                id: 0,
-                team: '队伍2',
-                avatar: '',
-                lostCount: 0
+
+            member2: {
+                personAId: 0,
+                personBId: 0,
+                personAName: '成员1',
+                personBName: '成员2',
+                personAAvatar:'',
+                personBAvatar:'',
+                teamId: 1
             },
 
             game: {
-                gameClassStr: '小组赛',
-                gameClassId: 1,
-                groupId: null,
-                groupStr: null,
+                gameClass: this.props.games.gameClass,
+                gameType:null,
                 field: '',
                 referee: '',
                 viceReferee:'',
@@ -85,20 +86,17 @@ class CreateCompetitionGame extends Component{
                 endTime: '',
             },
 
-            gameClassButtons: ['取消', '小组赛', '32进16', '16进8', '8进4', '半决赛', '冠亚军决赛'],
-            groupButtons: ['取消', 'A组', 'B组', 'C组', 'D组', 'E组', 'F组', 'G组', 'H组'],
+            gameTypeButtons: ['取消', '男单', '女单', '男双', '女双', '混双'],
         };
     }
 
-    //选赛制
+    //选类别
     _handlePress1(index) {
 
         if(index!==0){
-            var gameClassStr = this.state.gameClassButtons[index];
-            var gameClassId = index;
-            this.setState({game:Object.assign(this.state.game,{gameClassStr:gameClassStr,gameClassId:gameClassId})});
+            var gameType = index;
+            this.setState({game:Object.assign(this.state.game,{gameType:gameType})});
 
-            this.getTeamListByGameClass(gameClassId);
         }
     }
 
@@ -125,6 +123,27 @@ class CreateCompetitionGame extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
+        var isSingle = 1;
+
+        var gameClass = '';
+        switch (this.props.games.gameClass){
+            case '1':gameClass='小组赛';break;
+            case '2':gameClass='32进16';break;
+            case '3':gameClass='16进8';break;
+            case '4':gameClass='8进4';break;
+            case '5':gameClass='半决赛';break;
+            case '6':gameClass='冠亚军决赛';break;
+        }
+
+        var gameType = '';
+        switch (this.state.game.gameType){
+            case 1:gameType='男单';isSingle=1;break;
+            case 2:gameType='女单';isSingle=1;break;
+            case 3:gameType='男双';isSingle=0;break;
+            case 4:gameType='女双';isSingle=0;break;
+            case 5:gameType='混双';isSingle=0;break;
+        }
+
         return (
             <View style={styles.container}>
 
@@ -134,78 +153,153 @@ class CreateCompetitionGame extends Component{
                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:1}}>
 
                         {/*队伍选择UI*/}
-                        <View style={{width:width,height:150,padding:6, paddingHorizontal: 12,flexDirection:'row'}}>
+                        <View style={{width:width,height:200,padding:6, paddingHorizontal: 12,flexDirection:'row'}}>
 
                             {/*队伍1*/}
+                            {
+                                isSingle==1?
                             <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
 
-                                {
-                                    this.state.team1.avatar==''?
+                                {this.state.member1.personAAvatar==''?
+                                <View><Image style={{height: 50, width: 50, borderRadius: 25}}
+                                             source={require('../../../img/portrait.jpg')}/></View>:
                                     <View><Image style={{height: 50, width: 50, borderRadius: 25}}
-                                                 source={require('../../../img/portrait.jpg')}/></View>
-                                        :
-                                    <View><Image style={{height: 50, width: 50, borderRadius: 25}}
-                                                 source={{uri: this.state.team1.avatar}}/></View>
+                                                 source={{uri: this.state.member1.personAAvatar}}/></View>
                                 }
-
                                 <TouchableOpacity style={{marginTop:10,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
                                 onPress={()=>{
                                     this.setState({modalVisible:true,teamChoose:1});
                                 }}>
-                                    <View><Text style={{fontSize:14,color:'#fff'}}>{this.state.team1.team}</Text></View></TouchableOpacity>
+                                    <View><Text style={{fontSize:14,color:'#fff'}}>{this.state.member1.personAName}</Text></View></TouchableOpacity>
+
+                                <View style={{marginTop:3,width:100,justifyContent:'center',alignItems:'center',padding:3}}>
+                                    <View><Text style={{fontSize:12,color:'#fff'}}>{this.props.games.teamA}</Text></View></View>
 
                             </View>
+                                    :
+                                    <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+
+                                        <View style={{flexDirection:'row'}}>
+                                            {this.state.member1.personAAvatar==''?
+                                            <Image style={{height: 35, width: 35, borderRadius: 17}}
+                                                   source={require('../../../img/portrait.jpg')}/>:
+                                                <Image style={{height: 35, width: 35, borderRadius: 17}}
+                                                       source={{uri: this.state.member1.personAAvatar}}/>
+                                            }
+                                            {this.state.member1.personBAvatar==''?
+                                                <Image style={{height: 35, width: 35, borderRadius: 17,marginLeft:5}}
+                                                       source={require('../../../img/portrait.jpg')}/>:
+                                                <Image style={{height: 35, width: 35, borderRadius: 17,marginLeft:5}}
+                                                       source={{uri: this.state.member1.personBAvatar}}/>
+                                            }
+                                        </View>
+
+                                        <TouchableOpacity style={{marginTop:10,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
+                                                          onPress={()=>{
+                                                              this.setState({modalVisible:true,teamChoose:1,personChoose:1});
+                                                          }}>
+                                            <View><Text style={{fontSize:13,color:'#fff'}}>{this.state.member1.personAName}</Text></View></TouchableOpacity>
+
+                                        <TouchableOpacity style={{marginTop:3,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
+                                                          onPress={()=>{
+                                                              this.setState({modalVisible:true,teamChoose:1,personChoose:2});
+                                                          }}>
+                                            <View><Text style={{fontSize:13,color:'#fff'}}>{this.state.member1.personBName}</Text></View></TouchableOpacity>
+
+                                        <View style={{marginTop:5,width:100,justifyContent:'center',alignItems:'center',padding:3}}>
+                                            <View><Text style={{fontSize:12,color:'#fff'}}>{this.props.games.teamA}</Text></View></View>
+
+                                    </View>
+                            }
 
                             <View style={{flex: 1,justifyContent:'center',alignItems:'center'}}/>
 
                             {/*队伍2*/}
-                            <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+                            {
+                                isSingle==1?
+                                    <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
 
-                                {
-                                    this.state.team2.avatar==''?
-                                        <View><Image style={{height: 50, width: 50, borderRadius: 25}}
-                                                     source={require('../../../img/portrait.jpg')}/></View>
-                                        :
-                                        <View><Image style={{height: 50, width: 50, borderRadius: 25}}
-                                                     source={{uri: this.state.team2.avatar}}/></View>
-                                }
+                                        {this.state.member2.personAAvatar==''?
+                                            <View><Image style={{height: 50, width: 50, borderRadius: 25}}
+                                                         source={require('../../../img/portrait.jpg')}/></View>:
+                                            <View><Image style={{height: 50, width: 50, borderRadius: 25}}
+                                                         source={{uri: this.state.member2.personAAvatar}}/></View>
+                                        }
+                                        <TouchableOpacity style={{marginTop:10,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
+                                                          onPress={()=>{
+                                                              this.setState({modalVisible:true,teamChoose:2});
+                                                          }}>
+                                            <View><Text style={{fontSize:14,color:'#fff'}}>{this.state.member2.personAName}</Text></View></TouchableOpacity>
 
-                                <TouchableOpacity style={{marginTop:10,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
-                                                  onPress={()=>{
-                                                      this.setState({modalVisible:true,teamChoose:2});
-                                                  }}>
-                                    <View><Text style={{fontSize:14,color:'#fff'}}>{this.state.team2.team}</Text></View></TouchableOpacity>
+                                        <View style={{marginTop:3,width:100,justifyContent:'center',alignItems:'center',padding:3}}>
+                                            <View><Text style={{fontSize:12,color:'#fff'}}>{this.props.games.teamB}</Text></View></View>
 
-                            </View>
+                                    </View>
+                                    :
+                                    <View style={{flex:3,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+
+                                        <View style={{flexDirection:'row'}}>
+                                            {this.state.member2.personAAvatar==''?
+                                                <Image style={{height: 35, width: 35, borderRadius: 17}}
+                                                       source={require('../../../img/portrait.jpg')}/>:
+                                                <Image style={{height: 35, width: 35, borderRadius: 17}}
+                                                       source={{uri: this.state.member2.personAAvatar}}/>
+                                            }
+                                            {this.state.member1.personBAvatar==''?
+                                                <Image style={{height: 35, width: 35, borderRadius: 17,marginLeft:5}}
+                                                       source={require('../../../img/portrait.jpg')}/>:
+                                                <Image style={{height: 35, width: 35, borderRadius: 17,marginLeft:5}}
+                                                       source={{uri: this.state.member2.personBAvatar}}/>
+                                            }
+                                        </View>
+
+                                        <TouchableOpacity style={{marginTop:10,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
+                                                          onPress={()=>{
+                                                              this.setState({modalVisible:true,teamChoose:2,personChoose:1});
+                                                          }}>
+                                            <View><Text style={{fontSize:13,color:'#fff'}}>{this.state.member2.personAName}</Text></View></TouchableOpacity>
+
+                                        <TouchableOpacity style={{marginTop:3,borderWidth:1,borderColor:'#fff',width:100,justifyContent:'center',alignItems:'center',padding:3}}
+                                                          onPress={()=>{
+                                                              this.setState({modalVisible:true,teamChoose:2,personChoose:2});
+                                                          }}>
+                                            <View><Text style={{fontSize:13,color:'#fff'}}>{this.state.member2.personBName}</Text></View></TouchableOpacity>
+
+                                        <View style={{marginTop:5,width:100,justifyContent:'center',alignItems:'center',padding:3}}>
+                                            <View><Text style={{fontSize:12,color:'#fff'}}>{this.props.games.teamB}</Text></View></View>
+
+                                    </View>
+                            }
 
                         </View>
 
                         {/*对局信息UI*/}
                         <View style={{flex:1,padding:6, paddingHorizontal: 20,flexDirection:'column',justifyContent:'center',alignItems:'center',marginTop:20}}>
 
-                            {/*项目*/}
-                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,paddingHorizontal:10}}>
-                                <View style={{flex:1}}>
-                                    <Text style={{color:'#343434',fontSize:14}}>项目</Text>
-                                </View>
-                                <Text style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',textAlign:'right',backgroundColor:'#fff'}}>{this.props.projectName}
-                                </Text>
-                            </View>
-
                             {/*赛制*/}
                             <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,paddingHorizontal:10}}>
                                 <View style={{flex:1}}>
-                                    <Text style={{color:'#343434'}}>赛制</Text>
+                                    <Text style={{color:'#343434',fontSize:14}}>赛制</Text>
+                                </View>
+                                <Text style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',textAlign:'right',backgroundColor:'#fff'}}>
+                                    {gameClass}
+                                </Text>
+                            </View>
+
+                            {/*类别*/}
+                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,paddingHorizontal:10}}>
+                                <View style={{flex:1}}>
+                                    <Text style={{color:'#343434'}}>类别</Text>
                                 </View>
                                 <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff'}}
                                                   onPress={()=>{ this.show('actionSheet1'); }}>
                                     {
-                                        this.state.game.gameClassStr==null?
+                                        this.state.game.gameType==null?
                                             <View style={{flex:1,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#888',fontSize:14}}>请选择赛制 ></Text>
+                                                <Text style={{color:'#888',fontSize:14}}>请选择类别 ></Text>
                                             </View> :
                                             <View style={{flex:1,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#444',fontSize:14}}>{this.state.game.gameClassStr}</Text>
+                                                <Text style={{color:'#444',fontSize:14}}>{gameType}</Text>
                                             </View>
 
                                     }
@@ -213,44 +307,12 @@ class CreateCompetitionGame extends Component{
                                         ref={(p) => {
                                             this.actionSheet1 =p;
                                         }}
-                                        title="请选择赛制"
-                                        options={this.state.gameClassButtons}
+                                        title="请选择类别"
+                                        options={this.state.gameTypeButtons}
                                         cancelButtonIndex={CANCEL_INDEX}
                                         destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                         onPress={
                                             (data)=>{ this._handlePress1(data); }
-                                        }
-                                    />
-                                </TouchableOpacity>
-                            </View>
-
-                            {/*组别*/}
-                            <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1,paddingHorizontal:10}}>
-                                <View style={{flex:1}}>
-                                    <Text style={{color:'#343434'}}>组别</Text>
-                                </View>
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#red',}}
-                                                  onPress={()=>{ this.show('actionSheet2'); }}>
-                                    {
-                                        this.state.game.groupStr==null?
-                                            <View style={{flex:1,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#888',fontSize:14}}>请选择组别 ></Text>
-                                            </View> :
-                                            <View style={{flex:1,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
-                                                <Text style={{color:'#444',fontSize:14}}>{this.state.game.groupStr}</Text>
-                                            </View>
-
-                                    }
-                                    <ActionSheet
-                                        ref={(p) => {
-                                            this.actionSheet2 =p;
-                                        }}
-                                        title="请选择组别"
-                                        options={this.state.groupButtons}
-                                        cancelButtonIndex={CANCEL_INDEX}
-                                        destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                                        onPress={
-                                            (data)=>{ this._handlePress2(data); }
                                         }
                                     />
                                 </TouchableOpacity>
@@ -331,10 +393,11 @@ class CreateCompetitionGame extends Component{
                             }}
                                 onPress={() => {
 
-                                    this.props.dispatch(createCompetitonGame(this.state.game,this.state.team1.teamId,this.state.team2.teamId,this.props.projectId,this.props.gamesId)).then((json)=>{
+                                    this.props.dispatch(createCompetitonGameOfGames(this.state.game,this.state.member1,this.state.member2,this.props.projectId,this.props.games.id)).then((json)=>{
                                         if(json.re==1)
                                         {
                                             Alert.alert('成功','创建成功')
+                                            DeviceEventEmitter.emit('create_game',1)
                                             this.goBack()
                                         }
                                         else {
@@ -369,14 +432,86 @@ class CreateCompetitionGame extends Component{
                             this.setState({modalVisible:false});
                         }}
                         teamList={this.state.teamList}
+                        team1List={this.state.team1List}
+                        team2List={this.state.team2List}
+                        teamChoose={this.state.teamChoose}
+                        personChoose={this.state.personChoose}
                         setTeamList={(team)=>{
-                            switch (this.state.teamChoose){
-                                case 1:
-                                    this.setState({team1:team});
-                                    break;
-                                case 2:
-                                    this.setState({team2:team});
-                                    break;
+
+                            var isSingle = 1;
+
+                            switch (this.state.game.gameType){
+                                case 1:isSingle=1;break;
+                                case 2:isSingle=1;break;
+                                case 3:isSingle=0;break;
+                                case 4:isSingle=0;break;
+                                case 5:isSingle=0;break;
+                            }
+
+                            if(isSingle==1) {
+                                switch (this.state.teamChoose) {
+                                    case 1:
+                                        this.setState({
+                                            member1: Object.assign(this.state.member1, {
+                                                personAId: team.id,
+                                                personAName: team.name,
+                                                personAAvatar:team.avatar,
+                                                teamId: team.teamId
+                                            })
+                                        });
+                                        break;
+                                    case 2:
+                                        this.setState({
+                                            member2: Object.assign(this.state.member2, {
+                                                personAId: team.id,
+                                                personAName: team.name,
+                                                personAAvatar:team.avatar,
+                                                teamId: team.teamId
+                                            })
+                                        });
+                                        break;
+                                }
+                            }else{
+                                if(this.state.teamChoose==1 && this.state.personChoose==1){
+                                    this.setState({
+                                        member1: Object.assign(this.state.member1, {
+                                            personAId: team.id,
+                                            personAName: team.name,
+                                            personAAvatar:team.avatar,
+                                            teamId: team.teamId
+                                        })
+                                    });
+                                }
+                                if(this.state.teamChoose==1 && this.state.personChoose==2){
+                                    this.setState({
+                                        member1: Object.assign(this.state.member1, {
+                                            personBId: team.id,
+                                            personBName: team.name,
+                                            personBAvatar:team.avatar,
+                                            teamId: team.teamId
+                                        })
+                                    });
+                                }
+                                if(this.state.teamChoose==2 && this.state.personChoose==1){
+                                    this.setState({
+                                        member2: Object.assign(this.state.member2, {
+                                            personAId: team.id,
+                                            personAName: team.name,
+                                            personAAvatar:team.avatar,
+                                            teamId: team.teamId
+                                        })
+                                    });
+                                }
+                                if(this.state.teamChoose==2 && this.state.personChoose==2){
+                                    this.setState({
+                                        member2: Object.assign(this.state.member2, {
+                                            personBId: team.id,
+                                            personBName: team.name,
+                                            personBAvatar:team.avatar,
+                                            teamId: team.teamId
+                                        })
+                                    });
+                                }
                             }
                         }}
                     />
@@ -392,10 +527,25 @@ class CreateCompetitionGame extends Component{
     }
 
     getTeamListByGameClass(gameClass){
-        this.props.dispatch(fetchGroupList(this.props.projectId,gameClass)).then((json)=>{
+
+           //teamList={
+           //{'teamA':
+           //[{id=1, name='陈海云',
+           // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132},
+           //{id=2, name='邓养吾',
+           // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132},]},
+           //{'teamB':
+           //[{id=3, name='邹鹏',
+           // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132},]
+           //}
+
+        this.props.dispatch(fetchTeamATeamBInfo(this.props.projectId,this.props.games.id,this.props.games.gameClass)).then((json)=>{
             if(json.re==1)
             {
-                this.setState({teamList:json.data});
+                var teamList = json.data;
+                var team1List = teamList.teamA;
+                var team2List = teamList.teamB;
+                this.setState({teamList:teamList,team1List:team1List,team2List:team2List});
             }
             else {
                 if(json.re==-100){

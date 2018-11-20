@@ -19,6 +19,7 @@ import {
     KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
+import DatePicker from 'react-native-datepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TextInputWrapper from 'react-native-text-input-wrapper';
@@ -51,7 +52,7 @@ class CreateBadmintonCourse extends Component{
         }
     }
 
-    //选类型
+    //选支付方式
     _handlePress(index) {
 
         if(index!==0){
@@ -71,16 +72,20 @@ class CreateBadmintonCourse extends Component{
         }
 
     }
+    //选运动类型
+    _handlePress2(index) {
+
+        if(index!==0){
+            var sportsTypeStr = this.state.sportsTypeButtons[index];
+            var sportsType = index;
+            this.setState({course:Object.assign(this.state.course,{sportsType:parseInt(sportsType)-1,sportsTypeStr:sportsTypeStr})});
+        }
+
+    }
 
     show(actionSheet) {
         this[actionSheet].show();
     }
-
-
-    show1(actionSheet1) {
-        this[actionSheet1].show();
-    }
-
 
     setCoursePlace(coursePlace)
     {
@@ -198,16 +203,19 @@ class CreateBadmintonCourse extends Component{
         this.state={
             dialogShow: false,
             modalVisible:false,
-            course:{courseName:null,maxNumber:null,classCount:null,cost:null,costType:null,classType:null,detail:null,coursePlace:null,unitId:null,scheduleDes:''},
+            course:{courseName:null,maxNumber:null,classCount:null,cost:null,costType:null,classType:null,
+                detail:null,coursePlace:null,unitId:null,scheduleDes:'',sportsType:null,sportsTypeStr:null,
+                startDate:null,endDate:null},
             docouingFetch: false,
             isRefreshing: false,
             time:null,
             timeList:[],
             costTypeButtons:['取消','按人支付','按小时支付','按班支付'],
             classTypeButtons:['取消','初级班','中级班','高级班'],
+            sportsTypeButtons:['取消','羽毛球','足球','乒乓球','篮球'],//0羽毛球1足球2乒乓球3篮球
             venue:null,
             coached:null,
-            coachId:null
+            coachId:null,
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     }
@@ -222,11 +230,9 @@ class CreateBadmintonCourse extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
 
-        const CANCEL_INDEX1 = 0;
-        const DESTRUCTIVE_INDEX1 = 1;
-
         const costTypeButtons=['取消','按人支付','按小时支付','按班支付'];
         const classTypeButtons=['取消','初级班','中级班','高级班'];
+        const sportsTypeButtons=['取消','羽毛球','足球','乒乓球','篮球'];
 
         var timeList = this.state.timeList;
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -272,7 +278,7 @@ class CreateBadmintonCourse extends Component{
                         </View>
                     </View>
 
-                    {/*课程类型*/}
+                    {/*课程等级*/}
                     <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
                         <View style={{flex:1}}>
                             <Text style={{color:'#343434'}}>课程等级</Text>
@@ -294,12 +300,45 @@ class CreateBadmintonCourse extends Component{
                                 ref={(p) => {
                                     this.actionSheet1 =p;
                                 }}
-                                title="请选择课程类型"
+                                title="请选择课程等级"
                                 options={classTypeButtons}
-                                cancelButtonIndex={CANCEL_INDEX1}
-                                destructiveButtonIndex={DESTRUCTIVE_INDEX1}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                 onPress={
                                     (data)=>{ this._handlePress1(data); }
+                                }
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/*运动类型*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>运动类型</Text>
+                        </View>
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',
+                            borderRadius:10}}
+                                          onPress={()=>{ this.show('actionSheet2'); }}>
+                            {
+                                this.state.course.sportsTypeStr==null?
+                                    <View style={{flex:1,paddingRight:8,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#888',fontSize:14}}>请选择运动类型 ></Text>
+                                    </View> :
+                                    <View style={{flex:1,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row'}}>
+                                        <Text style={{color:'#444',fontSize:14}}>{this.state.course.sportsTypeStr}</Text>
+                                    </View>
+
+                            }
+                            <ActionSheet
+                                ref={(p) => {
+                                    this.actionSheet2 =p;
+                                }}
+                                title="请选择运动类型"
+                                options={sportsTypeButtons}
+                                cancelButtonIndex={CANCEL_INDEX}
+                                destructiveButtonIndex={DESTRUCTIVE_INDEX}
+                                onPress={
+                                    (data)=>{ this._handlePress2(data); }
                                 }
                             />
                         </TouchableOpacity>
@@ -347,6 +386,74 @@ class CreateBadmintonCourse extends Component{
 
                     <View style={{height:30,width:width,justifyContent:'center',textAlign:'left'}}>
                         <Text style={{color:'#666',fontSize:13}}>授课信息</Text>
+                    </View>
+
+                    {/*开始时间*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>开始时间</Text>
+                        </View>
+                        <View style={{flex:2,marginLeft:30,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                            <Text style={{color:'#444',fontSize:15}}>{this.state.course.startDate}</Text>
+                        </View>
+                        <View style={{height:40,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                            <DatePicker
+                                style={{width:40,marginLeft:0,borderWidth:0,justifyContent:'center',alignItems:'center'}}
+                                customStyles={{
+                                    placeholderText:{color:'transparent',fontSize:12},
+                                    dateInput:{height:30,borderWidth:0},
+                                    dateTouchBody:{marginRight:0,height:25,borderWidth:0},
+                                }}
+                                mode="date"
+                                placeholder="选择"
+                                format="YYYY-MM-DD"
+                                minDate={"2018-01-01"}
+                                confirmBtnText="确认"
+                                cancelBtnText="取消"
+                                showIcon={true}
+                                iconComponent={
+                                    <View style={{height:40,width:40,justifyContent:'center',alignItems:'center'}}>
+                                        <Icon name={'calendar'} size={20} color="#888"/>
+                                    </View>}
+                                onDateChange={(date) => {
+                                    this.setState({course:Object.assign(this.state.course,{startDate:date})})
+                                }}
+                            />
+                        </View>
+                    </View>
+
+                    {/*结束时间*/}
+                    <View style={{height:40,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:1}}>
+                        <View style={{flex:1}}>
+                            <Text style={{color:'#343434'}}>结束时间</Text>
+                        </View>
+                        <View style={{flex:2,marginLeft:30,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
+                            <Text style={{color:'#444',fontSize:15}}>{this.state.course.endDate}</Text>
+                        </View>
+                        <View style={{height:40,marginRight:0,flexDirection:'row',alignItems:'center'}}>
+                            <DatePicker
+                                style={{width:40,marginLeft:0,borderWidth:0,justifyContent:'center',alignItems:'center'}}
+                                customStyles={{
+                                    placeholderText:{color:'transparent',fontSize:12},
+                                    dateInput:{height:30,borderWidth:0},
+                                    dateTouchBody:{marginRight:0,height:25,borderWidth:0},
+                                }}
+                                mode="date"
+                                placeholder="选择"
+                                format="YYYY-MM-DD"
+                                minDate={"2018-01-01"}
+                                confirmBtnText="确认"
+                                cancelBtnText="取消"
+                                showIcon={true}
+                                iconComponent={
+                                    <View style={{height:40,width:40,justifyContent:'center',alignItems:'center'}}>
+                                        <Icon name={'calendar'} size={20} color="#888"/>
+                                    </View>}
+                                onDateChange={(date) => {
+                                    this.setState({course:Object.assign(this.state.course,{endDate:date})})
+                                }}
+                            />
+                        </View>
                     </View>
 
                     {/*课程人数*/}
@@ -651,6 +758,7 @@ module.exports = connect(state=>({
         personInfo:state.user.personInfo,
         myGroupList:state.activity.myGroupList,
         groupOnFresh:state.activity.groupOnFresh,
+        clubId:state.user.personInfoAuxiliary.clubId,
     })
 )(CreateBadmintonCourse);
 

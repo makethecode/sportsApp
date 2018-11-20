@@ -100,6 +100,8 @@ class ManagePage extends Component{
 
                                  this.getClubTabList()
 
+                                 DeviceEventEmitter.emit('item',1)
+
                              }).catch((e)=>{
                              })
 
@@ -123,7 +125,7 @@ class ManagePage extends Component{
                                                   onPress={() => {
                                                       this.setState({clubChooseIdx: 0})
                                                   }}>
-                                    <Text style={{fontSize: 14, color: 'red'}}>山体</Text>
+                                    <Text style={{fontSize: 12, color: 'red'}}>山体俱乐部</Text>
                                 </TouchableOpacity>:
                                 <TouchableOpacity style={{
                                     justifyContent: 'center',
@@ -136,7 +138,7 @@ class ManagePage extends Component{
                                                   onPress={() => {
                                                       this.setState({clubChooseIdx: 0})
                                                   }}>
-                                    <Text style={{fontSize: 14, color: '#888'}}>山体</Text>
+                                    <Text style={{fontSize: 12, color: '#888'}}>山体俱乐部</Text>
                                 </TouchableOpacity>
                             }
 
@@ -154,7 +156,7 @@ class ManagePage extends Component{
                                                   onPress={() => {
                                                       this.setState({clubChooseIdx:1})
                                                   }}>
-                                    <Text style={{fontSize: 14, color: 'red'}}>联通</Text>
+                                    <Text style={{fontSize: 12, color: 'red'}}>博翔俱乐部</Text>
                                 </TouchableOpacity>:
                                     <TouchableOpacity style={{
                                         justifyContent: 'center',
@@ -167,7 +169,7 @@ class ManagePage extends Component{
                                                       onPress={() => {
                                                           this.setState({clubChooseIdx: 1})
                                                       }}>
-                                        <Text style={{fontSize: 14, color: '#888'}}>联通</Text>
+                                        <Text style={{fontSize: 12, color: '#888'}}>博翔俱乐部</Text>
                                     </TouchableOpacity>
                             }
 
@@ -186,7 +188,7 @@ class ManagePage extends Component{
                                                       onPress={() => {
                                                           this.setState({clubChooseIdx: 2})
                                                       }}>
-                                        <Text style={{fontSize: 14, color: 'red'}}>迈可欣</Text>
+                                        <Text style={{fontSize: 12, color: 'red'}}>迈可欣俱乐部</Text>
                                     </TouchableOpacity>:
                                     <TouchableOpacity style={{
                                         justifyContent: 'center',
@@ -199,7 +201,7 @@ class ManagePage extends Component{
                                                       onPress={() => {
                                                           this.setState({clubChooseIdx:2})
                                                       }}>
-                                        <Text style={{fontSize: 14, color: '#888'}}>迈可欣</Text>
+                                        <Text style={{fontSize: 12, color: '#888'}}>迈可欣俱乐部</Text>
                                     </TouchableOpacity>
                             }
 
@@ -303,12 +305,12 @@ class ManagePage extends Component{
 
         switch(rowData.id){
             case 0:img = require('../../../img/mini_activity.png');break;//活动
-            case 1:img = require('../../../img/mini_activity.png');break;//课程
+            case 1:img = require('../../../img/mini_course.png');break;//课程
             case 2:img = require('../../../img/mini_competition.png');break;//比赛
             case 3:img = require('../../../img/mini_mall.png');break;//商城
             case 4:img = require('../../../img/mini_video.png');break;//视频
             case 5:img = require('../../../img/mini_news.png');break;//新闻
-            case 6:img = require('../../../img/mini_statistic.png');break;//统计
+            case 6:img = require('../../../img/mini_statistic.png');break;//收益
             case 7:img = require('../../../img/mini_trial.png');break;//试课
         }
 

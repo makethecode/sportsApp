@@ -76,7 +76,7 @@ const scaleAnimation = new ScaleAnimation();
 const defaultAnimation = new DefaultAnimation({ animationDuration: 150 });
 
 var { height, width } = Dimensions.get('window');
-const dropdownWidth = width/4-20;
+const dropdownWidth = width/3-20;
 
 class BadmintonCourseRecord extends Component {
     navigate2OrderClass() {
@@ -327,6 +327,14 @@ class BadmintonCourseRecord extends Component {
         if(rowData.creatorId==3)avatar = require('../../../img/coach3.jpg');
         if(rowData.creatorId==154)avatar = require('../../../img/coach74.jpg');
 
+        var sportsType = '';
+        switch (rowData.sportsType){
+            case 0:sportsType='羽毛球';break;
+            case 1:sportsType='足球';break;
+            case 2:sportsType='乒乓球';break;
+            case 3:sportsType='篮球';break;
+        }
+
         if(rowData.detail==null)rowData.detail='暂无简介'
 
         return (
@@ -340,18 +348,6 @@ class BadmintonCourseRecord extends Component {
                         </View>
                             <TouchableOpacity style={{padding: 4, marginLeft: 10, flexDirection: 'row', alignItems: 'center',borderWidth:1,borderColor:'#fc3c3f',borderRadius: 6}}
                             onPress={()=>{
-                                Proxy.postes({
-                                    url: Config.server + '/func/node/createActivity',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body:params
-                                }).then((json)=>{
-                                    resolve(json)
-                                }).catch((e)=>{
-                                    alert("群活动填写不完整！");
-                                    reject(e);
-                                })
                             }}>
                                 <Text style={{color: '#fc3c3f', fontSize: 13, paddingTop: -2}}>
                                 推广
@@ -383,7 +379,7 @@ class BadmintonCourseRecord extends Component {
                         {/*俱乐部*/}
                         <View style={{backgroundColor: '#efb66a', borderRadius: 6, padding: 4, paddingHorizontal: 6 }}>
                             <Text style={{ color: '#fff', fontSize: 13 }}>
-                                {rowData.clubName}
+                                {sportsType}
                             </Text>
                         </View>
                         {/*场地*/}
@@ -417,12 +413,11 @@ class BadmintonCourseRecord extends Component {
                     }}
                     onPress={() => {
                         //清空筛选记录
-                        var clubId = -1;
                         var venueId = -1;
                         var coachId = -1;
                         var typeId = -1;
 
-                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                        this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类'})
                         this.navigate2StudentInformation(rowData);}
                     }>
                         <Text style={{color: '#66CDAA', fontSize: 14}}>学员信息</Text>
@@ -441,12 +436,11 @@ class BadmintonCourseRecord extends Component {
                     }}
                     onPress={() => {
                         //清空筛选记录
-                        var clubId = -1;
                         var venueId = -1;
                         var coachId = -1;
                         var typeId = -1;
 
-                        this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类',course:rowData})
+                        this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类',course:rowData})
                         this.props.dispatch(establishEveryDayClass(rowData)).then((json)=>{
                         //人脸识别
                         this.sharetoSomeone.show();
@@ -470,12 +464,11 @@ class BadmintonCourseRecord extends Component {
                         }}
                         onPress={() => {
                             //清空筛选记录
-                            var clubId = -1;
                             var venueId = -1;
                             var coachId = -1;
                             var typeId = -1;
 
-                            this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                            this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类'})
                             this.navigate2ModifyDistribution(rowData);
                             }
                         }>
@@ -496,12 +489,11 @@ class BadmintonCourseRecord extends Component {
 
                                               onPress={() => {
                                                   //清空筛选记录
-                                                  var clubId = -1;
                                                   var venueId = -1;
                                                   var coachId = -1;
                                                   var typeId = -1;
 
-                                                  this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                                                  this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类'})
                                                   this.navigate2TalkingFarm(rowData.courseId);
                                               }
                                               }>
@@ -592,20 +584,15 @@ class BadmintonCourseRecord extends Component {
             isRefreshing:false,
             fadeAnim:new Animated.Value(1),
 
-            clubName:'俱乐部',
             venueName:'场地',
             coachName:'教练',
             typeName:'分类',
-            showClubDropdown:false,
             showVenueDropdown:false,
             showCoachDropdown:false,
             showTypeDropdown:false,
-            clubList:[],clubs:[],
             venueList:[],venues:[],
             coachList:[],coaches:[],
-            typeList:['羽毛球','篮球','足球'],types:['羽毛球','篮球','足球'],
-
-            clubId:-1,
+            typeList:['羽毛球','足球','乒乓球','篮球'],types:['羽毛球','足球','乒乓球','篮球'],
             venueId:-1,
             coachId:-1,
             typeId:-1,
@@ -615,9 +602,6 @@ class BadmintonCourseRecord extends Component {
 
     showScaleAnimationDialog() {
         this.scaleAnimationDialog.show();
-    }
-    showUserNameDialog() {
-        this.SignUpDialog.show();
     }
 
     render() {
@@ -636,7 +620,7 @@ class BadmintonCourseRecord extends Component {
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             if (coursesOfCoach !== undefined && coursesOfCoach !== null && coursesOfCoach.length > 0)
             {
-                var coursesAfterFilter = AssortFilter.filter(coursesOfCoach,this.state.clubId,this.state.venueId,this.state.coachId)
+                var coursesAfterFilter = AssortFilter.filter(coursesOfCoach,this.state.venues,parseInt(this.state.venueId),parseInt(this.state.coachId),parseInt(this.state.typeId))
                 coursesOfCoachListView = (
                     <ListView
                         automaticallyAdjustContentInsets={false}
@@ -648,12 +632,10 @@ class BadmintonCourseRecord extends Component {
             }
         }
 
-        let clubicon = this.state.showClubDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
         let venueicon = this.state.showVenueDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
         let coachicon = this.state.showCoachDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
         let typeicon = this.state.showTypeDropDown ? require('../../../img/test_up.png') : require('../../../img/test_down.png');
 
-        var clubName_show = this.lengthFilter(this.state.clubName);
         var venueName_show = this.lengthFilter(this.state.venueName);
         var coachName_show = this.lengthFilter(this.state.coachName);
         var typeName_show = this.lengthFilter(this.state.typeName);
@@ -664,36 +646,15 @@ class BadmintonCourseRecord extends Component {
                          onPress={(i)=>{
                              if(i==0){
                                  //清空筛选记录
-                                 var clubId = -1;
                                  var venueId = -1;
                                  var coachId = -1;
                                  var typeId = -1;
 
-                                 this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                                 this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类'})
 
                                  this.navigate2AddCourse()}
                          }}>
                     <View style={styles.flexContainer}>
-                        <ModalDropdown
-                            style={styles.cell}
-                            textStyle={styles.textstyle}
-                            dropdownStyle={styles.dropdownstyle}
-                            options={this.state.clubList}
-                            renderRow={this.dropdown_renderRow.bind(this)}
-                            onSelect={(idx, value) => this.dropdown_1_onSelect(idx, value)}
-                            onDropdownWillShow={this.dropdown_1_willShow.bind(this)}
-                            onDropdownWillHide={this.dropdown_1_willHide.bind(this)}
-                        >
-                            <View style={styles.viewcell}>
-                                <Text style={styles.textstyle}>
-                                    {clubName_show}
-                                </Text>
-                                <Image
-                                    style={styles.dropdown_image}
-                                    source={clubicon}
-                                />
-                            </View>
-                        </ModalDropdown>
 
                         <ModalDropdown
                             style={styles.cell}
@@ -757,58 +718,16 @@ class BadmintonCourseRecord extends Component {
                                 />
                             </View>
                         </ModalDropdown>
-                        {/*搜索*/}
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <TouchableOpacity
-                            onPress={()=>{
-                                //根据筛选条件进行筛选
-                                var clubflag = false;
-                                var venueflag = false;
-                                var coachflag = false;
-                                var clubId = -1;
-                                var venueId = -1;
-                                var coachId = -1;
-                                for(var i=0;i<this.state.clubs.length;i++)
-                                    if(this.state.clubs[i].name == this.state.clubName)
-                                    {
-                                        clubId=this.state.clubs[i].id;
-                                        clubflag = true;
-                                    }
-                                if(clubflag==false)clubId = -1;
-
-                                for(var i=0;i<this.state.venues.length;i++)
-                                    if(this.state.venues[i].name == this.state.venueName)
-                                    {
-                                        venueId = this.state.venues[i].unitId;
-                                        venueflag = true
-                                    }
-                                if(venueflag==false)venueId = -1;
-
-                                for(var i=0;i<this.state.coaches.length;i++)
-                                    if(this.state.coaches[i].perName == this.state.coachName)
-                                    {
-                                        coachId = this.state.coaches[i].personId;
-                                        coachflag = true
-                                    }
-                                if(coachflag==false)coachId = -1;
-
-                                this.setState({clubId:clubId,venueId:venueId,coachId:coachId})
-                            }}
-                        >
-                            <Ionicons name='md-search' size={20} color="#5c5c5c"/>
-                        </TouchableOpacity>
-                        </View>
                         {/*清空*/}
                         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                             <TouchableOpacity
                                 onPress={()=>{
                                     //清空筛选记录
-                                    var clubId = -1;
                                     var venueId = -1;
                                     var coachId = -1;
                                     var typeId = -1;
 
-                                    this.setState({clubId:clubId,venueId:venueId,coachId:coachId,typeId:typeId,clubName:'俱乐部',venueName:'场地',coachName:'教练',typeName:'分类'})
+                                    this.setState({venueId:venueId,coachId:coachId,typeId:typeId,venueName:'场地',coachName:'教练',typeName:'分类'})
                                 }}
                             >
                                 <Ionicons name='md-refresh' size={20} color="#5c5c5c"/>
@@ -935,33 +854,27 @@ class BadmintonCourseRecord extends Component {
         );
     }
 
-    dropdown_1_onSelect(idx, value) {
-        this.setState({
-            clubName:value,
-        });
-    }
-
     dropdown_2_onSelect(idx, value) {
         this.setState({
             venueName:value,
+            venueId:parseInt(idx),
         });
     }
 
     dropdown_3_onSelect(idx, value) {
+
+        var coach = this.state.coachList[idx];
+        var coachId = coach.trainerId;
         this.setState({
             coachName:value,
+            coachId:coachId,
         });
     }
 
     dropdown_4_onSelect(idx, value) {
         this.setState({
             typeName:value,
-        });
-    }
-
-    dropdown_1_willShow() {
-        this.setState({
-            showClubDropDown:true,
+            typeId:idx
         });
     }
 
@@ -980,12 +893,6 @@ class BadmintonCourseRecord extends Component {
     dropdown_4_willShow() {
         this.setState({
             showTypeDropDown:true,
-        });
-    }
-
-    dropdown_1_willHide() {
-        this.setState({
-            showClubDropDown:false,
         });
     }
 
@@ -1062,22 +969,6 @@ class BadmintonCourseRecord extends Component {
     }
 
     componentDidMount(){
-        //获取所有俱乐部
-        this.props.dispatch(fetchClubList()).then((json)=>{
-            if(json.re==1)
-            {
-                var clubDataList = [];
-                for(var i=0;i<json.data.length;i++)
-                    clubDataList.push(json.data[i].name);
-                this.setState({clubList:clubDataList,clubs:json.data});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-
-            }
-        })
 
         //获取所有场地
         this.props.dispatch(fetchMaintainedVenue()).then((json)=>{

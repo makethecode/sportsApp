@@ -270,7 +270,7 @@ class ProfitList extends Component {
                 </View>
 
                 <View style={{alignItems:'center',flex:1,marginRight:10,flexDirection:'row',justifyContent:'flex-end'}}>
-                    <Text style={{fontSize:18,color:'#fc3c3f'}}>{rowData.payment/100}</Text>
+                    <Text style={{fontSize:18,color:'#fc3c3f'}}>{rowData.payment}</Text>
                     <Text style={{fontSize:18,color:'#2c2c2c'}}>元</Text>
                 </View>
 
@@ -347,7 +347,7 @@ class ProfitList extends Component {
                         style={[styles.viewWrapper, {zIndex: 1},{borderBottomWidth: StyleSheet.hairlineWidth}]}>
                         <View style={styles.viewCell}>
                             <Text style={{marginRight:5,fontSize:16,color:'#2c2c2c',marginTop:8}}>{this.state.currentDate}</Text>
-                            <Text style={{marginRight:5,fontSize:12,color:'#666',marginTop:5}}>收入 ￥{this.state.total/100}</Text>
+                            <Text style={{marginRight:5,fontSize:12,color:'#666',marginTop:5}}>收入 ￥{this.state.total}</Text>
                         </View>
                         <TouchableOpacity style={{width: 22, height: 22, alignItems:'flex-end'}} onPress={this.openCalendar}>
                         <Image

@@ -123,7 +123,9 @@ class ActivityPay extends Component{
                                 <Text style={{fontSize:20,color:'#fff'}}>打开微信[扫一扫]</Text>
                             </View>
                             <View style={{flex:2}}>
-                                <Text style={{fontSize:13,color:'#fff'}}>山东运动热体育科技有限公司</Text>
+                                {/*<Text style={{marginLeft:10}}>山东运动热体育科技有限公司</Text>*/}
+                                <Text style={{marginLeft:10}}>济南博翔体育俱乐部</Text>
+                                {/*<Text style={{marginLeft:10}}>迈可欣体育俱乐部</Text>*/}
                             </View>
                         </View>
 
