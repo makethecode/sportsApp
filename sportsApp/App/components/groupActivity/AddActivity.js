@@ -263,7 +263,7 @@ class AddActivity extends Component{
                     this.props.dispatch(disableMyGroupOnFresh());
 
                     var groupNameButtons=['取消','新建群组'];
-                    var {myGroupList} = this.props;
+                    var myGroupList = json.data;
                     if(myGroupList!==null&&myGroupList!==undefined){
                         myGroupList.map((group,i)=>{
                             groupNameButtons.push(group.groupName);
@@ -880,7 +880,7 @@ class AddActivity extends Component{
                                     marginBottom:10,justifyContent:'center',alignItems: 'center',borderRadius:10,}}
                                                   onPress={()=>{
 
-                                                      this.release();
+                                                      this.release2();
                                                   }}>
                                     <Text style={{color:'#fff',fontSize:15}}>发 布</Text>
                                 </TouchableOpacity>
