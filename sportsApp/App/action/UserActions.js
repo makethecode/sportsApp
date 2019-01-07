@@ -949,6 +949,73 @@ export let registerUser=(info,wechatinfo)=>{
     }
 }
 
+
+//添加教练
+export let addCoach=(info)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+            var state=getState();
+            var {name,genderCode,birthday,mobilePhone,
+                sportLevel,coachLevel,heightweight,workcity,graduate,
+                password,idCard,address,QQ,email,wechat,clubType,clubId,venue}=info;
+            if(genderCode = '男'){
+                genderCode = 1
+            }else if(genderCode = '女'){
+                genderCode = 2
+            }else{
+                genderCode = null
+            }
+            var {openid,nickname,sex,province,city,country,headimgurl,unionid} = {};
+
+            Proxy.postes({
+                url: Config.server + '/func/register/addCoach',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    userName: name,
+                    password:password,
+                    phoneNum:mobilePhone,
+                    name:name,
+                    genderCode:genderCode.toString(),
+                    birthday:birthday,
+                    idCard:idCard,
+                    address:address,
+                    QQ:QQ,
+                    email:email,
+                    wechat:wechat,
+                    //教练信息
+                    clubType:clubType,
+                    clubId:clubId,
+                    sportLevel:sportLevel,
+                    coachLevel:coachLevel,
+                    venue:venue,
+                    heightweight:heightweight,
+                    workcity:workcity,
+                    graduate:graduate,
+                    //微信信息
+                    openid:openid,
+                    nickname:nickname,
+                    sex:sex,
+                    province:province,
+                    city:city,
+                    country:country,
+                    headimgurl:headimgurl,
+                    unionid:unionid
+                }
+            }).then((json)=>{
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+
+        });
+    }
+}
+
 export let wechatregisterUser=(unionid,nickname)=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {

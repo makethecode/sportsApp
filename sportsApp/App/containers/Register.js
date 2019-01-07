@@ -125,7 +125,7 @@ class Register extends Component {
 
                 Alert.alert(
                     '信息',
-                    '注册成功！是否要直接登录？',
+                    ' 注册成功！是否要直接登录？',
                     [
                         {text: 'OK', onPress: () => this.navigate2Login()},
                     ]

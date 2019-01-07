@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import {Toolbar, OPTION_SHOW, OPTION_NEVER, ACTION_ADD} from 'react-native-toolbar-wrapper';
 import{
     fetchCoaches,
     onCoachUpdate,
@@ -31,7 +31,7 @@ import {
 } from '../../action/UserActions';
 
 import CoachDetail from './CoachDetail'
-import {distributeCourse} from "../../action/CourseActions"
+import AddCoach from './AddCoach'
 import { SearchBar } from 'react-native-elements'
 
 var {height, width} = Dimensions.get('window');
@@ -51,6 +51,19 @@ class SelectCoach extends Component {
             navigator.push({
                 name: 'coachDetail',
                 component: CoachDetail,
+                params: {
+                    coachDetail:rowData
+                }
+            })
+        }
+    }
+
+    navigate2AddCoach(rowData){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'addCoach',
+                component: AddCoach,
                 params: {
                     coachDetail:rowData
                 }
@@ -204,9 +217,12 @@ class SelectCoach extends Component {
         return (
             <View style={styles.container}>
                 <Toolbar width={width}  title="教练列表" navigator={this.props.navigator}
-                         actions={[]}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
-                             this.goBack()
+                             if(i==0){
+                                 this.navigate2AddCoach()
+                             }
+
                          }}>
                     <SearchBar
                         lightTheme

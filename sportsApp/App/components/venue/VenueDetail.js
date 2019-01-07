@@ -223,6 +223,7 @@ class VenueDetail extends Component{
                                         <Text style={{color:'#777',fontSize:15}}>
                                             未设置
                                         </Text>
+
                                 }
                             </View>
                         </View>
