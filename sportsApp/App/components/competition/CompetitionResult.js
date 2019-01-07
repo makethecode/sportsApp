@@ -31,10 +31,14 @@ import { SearchBar } from 'react-native-elements'
 import {
     fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchTeamList,fetchTeamPersonList
 } from '../../action/CompetitionActions';
+import { IndicatorViewPager,PagerTitleIndicator } from 'rn-viewpager'
+import GroupResultPage from './ResultPage/GroupResultPage'
+import OutResultPage from './ResultPage/OutResultPage'
+
 
 var { height, width } = Dimensions.get('window');
 
-class CompetitionTeamPersonList extends Component {
+class CompetitionResult extends Component {
 
     goBack(){
         const { navigator } = this.props;
@@ -43,143 +47,135 @@ class CompetitionTeamPersonList extends Component {
         }
     }
 
-    navigate2MemberInformation(personId){
-        const { navigator } = this.props;
-        if (navigator) {
-            navigator.push({
-                name: 'MemberInformation',
-                component: MemberInformation,
-                params: {
-                    personId:personId,
-                }
-            })
-        }
-    }
-
-    _onRefresh() {
-        this.setState({ isRefreshing: true, fadeAnim: new Animated.Value(0) });
-        setTimeout(function () {
-            this.setState({
-                isRefreshing: false,
-            });
-            Animated.timing(          // Uses easing functions
-                this.state.fadeAnim,    // The value to drive
-                {
-                    toValue: 1,
-                    duration: 600,
-                    easing: Easing.bounce
-                },           // Configuration
-            ).start();
-        }.bind(this), 2000);
-    }
-
     constructor(props) {
         super(props);
         this.state={
-            isRefreshing:true,
-            fadeAnim: new Animated.Value(1),
-            teamPerson:[
-                {'personId':3,'perNum':'wbh','mobilePhone':'13899303012','avatar':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0'},
-                {'personId':154,'perNum':'zp','mobilePhone':'18873820212','avatar':'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132'}
-            ]
         };
     }
 
     render()
     {
-
-        var coachList = [];
-        var {teamPerson}=this.state;
-
-        if(teamPerson&&teamPerson.length>0)
-        {
-
-            teamPerson.map((person,i)=>{
-                coachList.push(
-                    <TouchableOpacity key={i} style={{flexDirection:'column'}}
-                                      onPress={()=>{
-                                          this.navigate2MemberInformation(person.personId)
-                                      }}>
-
-                        <View style={{ padding:8,flexDirection:'row',marginVertical:3}}>
-                            <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                                {
-                                    person.avatar!=""?
-                                        <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
-                                               source={{uri: person.avatar}}/>:
-                                        <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
-                                               source={require('../../../img/portrait.jpg')}/>
-                                }
-                            </View>
-
-                            <View style={{flex:4,flexDirection:'column',alignItems:'flex-start',justifyContent:'center'}}>
-                                <View style={{flexDirection:'row',marginBottom:5,}}><Ionicons name='md-person' size={13} color="#fca482"/><Text style={{ color: '#222', fontSize: 14,marginLeft:3}}>{person.perNum}</Text></View>
-                                <View style={{flexDirection:'row'}}><Ionicons name='md-call' size={13} color="#fca482"/><Text style={{ color: '#666', fontSize: 12,marginLeft:3}}>{person.mobilePhone}</Text></View>
-                            </View>
-
-                            <View style={{flex:1,justifyContent:'center',alignItems: 'flex-end'}}>
-                                <View style={{borderWidth:1,borderColor:'#fc3c3f',padding:3,paddingHorizontal:5,borderRadius:3}}>
-                                    <Text style={{fontSize:13,color:'#fc3c3f'}}>{person.memberTypeStr}</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{height:0.7,width:width,backgroundColor:'#c2c2c2'}}></View>
-
-                    </TouchableOpacity>
-                )
-            })
-
-        }
-
         return (
             <View style={styles.container}>
-                <Toolbar width={width}  title="队员列表" navigator={this.props.navigator}
+                <Toolbar width={width}  title="对阵成绩" navigator={this.props.navigator}
                          actions={[]}
                          onPress={(i)=>{
                              this.goBack()
                          }}>
-                    <View style={{width:width,height:40,backgroundColor:'#eee',padding:10,alignItems:'flex-start',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#888',fontSize:13}}>队员名单</Text>
-                    </View>
-                    <ScrollView style={{ flex: 1, width: width, backgroundColor: '#fff' }}>
 
-                        <Animated.View style={{flex: 1, paddingHorizontal:4,opacity: this.state.fadeAnim,backgroundColor:'#fff' }}>
-                            {coachList}
+                    {<View style={{flex:1,backgroundColor:'#eee'}}>
+                        <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingBottom:5,}}>
+                            <IndicatorViewPager
+                                style={{flex:1,flexDirection: 'column-reverse',backgroundColor:'#fff'}}
+                                indicator={this._renderTitleIndicator()}
+                                onPageScroll={this._onPageScroll.bind(this)}
+                            >
+
+                                <GroupResultPage projectId={this.props.projectId} gameClass={1}/>
+                                <View/>
+                                <OutResultPage projectId={this.props.projectId} gameClass={3}/>
+                                <OutResultPage projectId={this.props.projectId} gameClass={4}/>
+                                <OutResultPage projectId={this.props.projectId} gameClass={5}/>
+                                <OutResultPage projectId={this.props.projectId} gameClass={6}/>
+
+                            </IndicatorViewPager>
                         </Animated.View>
-
-                    </ScrollView>
+                    </View>}
 
                 </Toolbar>
             </View>
         )
     }
 
+    _renderTitleIndicator () {
+        return (
+            <PagerTitleIndicator
+                style={styles.indicatorContainer}
+                trackScroll={true}
+                itemTextStyle={styles.indicatorText}
+                itemStyle={{width:width/4}}
+                selectedItemStyle={{width:width/4}}
+                selectedItemTextStyle={styles.indicatorSelectedText}
+                selectedBorderStyle={styles.selectedBorderStyle}
+                titles={['小组赛', '32进16','16进8','8进4', '半决赛','冠亚军决赛']}
+            />
+        )
+    }
+
+    _onPageScroll (scrollData) {
+        let {offset, position} = scrollData
+        if (position < 0 || position > 5) return
+    }
+
     componentWillMount()
     {
-        //{'personId':3,'perNum':'wbh','mobilePhone':'13899303012','avatar':'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0'},
-        this.props.dispatch(fetchTeamPersonList(this.props.teamId)).then((json)=>{
-            if(json.re==1)
-            {
-                this.setState({teamPerson:json.data});
-            }
-            else {
-                if(json.re=-100){
-                    this.props.dispatch(getAccessToken(false))
-                }
-            }
-        })
+        // this.props.dispatch(fetchTeamPersonList(this.props.teamId)).then((json)=>{
+        //     if(json.re==1)
+        //     {
+        //         this.setState({teamPerson:json.data});
+        //     }
+        //     else {
+        //         if(json.re=-100){
+        //             this.props.dispatch(getAccessToken(false))
+        //         }
+        //     }
+        // })
     }
 
 
 }
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
+        backgroundColor: '#fff'
     },
-
+    popoverContent: {
+        width: 100,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText: {
+        color: '#ccc',
+        fontSize: 14
+    },
+    indicatorContainer: {
+        backgroundColor: '#66CDAA',
+        height: 48
+    },
+    indicatorText: {
+        fontSize: 14,
+        color: 0xFFFFFF99
+    },
+    indicatorSelectedText: {
+        fontSize: 14,
+        color: 0xFFFFFFFF
+    },
+    selectedBorderStyle: {
+        height: 3,
+        backgroundColor: 'white'
+    },
+    statusBar: {
+        height: 24,
+        backgroundColor: 0x00000044
+    },
+    toolbarContainer: {
+        height: 56,
+        backgroundColor: 0x00000020,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16
+    },
+    backImg: {
+        width: 16,
+        height: 17
+    },
+    titleTxt: {
+        marginLeft: 36,
+        color: 'white',
+        fontSize: 20
+    }
 });
 
 
@@ -187,7 +183,7 @@ module.exports = connect(state=>({
         accessToken:state.user.accessToken,
         personInfo:state.user.personInfo,
     })
-)(CompetitionTeamPersonList);
+)(CompetitionResult);
 
 
 

@@ -17,7 +17,7 @@ import {
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SearchBar } from 'react-native-elements'
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import {Toolbar, OPTION_SHOW, OPTION_NEVER, ACTION_ADD} from 'react-native-toolbar-wrapper';
 import {
     fetchMaintainedVenue
 } from '../../action/MapActions';
@@ -32,6 +32,8 @@ import {
 
 import VenueDetail from './VenueDetail';
 
+import AddVenue from './AddVenue';
+
 var {height, width} = Dimensions.get('window');
 
 class SelectVenue extends Component {
@@ -45,6 +47,19 @@ class SelectVenue extends Component {
                 component: VenueDetail,
                 params: {
                     venueDetail:rowData
+                }
+            })
+        }
+    }
+
+    navigate2AddVenue(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'AddVenue',
+                component: AddVenue,
+                params: {
+
                 }
             })
         }
@@ -148,9 +163,12 @@ class SelectVenue extends Component {
         return (
             <View style={styles.container}>
                 <Toolbar width={width}  title="场馆列表" navigator={this.props.navigator}
-                         actions={[]}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
-                             this.goBack()
+                             if(i==0){
+                                 // this.goBack()
+                                 this.navigate2AddVenue()
+                             }
                          }}>
                     <SearchBar
                         lightTheme

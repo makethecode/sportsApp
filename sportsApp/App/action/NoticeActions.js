@@ -9,7 +9,6 @@ import {
 
 } from '../constants/NoticeConstants';
 
-//拉取球讯列表
 export let fetchNotices=()=>{
     return (dispatch,getState)=>{
         return new Promise((resolve, reject) => {

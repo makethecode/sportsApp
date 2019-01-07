@@ -15,11 +15,16 @@ import {
 } from 'react-native';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
     fetchNotices,disableNoticeOnFresh,enableNoticeOnFresh
 } from '../action/NoticeActions';
 import { connect } from 'react-redux';
+import { IndicatorViewPager,PagerTitleIndicator } from 'rn-viewpager'
+import JPushModule from 'jpush-react-native';
+
 var {height, width} = Dimensions.get('window');
+
 
 class Notice extends Component{
 
@@ -45,68 +50,64 @@ class Notice extends Component{
                 },           // Configuration
             ).start();
         }.bind(this), 500);
-        this.props.dispatch(enableNoticeOnFresh());
-        //noticeFresh:true
-    }
-
-    navigateNoticeDetail(rowData)
-    {
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'NoticeDetail',
-                component: NoticeDetail,
-                params: {
-                    rowData:rowData,
-                } 
-            })
-        }
+        // this.props.dispatch(enableNoticeOnFresh());
+        this.setState({noticeFresh:true})
     }
 
     renderRow(rowData,sectionId,rowId){
+
+        // 通知类型：
+        // 课程：
+        // 0-XXXX ==系统通知
+        // 1-XXX报名了XXX的课程XXXX 时间（给该教练）==报名通知
+        // 2-XXX的课次只剩一次，请提醒XXX及时续费（给管理员）==续费通知
+        // 自由（写通知）
+        // 3-自由通知（考虑实现）
+
+        var type = rowData.type;
+        var typeStr = '';
+        switch(type){
+            case 0:typeStr = '系统通知';break;
+            case 1:typeStr = '报名通知';break;
+            case 2:typeStr = '续费通知';break;
+        };
+
+        var avatar = rowData.avatar;
+        var content = rowData.content;
+        var date = rowData.date;
+
         var row=(
             <View style={{flex:1,backgroundColor:'#eee',marginTop:3,borderBottomWidth:1,borderBottomColor:'#aaa'}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
-
-                    {/*<TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
-                                      onPress={()=>{
-                                          this.navigateNoticeDetail(rowData,'公开活动');
-                                      }}>
-                        <Text style={{marginRight:5,color:'#66CDAA'}}>详情</Text>
-                        <Icon name={'angle-right'} size={25
-                        } color="#66CDAA"/>
-                    </TouchableOpacity>*/}
                 </View>
 
-                <View style={{flex:3,padding:5,backgroundColor:'#fff'}}>
+                <View style={{flex:3,paddingVertical:5,backgroundColor:'#fff'}}>
 
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                    <View style={{flexDirection:'row',borderBottomWidth:1,borderColor:'#eee',paddingVertical:2}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
+                            <Ionicons name={'md-megaphone'} size={20} color="#aaa"/>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'消息编号：'+rowData.id}
-                        </Text>
+                        <View style={{flex:7,justifyContent:'center',alignItems: 'flex-start'}}>
+                            <Text style={{fontSize:13,color:'#343434'}}>
+                                {typeStr}
+                            </Text>
+                        </View>
                     </View>
 
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                    <View style={{flexDirection:'row',padding:5}}>
+                        <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start',padding:3}}>
+                            <Image resizeMode="stretch" style={{height: 40, width: 40, borderRadius: 20}}
+                                   source={require('../../img/portrait.jpg')}/>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'消息题目：'+rowData.title}
+                        <View style={{flex:7,justifyContent:'center',alignItems: 'flex-start',flexDirection:'column',marginLeft:5}}>
+                        <Text style={{fontSize:14,color:'#343434',marginBottom:5}}>
+                            {content}
                         </Text>
-                    </View>
-
-                    <View style={{flexDirection:'row',marginBottom:3}}>
-                        <View style={{flex:1,justifyContent:'flex-start',alignItems: 'center'}}>
-                            <Icon name={'circle'} size={10} color="#aaa"/>
+                        <Text style={{fontSize:11,color:'#888'}}>
+                            {date}
+                         </Text>
                         </View>
-                        <Text style={{flex:7,fontSize:13,color:'#343434',justifyContent:'center',alignItems: 'center'}}>
-                            {'消息内容：'+rowData.contents}
-                        </Text>
                     </View>
-
 
                 </View>
 
@@ -122,12 +123,11 @@ class Notice extends Component{
             if(json.re==-100){
                 this.props.dispatch(getAccessToken(false));
             }
-            this.props.dispatch(disableNoticeOnFresh());
-            // noticeFresh:false
-            this.setState({doingFetch:false,isRefreshing:false})
+            this.setState({noticeFresh:false,doingFetch:false,isRefreshing:false})
+            //this.setState({noticeList:json.data})
         }).catch((e)=>{
-            this.props.dispatch(disableNoticeOnFresh());
-            this.setState({doingFetch:false,isRefreshing:false});
+            //this.props.dispatch(disableNoticeOnFresh());
+            this.setState({noticeFresh:false,doingFetch:false,isRefreshing:false});
             alert(e)
         });
     }
@@ -137,14 +137,19 @@ class Notice extends Component{
         this.state={
             doingFetch: false,
             isRefreshing: false,
-            fadeAnim: new Animated.Value(1)
+            fadeAnim: new Animated.Value(1),
+
+            noticeList:[
+                {type:1,content:'陈海云报名了第一课',date:'2018-10-10'},
+                {type:2,content:'陈海云的课程快要到期了，请提醒他续费',date:'2018-09-28'}],
+            noticeFresh:true,
         };
     }
 
     render() {
 
         var noticeListView=null;
-        var {noticeList,noticeFresh}=this.props;
+        var {noticeList,noticeFresh}=this.state;
         //var competitionList=this.state.competitionList;
         if(noticeFresh==true)
         {
@@ -209,8 +214,37 @@ class Notice extends Component{
 
     componentDidMount()
     {
+        // 新版本必需写回调函数
+        // JPushModule.notifyJSDidLoad();
+        if(Platform.OS === 'android') {
+            JPushModule.notifyJSDidLoad((resultCode) => {
+                if (resultCode === 0) {
+                }
+            });
+        }
+
+        // 接收自定义消息
+        JPushModule.addReceiveCustomMsgListener((message) => {
+            this.setState({pushMsg: message});
+        });
+        // 接收推送通知
+        JPushModule.addReceiveNotificationListener((message) => {
+            console.log("receive notification: " + message);
+        });
+        // 打开通知
+        JPushModule.addReceiveOpenNotificationListener((map) => {
+            console.log("Opening notification!");
+            console.log("map.extra: " + map.extras);
+            // 可执行跳转操作，也可跳转原生页面
+            // this.props.navigation.navigate("SecondActivity");
+        });
     }
 
+    componentWillUnmount(){
+        JPushModule.removeReceiveCustomMsgListener();
+        JPushModule.removeReceiveNotificationListener();
+
+    }
 
 }
 

@@ -26,7 +26,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper';
+import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_SORT} from 'react-native-toolbar-wrapper';
 import ActionSheet from 'react-native-actionsheet';
 import CompetitionGameModal from './CompetitonGameModal'
 import {
@@ -36,6 +36,7 @@ import CreateCompetitionGame from './CreateCompetitionGame'
 import CompetitionRecord from './CompetitionRecord'
 import GameFilter from '../../utils/GameFilter'
 import ModalDropdown from 'react-native-modal-dropdown';
+var Popover = require('react-native-popover');
 
 var { height, width } = Dimensions.get('window');
 const dropdownWidth = width/2-20;
@@ -47,6 +48,17 @@ class CompetitionGameList extends Component {
         if(navigator) {
             navigator.pop();
         }
+    }
+
+    showPopover(){
+        this.setState({
+            menuVisible: true,
+            buttonRect: {x: width-80, y: 0, width: 100, height: 80}
+        });
+    }
+
+    closePopover(){
+        this.setState({menuVisible: false});
     }
 
     navigate2CreateCompetitionGame(game)
@@ -217,6 +229,8 @@ class CompetitionGameList extends Component {
     render()
     {
 
+        var displayArea = {x:5, y:10, width:width-10, height: height - 10};
+
         let gameClassIcon = this.state.showGameClassDropdown ? require('../../../img/up_icon.png') : require('../../../img/down_icon.png');
         let groupIcon = this.state.showGroupDropdown ? require('../../../img/up_icon.png') : require('../../../img/down_icon.png');
 
@@ -318,24 +332,26 @@ class CompetitionGameList extends Component {
 
             <View style={styles.container}>
                 <Toolbar width={width} title="比赛场次" navigator={this.props.navigator}
-                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
+                         actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
                          onPress={(i)=>{
 
-                             this.setState({showProgress:true})
+                             //this.setState({showProgress:true})
 
-                             if(i==0){
-                                 //this.navigate2CreateCompetitionGame()
-                                 this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
-                                     if(json.re==1)
-                                     {
-                                         this.fetchGameList();
-                                     }
-                                     else {
-                                         Alert.alert('失败','已创建当前分组名单下所有比赛！')
-                                     }
-                                 })
+                             //if(i==0){
+                             //    //this.navigate2CreateCompetitionGame()
+                             //    this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
+                             //        if(json.re==1)
+                             //        {
+                             //            this.fetchGameList();
+                             //        }
+                             //        else {
+                             //            Alert.alert('失败','已创建当前分组名单下所有比赛！')
+                             //        }
+                             //    })
+                             //}
 
-                             }
+                             this.showPopover()
+
                          }}>
 
                     <View style={styles.flexContainer}>
@@ -428,6 +444,7 @@ class CompetitionGameList extends Component {
                         <TouchableOpacity style={[styles.modalContainer,styles.modalBackgroundStyle,{alignItems:'center'}]}
                                           onPress={()=>{
                                               //TODO:cancel this behaviour
+                                              this.setState({showProgress:false})
 
                                           }}>
                             <View style={{width:width*2/3,height:80,backgroundColor:'transparent',position:'relative',
@@ -446,6 +463,41 @@ class CompetitionGameList extends Component {
                             </View>
                         </TouchableOpacity>
                     </Modal>
+
+                    {/*popover part*/}
+                    <Popover
+                        isVisible={this.state.menuVisible}
+                        fromRect={this.state.buttonRect}
+                        displayArea={displayArea}
+                        onClose={()=>{this.closePopover()
+                        }}
+                        style={{backgroundColor:'transparent'}}
+                        placement="bottom"
+                    >
+
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                                  this.setState({showProgress:true})
+
+                                                      //this.navigate2CreateCompetitionGame()
+                                                      this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
+                                                          if(json.re==1)
+                                                          {
+                                                              this.fetchGameList();
+                                                          }
+                                                          else {
+                                                              this.fetchGameList();
+                                                              Alert.alert('失败','已创建当前分组名单下所有比赛！')
+
+                                                          }
+                                                      })
+
+                                          }}>
+                            <Text style={[styles.popoverText]}>生成比赛</Text>
+                        </TouchableOpacity>
+
+                    </Popover>
 
                 </Toolbar>
             </View>
@@ -593,6 +645,15 @@ const styles = StyleSheet.create({
     },
     modalBackgroundStyle:{
         backgroundColor:'transparent'
+    },
+    popoverContent: {
+        width: 100,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText:{
+        color:'#444',
     },
     viewCell: {
         height: 50,

@@ -1159,3 +1159,67 @@ export let saveTeamATeamBInfo=(gameId,member1,member2)=>{
         })
     }
 }
+
+//获取小组赛各组的比赛记录
+export let fetchGroupResult=(projectId,gameClass)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchGroupResult',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gameClass:gameClass,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var info = json.data;
+                    resolve({re:1,data:info})
+                }else{
+                    resolve({re:-1})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}
+
+//获取淘汰赛的比赛记录
+export let fetchOutResult=(projectId,gameClass)=>{
+    return (dispatch,getState)=>{
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+
+            Proxy.postes({
+                url: Config.server + '/func/competition/fetchOutResult',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    projectId:projectId,
+                    gameClass:gameClass,
+                }
+            }).then((json)=>{
+                if(json.re==1){
+                    var info = json.data;
+                    resolve({re:1,data:info})
+                }else{
+                    resolve({re:-1})
+                }
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

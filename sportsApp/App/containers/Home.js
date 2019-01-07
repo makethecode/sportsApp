@@ -44,6 +44,7 @@ import {
     verifyMobilePhone,
     fetchClubList,
     getAccessToken,
+    fetchMemberInformation, updatePortrait
 } from '../action/UserActions';
 import EmptyFilter from '../utils/EmptyFilter'
 import  {
@@ -446,11 +447,27 @@ class Home extends Component {
             this.fetchAppItemList();
         })
 
+        this.fetchMemberInformation(this.props.personId)
+
     }
+
+    fetchMemberInformation(personId){
+        this.props.dispatch(fetchMemberInformation(personId)).then((json)=> {
+            if(json.re==-100){
+                this.props.dispatch(getAccessToken(false));
+            }
+            this.setState({member:json.data})
+            this.props.dispatch(updatePortrait(json.data.avatar));
+        }).catch((e)=>{
+            alert(e)
+        });
+    }
+
 
     componentWillUnmount(){
         if(this.Listener)this.Listener.remove();
         if(this.itemListener)this.itemListener.remove();
+
     }
 
     fetchAppItemList(){

@@ -203,3 +203,31 @@ export let fetchVenueByClub=(clubId)=>{
     }
 }
 
+
+//添加场馆
+export let addVenue=(venue)=>{
+    return (dispatch,getState)=> {
+        return new Promise((resolve, reject) => {
+
+            var state=getState();
+            Proxy.postes({
+                url: Config.server + '/func/node/addVenueUnit',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    venue:venue
+                }
+            }).then((json)=>{
+                if(json.re==1){}
+
+                resolve(json)
+
+            }).catch((e)=>{
+                alert(e);
+                reject(e);
+            })
+
+        })
+    }
+}

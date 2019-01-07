@@ -539,6 +539,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNOverlay;
 		};
+		ADFF4E3821C14F5F00E68446 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = sportsApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1836,6 +1843,7 @@
 			);
 			dependencies = (
 				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
+				ADFF4E3921C14F5F00E68446 /* PBXTargetDependency */,
 			);
 			name = "sportsApp-tvOSTests";
 			productName = "sportsApp-tvOSTests";
@@ -1878,7 +1886,7 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = BY3A7B54BR;
 						ProvisioningStyle = Automatic;
-						TestTargetID = 2D02E47A1E0B4A5D006451C7;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 				};
 			};
@@ -2545,6 +2553,11 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* sportsApp-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
+		ADFF4E3921C14F5F00E68446 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* sportsApp */;
+			targetProxy = ADFF4E3821C14F5F00E68446 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -2649,7 +2662,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Li Xueqing (BY3A7B54BR)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Li Xueqing (BY3A7B54BR)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2697,10 +2710,10 @@
 					"-lc++",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codery.boxiang;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codery.boxiang2;
 				PRODUCT_NAME = sportsApp;
-				PROVISIONING_PROFILE = "c92d5fe2-a528-48eb-92a1-c6371da54e1b";
-				PROVISIONING_PROFILE_SPECIFIER = boxiang;
+				PROVISIONING_PROFILE = "ec5ce9b5-7487-4d40-a0e9-c68c75924cdb";
+				PROVISIONING_PROFILE_SPECIFIER = boxiang2;
 				VALID_ARCHS = "armv7 arm64 armv7s";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2712,7 +2725,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Li Xueqing (BY3A7B54BR)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BY3A7B54BR;
@@ -2758,10 +2771,10 @@
 					"-lc++",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codery.boxiang;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codery.boxiang2;
 				PRODUCT_NAME = sportsApp;
-				PROVISIONING_PROFILE = "c92d5fe2-a528-48eb-92a1-c6371da54e1b";
-				PROVISIONING_PROFILE_SPECIFIER = boxiang;
+				PROVISIONING_PROFILE = "ec5ce9b5-7487-4d40-a0e9-c68c75924cdb";
+				PROVISIONING_PROFILE_SPECIFIER = boxiang2;
 				VALID_ARCHS = "armv7 arm64 armv7s";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2776,6 +2789,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = BY3A7B54BR;
 				ENABLE_TESTABILITY = YES;
@@ -2807,6 +2822,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.sportsApp-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -2822,6 +2839,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = BY3A7B54BR;
@@ -2853,6 +2872,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.sportsApp-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -2880,7 +2900,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.sportsApp-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sportsApp-tvOS.app/sportsApp-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sportsApp.app/sportsApp";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Debug;
@@ -2906,7 +2926,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.sportsApp-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sportsApp-tvOS.app/sportsApp-tvOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sportsApp.app/sportsApp";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 			};
 			name = Release;

@@ -54,6 +54,9 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="KuCilI5rb90cUagW56TiGoWaomrMfQ4W" />
+        <meta-data android:name="JPUSH_CHANNEL" android:value="${APP_CHANNEL}"/>
+        <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
+
 
         <activity
             android:name=".MainActivity"

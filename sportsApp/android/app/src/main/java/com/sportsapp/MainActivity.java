@@ -25,6 +25,8 @@ import com.facebook.react.ReactActivity;
 import com.theweflex.react.WeChatPackage;
 import com.sportsapp.faceDetect.ExampleApplication;
 
+import cn.jpush.android.api.JPushInterface;
+
 import java.io.File;
 
 public class MainActivity extends ReactActivity {
@@ -45,6 +47,7 @@ public class MainActivity extends ReactActivity {
         super.onCreate(savedInstanceState);
         MyActivityManager.addActivity(this);//加一个Activity
 
+        JPushInterface.init(this);
 
 // 根据需求添加活体动作
         ExampleApplication.livenessList.clear();

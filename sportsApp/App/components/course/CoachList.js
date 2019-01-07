@@ -1,6 +1,4 @@
-/**
- * Created by dingyiming on 2017/8/1.
- */
+
 import React, {Component} from 'react';
 import {
     Dimensions,
@@ -22,7 +20,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper';
+import {Toolbar, OPTION_SHOW, OPTION_NEVER, ACTION_ADD} from 'react-native-toolbar-wrapper';
 import{
     fetchCoaches,
     onCoachUpdate,
@@ -33,9 +31,8 @@ import TrainerInformation from './TrainerInformation';
 import {
     getAccessToken,
 } from '../../action/UserActions';
-import CoachDetail from './CoachDetail'
-import {distributeCourse} from "../../action/CourseActions"
 import { SearchBar } from 'react-native-elements'
+import AddCoach from "./AddCoach";
 
 var { height, width } = Dimensions.get('window');
 
@@ -45,6 +42,19 @@ class CoachList extends Component {
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
+        }
+    }
+
+    navigate2AddCoach(rowData){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'addCoach',
+                component: AddCoach,
+                params: {
+                    coachDetail:rowData
+                }
+            })
         }
     }
 
@@ -160,9 +170,11 @@ class CoachList extends Component {
         return (
             <View style={styles.container}>
                 <Toolbar width={width}  title="教练列表" navigator={this.props.navigator}
-                         actions={[]}
+                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
-                             this.goBack()
+                             if(i==0){
+                                 this.navigate2AddCoach()
+                             }
                          }}>
                     <SearchBar
                         lightTheme

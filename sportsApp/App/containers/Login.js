@@ -411,19 +411,23 @@ var Login =React.createClass({
                         </TouchableOpacity>
 
                         {/*微信登录*/}
-                        <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,
-                            borderWidth:1,borderColor:'#eee'}}
-                                          onPress={()=>{
-                                              this.WXLogin();
-                                          }}>
-                            <View style={{flex:1}}>
-                                <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
-                                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                                        <Text style={{color:'#eee',fontSize:16,fontWeight:'bold'}}>微信登录</Text>
+                        {
+                            this.state.isInstalled === true?
+                            <TouchableOpacity style={{flexDirection:'row',height:45,backgroundColor:'transparent',margin:10,marginBottom:30,padding:3,borderRadius:5,
+                                borderWidth:1,borderColor:'#eee'}}
+                                              onPress={()=>{
+                                                  this.WXLogin();
+                                              }}>
+                                <View style={{flex:1}}>
+                                    <View style={{flex:1,flexDirection:'column',alignItems:'center',justifyContent:'flex-start'}}>
+                                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                            <Text style={{color:'#eee',fontSize:16,fontWeight:'bold'}}>微信登录</Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>:null
+                        }
+
 
 
                             <TouchableOpacity style={{width: width, justifyContent: 'center', alignItems: 'center'}}
@@ -508,6 +512,7 @@ var Login =React.createClass({
                 }})
             }
         })
+
 
     },
     componentWillUnmount() {

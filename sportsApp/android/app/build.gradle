@@ -95,6 +95,11 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        manifestPlaceholders = [
+                JPUSH_APPKEY: "e98390a0cf157be95c523425", //在此替换你极光官网上申请的 APPKey
+                APP_CHANNEL: "developer-default"    //应用渠道号, 默认即可
+        ]
+
     }
 
     signingConfigs {

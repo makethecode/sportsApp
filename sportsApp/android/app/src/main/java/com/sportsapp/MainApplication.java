@@ -9,6 +9,7 @@ import android.util.Log;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.react.ReactApplication;
+import com.theweflex.react.WeChatPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.theweflex.react.WeChatPackage;
 
@@ -48,9 +49,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RCTCameraPackage(),
             new WeChatPackage(),
-
+            new RCTCameraPackage(),
             new WeChatPackage(),
             new JPushPackage(false,false),
             new ImagePickerPackage(),

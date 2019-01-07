@@ -36,6 +36,7 @@ import CompetitionGamesList from './CompetitionGamesList'
 import CompetitionGameList from './CompetitionGameList'
 import CompetitionGroupList from './CompetitionGroupList'
 import CompetitionRankList from './CompetitionRankList'
+import CompetitionResult from './CompetitionResult'
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
@@ -114,6 +115,22 @@ class CompetitionPage extends Component{
                 name: 'HomePage',
                 component: HomePage,
                 params: {
+                }
+            })
+        }
+    }
+
+    navigate2CompetitionResult()
+    {
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'CompetitionResult',
+                component: CompetitionResult,
+                params: {
+                    projectId:this.props.projectId,
+                    projectName:this.props.projectName,
+                    projectType:this.props.projectType,
                 }
             })
         }
@@ -331,6 +348,7 @@ class CompetitionPage extends Component{
                                   case 1:this.navigate2CompetitionGroupList(this.props.projectId,this.props.projectType);break;//分组名单
                                   case 2:this.navigate2LiveHome();break;//直播间
                                   case 3:this.navigate2CompetitionTeamList(this.props.projectId);break;//参赛队伍
+                                  case 4:this.navigate2CompetitionResult();break;//对阵成绩
                               }
                           }}
         >
