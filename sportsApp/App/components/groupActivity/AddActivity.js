@@ -23,8 +23,7 @@ var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ActionSheet from 'react-native-actionsheet';
-import DatePicker from 'react-native-datepicker';
-import DateFilter from '../../utils/DateFilter';
+
 import {Toolbar,OPTION_SHOW,OPTION_NEVER} from 'react-native-toolbar-wrapper'
 import {
     releaseActivity
@@ -34,6 +33,7 @@ import VenueInspect from '../../components/venue/VenueInspect';
 import CreateGroup from './CreateGroup';
 import Coach from '../../components/Coach';
 import SelectTime from './SelectTime';
+import ConfirmVenue from '../venue/ConfirmVenue'
 import AddField from './AddField';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -114,6 +114,23 @@ class AddActivity extends Component{
             })
         }
     }
+
+    navigate2ConfirmVenue()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'ConfirmVenue',
+                component: ConfirmVenue,
+                params: {
+                    setPlace:this.setEventPlace.bind(this)
+                }
+            })
+        }
+    }
+
+
+
 
     navigate2Coach(flag)
     {
@@ -422,7 +439,8 @@ class AddActivity extends Component{
                             borderRadius:10}}
                                                       onPress={
                                   ()=>{
-                                      this.navigate2VenueInspect()
+                                      // this.navigate2VenueInspect()
+                                      this.navigate2ConfirmVenue()
                                   }}
                                     >
                                         <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
@@ -437,7 +455,8 @@ class AddActivity extends Component{
                             borderRadius:10}}
                                                       onPress={
                                   ()=>{
-                                      this.navigate2VenueInspect()
+                                      // this.navigate2VenueInspect()
+                                      this.navigate2ConfirmVenue()
                                   }}
                                     >
                                         <View style={{flex:3,marginLeft:20,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
