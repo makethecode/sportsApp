@@ -37,6 +37,7 @@ import{
     enableCoursesOfCoachOnFresh
 } from '../../action/CourseActions';
 import {getAccessToken,} from '../../action/UserActions';
+import ConfirmVenue from "../venue/ConfirmVenue";
 
 const slideAnimation = new SlideAnimation({ slideFrom: 'bottom' });
 const scaleAnimation = new ScaleAnimation();
@@ -196,6 +197,21 @@ class CreateBadmintonCourse extends Component{
             </View>
         );
         return row;
+    }
+
+
+    navigate2ConfirmVenue()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'ConfirmVenue',
+                component: ConfirmVenue,
+                params: {
+                    setPlace:this.setCoursePlace.bind(this)
+                }
+            })
+        }
     }
 
     constructor(props) {
@@ -511,7 +527,8 @@ class CreateBadmintonCourse extends Component{
                                 <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems: 'center',backgroundColor:'#fff',
                                     borderRadius:10}}
                                                   onPress={()=>{
-                                                      this.navigate2VenueInspect();
+                                                      // this.navigate2VenueInspect();
+                                                      this.navigate2ConfirmVenue()
                                                   }}>
                                     <Text style={{fontSize:14,color:'#888'}}>
                                         请选择授课场地 >
@@ -521,8 +538,10 @@ class CreateBadmintonCourse extends Component{
                                 <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems: 'center',backgroundColor:'#fff',
                                     borderRadius:10}}
                                                   onPress={()=>{
-                                                      this.navigate2VenueInspect();
+                                                      // this.navigate2VenueInspect();
+                                                      this.navigate2ConfirmVenue()
                                                   }}>
+
                                     <View style={{flex:3,marginLeft:20,justifyContent:'flex-end',alignItems: 'center',flexDirection:'row',textAlign:'right'}}>
                                         <Text style={{color:'#222',fontSize:14}}>{this.state.venue.name}</Text>
                                     </View>
