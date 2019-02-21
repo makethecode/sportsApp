@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyGroup from '../components/groupActivity/MyGroup';
-import MyCourses from '../components/course/MyCourses';
 import MyVideo from '../components/my/MyVideo';
 import NewsList from '../components/my/NewsList'
 import MyInformation from '../components/my/MyInformation';
@@ -28,7 +27,7 @@ import PortraitModal from '../components/my/modal/PortraitModal';
 import VenueInspect from '../components/venue/VenueInspect';
 import MyCompentitionList from '../components/competition/MyCompetitionList';
 import CoachMessage from '../components/my/MyInformation'
-import TeamSignUp from '../components/competition/TeamSignUp';
+import clubList from '../components/my/ClubList'
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
 import {
     downloadPortrait,
@@ -46,6 +45,19 @@ const scaleAnimation = new ScaleAnimation();
 var WeChat = require('react-native-wechat');
 
 class My extends Component{
+
+    navigate2ClubList(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'clubList',
+                component: clubList,
+                params: {
+                }
+            })
+        }
+    }
+
 
     navigate2MyGroup(){
         const { navigator } = this.props;
@@ -347,6 +359,22 @@ class My extends Component{
                                  <Text>我的设置</Text>
                              </View>
                         </TouchableOpacity>
+                        {
+                            this.props.personInfo.perTypeCode =='SM'?
+                            <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
+                                              onPress={()=>{
+                                                  this.navigate2ClubList();
+                                              }}>
+                                <View style={{flex:1,flexDirection:'row',margin:5,
+                                    justifyContent:'center',alignItems: 'center'}}>
+                                    <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/venue.png')}/>
+                                </View>
+                                <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
+                                    <Text>俱乐部</Text>
+                                </View>
+                            </TouchableOpacity>:null
+                        }
+
 
                     </View>
 
