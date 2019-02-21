@@ -108,104 +108,336 @@ class ManagePage extends Component{
                          }}>
                     <ScrollView>
                     <View style={{flex:1,backgroundColor:'#fff',flexDirection:'row'}}>
-
-                        <View style={{flex:1,backgroundColor:'#eee',flexDirection:'column'}}>
-
+                        <View style={{backgroundColor:'#eee',flexDirection:'column'}}>
                             {
-                                this.state.clubChooseIdx==0?
-                                <TouchableOpacity style={{
-                                    backgroundColor:'#fff',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    height: 40,
-                                    borderColor: '#ccc',
-                                    borderWidth: 1,
-                                    borderTopWidth: 0
-                                }}
-                                                  onPress={() => {
-                                                      this.setState({clubChooseIdx: 0})
-                                                  }}>
-                                    <Text style={{fontSize: 12, color: 'red'}}>山体俱乐部</Text>
-                                </TouchableOpacity>:
-                                <TouchableOpacity style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    height: 40,
-                                    borderColor: '#ccc',
-                                    borderWidth: 1,
-                                    borderTopWidth: 0
-                                }}
-                                                  onPress={() => {
-                                                      this.setState({clubChooseIdx: 0})
-                                                  }}>
-                                    <Text style={{fontSize: 12, color: '#888'}}>山体俱乐部</Text>
-                                </TouchableOpacity>
-                            }
+                                this.props.personId == 3 ?
+                                    <View style={{flex: 1, backgroundColor: '#eee', flexDirection: 'column'}}>
 
-                            {
-                                this.state.clubChooseIdx==1?
-                                <TouchableOpacity style={{
-                                    backgroundColor:'#fff',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    height: 40,
-                                    borderColor: '#ccc',
-                                    borderWidth: 1,
-                                    borderTopWidth: 0
-                                }}
-                                                  onPress={() => {
-                                                      this.setState({clubChooseIdx:1})
-                                                  }}>
-                                    <Text style={{fontSize: 12, color: 'red'}}>博翔俱乐部</Text>
-                                </TouchableOpacity>:
-                                    <TouchableOpacity style={{
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        height: 40,
-                                        borderColor: '#ccc',
-                                        borderWidth: 1,
-                                        borderTopWidth: 0
-                                    }}
-                                                      onPress={() => {
-                                                          this.setState({clubChooseIdx: 1})
-                                                      }}>
-                                        <Text style={{fontSize: 12, color: '#888'}}>博翔俱乐部</Text>
-                                    </TouchableOpacity>
-                            }
+                                        {
+                                            this.state.clubChooseIdx == 0 ?
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 0})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>山体俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 0})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>山体俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
 
-                            {
-                                this.state.clubChooseIdx==2?
+                                        {
+                                            this.state.clubChooseIdx == 1 ?
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 1})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>博翔俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 1})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>博翔俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
 
-                                    <TouchableOpacity style={{
-                                        backgroundColor:'#fff',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        height: 40,
-                                        borderColor: '#ccc',
-                                        borderWidth: 1,
-                                        borderTopWidth: 0
-                                    }}
-                                                      onPress={() => {
-                                                          this.setState({clubChooseIdx: 2})
-                                                      }}>
-                                        <Text style={{fontSize: 12, color: 'red'}}>迈可欣俱乐部</Text>
-                                    </TouchableOpacity>:
-                                    <TouchableOpacity style={{
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        height: 40,
-                                        borderColor: '#ccc',
-                                        borderWidth: 1,
-                                        borderTopWidth: 0
-                                    }}
-                                                      onPress={() => {
-                                                          this.setState({clubChooseIdx:2})
-                                                      }}>
-                                        <Text style={{fontSize: 12, color: '#888'}}>迈可欣俱乐部</Text>
-                                    </TouchableOpacity>
+                                        {
+                                            this.state.clubChooseIdx == 2 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 2})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>迈可欣俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 2})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>迈可欣俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+
+                                        {
+                                            this.state.clubChooseIdx == 3 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 3})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 3})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+
+                                        {
+                                            this.state.clubChooseIdx == 4 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 4})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 4})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>康健羽毛球俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+                                    </View> : null
                             }
 
                         </View>
+
+
+                        <View style={{backgroundColor:'#eee',flexDirection:'column'}}>
+                            {
+                                this.props.personId == 410 ?
+                                    <View style={{flex: 1, backgroundColor: '#eee', flexDirection: 'column'}}>
+
+
+                                        {
+                                            this.state.clubChooseIdx == 1 ?
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 1})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>博翔俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 1})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>博翔俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+
+                                    </View> : null
+                            }
+
+                        </View>
+
+                        <View style={{backgroundColor:'#eee',flexDirection:'column'}}>
+                            {
+                                this.props.personId == 228 ?
+                                    <View style={{flex: 1, backgroundColor: '#eee', flexDirection: 'column'}}>
+                                        {
+                                            this.state.clubChooseIdx == 2 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 2})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>迈可欣俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 2})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>迈可欣俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+                                    </View> : null
+                            }
+
+                        </View>
+
+                        <View style={{backgroundColor:'#eee',flexDirection:'column'}}>
+                            {
+                                this.props.personId == 375 ?
+                                    <View style={{flex: 1, backgroundColor: '#eee', flexDirection: 'column'}}>
+                                        {
+                                            this.state.clubChooseIdx == 3 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 3})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 3})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+                                    </View> : null
+                            }
+
+                        </View>
+
+                        <View style={{backgroundColor:'#eee',flexDirection:'column'}}>
+                            {
+                                this.props.personId == 376 ?
+                                    <View style={{flex: 1, backgroundColor: '#eee', flexDirection: 'column'}}>
+                                        {
+                                            this.state.clubChooseIdx == 4 ?
+
+                                                <TouchableOpacity style={{
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 4})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: 'red'}}>新羽飞扬俱乐部</Text>
+                                                </TouchableOpacity> :
+                                                <TouchableOpacity style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    height: 40,
+                                                    borderColor: '#ccc',
+                                                    borderWidth: 1,
+                                                    borderTopWidth: 0
+                                                }}
+                                                                  onPress={() => {
+                                                                      this.setState({clubChooseIdx: 4})
+                                                                  }}>
+                                                    <Text style={{fontSize: 12, color: '#888'}}>康健羽毛球俱乐部</Text>
+                                                </TouchableOpacity>
+                                        }
+                                    </View> : null
+                            }
+
+                        </View>
+
 
                         <View style={{width:width*3/4,backgroundColor:'#fff',flexDirection:'column',alignItems:'flex-start',justifyContent:'flex-start',}}>
 
