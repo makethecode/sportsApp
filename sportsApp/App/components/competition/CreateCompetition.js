@@ -82,7 +82,8 @@ class CreateCompetition extends Component{
             // name=山大实验室友谊赛, host=软件实验室, unitId=1, personId=3, perNum=wbh, startTime=2018-02-01 09:00, id=1, endTime=2018-03-01 18:00}
 
             competition:{name:null,brief:null,host:null,unitName:null,startTime:null,endTime:null,type:null,typeIdx:null},
-            venueButtons:['取消','山东体育学院羽毛球馆','济南联通羽毛球馆','平阴县青少年学生校外活动中心','历城文博中心','莱芜全民健身中心'],
+            // venueButtons:['取消','山东体育学院羽毛球馆','济南联通羽毛球馆','平阴县青少年学生校外活动中心','历城文博中心','莱芜全民健身中心'],
+            venueButtons:[],
             typeButtons:['取消','平台','委托'],
         }
         this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
@@ -364,25 +365,23 @@ class CreateCompetition extends Component{
     componentDidMount()
     {
         //查询所有地点
-        // this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
-        //     if(json.re==1)
-        //     {
-        //         var venues = json.data;
-        //         var venueList = ['取消'];
-        //
-        //         venues.map((venue)=>{
-        //             venueList.add(venue.name)
-        //         })
-        //
-        //         this.setState({venueButtons:venueList});
-        //     }
-        //     else {
-        //         if(json.re=-100){
-        //             this.props.dispatch(getAccessToken(false))
-        //         }
-        //
-        //     }
-        // })
+        this.props.dispatch(fetchMaintainedVenue()).then((json)=>{
+            if(json.re==1)
+            {
+
+                var venueList = ['取消'];
+
+                for(var i=0;i<json.data.length;i++)
+                    venueList.push(json.data[i].name);
+                this.setState({venueButtons:venueList});
+            }
+            else {
+                if(json.re=-100){
+                    this.props.dispatch(getAccessToken(false))
+                }
+
+            }
+        })
     }
 
     componentWillUnmount()

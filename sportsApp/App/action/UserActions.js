@@ -1591,7 +1591,7 @@ export let fetchMyClub=(clubId)=>{
 
             var state=getState();
             Proxy.postes({
-                url: Config.server + '/func/node/getAllClub',
+                url: Config.server + '/func/node/getMyClub',
                 headers: {
                     'Content-Type': 'application/json',
                 },
