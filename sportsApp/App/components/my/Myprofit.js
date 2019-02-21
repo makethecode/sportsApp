@@ -432,7 +432,7 @@ class Myprofit extends Component {
                             color={color}
                             format="YYYYMMDD"
                             minDate="20180101"
-                            maxDate="20190101"
+                            maxDate="20200101"
                             startDate={this.state.startDate}
                             endDate={this.state.endDate}
                             onConfirm={this.confirmDate}
