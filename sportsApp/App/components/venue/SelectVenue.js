@@ -166,8 +166,12 @@ class SelectVenue extends Component {
                          actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
-                                 // this.goBack()
-                                 this.navigate2AddVenue()
+                                 if((this.props.personInfo.perTypeCode) == 'M' || (this.props.personInfo.perTypeCode == 'SM')){
+                                     this.navigate2AddVenue()
+                                 }else{
+                                     alert("您没有权限添加场馆")
+                                 }
+
                              }
                          }}>
                     <SearchBar

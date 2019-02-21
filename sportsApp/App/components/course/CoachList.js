@@ -173,7 +173,12 @@ class CoachList extends Component {
                          actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
                          onPress={(i)=>{
                              if(i==0){
-                                 this.navigate2AddCoach()
+                                 if((this.props.personInfo.perTypeCode=='M' )|| (this.props.personInfo.perTypeCode=='SM')){
+                                     this.navigate2AddCoach()
+                                 }else{
+                                     alert("您没有权限添加教练");
+                                 }
+
                              }
                          }}>
                     <SearchBar
