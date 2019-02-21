@@ -672,13 +672,11 @@ class MyInformation extends Component{
                                              <Image  resizeMode="stretch" style={{width:width*0.22,height:width*0.22}}
                                                      source={{uri:this.state.coachPhoto3Url}}
                                              />
-
                                          }
                                      </View>
                                  </TouchableOpacity>
                              </View>
                             </View>
-
                         </KeyboardAwareScrollView>
                     </View>
                     </View>
