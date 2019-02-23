@@ -66,7 +66,7 @@ class TrailStudentList extends Component {
             type:'学员类型',
             courseType:'课程类型',
 
-            courseTypeList:['山体课程','平阴课程','莱芜课程'],
+            courseTypeList:['奥体球馆','全民健身中心'],
             typeList:['试课学员','转正学员','流失学员'],
             showTypeDropdown:false,
             showCourseTypeDropdown:false,
