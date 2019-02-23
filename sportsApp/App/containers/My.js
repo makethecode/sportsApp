@@ -359,21 +359,21 @@ class My extends Component{
                                  <Text>我的设置</Text>
                              </View>
                         </TouchableOpacity>
-                        {
-                            this.props.personInfo.perTypeCode =='SM'?
-                            <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
-                                              onPress={()=>{
-                                                  this.navigate2ClubList();
-                                              }}>
-                                <View style={{flex:1,flexDirection:'row',margin:5,
-                                    justifyContent:'center',alignItems: 'center'}}>
-                                    <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/venue.png')}/>
-                                </View>
-                                <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
-                                    <Text>俱乐部</Text>
-                                </View>
-                            </TouchableOpacity>:null
-                        }
+                        {/*{*/}
+                            {/*this.props.personInfo.perTypeCode =='SM'?*/}
+                            {/*<TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}*/}
+                                              {/*onPress={()=>{*/}
+                                                  {/*this.navigate2ClubList();*/}
+                                              {/*}}>*/}
+                                {/*<View style={{flex:1,flexDirection:'row',margin:5,*/}
+                                    {/*justifyContent:'center',alignItems: 'center'}}>*/}
+                                    {/*<Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/venue.png')}/>*/}
+                                {/*</View>*/}
+                                {/*<View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>*/}
+                                    {/*<Text>俱乐部</Text>*/}
+                                {/*</View>*/}
+                            {/*</TouchableOpacity>:null*/}
+                        {/*}*/}
 
 
                     </View>
