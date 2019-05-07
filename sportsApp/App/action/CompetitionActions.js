@@ -11,7 +11,6 @@ import {
     DISABLE_COMPETITION_ITEM_ONFRESH,
 } from '../constants/CompetitionConstants'
 
-
 //拉取能报名比赛
 export let fetchGames=()=>{
     return (dispatch,getState)=>{
@@ -161,17 +160,6 @@ export let setCompetitionItemList=(competitionItemList)=>{
         competitionItemList:competitionItemList
     }
 }
-/*export let onGameUpdate=(competitions)=>{
- return (dispatch,getState)=>{
- dispatch({
- type:ON_GAME_UPDATE,
- payload:{
- competitions
- }
- })
- }
- }*/
-
 
 export let enableCompetitionOnFresh=()=>{
     return {
@@ -243,9 +231,7 @@ export let fetchGamesItem=(competitionId)=>{
             Proxy.postes({
                 url: Config.server + '/func/competition/getBadmintonCompetitionProjectList',
                 headers: {
-
                     'Content-Type': 'application/json',
-
                 },
                 body: {
                     competitionId:competitionId
@@ -415,8 +401,6 @@ export let fetchTeamList=(projectId)=>{
         return new Promise((resolve, reject) => {
 
             var state=getState();
-            var username = state.user.user.username;
-            var sessionId = state.user.sessionId;
 
             Proxy.postes({
                 url: Config.server + '/func/competition/fetchTeamList',
@@ -688,7 +672,7 @@ export let createGroupList=(projectId,gameClass)=>{
             var state=getState();
 
             Proxy.postes({
-                url: Config.server + '/func/competition/createGroupList',
+                url: Config.server + '/func/competition/createGroupList2',
                 headers: {
                     'Content-Type': 'application/json',
                 },

@@ -298,246 +298,6 @@ class CompetitionGroupList extends Component {
         return row;
     }
 
-    //ListE行渲染
-    renderListERow(rowData,sectionId,rowId){
-
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        var imguri = rowData.avatar;
-        var no = parseInt(rowId)+1
-
-        var row=(
-            <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
-                              onPress={()=>{
-                                  this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                              }}>
-                {/*队伍*/}
-                <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start'}}>
-                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{no}</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:30,width:30,borderRadius:15}} source={{uri:imguri}}/>
-                    </View>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#5c5c5c'}}>{rowData.team}</Text>
-                    </View>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.winCount}</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.lostCount}</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.rank}</Text>
-                </View>
-                {/*删除*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      var ListE = this.state.ListE;
-                                      //var List = [];
-                                      //for(var i=0;i<ListA.length;i++){
-                                      //    if(ListA[i].teamId != rowData.teamId)List.push(ListA[i])
-                                      //}
-                                      //this.setState({ListA:List})
-                                      ListE.splice(rowId,1);
-                                      this.setState({ListE:ListE});
-                                      this.deleteGroupList(rowData);
-                                  }
-                                  }>
-                    <Ionicons name='md-close' size={18} color="#666"/>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-        return row;
-    }
-
-    //ListF行渲染
-    renderListFRow(rowData,sectionId,rowId){
-
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        var imguri = rowData.avatar;
-        var no = parseInt(rowId)+1
-
-        var row=(
-            <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
-                              onPress={()=>{
-                                  this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                              }}>
-                {/*队伍*/}
-                <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start'}}>
-                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{no}</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:30,width:30,borderRadius:15}} source={{uri:imguri}}/>
-                    </View>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#5c5c5c'}}>{rowData.team}</Text>
-                    </View>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.winCount}</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.lostCount}</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.rank}</Text>
-                </View>
-                {/*删除*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      var ListF = this.state.ListF;
-                                      //var List = [];
-                                      //for(var i=0;i<ListA.length;i++){
-                                      //    if(ListA[i].teamId != rowData.teamId)List.push(ListA[i])
-                                      //}
-                                      //this.setState({ListA:List})
-                                      ListF.splice(rowId,1);
-                                      this.setState({ListF:ListF});
-                                      this.deleteGroupList(rowData);
-                                  }
-                                  }>
-                    <Ionicons name='md-close' size={18} color="#666"/>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-        return row;
-    }
-
-    //ListG行渲染
-    renderListGRow(rowData,sectionId,rowId){
-
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        var imguri = rowData.avatar;
-        var no = parseInt(rowId)+1
-
-        var row=(
-            <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
-                              onPress={()=>{
-                                  this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                              }}>
-                {/*队伍*/}
-                <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start'}}>
-                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{no}</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:30,width:30,borderRadius:15}} source={{uri:imguri}}/>
-                    </View>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#5c5c5c'}}>{rowData.team}</Text>
-                    </View>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.winCount}</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.lostCount}</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.rank}</Text>
-                </View>
-                {/*删除*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      var ListG = this.state.ListG;
-                                      //var List = [];
-                                      //for(var i=0;i<ListA.length;i++){
-                                      //    if(ListA[i].teamId != rowData.teamId)List.push(ListA[i])
-                                      //}
-                                      //this.setState({ListA:List})
-                                      ListG.splice(rowId,1);
-                                      this.setState({ListG:ListG});
-                                      this.deleteGroupList(rowData);
-                                  }
-                                  }>
-                    <Ionicons name='md-close' size={18} color="#666"/>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-        return row;
-    }
-
-    //ListH行渲染
-    renderListHRow(rowData,sectionId,rowId){
-
-        //{winCount=0, groupId=1, teamId=202, gameClass=6, rank=1, id=1, team=单打1队,
-        // avatar=https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqhGvzphLhtWoG1KjVLF1VFb9tD2ZqlRQ2IcI6jWGz9ZBib38jyd4oBh9BgicfRqQ4469Rzzkj46k7w/132,
-        // lostCount=0}
-
-        var imguri = rowData.avatar;
-        var no = parseInt(rowId)+1
-
-        var row=(
-            <TouchableOpacity style={{padding:5,backgroundColor:'#fff',flexDirection:'row',marginTop:1}}
-                              onPress={()=>{
-                                  this.setState({chooseTeamGroup:rowData,editTeamListModalVisible:true})
-                              }}>
-                {/*队伍*/}
-                <View style={{flex:3,flexDirection:'row',padding:5,backgroundColor:'transparent'}}>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'flex-start'}}>
-                        <Text style={{color:'#5c5c5c',marginLeft:5}}>{no}</Text>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:30,width:30,borderRadius:15}} source={{uri:imguri}}/>
-                    </View>
-                    <View style={{flex:2,justifyContent:'center',alignItems: 'center'}}>
-                        <Text style={{color:'#5c5c5c'}}>{rowData.team}</Text>
-                    </View>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.winCount}</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.lostCount}</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>{rowData.rank}</Text>
-                </View>
-                {/*删除*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      var ListH = this.state.ListH;
-                                      //var List = [];
-                                      //for(var i=0;i<ListA.length;i++){
-                                      //    if(ListA[i].teamId != rowData.teamId)List.push(ListA[i])
-                                      //}
-                                      //this.setState({ListA:List})
-                                      ListH.splice(rowId,1);
-                                      this.setState({ListH:ListH});
-                                      this.deleteGroupList(rowData);
-                                  }
-                                  }>
-                    <Ionicons name='md-close' size={18} color="#666"/>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-        return row;
-    }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -548,17 +308,13 @@ class CompetitionGroupList extends Component {
             //初始
             gameClass:1,
             gameClassStr:'小组赛',
-            gameClassButtons:['取消','小组赛','32进16','16进8','8进4','半决赛','冠亚军决赛'],
+            gameClassButtons:['取消','小组赛','8进4','半决赛','冠亚军决赛'],
 
             //分组
             ListA:[],
             ListB:[],
             ListC:[],
             ListD:[],
-            ListE:[],
-            ListF:[],
-            ListG:[],
-            ListH:[],
 
             addTeamListModalVisible:false,
             editTeamListModalVisible:false,
@@ -642,66 +398,6 @@ class CompetitionGroupList extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={dsD.cloneWithRows(ListD)}
                     renderRow={this.renderListDRow.bind(this)}
-                />
-            );
-        }
-
-        //E组
-        var ListEView = null;
-        var ListE = this.state.ListE;
-
-        var dsE = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (ListE !== undefined && ListE !== null && ListE.length > 0) {
-            ListEView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsE.cloneWithRows(ListE)}
-                    renderRow={this.renderListERow.bind(this)}
-                />
-            );
-        }
-
-        //F组
-        var ListFView = null;
-        var ListF = this.state.ListF;
-
-        var dsF = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (ListF !== undefined && ListF !== null && ListF.length > 0) {
-            ListFView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsF.cloneWithRows(ListF)}
-                    renderRow={this.renderListFRow.bind(this)}
-                />
-            );
-        }
-
-        //G组
-        var ListGView = null;
-        var ListG = this.state.ListG;
-
-        var dsG = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (ListG !== undefined && ListG !== null && ListG.length > 0) {
-            ListGView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsG.cloneWithRows(ListG)}
-                    renderRow={this.renderListGRow.bind(this)}
-                />
-            );
-        }
-
-        //H组
-        var ListHView = null;
-        var ListH = this.state.ListH;
-
-        var dsH = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (ListH !== undefined && ListH !== null && ListH.length > 0) {
-            ListHView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsH.cloneWithRows(ListH)}
-                    renderRow={this.renderListHRow.bind(this)}
                 />
             );
         }
@@ -822,122 +518,6 @@ class CompetitionGroupList extends Component {
             </View>
         )
 
-        //表头E
-        var headE = (
-            <View style={{padding:5,backgroundColor:'#eee',flexDirection:'row',marginTop:1}}>
-                {/*队伍*/}
-                <View style={{flex:3,padding:5,backgroundColor:'transparent',justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>队伍</Text>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>胜</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>负</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>排名</Text>
-                </View>
-                {/*增加*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      this.setState({addTeamListModalVisible:true,chooseListType:4})
-                                  }}>
-                    <Ionicons name='md-add' size={18} color="#666"/>
-                </TouchableOpacity>
-            </View>
-        )
-
-        //表头F
-        var headF = (
-            <View style={{padding:5,backgroundColor:'#eee',flexDirection:'row',marginTop:1}}>
-                {/*队伍*/}
-                <View style={{flex:3,padding:5,backgroundColor:'transparent',justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>队伍</Text>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>胜</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>负</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>排名</Text>
-                </View>
-                {/*增加*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      this.setState({addTeamListModalVisible:true,chooseListType:5})
-                                  }}>
-                    <Ionicons name='md-add' size={18} color="#666"/>
-                </TouchableOpacity>
-            </View>
-        )
-
-        //表头G
-        var headG = (
-            <View style={{padding:5,backgroundColor:'#eee',flexDirection:'row',marginTop:1}}>
-                {/*队伍*/}
-                <View style={{flex:3,padding:5,backgroundColor:'transparent',justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>队伍</Text>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>胜</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>负</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>排名</Text>
-                </View>
-                {/*增加*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      this.setState({addTeamListModalVisible:true,chooseListType:6})
-                                  }}>
-                    <Ionicons name='md-add' size={18} color="#666"/>
-                </TouchableOpacity>
-            </View>
-        )
-
-        //表头H
-        var headH = (
-            <View style={{padding:5,backgroundColor:'#eee',flexDirection:'row',marginTop:1}}>
-                {/*队伍*/}
-                <View style={{flex:3,padding:5,backgroundColor:'transparent',justifyContent:'center',alignItems:'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>队伍</Text>
-                </View>
-                {/*得分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>胜</Text>
-                </View>
-                {/*失分*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>负</Text>
-                </View>
-                {/*排名*/}
-                <View style={{flex:1,padding:5,justifyContent:'center',alignItems: 'center'}}>
-                    <Text style={{color:'#5c5c5c'}}>排名</Text>
-                </View>
-                {/*增加*/}
-                <TouchableOpacity style={{flex:1,padding:5,justifyContent:'center',alignItems: 'flex-end'}}
-                                  onPress={()=>{
-                                      this.setState({addTeamListModalVisible:true,chooseListType:7})
-                                  }}>
-                    <Ionicons name='md-add' size={18} color="#666"/>
-                </TouchableOpacity>
-            </View>
-        )
-
         return (
             <View style={{flex:1}}>
                 <Toolbar width={width} title="赛事安排" navigator={this.props.navigator}
@@ -1010,26 +590,6 @@ class CompetitionGroupList extends Component {
                                 <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
                                     <Text style={{color:'#fff',fontSize:14}}>{projectType} D组</Text></View>{headD}{ListDView}</View>
                         }
-                        {//E组
-                            (ListE==null || ListE.length==0)?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} E组</Text></View>{headE}{ListEView}</View>
-                        }
-                        {//F组
-                            (ListF==null || ListF.length==0)?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} F组</Text></View>{headF}{ListFView}</View>
-                        }
-                        {//G组
-                            (ListG==null || ListG.length==0)?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} G组</Text></View>{headG}{ListGView}</View>
-                        }
-                        {//H组
-                            (ListH==null || ListH.length==0)?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#66CDAA',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>{projectType} H组</Text></View>{headH}{ListHView}</View>
-                        }
                     </ScrollView>
                     }
 
@@ -1051,10 +611,6 @@ class CompetitionGroupList extends Component {
                             ListB={this.state.ListB}
                             ListC={this.state.ListC}
                             ListD={this.state.ListD}
-                            ListE={this.state.ListE}
-                            ListF={this.state.ListF}
-                            ListG={this.state.ListG}
-                            ListH={this.state.ListH}
 
                             setList={(team)=>{
                                 this.addGroupList(team,this.props.projectId)
@@ -1120,7 +676,6 @@ class CompetitionGroupList extends Component {
 
     createGroupList(){
 
-
         this.props.dispatch(createGroupList(this.props.projectId,this.state.gameClass)).then((json)=>{
             if(json.re==1)
             {
@@ -1146,7 +701,6 @@ class CompetitionGroupList extends Component {
         // lostCount=0}
 
         var listA = this.state.ListA;var listB = this.state.ListB;var listC = this.state.ListC;var listD = this.state.ListD;
-        var listE = this.state.ListE;var listF = this.state.ListF;var listG = this.state.ListG;var listH = this.state.ListH;
 
         var resList = [];
 
@@ -1224,78 +778,6 @@ class CompetitionGroupList extends Component {
             resList.push(listD)
         }
 
-        if(listE!=null && listE.length>0) {
-            listE.sort(function (a, b) {
-                return a.lostCount - b.lostCount
-            });
-
-            listE.sort(function (a, b) {
-                return b.winCount - a.winCount
-            });
-
-            for(var i=0;i<listE.length;i++){
-                listE[i].rank=i+1;
-            }
-
-            this.setState({ListE:listE})
-
-            resList.push(listE)
-        }
-
-        if(listF!=null && listF.length>0) {
-            listF.sort(function (a, b) {
-                return a.lostCount - b.lostCount
-            });
-
-            listF.sort(function (a, b) {
-                return b.winCount - a.winCount
-            });
-
-            for(var i=0;i<listF.length;i++){
-                listF[i].rank=i+1;
-            }
-
-            this.setState({ListF:listF})
-
-            resList.push(listF)
-        }
-
-        if(listG!=null && listG.length>0) {
-            listG.sort(function (a, b) {
-                return a.lostCount - b.lostCount
-            });
-
-            listG.sort(function (a, b) {
-                return b.winCount - a.winCount
-            });
-
-            for(var i=0;i<listG.length;i++){
-                listG[i].rank=i+1;
-            }
-
-            this.setState({ListG:listG})
-
-            resList.push(listG)
-        }
-
-        if(listH!=null && listH.length>0) {
-            listH.sort(function (a, b) {
-                return a.lostCount - b.lostCount
-            });
-
-            listH.sort(function (a, b) {
-                return b.winCount - a.winCount
-            });
-
-            for(var i=0;i<listA.length;i++){
-                listH[i].rank=i+1;
-            }
-
-            this.setState({ListH:listH})
-
-            resList.push(listH)
-        }
-
         this.props.dispatch(updateAllGroupList(resList)).then((json)=>{
             if(json.re==1)
             {
@@ -1324,10 +806,6 @@ class CompetitionGroupList extends Component {
             var listB = [];
             var listC = [];
             var listD = [];
-            var listE = [];
-            var listF = [];
-            var listG = [];
-            var listH = [];
 
             if(json.re==1){
 
@@ -1350,25 +828,13 @@ class CompetitionGroupList extends Component {
                             case 3:
                                 listD.push(team);
                                 break;
-                            case 4:
-                                listE.push(team);
-                                break;
-                            case 5:
-                                listF.push(team);
-                                break;
-                            case 6:
-                                listG.push(team);
-                                break;
-                            case 7:
-                                listH.push(team);
-                                break;
                         }
                     }
                 }
 
-                this.setState({teams:json.data,ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,});
+                this.setState({teams:json.data,ListA:listA,ListB:listB,ListC:listC,ListD:listD});
             }else{
-                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD,ListE:listE,ListF:listF,ListG:listG,ListH:listH,});
+                this.setState({ListA:listA,ListB:listB,ListC:listC,ListD:listD});
             }
         })
 
@@ -1405,30 +871,6 @@ class CompetitionGroupList extends Component {
                 team.groupId = 3;
                 ListD.push(team);
                 this.setState({ListD:ListD});
-                break;
-            case 4:
-                var ListE = this.state.ListE;
-                team.groupId = 4;
-                ListE.push(team);
-                this.setState({ListE:ListE});
-                break;
-            case 5:
-                var ListF = this.state.ListF;
-                team.groupId = 5;
-                ListF.push(team);
-                this.setState({ListF:ListF});
-                break;
-            case 6:
-                var ListG = this.state.ListG;
-                team.groupId = 6;
-                ListG.push(team);
-                this.setState({ListG:ListG});
-                break;
-            case 7:
-                var ListH = this.state.ListH;
-                team.groupId = 7;
-                ListH.push(team);
-                this.setState({ListH:ListH});
                 break;
         }
 

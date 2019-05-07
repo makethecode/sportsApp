@@ -28,6 +28,7 @@ import VenueInspect from '../components/venue/VenueInspect';
 import MyCompentitionList from '../components/competition/MyCompetitionList';
 import CoachMessage from '../components/my/MyInformation'
 import clubList from '../components/my/ClubList'
+import Video from '../components/VideoT'
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
 import {
     downloadPortrait,
@@ -83,6 +84,7 @@ class My extends Component{
             })
         }
     }
+
 
     navigate2MyVideo(){
         const { navigator } = this.props;
@@ -198,6 +200,19 @@ class My extends Component{
             navigator.push({
                 name: 'CoachMressage',
                 component: CoachMessage,
+                params: {
+
+                }
+            })
+        }
+    }
+
+    navigate2Test(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'CoachMressage',
+                component: Video,
                 params: {
 
                 }
@@ -347,6 +362,7 @@ class My extends Component{
                                 <Text>我的活动</Text>
                             </View>
                         </TouchableOpacity>
+
                         <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
                                           onPress={()=>{
                                 this.navigate2Setting();
@@ -359,6 +375,20 @@ class My extends Component{
                                  <Text>我的设置</Text>
                              </View>
                         </TouchableOpacity>
+
+                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
+                                          onPress={()=>{
+                                              this.navigate2Test();
+                                          }}>
+                            <View style={{flex:1,flexDirection:'row',margin:5,
+                                justifyContent:'center',alignItems: 'center'}}>
+                                <Image resizeMode="contain" style={{height:25,width:25}} source={require('../../img/setting.png')}/>
+                            </View>
+                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',marginLeft:10,paddingLeft:20}}>
+                                <Text>我的测试</Text>
+                            </View>
+                        </TouchableOpacity>
+
                         {/*{*/}
                             {/*this.props.personInfo.perTypeCode =='SM'?*/}
                             {/*<TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}*/}

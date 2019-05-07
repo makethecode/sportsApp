@@ -20,6 +20,9 @@ import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CoachList from '../components/course/CoachList';
 import Venue from '../components/venue/SelectVenue';
 import TrailStudent from '../components/trailClass/TrailStudentList'
+import webDemo from './mall/webDemo'
+import Amap from '../template/Amap'
+import method from '../template/eagleEntity'
 
 var {height, width} = Dimensions.get('window');
 
@@ -44,6 +47,19 @@ class Found extends Component{
             navigator.push({
                 name: 'venue',
                 component: Venue,
+                params: {
+
+                }
+            })
+        }
+    }
+
+    navigate2WebView(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'venue',
+                component: Amap,
                 params: {
 
                 }
@@ -107,6 +123,23 @@ class Found extends Component{
                             </View>
                             <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
                                 <Text>场馆列表</Text>
+                            </View>
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{height:45,backgroundColor:'#fff',flexDirection:'row',padding:2,marginBottom:3,paddingLeft:10}}
+                                          onPress={()=>{
+                                              this.navigate2WebView();
+                                              //method.AddEntity();
+                                          }}
+                        >
+
+                            <View style={{flex:1,flexDirection:'row',margin:5,
+                                justifyContent:'center',alignItems: 'center'}}>
+                                <Image resizeMode="contain" style={{height:30,width:30}} source={require('../../img/venue.png')}/>
+                            </View>
+                            <View style={{flex:12,backgroundColor:'#fff',justifyContent:'center',paddingLeft:20}}>
+                                <Text>webview</Text>
                             </View>
 
                         </TouchableOpacity>

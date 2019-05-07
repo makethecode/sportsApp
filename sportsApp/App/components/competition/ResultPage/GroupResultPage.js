@@ -44,10 +44,6 @@ class GroupResultPage extends Component{
                 var listB=[];
                 var listC=[];
                 var listD=[];
-                var listE=[];
-                var listF=[];
-                var listG=[];
-                var listH=[];
 
                 if(list!=null) {
                     for (i = 0; i < list.length; i++) {
@@ -64,23 +60,11 @@ class GroupResultPage extends Component{
                             case 3:
                                 listD.push(list[i]);
                                 break;
-                            case 4:
-                                listE.push(list[i]);
-                                break;
-                            case 5:
-                                listF.push(list[i]);
-                                break;
-                            case 6:
-                                listG.push(list[i]);
-                                break;
-                            case 7:
-                                listH.push(list[i]);
-                                break;
                         }
                     }
                 }
 
-                this.setState({list:list,listA:listA,listB:listB,listC:listC,listD:listD,listE:listE,listF:listF,listG:listG,listH:listH})
+                this.setState({list:list,listA:listA,listB:listB,listC:listC,listD:listD})
             }
             else {
                 if(json.re=-100){
@@ -101,10 +85,6 @@ class GroupResultPage extends Component{
             listB:[],
             listC:[],
             listD:[],
-            listE:[],
-            listF:[],
-            listG:[],
-            listH:[],
 
             list:[],
         };
@@ -326,110 +306,6 @@ class GroupResultPage extends Component{
             );
         }
 
-        //E组对阵表
-        var listEView = null;
-        var listE = this.state.listE;
-        var headerE = null;
-
-        var dsE = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (listE !== undefined && listE !== null && listE.length > 0) {
-            headerE = (
-                <View>
-                    <View style={{width:width,height:30,backgroundColor:'#fff',padding:10,alignItems:'center',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#666',fontSize:13}}>E组对阵成绩</Text>
-                    </View>
-                    <View style={{flexDirection:'row',height:30,width:width}}>
-                        {this.renderHeader(listE)}
-                    </View>
-                </View>
-            );
-            listEView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsE.cloneWithRows(listE)}
-                    renderRow={this.renderRow.bind(this)}
-                />
-            );
-        }
-
-        //F组对阵表
-        var listFView = null;
-        var listF = this.state.listF;
-        var headerF = null;
-
-        var dsF = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (listF !== undefined && listF !== null && listF.length > 0) {
-            headerF = (
-                <View>
-                    <View style={{width:width,height:30,backgroundColor:'#fff',padding:10,alignItems:'center',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#666',fontSize:13}}>F组对阵成绩</Text>
-                    </View>
-                    <View style={{flexDirection:'row',height:30,width:width}}>
-                        {this.renderHeader(listF)}
-                    </View>
-                </View>
-            );
-            listFView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsF.cloneWithRows(listF)}
-                    renderRow={this.renderRow.bind(this)}
-                />
-            );
-        }
-
-        //G组对阵表
-        var listGView = null;
-        var listG = this.state.listG;
-        var headerG = null;
-
-        var dsG = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (listG !== undefined && listG !== null && listG.length > 0) {
-            headerG = (
-                <View>
-                    <View style={{width:width,height:30,backgroundColor:'#fff',padding:10,alignItems:'center',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#666',fontSize:13}}>G组对阵成绩</Text>
-                    </View>
-                    <View style={{flexDirection:'row',height:30,width:width}}>
-                        {this.renderHeader(listG)}
-                    </View>
-                </View>
-            );
-            listGView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsG.cloneWithRows(listG)}
-                    renderRow={this.renderRow.bind(this)}
-                />
-            );
-        }
-
-        //H组对阵表
-        var listHView = null;
-        var listH = this.state.listH;
-        var headerH = null;
-
-        var dsH = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (listH !== undefined && listH !== null && listH.length > 0) {
-            headerH = (
-                <View>
-                    <View style={{width:width,height:30,backgroundColor:'#fff',padding:10,alignItems:'center',justifyContent:'center',textAlign:'left'}}>
-                        <Text style={{color:'#666',fontSize:13}}>H组对阵成绩</Text>
-                    </View>
-                    <View style={{flexDirection:'row',height:30,width:width}}>
-                        {this.renderHeader(listH)}
-                    </View>
-                </View>
-            );
-            listHView = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={dsH.cloneWithRows(listH)}
-                    renderRow={this.renderRow.bind(this)}
-                />
-            );
-        }
-
         return (
             <ScrollView style={styles.container}>
 
@@ -455,30 +331,6 @@ class GroupResultPage extends Component{
                 <View>
                     {headerD}
                     {listDView}
-                </View>
-
-                {/*E组*/}
-                <View>
-                    {headerE}
-                    {listEView}
-                </View>
-
-                {/*F组*/}
-                <View>
-                    {headerF}
-                    {listFView}
-                </View>
-
-                {/*G组*/}
-                <View>
-                    {headerG}
-                    {listGView}
-                </View>
-
-                {/*H组*/}
-                <View>
-                    {headerH}
-                    {listHView}
                 </View>
 
             </ScrollView>

@@ -48,7 +48,7 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
-        android:icon="@drawable/img_maikexin"
+        android:icon="@drawable/img_icon_sportsapp"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data

@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">迈可欣</string>
+    <string name="app_name">运动热</string>
     <string name="android_auto_update_dialog_title">发现新版本</string>
 
     <string name="android_auto_update_notify_ticker">发现新版本,点击进行升级</string>

@@ -22,8 +22,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import PopupDialog,{ScaleAnimation,DefaultAnimation,SlideAnimation} from 'react-native-popup-dialog';
 import {getAccessToken,} from '../../action/UserActions';
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_ADD} from 'react-native-toolbar-wrapper'
-import ModalDropdown from 'react-native-modal-dropdown';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import CompetitionTeamPerson from './CompetitionTeamPersonList'
 import {
     fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchTeamList
@@ -79,11 +77,6 @@ class CompetitionTeamList extends Component {
         }
     }
 
-    setCompetitionList()
-    {
-        // this.props.dispatch(enableActivityOnFresh());
-    }
-
     renderAllAvatars(avatars){
         var allAvatars = [];
         if(avatars==null)return null;
@@ -99,20 +92,15 @@ class CompetitionTeamList extends Component {
 
         return (
             <View style={{flex:1,padding:1}}>
-            <Image resizeMode="stretch" style={{height:25,width:25,borderRadius:13}} source={{uri:model}}/>
+            {(model == '' || model == null) ?
+                <Image resizeMode="stretch" style={{height:25,width:25,borderRadius:13}} source={require('../../../img/portrait.jpg')}/>:
+                <Image resizeMode="stretch" style={{height:25,width:25,borderRadius:13}} source={{uri:model}}/>
+            }
             </View>
         );
     }
 
     renderRow(rowData,sectionId,rowId){
-
-        // {'teamId': 1, 'teamName': '热爱羽毛球小分队','teamNum': '20181010','personId':3,'personNum':'wbh','maxNum':10,'nowNum':3,
-        // 'avatar': 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-        //     'avatarList':
-        //     [   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83er7qoZtfnhNSGgsCAyiaaa6XE1D8RAJgTQouhudfRISF9ysc4ywfJK8NetUpScMUrsJCO8X0JYcobw/0',
-        //         'https://wx.qlogo.cn/mmopen/vi_32/OpqHHsgWiaSQWXiaQExFffsLqTnZWCU2BnfJsYzO59DaFoBaicEYbaCnZdThAj2xf32ZMqYsq0oHZsaWAGoPuZz5A/132',
-        //         'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erqf66rr6j1HnoZhVfeIjBgaBTj4QoxjR2LicHTVB2ObPpia0EP6wrOllcMGktWBFWhlt0bsnH4txww/132']
-        // }
 
         var imguri = rowData.avatar;
         var avatars = rowData.avatarList;
@@ -133,7 +121,13 @@ class CompetitionTeamList extends Component {
             <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,}}>
                 <View style={{flex:1,flexDirection:'row',padding:5,borderBottomWidth:1,borderColor:'#ddd',backgroundColor:'transparent',}}>
                     <View style={{flex:1,justifyContent:'center',alignItems: 'center'}}>
-                        <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}} source={{uri:imguri}}/>
+                        {
+                            (imguri==''||imguri==null)?
+                            <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}}
+                                   source={require('../../../img/portrait.jpg')}/>:
+                            <Image resizeMode="stretch" style={{height:40,width:40,borderRadius:20}}
+                                   source={{uri:imguri}}/>
+                        }
                     </View>
                     <View style={{flex:4,justifyContent:'flex-start',alignItems: 'center',marginLeft:3,flexDirection:'row'}}>
                         <View style={{backgroundColor:'#fca482',borderRadius:5,padding:5}}><Text style={{color:'#ffffff'}}>队长</Text></View>
@@ -218,12 +212,7 @@ class CompetitionTeamList extends Component {
         return (
             <View style={{flex:1}}>
                 <Toolbar width={width} title="参赛队伍" navigator={this.props.navigator}
-                         actions={[{icon:ACTION_ADD,show:OPTION_SHOW}]}
-                         onPress={(i)=>{
-                             if(i==0){
-                                //添加队伍
-                                }
-                         }}>
+                         actions={[]}>
                     {/*内容区*/}
                     <View style={{flex:5,backgroundColor:'#eee'}}>
                         <Animated.View style={{opacity: this.state.fadeAnim,height:height-150,paddingTop:5,paddingBottom:5,}}>

@@ -72,11 +72,9 @@ class CompetitionResult extends Component {
                             >
 
                                 <GroupResultPage projectId={this.props.projectId} gameClass={1}/>
-                                <View/>
+                                <OutResultPage projectId={this.props.projectId} gameClass={2}/>
                                 <OutResultPage projectId={this.props.projectId} gameClass={3}/>
                                 <OutResultPage projectId={this.props.projectId} gameClass={4}/>
-                                <OutResultPage projectId={this.props.projectId} gameClass={5}/>
-                                <OutResultPage projectId={this.props.projectId} gameClass={6}/>
 
                             </IndicatorViewPager>
                         </Animated.View>
@@ -97,7 +95,7 @@ class CompetitionResult extends Component {
                 selectedItemStyle={{width:width/4}}
                 selectedItemTextStyle={styles.indicatorSelectedText}
                 selectedBorderStyle={styles.selectedBorderStyle}
-                titles={['小组赛', '32进16','16进8','8进4', '半决赛','冠亚军决赛']}
+                titles={['小组赛', '8进4', '半决赛','冠亚军决赛']}
             />
         )
     }

@@ -18,15 +18,9 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import CountDownTimer from 'react_native_countdowntimer'
-import Bridge from '../../native/Bridge'
 import GridView from 'react-native-super-grid'
 import {Toolbar,OPTION_SHOW,OPTION_NEVER,ACTION_VEDIO,ACTION_BARCODE} from 'react-native-toolbar-wrapper'
-import Config from "../../../config";
-import Proxy from "../../utils/Proxy";
 import ViewPager from 'react-native-viewpager';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import proxy from "../../utils/Proxy";
-import CompetitionList from './CompetitionList'
 import HomePage from '../../components/live/HomePage'
 import {
     fetchGames,disableCompetitionOnFresh,enableCompetitionOnFresh,fetchCompetitions,fetchProjects,fetchGameList,fetchAllGameList
@@ -35,17 +29,10 @@ import CompetitionTeamList from './CompetitionTeamList'
 import CompetitionGamesList from './CompetitionGamesList'
 import CompetitionGameList from './CompetitionGameList'
 import CompetitionGroupList from './CompetitionGroupList'
-import CompetitionRankList from './CompetitionRankList'
 import CompetitionResult from './CompetitionResult'
 
 var {height, width,scale} = Dimensions.get('window');
 var WeChat = require('react-native-wechat');
-
-var IMGS = [
-    require('../../../img/zhibo1.jpeg'),
-    require('../../../img/zhibo2.jpeg'),
-    require('../../../img/zhibo3.jpeg'),
-];
 
 class CompetitionPage extends Component{
 
@@ -54,26 +41,6 @@ class CompetitionPage extends Component{
         if(navigator) {
             navigator.pop();
         }
-    }
-
-    _onRefresh() {
-        this.setState({isRefreshing: true, fadeAnim: new Animated.Value(0)});
-
-        setTimeout(function () {
-            this.setState({
-                isRefreshing: false,
-            });
-            Animated.timing(          // Uses easing functions
-                this.state.fadeAnim,    // The value to drive
-                {
-                    toValue: 1,
-                    duration: 600,
-                    easing: Easing.bounce
-                },           // Configuration
-            ).start();
-        }.bind(this), 3000);
-
-        this.setState({noticeFresh:true})
     }
 
     fetchAllGameList(){
@@ -93,18 +60,6 @@ class CompetitionPage extends Component{
                 }
             }
         })
-    }
-
-    _renderPage(data,pageID){
-        return (
-            <View style={{width:width}}>
-                <Image
-                    source={data}
-                    style={{width:width,flex:3}}
-                    resizeMode={"stretch"}
-                />
-            </View>
-        );
     }
 
     navigate2LiveHome()
@@ -210,7 +165,6 @@ class CompetitionPage extends Component{
         super(props);
         var ds=new ViewPager.DataSource({pageHasChanged:(p1,p2)=>p1!==p2});
         this.state={
-            dataSource:ds.cloneWithPages(IMGS),
             itemList:[
                 {'title':'比赛管理','icon':require('../../../img/com_on.png')},
                 {'title':'分组名单','icon':require('../../../img/com_more.png')},
@@ -219,7 +173,6 @@ class CompetitionPage extends Component{
                 {'title':'对阵成绩','icon':require('../../../img/com_sign.png')},
                 {'title':'个人榜','icon':require('../../../img/com_team.png')},
             ],
-            notice:[],
 
             competitionId:this.props.competitionId,
             projectId:this.props.projectId,
@@ -227,7 +180,6 @@ class CompetitionPage extends Component{
 
             isRefreshing: false,
             fadeAnim: new Animated.Value(1),
-            noticeFresh:true,
             doingFetch:false,
         };
     }
@@ -235,49 +187,17 @@ class CompetitionPage extends Component{
     render(){
 
         //RefreshControl:当ScrollView处于竖直方向的起点位置（scrollY: 0），此时下拉会触发一个onRefresh事件。
-
-
-        var noticeList=null
         //"2018-02-01T09:00:00+00:00"
         var endTime = this.props.startTime.substring(0,10)+'T'+this.props.startTime.substring(11,16)+':00+00:00';
-
-        var noticeList=null;
-        var notice = this.state.notice;
-        //var competitionList=this.state.competitionList;
-        if(this.state.noticeFresh==true)
-        {
-            if(this.state.doingFetch==false)
-                this.fetchAllGameList();
-        }else{
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            if (notice !== undefined && notice !== null && notice.length > 0)
-            {
-                noticeList = (
-                    <ListView
-                        automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(notice)}
-                        renderRow={this.renderNoticeRow.bind(this)}
-                    />
-                );
-            }
-        }
+        var competition = this.props.competition;
 
         return (
             <View style={styles.container}>
                 <Toolbar width={width} title="比赛" actions={[]} navigator={this.props.navigator}>
-                    <View style={{flex:1,height:height,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
+                    <ScrollView style={{flex:1}}>
+                    <View style={{flex:1,width:width,backgroundColor:'#fff',flexDirection:'column'}}>
 
-                        <View style={{width:width,height:120}}>
-                            <ViewPager
-                                style={this.props.style}
-                                dataSource={this.state.dataSource}
-                                renderPage={this._renderPage}
-                                isLoop={true}
-                                autoPlay={true}
-                            />
-                        </View>
-
-                        <View style={{width:width,height:30,alignItems:'center',justifyContent:'center',paddingHorizontal:5,backgroundColor:'#eee',flexDirection:'row'}}>
+                        <View style={{width:width,height:40,alignItems:'center',justifyContent:'center',paddingHorizontal:5,backgroundColor:'#eee',flexDirection:'row'}}>
                                 <Text style={styles.cardItemTimeRemainTxt}>距离比赛开始还剩 </Text>
                                 <CountDownTimer
                                     //date={new Date(parseInt(this.props.startTime+":00"))}
@@ -296,7 +216,7 @@ class CompetitionPage extends Component{
                                 />
                         </View>
 
-                        <View style={{flex:2,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                        <View style={{width:width,height:250,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                             <GridView
                                 itemDimension={width/3-20}
                                 items={this.state.itemList}
@@ -305,31 +225,57 @@ class CompetitionPage extends Component{
                             />
                         </View>
 
-                        <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
-                            <Text style={{fontSize:15,color:'#444'}}>最新赛讯</Text>
-                        </View>
-
                         <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems: 'center',backgroundColor:'#fff',marginBottom:10}}>
                             <Animated.View style={{opacity: this.state.fadeAnim,flex:1,paddingTop:5,paddingBottom:5,}}>
-                                <ScrollView
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.isRefreshing}
-                                            onRefresh={this._onRefresh.bind(this)}
-                                            tintColor="#9c0c13"
-                                            title="刷新..."
-                                            titleColor="#9c0c13"
-                                            colors={['#ff0000', '#00ff00', '#0000ff']}
-                                            progressBackgroundColor="#ffff00"
-                                        />
-                                    }
-                                >
-                            {noticeList}
+                                <ScrollView>
+                                    {/*比赛安排*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>比赛安排</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>比赛时间：{competition.startTime}</Text>
+                                        <Text style={{fontSize:16,color:'#000'}}>比赛地点：{competition.unitName}</Text>
+                                    </View>
+                                    {/*比赛规程*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>赛事规程</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>{competition.competitonSchedule}</Text>
+                                    </View>
+                                    {/*比赛注意事项*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>比赛注意事项</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>{competition.competitionRule}</Text>
+                                    </View>
+                                    {/*场地*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>场地</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>{competition.competitionArea}</Text>
+                                    </View>
+                                    {/*报名*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>报名</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>{competition.competitionSign}</Text>
+                                    </View>
+                                    {/*奖项设置*/}
+                                    <View style={{width:width,height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:5,backgroundColor:'#eee'}}>
+                                        <Text style={{fontSize:14,color:'#444'}}>奖项设置</Text>
+                                    </View>
+                                    <View style={{width:width,flex:1,justifyContent:'center',alignItems:'center',padding:20,backgroundColor:'#fff'}}>
+                                        <Text style={{fontSize:16,color:'#000'}}>{competition.competitionReward}</Text>
+                                    </View>
                                 </ScrollView>
                             </Animated.View>
                         </View>
-
                     </View>
+                    </ScrollView>
                 </Toolbar>
             </View>
         );
@@ -363,119 +309,6 @@ class CompetitionPage extends Component{
         );
     }
 
-    renderNoticeRow(rowData,rowId)
-    {
-        var gameClass = '';
-        switch (rowData.gameClass){
-            case '1':gameClass='小组赛';break;
-            case '2':gameClass='32进16';break;
-            case '3':gameClass='16进8';break;
-            case '4':gameClass='8进4';break;
-            case '5':gameClass='半决赛';break;
-            case '6':gameClass='冠亚军决赛';break;
-        }
-
-        return (
-            <View style={{backgroundColor:'#fff',marginTop:4}}>
-                <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:1}}>
-
-                    <View style={{width:width,height:100,padding:6, paddingHorizontal: 12,flexDirection:'row'}}>
-
-                        <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-                            {
-                                rowData.isSingle=='1'?
-                                    <View>
-                                        {rowData.teamAimgList[0] == ''?
-                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
-                                                   source={{uri: rowData.teamAimgList[0]}}/>
-                                        }
-                                    </View>
-                                    :
-                                    <View style={{flexDirection:'row'}}>
-                                        {rowData.teamAimgList[0] == ''?
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={{uri: rowData.teamAimgList[0]}}/>
-                                        }
-                                        {rowData.teamAimgList[1] == ''?
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={{uri: rowData.teamAimgList[1]}}/>
-                                        }
-                                    </View>
-                            }
-                            <Text style={{marginTop:10,fontSize:12,color:'#666'}}>{rowData.teamA}</Text>
-                        </View>
-
-                        {
-                            rowData.state == '1'?
-                                <View style={{flex: 2, flexDirection: 'row',justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
-                                    <Text style={{fontSize:13,flex:1,color:'#666'}}>{gameClass}</Text>
-                                    <Text style={{fontSize:12,flex:1,color:'#666'}}>{rowData.startTime}</Text>
-                                    <Text style={{fontSize:20,flex:3}}>{rowData.scoreA} - {rowData.scoreB}</Text>
-                                </View>
-                                :
-                                <View style={{flex:2, flexDirection: 'row',justifyContent:'center',alignItems:'center',flexDirection:'column'}}>
-                                    <Text style={{fontSize:12,flex:1,color:'#666'}}>{gameClass}</Text>
-                                    <Text style={{fontSize:12,flex:1,color:'#666'}}>{rowData.startTime}</Text>
-                                    <Text style={{fontSize:20,flex:3}}>未开始</Text>
-                                </View>
-                        }
-
-                        <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-                            {
-                                rowData.isSingle=='1'?
-                                    <View>
-                                        {rowData.teamBimgList[0] == ''?
-                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 45, width: 45, borderRadius: 23}}
-                                                   source={{uri: rowData.teamBimgList[0]}}/>
-                                        }
-                                    </View>
-                                    :
-                                    <View style={{flexDirection:'row'}}>
-                                        {rowData.teamBimgList[0] == ''?
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={{uri: rowData.teamBimgList[0]}}/>
-                                        }
-                                        {rowData.teamBimgList[1] == ''?
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={require('../../../img/portrait.jpg')}/>
-                                            :
-                                            <Image style={{height: 30, width: 30, borderRadius: 15}}
-                                                   source={{uri: rowData.teamBimgList[1]}}/>
-                                        }
-                                    </View>
-                            }
-                            <Text style={{marginTop:10,fontSize:12,color:'#666'}}>{rowData.teamB}</Text>
-                        </View>
-
-                    </View>
-                </View>
-                <View style={{width:width,height:0.7,backgroundColor:'#aaa'}}/>
-            </View>
-        )
-    }
-
-    componentWillMount(){
-        this.fetchAllGameList()
-    }
-
-
-    componentWillUnmount(){
-    }
 }
 
 const styles = StyleSheet.create({
@@ -519,7 +352,7 @@ const styles = StyleSheet.create({
         padding:5
     },
     cardItemTimeRemainTxt:{
-        fontSize:13,
+        fontSize:15,
         color:'#666'
     }
 });

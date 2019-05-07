@@ -74,7 +74,7 @@ class CompetitionList extends Component {
         }
     }
 
-    navigateCompetitionProjectList(competitionId,startTime)
+    navigateCompetitionProjectList(competition,competitionId,startTime)
     {
         const { navigator } = this.props;
         if(navigator) {
@@ -82,6 +82,7 @@ class CompetitionList extends Component {
                 name: 'CompetitionProjectList',
                 component: CompetitionProjectList,
                 params: {
+                    competition:competition,
                     competitionId:competitionId,
                     startTime:startTime,
                 }
@@ -109,7 +110,7 @@ class CompetitionList extends Component {
         return (
             <TouchableOpacity style={{ flexDirection: 'column', borderBottomWidth: 1, borderColor: '#ccc', marginTop: 4 ,backgroundColor:'#fff'}}
                               onPress={()=>{
-                                  this.navigateCompetitionProjectList(rowData.id,rowData.startTime);
+                                  this.navigateCompetitionProjectList(rowData,rowData.id,rowData.startTime);
                               }}>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start',marginBotton:5}}>
                     <View style={{ padding: 6, paddingHorizontal: 10 ,flexDirection:'row',}}>

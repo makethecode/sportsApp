@@ -45,7 +45,7 @@ class VideoT extends Component {
 
         return(
             <View style={styles.container}>
-                <Video source={ {uri:"http://qiubai-video.qiushibaike.com/A14EXG7JQ53PYURP.mp4"}} // Looks for .mp4 file (background.mp4) in the given expansion version.
+                <Video source={ {uri:'rtmp://202.194.14.73/myapp/test',type:'flv'}} // Looks for .mp4 file (background.mp4) in the given expansion version.
                        ref={(ref) => {
                             this.player = ref
                         }}

@@ -50,17 +50,6 @@ class CompetitionGameList extends Component {
         }
     }
 
-    showPopover(){
-        this.setState({
-            menuVisible: true,
-            buttonRect: {x: width-80, y: 0, width: 100, height: 80}
-        });
-    }
-
-    closePopover(){
-        this.setState({menuVisible: false});
-    }
-
     navigate2CreateCompetitionGame(game)
     {
         //创建比赛
@@ -112,11 +101,9 @@ class CompetitionGameList extends Component {
             matchList:[],
 
             list1:[],//小组赛
-            list2:[],//32进16
-            list3:[],//16进8
-            list4:[],//8进4
-            list5:[],//半决赛
-            list6:[],//冠亚军决赛
+            list2:[],//8进4
+            list3:[],//半决赛
+            list4:[],//冠亚军决赛
 
             showProgress:false,
             type:this.props.type,//type=6团体赛
@@ -126,8 +113,8 @@ class CompetitionGameList extends Component {
             groupId:-1,
             gameClassStr:'赛制',
             groupStr:'组别',
-            gameClassList:['小组赛','32进16','16进8','8进4','半决赛','冠亚军决赛'],
-            groupList:['A组','B组','C组','D组','E组','F组','G组','H组'],
+            gameClassList:['小组赛','8进4','半决赛','冠亚军决赛'],
+            groupList:['A组','B组','C组','D组'],
             showGameClassDropdown:false,
             showGroupDropdown:false,
         };
@@ -144,11 +131,9 @@ class CompetitionGameList extends Component {
         var gameClass = '';
         switch (rowData.gameClass){
             case '1':gameClass='小组赛';break;
-            case '2':gameClass='32进16';break;
-            case '3':gameClass='16进8';break;
-            case '4':gameClass='8进4';break;
-            case '5':gameClass='半决赛';break;
-            case '6':gameClass='冠亚军决赛';break;
+            case '2':gameClass='8进4';break;
+            case '3':gameClass='半决赛';break;
+            case '4':gameClass='冠亚军决赛';break;
         }
 
         var group = '';
@@ -157,10 +142,6 @@ class CompetitionGameList extends Component {
             case 1:group='B组';break;
             case 2:group='C组';break;
             case 3:group='D组';break;
-            case 4:group='E组';break;
-            case 5:group='F组';break;
-            case 6:group='G组';break;
-            case 7:group='H组';break;
         }
 
         return (
@@ -252,7 +233,7 @@ class CompetitionGameList extends Component {
             );
         }
 
-        //32进16列表
+        //8进4列表
         var ListView2=null;
         var List2 = GameFilter.filter(this.state.list2,this.state.gameClassId,this.state.groupId);//32进16赛
         var ds2 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -267,7 +248,7 @@ class CompetitionGameList extends Component {
             );
         }
 
-        //16进8列表
+        //半决赛列表
         var ListView3=null;
         var List3 = GameFilter.filter(this.state.list3,this.state.gameClassId,this.state.groupId);//16进8赛
         var ds3 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -282,7 +263,7 @@ class CompetitionGameList extends Component {
             );
         }
 
-        //8进4列表
+        //决赛列表
         var ListView4=null;
         var List4 = GameFilter.filter(this.state.list4,this.state.gameClassId,this.state.groupId);//8进4赛
         var ds4 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -297,62 +278,37 @@ class CompetitionGameList extends Component {
             );
         }
 
-        //半决赛表
-        var ListView5=null;
-        var List5 = GameFilter.filter(this.state.list5,this.state.gameClassId,this.state.groupId);//半决赛
-        var ds5 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (List5 !== undefined && List5 !== null && List5.length > 0)
-        {
-            ListView5 = (
-                <ListView
-                    automaticallyAdjustContentInsets={false}
-                    dataSource={ds5.cloneWithRows(List5)}
-                    renderRow={this.renderGamesRow.bind(this)}
-                />
-            );
-        }
-
-        //决赛表
-        var ListView6=null;
-        var List6 = GameFilter.filter(this.state.list6,this.state.gameClassId,this.state.groupId);//决赛
-        var ds6 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        if (List6 !== undefined && List6 !== null && List6.length > 0)
-        {
-            ListView6 = (
-                <ListView
-                    automaticallyAdjustContentInsets={true}
-                    dataSource={ds6.cloneWithRows(List6)}
-                    renderRow={this.renderGamesRow.bind(this)}
-                />
-            );
-        }
-
         return (
 
-
             <View style={styles.container}>
-                <Toolbar width={width} title="比赛场次" navigator={this.props.navigator}
-                         actions={[{icon:ACTION_SORT,show:OPTION_SHOW}]}
-                         onPress={(i)=>{
+                {/*header*/}
+                    <View style={styles.defaultStyle1}>
+                        <TouchableOpacity style={{width:60,justifyContent:'center',alignItems: 'center',}}
+                                          onPress={()=>{
+                                this.goBack();
+                        }}><Ionicons name={'md-arrow-back'} size={25} color="#fff"/></TouchableOpacity>
+                        <View style={{flex:3,justifyContent:'flex-start',alignItems: 'center',flexDirection:'row'}}>
+                            <Text style={{color:'#fff',fontSize:18}}>
+                                比赛场次
+                            </Text>
+                        </View>
+                        <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems: 'center',}}
+                                          onPress={()=>{
+                                                      this.setState({showProgress:true})
+                                                      //this.navigate2CreateCompetitionGame()
+                                                      this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
+                                                          if(json.re==1)
+                                                          {
+                                                              this.fetchGameList();
+                                                          }
+                                                          else {
+                                                              this.fetchGameList();
+                                                              Alert.alert('失败','已创建当前分组名单下所有比赛！')
 
-                             //this.setState({showProgress:true})
-
-                             //if(i==0){
-                             //    //this.navigate2CreateCompetitionGame()
-                             //    this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
-                             //        if(json.re==1)
-                             //        {
-                             //            this.fetchGameList();
-                             //        }
-                             //        else {
-                             //            Alert.alert('失败','已创建当前分组名单下所有比赛！')
-                             //        }
-                             //    })
-                             //}
-
-                             this.showPopover()
-
-                         }}>
+                                                          }
+                                                      })
+                        }}><Text style={{color:'#fff',fontSize:18}}>生成比赛</Text></TouchableOpacity>
+                    </View>
 
                     <View style={styles.flexContainer}>
                         {/*赛制类型*/}
@@ -413,26 +369,18 @@ class CompetitionGameList extends Component {
 
 
                     {<ScrollView>
-                        {//冠亚军决赛
-                            ListView6==null?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#444',fontSize:14}}>冠亚军决赛</Text></View>{ListView6}</View>}
-                        {//半决赛
-                            ListView5==null?null:
-                                <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#444',fontSize:14}}>半决赛</Text></View>{ListView5}</View>}
-                        {//8进4
+                        {//决赛
                             ListView4==null?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#444',fontSize:14}}>8进4</Text></View>{ListView4}</View>}
-                        {//16进8
+                                    <Text style={{color:'#444',fontSize:14}}>冠亚军决赛</Text></View>{ListView4}</View>}
+                        {//半决赛
                             ListView3==null?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#444',fontSize:14}}>16进8</Text></View>{ListView3}</View>}
-                        {//32进16
+                                    <Text style={{color:'#444',fontSize:14}}>半决赛</Text></View>{ListView3}</View>}
+                        {//8进4
                             ListView2==null?null:
                                 <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
-                                    <Text style={{color:'#444',fontSize:14}}>32进16</Text></View>{ListView2}</View>}
+                                    <Text style={{color:'#444',fontSize:14}}>8进4</Text></View>{ListView2}</View>}
                         {//小组赛
                             ListView1==null?null:
                             <View><View style={{height:30,width:width,backgroundColor:'#eee',alignItems:'center',justifyContent:'center'}}>
@@ -463,43 +411,6 @@ class CompetitionGameList extends Component {
                             </View>
                         </TouchableOpacity>
                     </Modal>
-
-                    {/*popover part*/}
-                    <Popover
-                        isVisible={this.state.menuVisible}
-                        fromRect={this.state.buttonRect}
-                        displayArea={displayArea}
-                        onClose={()=>{this.closePopover()
-                        }}
-                        style={{backgroundColor:'transparent'}}
-                        placement="bottom"
-                    >
-
-                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
-                                          onPress={()=>{
-                                              this.closePopover();
-                                                  this.setState({showProgress:true})
-
-                                                      //this.navigate2CreateCompetitionGame()
-                                                      this.props.dispatch(createCompetitonGame(this.props.projectId,this.props.gamesId)).then((json)=>{
-                                                          if(json.re==1)
-                                                          {
-                                                              this.fetchGameList();
-                                                          }
-                                                          else {
-                                                              this.fetchGameList();
-                                                              Alert.alert('失败','已创建当前分组名单下所有比赛！')
-
-                                                          }
-                                                      })
-
-                                          }}>
-                            <Text style={[styles.popoverText]}>生成比赛</Text>
-                        </TouchableOpacity>
-
-                    </Popover>
-
-                </Toolbar>
             </View>
         )
     }
@@ -585,17 +496,17 @@ class CompetitionGameList extends Component {
 
     fetchGameList(){
 
+        this.setState({showProgress:true})
+
         this.props.dispatch(fetchGameList(this.props.projectId)).then((json) => {
             if (json.re == 1) {
-                this.setState({games: json.data, allgames: json.data});
+                this.setState({games: json.data, allgames: json.data,showProgress:false});
 
                 var games = this.state.games;
                 var list1=[];//小组赛
-                var list2=[];//32进16
-                var list3=[];//16进8
-                var list4=[];//8进4
-                var list5=[];//半决赛
-                var list6=[];//冠亚军决赛
+                var list2=[];//8进4
+                var list3=[];//半决赛
+                var list4=[];//决赛
 
                 if(games!=null) {
                     for (i = 0; i < games.length; i++) {
@@ -612,17 +523,11 @@ class CompetitionGameList extends Component {
                             case '4':
                                 list4.push(games[i]);
                                 break;
-                            case '5':
-                                list5.push(games[i]);
-                                break;
-                            case '6':
-                                list6.push(games[i]);
-                                break;
                         }
                     }
                 }
 
-                this.setState({list1:list1,list2:list2,list3:list3,list4:list4,list5:list5,list6:list6,showProgress:false})
+                this.setState({list1:list1,list2:list2,list3:list3,list4:list4})
             }
             else {
                 if (json.re = -100) {
@@ -714,6 +619,13 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
     },
+    defaultStyle1:{
+        height:70,
+        paddingTop:30,
+        flexDirection:'row',
+        justifyContent:'center',
+        backgroundColor:'#66CDAA'
+    }
 });
 
 

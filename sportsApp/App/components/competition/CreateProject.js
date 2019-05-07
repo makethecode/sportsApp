@@ -75,7 +75,7 @@ class CreateProject extends Component{
             gameTypeStrList:[],
             gameTypeIdList:[],
 
-            typeList:[],
+            typeList:'',
 
             showGamesList:false,
         }

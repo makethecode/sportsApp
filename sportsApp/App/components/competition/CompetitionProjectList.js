@@ -54,7 +54,7 @@ class CompetitionProjectList extends Component {
         };
     }
 
-    navigate2CompetitionPage(competitionId,projectId,type,startTime,projectType)
+    navigate2CompetitionPage(competition,competitionId,projectId,type,startTime,projectType)
     {
         const {navigator} =this.props;
 
@@ -63,6 +63,7 @@ class CompetitionProjectList extends Component {
                 name: 'CompetitionPage',
                 component: CompetitionPage,
                 params: {
+                    competition,competition,
                     competitionId:competitionId,
                     projectId:projectId,
                     projectType:type,
@@ -113,7 +114,7 @@ class CompetitionProjectList extends Component {
                 projectList.push(
                     <TouchableOpacity key={i} style={{flexDirection:'column',marginTop:4,backgroundColor:'#fff'}}
                     onPress={()=>{
-                        this.navigate2CompetitionPage(this.props.competitionId,project.id,project.type,this.props.startTime,projectType)
+                        this.navigate2CompetitionPage(this.props.competition,this.props.competitionId,project.id,project.type,this.props.startTime,projectType)
                     }}>
 
                         <View style={{ padding: 5,flexDirection:'row',marginTop:3}}>
